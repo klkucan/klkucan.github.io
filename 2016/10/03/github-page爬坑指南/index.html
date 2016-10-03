@@ -219,13 +219,11 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   <li>
     <p>首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech</p>
   </li>
+  <li>去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入<code class="highlighter-rouge">云解析 DNS</code>，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173328629-236251795.jpg" alt="" /></li>
   <li>
-    <p>去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入<code class="highlighter-rouge">云解析 DNS</code>，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置<img src="klkucan.github.io/images/github_page_01.jpg" alt="" />
-记录值为<code class="highlighter-rouge">sam.github.io.</code>，注意io后面有个点。</p>
+    <p>记录值为<code class="highlighter-rouge">sam.github.io.</code>，注意io后面有个点。</p>
   </li>
-  <li>
-    <p>经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。</p>
-  </li>
+  <li>经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。</li>
 </ul>
 
 <p>###4.https的问题</p>
@@ -236,7 +234,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   </li>
   <li>
     <p>解决办法参考了<a href="https://zhuanlan.zhihu.com/p/22667528">这篇文章</a>，在阿里云中通过<code class="highlighter-rouge">域名→管理</code>然后设置新的nameservers即可。只不过一直提示<code class="highlighter-rouge">非万网DNS</code>。
-<img src="klkucan.github.io/images/nameservers.jpg" alt="" /></p>
+<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173334707-1998000533.jpg" alt="" /></p>
   </li>
 </ul>
 

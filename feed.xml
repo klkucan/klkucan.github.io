@@ -5,8 +5,8 @@
     <description>多读书，多看报，少吃零食多睡觉。</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Oct 2016 13:33:33 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Oct 2016 13:33:33 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Oct 2016 17:44:45 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Oct 2016 17:44:45 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -41,13 +41,11 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;li&gt;
     &lt;p&gt;首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech&lt;/p&gt;
   &lt;/li&gt;
+  &lt;li&gt;去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入&lt;code class=&quot;highlighter-rouge&quot;&gt;云解析 DNS&lt;/code&gt;，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173328629-236251795.jpg&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入&lt;code class=&quot;highlighter-rouge&quot;&gt;云解析 DNS&lt;/code&gt;，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置&lt;img src=&quot;klkucan.github.io/images/github_page_01.jpg&quot; alt=&quot;&quot; /&gt;
-记录值为&lt;code class=&quot;highlighter-rouge&quot;&gt;sam.github.io.&lt;/code&gt;，注意io后面有个点。&lt;/p&gt;
+    &lt;p&gt;记录值为&lt;code class=&quot;highlighter-rouge&quot;&gt;sam.github.io.&lt;/code&gt;，注意io后面有个点。&lt;/p&gt;
   &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;###4.https的问题&lt;/p&gt;
@@ -58,7 +56,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;解决办法参考了&lt;a href=&quot;https://zhuanlan.zhihu.com/p/22667528&quot;&gt;这篇文章&lt;/a&gt;，在阿里云中通过&lt;code class=&quot;highlighter-rouge&quot;&gt;域名→管理&lt;/code&gt;然后设置新的nameservers即可。只不过一直提示&lt;code class=&quot;highlighter-rouge&quot;&gt;非万网DNS&lt;/code&gt;。
-&lt;img src=&quot;klkucan.github.io/images/nameservers.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173334707-1998000533.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 </description>
