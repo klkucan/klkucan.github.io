@@ -5,13 +5,13 @@
     <description>多读书，多看报，少吃零食多睡觉。</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Oct 2016 17:51:57 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Oct 2016 17:51:57 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Oct 2016 17:55:15 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Oct 2016 17:55:15 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
         <title>Github Page爬坑指南</title>
-        <description>&lt;p&gt;###1.jekyll的使用&lt;/p&gt;
+        <description>&lt;h3 id=&quot;jekyll&quot;&gt;1.jekyll的使用&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -29,13 +29,13 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;###2.github上的设置&lt;/p&gt;
+&lt;h3 id=&quot;github&quot;&gt;2.github上的设置&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;###3.个人域名绑定&lt;/p&gt;
+&lt;h3 id=&quot;section&quot;&gt;3.个人域名绑定&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -48,7 +48,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;li&gt;经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;###4.https的问题&lt;/p&gt;
+&lt;h3 id=&quot;https&quot;&gt;4.https的问题&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -60,7 +60,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;###5.图片链接问题&lt;/p&gt;
+&lt;h3 id=&quot;section-1&quot;&gt;5.图片链接问题&lt;/h3&gt;
 
 &lt;ul&gt;
   &lt;li&gt;目前生成出来的HTML代码中图片的路径是错误的，从网上也找了很多办法但是都不理想，咋这篇文章中使用的图片其实是我把图片上传到博客园，然后拿到URL后使用的。也就是说使用图片存储服务来实现，这样的好处就在于github page容量有限，如果将来图片多了会很麻烦，不如一开始就使用第三方来存储图片。&lt;/li&gt;
