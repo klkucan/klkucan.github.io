@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-03UI - 笛音夏扇的博客</title>
+    <title>Github Page爬坑指南 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/03UI/">
+    <link rel="canonical" href="https://caihua.tech/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -163,15 +163,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#杂记" title="杂记">杂记</a>
                         
                     </div>
-                    <h1>iOS学习笔记-03UI</h1>
+                    <h1>Github Page爬坑指南</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on October 3, 2016</span>
                 </div>
             </div>
         </div>
@@ -189,149 +189,56 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<p>##<span id="ui">3.UI</span></p>
-
-<ul>
-  <li>iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。</li>
-</ul>
-
-<p>####<span id="manualui">3.1 手动编写UI</span></p>
-
-<ul>
-  <li>个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。</li>
-  <li>手动编写的核心在于创建UI对象，设置frame及各种属性。</li>
-  <li>当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。</li>
-</ul>
-
-<p>####<span id="autolayout">3.2 autolayout</span></p>
-
-<ul>
-  <li>目前在Xcode中可以很好的时候用约束(constraints)来实现UI的自适应。</li>
-  <li>constraints的使用心得：
-    <ol>
-      <li>按住ctrl+左键来创建约束</li>
-      <li>可以在Constraints下找到具体的约束，进而进行修改。
- <img src="http://i.imgur.com/Zg0x473.png" alt="" /> <img src="http://i.imgur.com/Ezr8Ny7.png" alt="" /></li>
-    </ol>
-  </li>
-</ul>
-
-<ol>
-  <li>其基本的使用可以对比NGUI，都是距离superview上下左右的距离，与其它View的间距、size等约束。</li>
-  <li>需要注意，当存在多层关系时，需要逐层设置，否则效果可能有问题。</li>
-  <li>对于constraint不但可以通过视图来设置，还可以编写代码来设置或修改。只要关联到代码(类似其它UI关联带代码的方式)就可以控制，一般只修改constraint属性。</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>活用</td>
-          <td>-△-</td>
-          <td>和</td>
-          <td>-口-</td>
-          <td>两个图标按钮。</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-</ol>
-
-<p>####<span id="touch">3.3 触摸和手势识别器</span></p>
+				<p>###1.jekyll的使用</p>
 
 <ul>
   <li>
-    <p>触摸的信息包含触摸点的位置、处于的阶段，其包含在UITouch对象中，手势是在触摸的基础上SDK封装的功能，它将一些复杂的连续触摸抽象成一个个手势动作。UITouch对象保存了含有手势识别器的数组。这个 数组里的每个元素都是手势识别器，而每个识别器都用来接收相关的触摸对象。如果创建某个 视图时没有指定手势识别器，那么在系统传给响应者方法的。而UIEvent对象包含了多个UITouch对象，多少由触摸点决定。</p>
-  </li>
-  <li>
-    <p>触摸的五个阶段：<code class="highlighter-rouge">UITouchPhaseBegan</code>、<code class="highlighter-rouge">UITouchPhaseMoved</code>、     <code class="highlighter-rouge">UITouchPhaseStationary</code>、<code class="highlighter-rouge">UITouchPhaseEnded</code>、<code class="highlighter-rouge">UITouchPhaseCancelled</code>，除了stationary其它都可以在代码中重写方法（其实就是其它四个是可以callUIResponder中预定义好的回调方法）。以下代码演示了拖地效果的touch实现</p>
-  </li>
-</ul>
+    <p>jekyll的核心命令就几个</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event
-{
-	// Calculate and store offset, and pop view into front if needed
-	startLocation = [[touches anyObject] locationInView:self];
-	[self.superview bringSubviewToFront:self];
-}
-
-- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent *)event
-{
-	// Calculate offset
-	CGPoint pt = [[touches anyObject] locationInView:self];
-	float dx = pt.x - startLocation.x;
-	float dy = pt.y - startLocation.y;
-	CGPoint newcenter = CGPointMake(self.center.x + dx, self.center.y + dy);
-	
-	// Set new location
-	self.center = newcenter;
-}
+    <div class="highlighter-rouge"><pre class="highlight"><code>jekyll new blog // 选好文件夹位置
+jekyll build    // 在_site文件夹下生成网站内容
+jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000
+   
 </code></pre>
-</div>
-
-<ul>
-  <li>
-    <p>触摸分为单点和多点触摸，控制代码<code class="highlighter-rouge">self.multipleTouchEnabled = YES;</code>控制。</p>
+    </div>
   </li>
   <li>
-    <p>手势识别器主要有点击(tap)、滑动(swipe)、手指聚拢(pinch)、旋转(rotate)，拖动(pan)、长按(long press)。其基本用法都一样，类似：</p>
+    <p>模板，参考别人的模板进行了修改，<a href="https://github.com/Huxpro/huxpro.github.io">地址</a>。</p>
   </li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-        self.gestureRecognizers = @[panRecognizer];
-</code></pre>
-</div>
+<p>###2.github上的设置</p>
+
+<ul>
+  <li>github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。</li>
+</ul>
+
+<p>###3.个人域名绑定</p>
 
 <ul>
   <li>
-    <p>一个控件可以同时使用多个手势识别器。</p>
+    <p>首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech</p>
   </li>
   <li>
-    <p>关于同时识别手势的问题，一般是一个手势由一个控件识别但是通过下面的代码可以让一个手势被多个对象识别。</p>
+    <p>去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入<code class="highlighter-rouge">云解析 DNS</code>，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置<img src="klkucan.github.io/images/github_page_01.jpg" alt="" />
+记录值为<code class="highlighter-rouge">sam.github.io.</code>，注意io后面有个点。</p>
+  </li>
+  <li>
+    <p>经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。</p>
   </li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return YES;
-}
-</code></pre>
-</div>
+<p>###4.https的问题</p>
 
 <ul>
-  <li>注意事项：
-    <ol>
-      <li>一些图片带有透明区域，因此有可能点击了透明区域也被识别为tap。</li>
-      <li>拖动的处理可以通过touch相关的函数或者手势，这就引出了放射变换的一些问题。</li>
-    </ol>
+  <li>
+    <p>经过上面的几步已经可以正常访问网站了，但是会注意到在chrome中会提示网站不安全，因为不支持https。</p>
+  </li>
+  <li>
+    <p>解决办法参考了<a href="https://zhuanlan.zhihu.com/p/22667528">这篇文章</a>，在阿里云中通过<code class="highlighter-rouge">域名→管理</code>然后设置新的nameservers即可。只不过一直提示<code class="highlighter-rouge">非万网DNS</code>。
+<img src="klkucan.github.io/images/nameservers.jpg" alt="" /></p>
   </li>
 </ul>
-
-<blockquote>
-  <p>AffineTransform，仿射变换。其中transform定义为</p>
-</blockquote>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>&gt; ```
-&gt; struct CGAffineTransform {
-&gt;  CGFloat a, b, c, d;
-&gt;  CGFloat tx, ty;
-&gt;};
-&gt; ```
-</code></pre>
-</div>
-
-<blockquote>
-  <p>它包含了位置、旋转、缩放三个信息。类似U3D中的transform的概念。</p>
-</blockquote>
-
-<blockquote>
-  <p>变换的本质是矩阵的计算，（(x,0,0),(0,y,0),(tx,ty,1)）。</p>
-</blockquote>
-
-<blockquote>
-  <p>SDK中有很多的方法，基础的方法是CGAffineTransformMake(a,b,c,d,tx,ty)，参数对应矩阵。还有GAffineTransformMakeXXX和GAffineTransformXXX两个系列的方法。</p>
-</blockquote>
-
-<p>####<span id="uicontrol">3.4 控件 </span></p>
 
 
                 <hr>
@@ -342,19 +249,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/16/02%E9%9B%86%E5%90%88/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-02集合">
+                        <a href="/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/" data-toggle="tooltip" data-placement="top" title="解决JSONKit在macOS Sierra上crash的问题">
                         Previous<br>
-                        <span>iOS学习笔记-02集合</span>
+                        <span>解决JSONKit在macOS Sierra上crash的问题</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-04内存管理">
-                        Next<br>
-                        <span>iOS学习笔记-04内存管理</span>
-                        </a>
-                    </li>
                     
                 </ul>
 

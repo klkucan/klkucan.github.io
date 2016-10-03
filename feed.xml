@@ -5,9 +5,71 @@
     <description>多读书，多看报，少吃零食多睡觉。</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Oct 2016 11:29:28 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Oct 2016 11:29:28 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Oct 2016 13:33:33 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Oct 2016 13:33:33 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Github Page爬坑指南</title>
+        <description>&lt;p&gt;###1.jekyll的使用&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;jekyll的核心命令就几个&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jekyll new blog // 选好文件夹位置
+jekyll build    // 在_site文件夹下生成网站内容
+jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000
+   
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;模板，参考别人的模板进行了修改，&lt;a href=&quot;https://github.com/Huxpro/huxpro.github.io&quot;&gt;地址&lt;/a&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;###2.github上的设置&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;###3.个人域名绑定&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入&lt;code class=&quot;highlighter-rouge&quot;&gt;云解析 DNS&lt;/code&gt;，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置&lt;img src=&quot;klkucan.github.io/images/github_page_01.jpg&quot; alt=&quot;&quot; /&gt;
+记录值为&lt;code class=&quot;highlighter-rouge&quot;&gt;sam.github.io.&lt;/code&gt;，注意io后面有个点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;###4.https的问题&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;经过上面的几步已经可以正常访问网站了，但是会注意到在chrome中会提示网站不安全，因为不支持https。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;解决办法参考了&lt;a href=&quot;https://zhuanlan.zhihu.com/p/22667528&quot;&gt;这篇文章&lt;/a&gt;，在阿里云中通过&lt;code class=&quot;highlighter-rouge&quot;&gt;域名→管理&lt;/code&gt;然后设置新的nameservers即可。只不过一直提示&lt;code class=&quot;highlighter-rouge&quot;&gt;非万网DNS&lt;/code&gt;。
+&lt;img src=&quot;klkucan.github.io/images/nameservers.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 03 Oct 2016 13:18:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/</guid>
+        
+        <category>杂记</category>
+        
+        
+      </item>
     
       <item>
         <title>解决JSONKit在macOS Sierra上crash的问题</title>
