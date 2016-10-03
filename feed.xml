@@ -5,13 +5,13 @@
     <description>多读书，多看报，少吃零食多睡觉。</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Oct 2016 17:55:15 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Oct 2016 17:55:15 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Oct 2016 18:26:08 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Oct 2016 18:26:08 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
         <title>Github Page爬坑指南</title>
-        <description>&lt;h3 id=&quot;jekyll&quot;&gt;1.jekyll的使用&lt;/h3&gt;
+        <description>&lt;h4 id=&quot;jekyll&quot;&gt;1.jekyll的使用&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -29,13 +29,13 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;github&quot;&gt;2.github上的设置&lt;/h3&gt;
+&lt;h4 id=&quot;github&quot;&gt;2.github上的设置&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section&quot;&gt;3.个人域名绑定&lt;/h3&gt;
+&lt;h4 id=&quot;section&quot;&gt;3.个人域名绑定&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -48,7 +48,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;li&gt;经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;https&quot;&gt;4.https的问题&lt;/h3&gt;
+&lt;h4 id=&quot;https&quot;&gt;4.https的问题&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -60,7 +60,7 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;5.图片链接问题&lt;/h3&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;5.图片链接问题&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;目前生成出来的HTML代码中图片的路径是错误的，从网上也找了很多办法但是都不理想，咋这篇文章中使用的图片其实是我把图片上传到博客园，然后拿到URL后使用的。也就是说使用图片存储服务来实现，这样的好处就在于github page容量有限，如果将来图片多了会很麻烦，不如一开始就使用第三方来存储图片。&lt;/li&gt;
@@ -84,8 +84,8 @@ https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309cc
 https://github.com/klkucan/JSONKit&lt;/p&gt;
 </description>
         <pubDate>Thu, 22 Sep 2016 18:29:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+        <link>https://caihua.tech/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
         
         <category>iOS学习笔记</category>
         
@@ -253,7 +253,7 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
   &lt;li&gt;
     &lt;p&gt;创建plist文件及添加数值&lt;/p&gt;
 
-    &lt;p&gt;&lt;img src=&quot;images/create_plist.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。&lt;/p&gt;
@@ -307,7 +307,7 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
   &lt;li&gt;
     &lt;p&gt;创建json文件&lt;/p&gt;
 
-    &lt;p&gt;&lt;img src=&quot;images/create_json.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181941707-1069570154.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;数据读写&lt;/p&gt;
@@ -1600,7 +1600,7 @@ NSUserDefaults 存储的对象&amp;lt;font color=red&amp;gt;全是不可变的&a
 
     &lt;p&gt;我们先建立一个叫Student 的类，这个类里有三个属性（学号，姓名，性别）,如图：&lt;/p&gt;
 
-    &lt;p&gt;&lt;img src=&quot;images/08-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181834145-1260516689.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
     &lt;p&gt;我们要做的就是将Student类型变成NSData类型 ，那么就必须实现归档：&lt;/p&gt;
 
@@ -1610,11 +1610,11 @@ NSUserDefaults 存储的对象&amp;lt;font color=red&amp;gt;全是不可变的&a
 
     &lt;p&gt;.h 中修改文件如图 ：&lt;/p&gt;
 
-    &lt;p&gt;&lt;img src=&quot;images/08-2.jpeg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181857239-402489604.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
     &lt;p&gt;.m中加入代码 ：&lt;/p&gt;
 
-    &lt;p&gt;&lt;img src=&quot;images/08-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181907192-668738465.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
     &lt;p&gt;这样做就可以将自定义类型转变为NSData类型了&lt;/p&gt;
 
@@ -1762,7 +1762,7 @@ f.arr;
 &lt;/div&gt;
 &lt;p&gt;&amp;lt;font color=green&amp;gt;
 注意在分类中可以添加属性，但是会提示
-&lt;img src=&quot;images/01-1.jpg&quot; alt=&quot;&quot; /&gt; 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&amp;lt;/font&amp;gt;&lt;/p&gt;
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182039301-389964144.jpg&quot; alt=&quot;&quot; /&gt; 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&amp;lt;/font&amp;gt;&lt;/p&gt;
 
 &lt;p&gt;而使用()来做的扩展类只是个头文件，形式如下，注意到类名后面有个&lt;code class=&quot;highlighter-rouge&quot;&gt;()&lt;/code&gt;，这个里面定义的方法还是需要在主类的.m文件中实现。&amp;lt;font color=green&amp;gt;&lt;strong&gt;在class-continuation中可以定义属性、实例变量、方法，其无法被外部类访问，这就实现了细节的隐藏。&lt;/strong&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
 
