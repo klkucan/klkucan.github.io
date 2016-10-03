@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="多读书，多看报，少吃零食多睡觉。">
+    <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>iOS学习笔记-04内存管理 - 笛音夏扇的博客</title>
+
+    <link rel="canonical" href="https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">笛音夏扇</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About Me</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/home-bg-o.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        
+                    </div>
+                    <h1>iOS学习笔记-04内存管理</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<p>##<span id="memorymanage">4.内存管理</span>
+####<span id="manual">4.1 手动管理</span></p>
+
+<ul>
+  <li>自己生成的对象自己持有，可以调用<code class="highlighter-rouge">release</code>方法减少retain数量。</li>
+  <li>非自己生成的对象也可以持有，通过调用<code class="highlighter-rouge">retain</code>方法可以持有对象，引用数+1。</li>
+  <li>不再需要自己持有的对象要及时释放，注意类中的property要在<code class="highlighter-rouge">- (void)dealloc
+</code>方法中赋值nil，这样写相当于release了。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>- (void)dealloc
+{
+    self.arr = nil;
+    [super dealloc];
+}
+</code></pre>
+</div>
+<ul>
+  <li>
+    <p>无法释放非自己持有的对象，注意当一个变量持有一次对象后，只能释放一次。也就是说retainCount必须+1和-1对称。</p>
+  </li>
+  <li>
+    <p>alloc的实现。其实就是调用calloc方法申请内存和C语言的差不多，只不过对象的头部位有个地址用于存储引用数。而retain、release就是对引用数加减，dealloc则是free掉对象。</p>
+  </li>
+</ul>
+
+<p>####<span id="autorelease">4.2 Autorelease </span></p>
+<ul>
+  <li>autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+// 当调用autorelease方法时，其实是将对象obj放到了pool的一个对象列表中
+NSObject* obj = [[[NSObject alloc] init] autorelease];
+
+[pool drain]; // obj会被调用release方法
+
+</code></pre>
+</div>
+
+<ul>
+  <li>注意到main.m中有这样的代码，在最外层就有个autoreleasepool了。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
+}
+</code></pre>
+</div>
+
+<p>####<span id="arc">4.3 ARC</span></p>
+<ul>
+  <li>我的理解
+    <blockquote>
+      <p>所谓ARC是通过编译器和运行时的协作来实现自动管理引用计数，编译器在ARC有效的代码中加入额外的代码来加减引用计数。</p>
+    </blockquote>
+  </li>
+  <li>标识
+    <ol>
+      <li>__strong：默认就是</li>
+      <li>__weak：需显式使用</li>
+      <li>__autoreleasing：这个标识一些情况下是不需要显式使用，一些情况下是不需要的，最为致命。</li>
+      <li>__unsafe_unretained：个人感觉已经被弃用了，在没有weak的时代使用的东西。</li>
+    </ol>
+  </li>
+  <li>__strong
+    <blockquote>
+      <p>这个修饰符具有持有对象的功能，与retain类似。它的使用分为如下几种情况：
+1、<code class="highlighter-rouge">id __strong obj = [[NSObject alloc] init];</code> 这行代码可以理解为如下代码，可见所谓自动管理，就是在编译出来的代码中对强引用变量调用release方法。</p>
+
+      <div class="highlighter-rouge"><pre class="highlight"><code>id obj = objc_msgSend(NSObject, @selector(alloc));
+objc_msgSend(obj, @selector(init));
+objc_release(obj);
+</code></pre>
+      </div>
+
+      <p>2、<code class="highlighter-rouge">id __strong obj = [NSMutableArray array];</code> 这行代码可以理解为以下代码，很有意思的代码。objc_retainAutoreleasedReturnValue是持有(retain)了一个在autoreleasepool中的对象,而这个对象就是array方法的返回值。</p>
+
+      <div class="highlighter-rouge"><pre class="highlight"><code>id obj = objc_msgSend(NSMutableArray, @selector(array));
+objc_retainAutoreleasedReturnValue(obj);
+objc_release(obj); // 离开作用域后自动释放
+</code></pre>
+      </div>
+
+      <p>与<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>成对出现的是这个方法<code class="highlighter-rouge">objc_autoreleasedReturnValue</code>方法，对于NSMutableArray类的array方法可能是这样实现的</p>
+      <div class="highlighter-rouge"><pre class="highlight"><code>+ (id)array
+{
+  return [[NSMutableArray alloc] init];
+}
+</code></pre>
+      </div>
+
+      <p>它可以理解为如下代码</p>
+
+      <div class="highlighter-rouge"><pre class="highlight"><code>+ (id)array
+{ 
+     id obj = objc_msgSend(NSMutableArray, @selector(alloc));
+     objc_msgSend(obj, @selector(init));
+     return objc_autoreleasedReturnValue(obj);
+}
+</code></pre>
+      </div>
+
+      <p>&lt;font color=green&gt;对于外界调用这个方法赋值的变量来说，只是在使用一个autoreleasepool中的对象。在结合<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>使用时，其实生成的对象并没有进入autoreleasepool，而是直接传递给了使用<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>方法赋值的变量。&lt;/font&gt;</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>__weak</p>
+
+    <blockquote>
+      <p>1、被__weak修饰的&lt;font color=green&gt;<strong><em>变量的地址</em></strong>&lt;/font&gt;会被放入到weak表中，这个表是个k-v形式的，key是对象的地址，value是所有引用了这个对象的变量的地址。</p>
+
+      <p>2、一个对象被释放的过程是个复杂的过程，</p>
+
+      <p>```
+objc_release -&gt; dealloc(如果引用计数为0) -&gt; _objc_rootDealloc 
+-&gt; object_dispose -&gt; objc_destructInstance 
+-&gt; objc_clear_deallocating
+{
+  1、用对象地址找到weak表中的value
+  2、所有变量(weak表中记录了地址)赋值nil
+  3、从weak表删除记录
+  4、从引用计数表删除废弃对象的地址为键值的记录
+}</p>
+    </blockquote>
+
+    <blockquote>
+      <p>```
+从以上的过程可以看出当对象被销毁后所有引用它的__weak变量都会被赋值为nil，这个过程是比较消耗CPU的，少用。</p>
+
+      <p>3、&lt;font color=green&gt;<strong>使用被__weak修饰的变量就是使用注册到autoreleasepool中的对象</strong>&lt;/font&gt;，从以下代码来进行理解这句话，</p>
+    </blockquote>
+
+    <blockquote>
+      <div class="highlighter-rouge"><pre class="highlight"><code> 	  id __weak obj1 = obj;
+    NSLog(@"%@", obj1);
+</code></pre>
+      </div>
+      <p>这句话会大致被编译器翻译成这样</p>
+    </blockquote>
+
+    <blockquote>
+      <div class="highlighter-rouge"><pre class="highlight"><code>  id obj；
+  objc_initWeak(&amp;obj1, obj);
+  id tmp = objc_loadWeakRetaind(&amp;obj1);
+  objc_autorelease(tmp);
+  NSLog(@"%@", tmp);
+  objc_destroyWeak(&amp;obj1);
+</code></pre>
+      </div>
+    </blockquote>
+
+    <blockquote>
+      <p>可以看到为了能够NSLog执行时obj1引用的对象不被销毁，需要将它赋值给一个strong(默认)修饰的临时变量，而这个临时变量需要放到autoreleasepool中，因此存在一个问题，当你多次在一个作用域中多次使用weak修饰的变量，会导致很多临时变量产生而且会放到autoreleasepool中，作用域结束后autoreleasepool有很多工作要做。所以少用weak，一般就是避免循环引用。</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>__autoreleasing，核心就是把修饰的变量放入到autoreleasepool中，没啥多说的。</p>
+  </li>
+  <li>注意事项：
+    <ol>
+      <li>不能使用retain、release、retainCount、autorelease这样方法</li>
+      <li>不能使用NSAllocateObject和NSDeallocateObject方法，实际上我根本没用过。</li>
+      <li>需要在函数命名时遵守规则，比如alloc\new\copy\mutableCopy必须给与调用者对象持有权限。</li>
+      <li>不能使用NSAutoreleasePool，可以用@autoreleasepool替换。</li>
+      <li>dealloc方法不能显示调用，很明显的例子就是在MRC中写dealloc方法时一定要调用super的dealloc方法，但是在ARC中不行了，不过notificationCenter的删除等处理还是要写在dealloc方法中的，会自动调用。</li>
+    </ol>
+  </li>
+</ul>
+
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/09/16/03UI/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-03UI">
+                        Previous<br>
+                        <span>iOS学习笔记-03UI</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-05线程">
+                        Next<br>
+                        <span>iOS学习笔记-05线程</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="9">
+                                    iOS学习笔记
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/klkucan">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 笛音夏扇 2016
+                    <!-- <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe> -->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

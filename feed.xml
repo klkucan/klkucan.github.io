@@ -1,0 +1,1803 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>笛音夏扇</title>
+    <description>多读书，多看报，少吃零食多睡觉。</description>
+    <link>https://caihua.tech/</link>
+    <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Mon, 03 Oct 2016 03:09:14 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Oct 2016 03:09:14 +0800</lastBuildDate>
+    <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>解决JSONKit在macOS Sierra上crash的问题</title>
+        <description>&lt;p&gt;按照如下方法修改代码即可
+https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309ccb982a9f1f21b63&lt;/p&gt;
+
+&lt;p&gt;懒得改的可以直接clone我修改过的
+https://github.com/klkucan/JSONKit&lt;/p&gt;
+</description>
+        <pubDate>Thu, 22 Sep 2016 18:29:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-08杂</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;other&quot;&gt;8.杂&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;###表达式
+表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/08%E6%9D%82/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/08%E6%9D%82/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-07必要知识</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;other&quot;&gt;7.必要知识&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;###7.1 APNS&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目前在8.0以后的推送需要以下几个步骤：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;1.使用registerUserNotificationSettings: &amp;amp; registerForRemoteNotifications方法&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;```
+if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) {
+     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil];
+     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings]; 
+     [[UIApplication sharedApplication] registerForRemoteNotifications];
+}
+ 
+```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;关于registerForRemoteNotifications方法有以下说明，它会需要实现两个delegate方法，并且方法能够被执行的条件是通过registerUserNotificationSettings:方法成功注册用户的notification，或者enabled for Background App Refresh。&lt;/p&gt;
+
+&lt;p&gt;// Calling this will result in either application:didRegisterForRemoteNotificationsWithDeviceToken: or application:didFailToRegisterForRemoteNotificationsWithError: to be called on the application delegate. Note: these callbacks will be made only if the application has successfully registered for user notifications with registerUserNotificationSettings:, or if it is enabled for Background App Refresh&lt;/p&gt;
+
+&lt;p&gt;2.实现delegate方法：每个APP都不同，就不写了。&lt;/p&gt;
+
+&lt;p&gt;###7.2 block tips&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;多使用typedef来定义block，因为简洁、可复用、对于结构相同的block可以通过命名来区分。&lt;/li&gt;
+  &lt;li&gt;在定义API时多用handle block来降低代码分散程度。&lt;/li&gt;
+  &lt;li&gt;注意在使用block时循环引用对象&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	
+	&lt;span class=&quot;cp&quot;&gt;#import &quot;BlockHandle.h&quot;
+&lt;/span&gt;	&lt;span class=&quot;cp&quot;&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;	
+	&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlockClass&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NSObject&lt;/span&gt;
+	
+	&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;localData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	
+	&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BlockHandle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;download&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	
+	&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+	
+	&lt;span class=&quot;cp&quot;&gt;#import &quot;BlockClass.h&quot;
+&lt;/span&gt;	
+	&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlockClass&lt;/span&gt;
+	
+	&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;download&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	    &lt;span class=&quot;c1&quot;&gt;//    BlockHandle* bh
+&lt;/span&gt;	    &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bh&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BlockHandle&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;alloc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initWithUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+	    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bh&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;startDownloadwithcompletionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	        &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	        &lt;span class=&quot;c1&quot;&gt;// 解除引用，打破保留环
+&lt;/span&gt;	        &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bh&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	    &lt;span class=&quot;p&quot;&gt;}];&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	
+	&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dealloc&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	    &lt;span class=&quot;n&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&quot;BlockClass dealloc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	
+	&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+	
+	&lt;span class=&quot;err&quot;&gt;```&lt;/span&gt;
+	
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;completionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlockHandle&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;NSObject&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strong&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;completionHandleBlock&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;initWithUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;startDownloadwithcompletionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;completionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#import &quot;BlockHandle.h&quot;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BlockHandle&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;initWithUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;url&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;super&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;startDownloadwithcompletionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;completionHandleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;block&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;dispatch_async&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dispatch_get_global_queue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DISPATCH_QUEUE_PRIORITY_DEFAULT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSThread&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sleepForTimeInterval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dealloc&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&quot;BlockHandle dealloc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+
+&lt;span class=&quot;err&quot;&gt;```&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/07%E5%BF%85%E8%A6%81%E7%9F%A5%E8%AF%86/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/07%E5%BF%85%E8%A6%81%E7%9F%A5%E8%AF%86/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-06数据处理</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;data&quot;&gt;7.数据处理&lt;/span&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;plsit&quot;&gt;7.1 plsit&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;创建plist文件及添加数值&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;images/create_plist.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];
+    if (!isEmpty(filePath)) {
+        NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];
+        NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);
+
+        NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];
+        [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) {
+            NSLog(@&quot;%@&quot;, obj);
+        }];
+    }
+    
+    NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];
+    NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];
+    NSLog(@&quot;%@&quot;, arr2);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;修改数据，注意工程中的arr_plist文件内容没变，但是实际上安装包里面的文件数据是变了的，可以通过open命令打开filePath2路径下的文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (void)writePlistData
+{
+    NSString* filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];
+    NSMutableArray* arr2 = [NSMutableArray arrayWithContentsOfFile:filePath2];
+    NSLog(@&quot;1 : %@&quot;, arr2);
+    [arr2 addObject:@&quot;new obj&quot;];
+    [arr2 writeToFile:filePath2 atomically:YES];
+    NSMutableArray* arr3 = [NSMutableArray arrayWithContentsOfFile:filePath2];
+    NSLog(@&quot;2 : %@&quot;, arr3);
+    [arr3 enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) {
+        NSLog(@&quot;%@&quot;, obj);
+    }];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;###7.2 xml&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;###7.2 JSON&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;创建json文件&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;images/create_json.gif&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;数据读写&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSError* error;
+    NSString* path = [[NSBundle mainBundle] pathForResource:@&quot;data&quot; ofType:@&quot;json&quot;];
+
+    // 1.iOS自己的API解析
+    NSData* data = [NSData dataWithContentsOfFile:path];
+    NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&amp;amp;error];
+    NSLog(@&quot;%@&quot;, jsonDict);
+
+    NSLog(@&quot;name = %@&quot;, [jsonDict objectForKey:@&quot;name&quot;]);
+
+    // 2.JSONKit解析
+    NSString* jsonStr = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&amp;amp;error];
+    NSLog(@&quot;%@&quot;, jsonStr);
+    NSDictionary* jsonDict2 = [jsonStr objectFromJSONString];
+    NSLog(@&quot;%@&quot;, jsonDict2);
+    
+    //3.反向生成JSON
+    NSDictionary* dict = @{ @&quot;age&quot; : @1,
+        @&quot;xx&quot; : @&quot;2&quot;,
+        @&quot;favor&quot; : @[ @&quot;cai&quot;, @&quot;hua&quot; ] };
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    NSLog(@&quot;%@&quot;, jsonStr);
+
+    NSString* jsonStr2 = [dict JSONString];
+    NSLog(@&quot;%@&quot;, jsonStr2);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;注意：目前的JSONKit是MRC的，需要在编译选项里面加入&lt;code class=&quot;highlighter-rouge&quot;&gt;-fno-objc-arc&lt;/code&gt;,并且修正两个简单的bug。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-05线程</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;thread&quot;&gt;5.线程&lt;/span&gt;
+####&lt;span id=&quot;gcd&quot;&gt;5.1 GCD&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(queue, block);&lt;/code&gt;参数中的queue可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt;或者系统提供的标准dispatch queue。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    // 生成一个serial dispatch queue
+    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);
+    // 生成一个concurrent dispatch queue
+    dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);
+
+    // 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量
+    dispatch_release(serialQueue);
+    dispatch_release(concurrentQueue);
+
+    // 使用系统已经提供的方法来create queue
+    dispatch_queue_t serialQueue2 = dispatch_get_main_queue();
+    dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+    // 因此真正在代码中经常是这样写的
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@&quot;execute in main thread&quot;);
+    });
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@&quot;execute in a concurrent thread&quot;);
+    });
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;GCD中线程分为Serial Dispatch Queue和Concurrent Dispatch Queue，分别为顺序执行和并发执行。在使用dispatch_get_main_queue时获得的是主线程queue，因此它一定是顺序执行的。使用dispatch_get_global_queue获得的queue所能并行的线程数量由系统来确定，并且可以甚至优先级，然后由于XNU内核用于Global Dispatch Queue的线程不保证实时性，因此执行优先级只是大致的判断（说白了就是并不是严格执行的）。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);&lt;/code&gt;可以用来改变queue的优先级先度&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 变更queue的priority
+dispatch_set_target_queue(concurrentQueue, serialQueue);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;延迟将block添加到queue中，dispatch_after&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@&quot;dispatch_after&quot;);
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;lt;font size=3 color=red&amp;gt;&lt;strong&gt;注意这个方法可以用来做指定一个时间后执行某段代码但是这个时间参数并不准确,因为这个只是在一段时间后将block加入到queue中，但是并不意味着马上执行。&lt;/strong&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;PS:关于用到的时间的宏的说明&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;NSEC：纳秒。&lt;/p&gt;
+
+  &lt;p&gt;USEC：微妙。&lt;/p&gt;
+
+  &lt;p&gt;SEC：秒&lt;/p&gt;
+
+  &lt;p&gt;PER：每&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;所以：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;NSEC_PER_SEC，每秒有多少纳秒。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;USEC_PER_SEC，每秒有多少毫秒。（注意是指在纳秒的基础上）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;NSEC_PER_USEC，每毫秒有多少纳秒。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;所以，延时1秒可以写成如下几种：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, 1000 * USEC_PER_SEC);&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, USEC_PER_SEC * NSEC_PER_USEC);&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;最后一个“USEC_PER_SEC * NSEC_PER_USEC”，翻译过来就是“每秒的毫秒数乘以每毫秒的纳秒数”，也就是“每秒的纳秒数”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group&lt;/code&gt;，当在并发完成一些处理后，可能需要一个节点来完成某个操作，这个操作必须等到之前的处理全部完成，那么就需要用到dispatch_group来实现。配合&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group&lt;/code&gt;使用的有两个，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_notify &lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt;,前者是当处理全部完成后执行，后者是等待一段时间后，用返回值判断是否所有的任务都完成了。当等待时间为&lt;code class=&quot;highlighter-rouge&quot;&gt;DISPATCH_TIME_FOREVER&lt;/code&gt;时返回值一定会是0。另外，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt;会阻塞调用的线程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;       dispatch_queue_t groupQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+
+    // 第一个处理
+    dispatch_group_async(group, groupQueue, ^{
+        NSLog(@&quot;first&quot;);
+    });
+
+    // 第二个处理
+    dispatch_group_async(group, groupQueue, ^{
+        NSLog(@&quot;secend&quot;);
+    });
+
+    // 完成后最终的处理
+    dispatch_group_notify(group, groupQueue, ^{
+        NSLog(@&quot;done&quot;);
+    });
+
+    long result = dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    if (result == 0) {
+        NSLog(@&quot;done&quot;);
+    }
+    else {
+        NSLog(@&quot;not done&quot;);
+    }
+    // 需要release
+    dispatch_release(group);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;,在代码中会等待之前加入某个queue的block全部执行完，然后使得concurrent queue变为一个serial queue，只能执行用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;添加的block，等完成后，queue变回并发。典型应用场景DB read的操作使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async&lt;/code&gt;，当需要write DB时使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;，可以保证数据的一致性，也相当于给写操作加了锁（好吧这样说不够严谨）。&lt;/p&gt;
+
+&lt;p&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync&lt;/code&gt;，同步的将block放到某个queue中，执行这个函数的线程会阻塞等待block执行完成。很容易导致死锁，目前看最好别用。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;关于dispatch_sync导致死锁的问题：
+&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_main_queue, ...)&lt;/code&gt;这样写一定会死锁，dispatch_(a)sync这两个函数本质上是将block放到一个queue中，只不过一个会阻塞当前调用函数的线程，一个不会。&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(dispatch_get_main_queue, ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程不会等待block执行，虽然这个block是在main thread中执行的，最有可能的是在下一个loop中才会执行block。&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(dispatch_get_global_queue(...), ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程不会等待block执行，而是由系统分配另一个线程完成block，这个方式就是典型的多线程。&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_main_queue, ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程会等待block执行，但是这个block又是在main thread执行的，导致死锁。&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_global_queue(...), ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程会等待block执行，由系统分配另一个线程完成block，这个方式可用，但是最好不用main thread，而是自己创建一个serial queue。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;最后看一组代码的结果&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  // 使用系统已经提供的方法来create queue
+    dispatch_queue_t serialQueue2 = dispatch_get_main_queue();
+    dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+    // 因此真正在代码中经常是这样写的
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@&quot;execute in main thread&quot;);
+    });
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@&quot;execute in a concurrent thread&quot;);
+    });
+
+    // 变更queue的priority
+    //    dispatch_set_target_queue(concurrentQueue, serialQueue);
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@&quot;dispatch_after&quot;);
+    });
+
+    dispatch_queue_t groupQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+
+    // 第一个处理
+    dispatch_group_async(group, groupQueue, ^{
+        NSLog(@&quot;first&quot;);
+    });
+
+    // 第二个处理
+    dispatch_group_async(group, groupQueue, ^{
+        NSLog(@&quot;secend&quot;);
+    });
+
+    // 完成后最终的处理
+    dispatch_group_notify(group, groupQueue, ^{
+        NSLog(@&quot;done&quot;);
+    });
+
+    long result = dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    if (result == 0) {
+        NSLog(@&quot;result done&quot;);
+    }
+    else {
+        NSLog(@&quot;result not done&quot;);
+    }
+    // 需要release
+    dispatch_release(group);
+
+    dispatch_async(concurrentQueue2, ^{
+        NSLog(@&quot;read1&quot;);
+    });
+    dispatch_async(concurrentQueue2, ^{
+        NSLog(@&quot;read2&quot;);
+    });
+
+    dispatch_barrier_async(concurrentQueue2, ^{
+        NSLog(@&quot;write&quot;);
+    });
+
+    dispatch_async(concurrentQueue2, ^{
+        NSLog(@&quot;read3&quot;);
+    });
+    dispatch_async(concurrentQueue2, ^{
+        NSLog(@&quot;read4&quot;);
+    });
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-07-09 14:46:28.500 CRHelper[3027:231293] execute in a concurrent thread
+2016-07-09 14:46:28.500 CRHelper[3027:231294] first
+2016-07-09 14:46:28.500 CRHelper[3027:231297] secend
+2016-07-09 14:46:28.502 CRHelper[3027:231297] done
+2016-07-09 14:46:28.502 CRHelper[3027:231205] result done
+2016-07-09 14:46:28.507 CRHelper[3027:231297] read1
+2016-07-09 14:46:28.507 CRHelper[3027:231293] read2
+2016-07-09 14:46:28.507 CRHelper[3027:231390] write
+2016-07-09 14:46:28.507 CRHelper[3027:231294] read3
+2016-07-09 14:46:28.507 CRHelper[3027:231297] read4
+2016-07-09 14:46:28.546 CRHelper[3027:231205] execute in main thread
+2016-07-09 14:46:31.782 CRHelper[3027:231294] dispatch_after
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;“execute in main thread”这句话在代码顺序中是第一个但是却在倒数第二个输出，因为是在main thread执行的，可以很明确的看出来这个代码是在下一个loop中执行的，还有就是dispatch_after也并不是严格的按照3秒后执行的.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_apply&lt;/code&gt;的应用场合主要是循环在一个queue中调用某个block，可以用于处理集合。这个函数会想wait一样阻塞线程，因此在非主线程中用比较好。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSArray* arr = [NSArray arrayWithObjects:@1, @2, nil];
+    for (NSInteger i = 0; i &amp;lt; [arr count]; i++) {
+        NSLog(@&quot;%@&quot;, [arr objectAtIndex:i]);
+    }
+    dispatch_async(concurrentQueue2, ^{
+        dispatch_apply([arr count], concurrentQueue2, ^(size_t i) {
+            NSLog(@&quot;%@&quot;, [arr objectAtIndex:i]);
+        });
+    });
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;拾遗：&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_suspend&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_resume&lt;/code&gt;等。基本没用过，懒得写了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;####&lt;span id=&quot;nsthread&quot;&gt;5.2 NSThread和performSelector&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;看一组代码和结果。可以看出performSelector方法是在main线程执行，而且performSelectorOnMainThread这个方法的输出在4之后，应该是这个方法会在下一个main thread的runloop中执行。1和4在测试中先后顺序不定，也比较好理解。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)doSome:(NSString*)arg
+{
+    NSLog(@&quot;%@ -&amp;gt; %@&quot;, [NSThread currentThread], arg);
+}
+
+- (void)startThread
+{
+    NSThread* th = [[NSThread alloc] initWithTarget:self selector:@selector(doSome:) object:@&quot;1&quot;];
+    BOOL state = [th isMainThread];
+    state = [th isCancelled];
+    state = [th isFinished];
+    state = [th isExecuting];
+
+    [th start];
+
+    [self performSelectorOnMainThread:@selector(doSome:) withObject:@&quot;2&quot; waitUntilDone:NO];
+    [self performSelector:@selector(doSome:) withObject:@&quot;3&quot; afterDelay:3];
+
+    [self performSelector:@selector(doSome:) withObject:@&quot;4&quot;];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-08-28 22:40:45.055 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 4
+2016-08-28 22:40:45.055 ARCTest[3619:236310] &amp;lt;NSThread: 0x7fc0c3723f30&amp;gt;{number = 2, name = (null)} -&amp;gt; 1
+2016-08-28 22:40:45.077 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 2
+2016-08-28 22:40:48.056 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;####&lt;span id=&quot;operation&quot;&gt;5.3 NSOperation&lt;/span&gt;
+####&lt;span id=&quot;lock&quot;&gt;5.4 锁&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用：NSLock, @synchronized(self),或者使用&lt;code class=&quot;highlighter-rouge&quot;&gt;DISPATCH_QUEUE_SERIAL&lt;/code&gt;这样的形式来实现锁。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;比较：&lt;/p&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;NSLock控制麻烦，而且要考虑死锁。&lt;/p&gt;
+
+      &lt;p&gt;@synchronized(self)如果很多方法都用self做锁，那么会导致一个长时间执行的方法阻塞其它方法，所以如果用最好不要都使用一个对象来作为锁对象。&lt;/p&gt;
+
+      &lt;p&gt;GCD的锁不需要关注实现，而且是深层次实现的，比较高效，并且方法众多，可以时间多种锁的需要。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;####&lt;span id=&quot;choose&quot;&gt;5.5 多线程编程的选择&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NSThread功能完善，比较基础，能够完成简单的任务。当需要同步执行或者有一定的依赖要求时编程较为复杂。&lt;/li&gt;
+  &lt;li&gt;performSelector缺点很多，首先执行SEL这个东西，需要判定方法是否存在；第二、在ARC下使用如果方法创建并返回一些对象，此时如果不进行一定的处理会导致内存泄露，因为ARC下默认是不做对象的autorelease的。第三、参数传递个数有限，有时需要自己定义个对象传递多个参数。&lt;/li&gt;
+  &lt;li&gt;NSOperation，功能强大尤其是对于依赖性的处理使用起来很方便。&lt;/li&gt;
+  &lt;li&gt;GCD，其实使用GCD基本可以完成任何任务，包括有依赖性的任务，和NSOperation搭配起来灵活使用吧。&lt;/li&gt;
+  &lt;li&gt;GCD和NSOperation的对比：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1）GCD是纯C语言的API,而操作队列则是Object-C的对象。&lt;/p&gt;
+
+  &lt;p&gt;2）在GCD中，任务用块（block）来表示，而块是个轻量级的数据结构；相反操作队列中的『操作』NSOperation则是个更加重量级的Object-C对象。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;3）具体该使用GCD还是使用NSOperation需要看具体的情况&lt;/p&gt;
+
+  &lt;p&gt;4）需要注意，如果直接使用NSOperation的start方法是直接在调用线程执行的，这意味着可能是在UI线程执行。&lt;/p&gt;
+
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NSOperation和NSOperationQueue相对GCD的好处有：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1）NSOperationQueue可以方便的调用cancel方法来取消某个操作，而GCD中的任务是无法被取消的（安排好任务之后就不管了）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2）NSOperation可以方便的指定操作间的依赖关系。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;3）NSOperation可以通过KVO提供对NSOperation对象的精细控制（如监听当前操作是否被取消或是否已经完成等）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;4）NSOperation可以方便的指定操作优先级。操作优先级表示此操作与队列中其它操作之间的优先关系，优先级高的操作先执行，优先级低的后执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;5）通过自定义NSOperation的子类可以实现操作重用，&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;####&lt;span id=&quot;concurrent&quot;&gt;5.6 并发&lt;/span&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/05%E7%BA%BF%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/05%E7%BA%BF%E7%A8%8B/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-04内存管理</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;memorymanage&quot;&gt;4.内存管理&lt;/span&gt;
+####&lt;span id=&quot;manual&quot;&gt;4.1 手动管理&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;自己生成的对象自己持有，可以调用&lt;code class=&quot;highlighter-rouge&quot;&gt;release&lt;/code&gt;方法减少retain数量。&lt;/li&gt;
+  &lt;li&gt;非自己生成的对象也可以持有，通过调用&lt;code class=&quot;highlighter-rouge&quot;&gt;retain&lt;/code&gt;方法可以持有对象，引用数+1。&lt;/li&gt;
+  &lt;li&gt;不再需要自己持有的对象要及时释放，注意类中的property要在&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)dealloc
+&lt;/code&gt;方法中赋值nil，这样写相当于release了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dealloc
+{
+    self.arr = nil;
+    [super dealloc];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;无法释放非自己持有的对象，注意当一个变量持有一次对象后，只能释放一次。也就是说retainCount必须+1和-1对称。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;alloc的实现。其实就是调用calloc方法申请内存和C语言的差不多，只不过对象的头部位有个地址用于存储引用数。而retain、release就是对引用数加减，dealloc则是free掉对象。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;####&lt;span id=&quot;autorelease&quot;&gt;4.2 Autorelease &lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+// 当调用autorelease方法时，其实是将对象obj放到了pool的一个对象列表中
+NSObject* obj = [[[NSObject alloc] init] autorelease];
+
+[pool drain]; // obj会被调用release方法
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;注意到main.m中有这样的代码，在最外层就有个autoreleasepool了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;####&lt;span id=&quot;arc&quot;&gt;4.3 ARC&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;我的理解
+    &lt;blockquote&gt;
+      &lt;p&gt;所谓ARC是通过编译器和运行时的协作来实现自动管理引用计数，编译器在ARC有效的代码中加入额外的代码来加减引用计数。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;标识
+    &lt;ol&gt;
+      &lt;li&gt;__strong：默认就是&lt;/li&gt;
+      &lt;li&gt;__weak：需显式使用&lt;/li&gt;
+      &lt;li&gt;__autoreleasing：这个标识一些情况下是不需要显式使用，一些情况下是不需要的，最为致命。&lt;/li&gt;
+      &lt;li&gt;__unsafe_unretained：个人感觉已经被弃用了，在没有weak的时代使用的东西。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;__strong
+    &lt;blockquote&gt;
+      &lt;p&gt;这个修饰符具有持有对象的功能，与retain类似。它的使用分为如下几种情况：
+1、&lt;code class=&quot;highlighter-rouge&quot;&gt;id __strong obj = [[NSObject alloc] init];&lt;/code&gt; 这行代码可以理解为如下代码，可见所谓自动管理，就是在编译出来的代码中对强引用变量调用release方法。&lt;/p&gt;
+
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;id obj = objc_msgSend(NSObject, @selector(alloc));
+objc_msgSend(obj, @selector(init));
+objc_release(obj);
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+
+      &lt;p&gt;2、&lt;code class=&quot;highlighter-rouge&quot;&gt;id __strong obj = [NSMutableArray array];&lt;/code&gt; 这行代码可以理解为以下代码，很有意思的代码。objc_retainAutoreleasedReturnValue是持有(retain)了一个在autoreleasepool中的对象,而这个对象就是array方法的返回值。&lt;/p&gt;
+
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;id obj = objc_msgSend(NSMutableArray, @selector(array));
+objc_retainAutoreleasedReturnValue(obj);
+objc_release(obj); // 离开作用域后自动释放
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+
+      &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;成对出现的是这个方法&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_autoreleasedReturnValue&lt;/code&gt;方法，对于NSMutableArray类的array方法可能是这样实现的&lt;/p&gt;
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (id)array
+{
+  return [[NSMutableArray alloc] init];
+}
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+
+      &lt;p&gt;它可以理解为如下代码&lt;/p&gt;
+
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (id)array
+{ 
+     id obj = objc_msgSend(NSMutableArray, @selector(alloc));
+     objc_msgSend(obj, @selector(init));
+     return objc_autoreleasedReturnValue(obj);
+}
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+
+      &lt;p&gt;&amp;lt;font color=green&amp;gt;对于外界调用这个方法赋值的变量来说，只是在使用一个autoreleasepool中的对象。在结合&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;使用时，其实生成的对象并没有进入autoreleasepool，而是直接传递给了使用&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;方法赋值的变量。&amp;lt;/font&amp;gt;&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;__weak&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;1、被__weak修饰的&amp;lt;font color=green&amp;gt;&lt;strong&gt;&lt;em&gt;变量的地址&lt;/em&gt;&lt;/strong&gt;&amp;lt;/font&amp;gt;会被放入到weak表中，这个表是个k-v形式的，key是对象的地址，value是所有引用了这个对象的变量的地址。&lt;/p&gt;
+
+      &lt;p&gt;2、一个对象被释放的过程是个复杂的过程，&lt;/p&gt;
+
+      &lt;p&gt;```
+objc_release -&amp;gt; dealloc(如果引用计数为0) -&amp;gt; _objc_rootDealloc 
+-&amp;gt; object_dispose -&amp;gt; objc_destructInstance 
+-&amp;gt; objc_clear_deallocating
+{
+  1、用对象地址找到weak表中的value
+  2、所有变量(weak表中记录了地址)赋值nil
+  3、从weak表删除记录
+  4、从引用计数表删除废弃对象的地址为键值的记录
+}&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;```
+从以上的过程可以看出当对象被销毁后所有引用它的__weak变量都会被赋值为nil，这个过程是比较消耗CPU的，少用。&lt;/p&gt;
+
+      &lt;p&gt;3、&amp;lt;font color=green&amp;gt;&lt;strong&gt;使用被__weak修饰的变量就是使用注册到autoreleasepool中的对象&lt;/strong&gt;&amp;lt;/font&amp;gt;，从以下代码来进行理解这句话，&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 	  id __weak obj1 = obj;
+    NSLog(@&quot;%@&quot;, obj1);
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+      &lt;p&gt;这句话会大致被编译器翻译成这样&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  id obj；
+  objc_initWeak(&amp;amp;obj1, obj);
+  id tmp = objc_loadWeakRetaind(&amp;amp;obj1);
+  objc_autorelease(tmp);
+  NSLog(@&quot;%@&quot;, tmp);
+  objc_destroyWeak(&amp;amp;obj1);
+&lt;/code&gt;&lt;/pre&gt;
+      &lt;/div&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;可以看到为了能够NSLog执行时obj1引用的对象不被销毁，需要将它赋值给一个strong(默认)修饰的临时变量，而这个临时变量需要放到autoreleasepool中，因此存在一个问题，当你多次在一个作用域中多次使用weak修饰的变量，会导致很多临时变量产生而且会放到autoreleasepool中，作用域结束后autoreleasepool有很多工作要做。所以少用weak，一般就是避免循环引用。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;__autoreleasing，核心就是把修饰的变量放入到autoreleasepool中，没啥多说的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;注意事项：
+    &lt;ol&gt;
+      &lt;li&gt;不能使用retain、release、retainCount、autorelease这样方法&lt;/li&gt;
+      &lt;li&gt;不能使用NSAllocateObject和NSDeallocateObject方法，实际上我根本没用过。&lt;/li&gt;
+      &lt;li&gt;需要在函数命名时遵守规则，比如alloc\new\copy\mutableCopy必须给与调用者对象持有权限。&lt;/li&gt;
+      &lt;li&gt;不能使用NSAutoreleasePool，可以用@autoreleasepool替换。&lt;/li&gt;
+      &lt;li&gt;dealloc方法不能显示调用，很明显的例子就是在MRC中写dealloc方法时一定要调用super的dealloc方法，但是在ARC中不行了，不过notificationCenter的删除等处理还是要写在dealloc方法中的，会自动调用。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-03UI</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;ui&quot;&gt;3.UI&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;####&lt;span id=&quot;manualui&quot;&gt;3.1 手动编写UI&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。&lt;/li&gt;
+  &lt;li&gt;手动编写的核心在于创建UI对象，设置frame及各种属性。&lt;/li&gt;
+  &lt;li&gt;当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;####&lt;span id=&quot;autolayout&quot;&gt;3.2 autolayout&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目前在Xcode中可以很好的时候用约束(constraints)来实现UI的自适应。&lt;/li&gt;
+  &lt;li&gt;constraints的使用心得：
+    &lt;ol&gt;
+      &lt;li&gt;按住ctrl+左键来创建约束&lt;/li&gt;
+      &lt;li&gt;可以在Constraints下找到具体的约束，进而进行修改。
+ &lt;img src=&quot;http://i.imgur.com/Zg0x473.png&quot; alt=&quot;&quot; /&gt; &lt;img src=&quot;http://i.imgur.com/Ezr8Ny7.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;其基本的使用可以对比NGUI，都是距离superview上下左右的距离，与其它View的间距、size等约束。&lt;/li&gt;
+  &lt;li&gt;需要注意，当存在多层关系时，需要逐层设置，否则效果可能有问题。&lt;/li&gt;
+  &lt;li&gt;对于constraint不但可以通过视图来设置，还可以编写代码来设置或修改。只要关联到代码(类似其它UI关联带代码的方式)就可以控制，一般只修改constraint属性。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;活用&lt;/td&gt;
+          &lt;td&gt;-△-&lt;/td&gt;
+          &lt;td&gt;和&lt;/td&gt;
+          &lt;td&gt;-口-&lt;/td&gt;
+          &lt;td&gt;两个图标按钮。&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;####&lt;span id=&quot;touch&quot;&gt;3.3 触摸和手势识别器&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;触摸的信息包含触摸点的位置、处于的阶段，其包含在UITouch对象中，手势是在触摸的基础上SDK封装的功能，它将一些复杂的连续触摸抽象成一个个手势动作。UITouch对象保存了含有手势识别器的数组。这个 数组里的每个元素都是手势识别器，而每个识别器都用来接收相关的触摸对象。如果创建某个 视图时没有指定手势识别器，那么在系统传给响应者方法的。而UIEvent对象包含了多个UITouch对象，多少由触摸点决定。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;触摸的五个阶段：&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseBegan&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseMoved&lt;/code&gt;、     &lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseStationary&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseEnded&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseCancelled&lt;/code&gt;，除了stationary其它都可以在代码中重写方法（其实就是其它四个是可以callUIResponder中预定义好的回调方法）。以下代码演示了拖地效果的touch实现&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event
+{
+	// Calculate and store offset, and pop view into front if needed
+	startLocation = [[touches anyObject] locationInView:self];
+	[self.superview bringSubviewToFront:self];
+}
+
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent *)event
+{
+	// Calculate offset
+	CGPoint pt = [[touches anyObject] locationInView:self];
+	float dx = pt.x - startLocation.x;
+	float dy = pt.y - startLocation.y;
+	CGPoint newcenter = CGPointMake(self.center.x + dx, self.center.y + dy);
+	
+	// Set new location
+	self.center = newcenter;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;触摸分为单点和多点触摸，控制代码&lt;code class=&quot;highlighter-rouge&quot;&gt;self.multipleTouchEnabled = YES;&lt;/code&gt;控制。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;手势识别器主要有点击(tap)、滑动(swipe)、手指聚拢(pinch)、旋转(rotate)，拖动(pan)、长按(long press)。其基本用法都一样，类似：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+        self.gestureRecognizers = @[panRecognizer];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;一个控件可以同时使用多个手势识别器。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;关于同时识别手势的问题，一般是一个手势由一个控件识别但是通过下面的代码可以让一个手势被多个对象识别。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;注意事项：
+    &lt;ol&gt;
+      &lt;li&gt;一些图片带有透明区域，因此有可能点击了透明区域也被识别为tap。&lt;/li&gt;
+      &lt;li&gt;拖动的处理可以通过touch相关的函数或者手势，这就引出了放射变换的一些问题。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;AffineTransform，仿射变换。其中transform定义为&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; ```
+&amp;gt; struct CGAffineTransform {
+&amp;gt;  CGFloat a, b, c, d;
+&amp;gt;  CGFloat tx, ty;
+&amp;gt;};
+&amp;gt; ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;它包含了位置、旋转、缩放三个信息。类似U3D中的transform的概念。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;变换的本质是矩阵的计算，（(x,0,0),(0,y,0),(tx,ty,1)）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SDK中有很多的方法，基础的方法是CGAffineTransformMake(a,b,c,d,tx,ty)，参数对应矩阵。还有GAffineTransformMakeXXX和GAffineTransformXXX两个系列的方法。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;####&lt;span id=&quot;uicontrol&quot;&gt;3.4 控件 &lt;/span&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/03UI/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/03UI/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-02集合</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;set&quot;&gt;2.集合&lt;/span&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;集合分为可变与不可变。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;泛型，写法&lt;code class=&quot;highlighter-rouge&quot;&gt; NSMutableArray&amp;lt;NSNumber*&amp;gt;* mutablearr = [NSMutableArray array];&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMutableDictionary&amp;lt;NSString*, NSNumber*&amp;gt;* dic = [[NSMutableDictionary alloc] init];&lt;/code&gt;,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。&lt;/p&gt;
+
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  NSMutableDictionary&amp;lt;NSString*, NSNumber*&amp;gt;* dic = [[NSMutableDictionary alloc] init];
+  [dic addEntriesFromDictionary:&amp;lt;#(nonnull NSDictionary&amp;lt;NSString *,NSNumber *&amp;gt; *)#&amp;gt;]
+ &lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;lt;font color=red&amp;gt;目前来看类型只能是Objective-C object或者block。&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;h4 id=&quot;nsarray-httpwwwjianshucompc8caa30afd9d&quot;&gt;NSArray &lt;a href=&quot;http://www.jianshu.com/p/c8caa30afd9d&quot;&gt;原文&lt;/a&gt;&lt;/h4&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;NSArray特点:	一旦创建成功,内容不可改变，只能存放OC对象。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //1)创建一个空数组
+    NSArray *arr1 = [NSArray array];
+
+    //2)创建数组,只有一个元素
+    NSArray *arr2 = [NSArray arrayWithObject:@&quot;1&quot;];
+
+    //3)创建数组,有多个元素
+    // nil 表示数组赋值结束
+    // 常见写法
+    NSArray *arr3 = [NSArray arrayWithObjects:@&quot;one&quot;,@&quot;two&quot;,@1, nil];
+                    NSLog(@&quot;arr3 = %@&quot;,arr3);
+    //4)调用对象方法,创建数组
+    //nil Nil NULL  NSNULL
+    NSArray *arr4 = [[NSArray alloc] initWithObjects:@&quot;three&quot;,[NSNull null],@&quot;four&quot;, nil];
+                    NSLog(@&quot;arr4 = %@&quot;,arr4);
+    //5)用一个数组可以创建另外一个数组，修改一个数组中的数据不影响另一个数组。
+    NSArray *arr5 = [NSArray arrayWithArray:arr3];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;常用方法:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   NSArray* arr3 = [NSArray arrayWithObjects:@&quot;one&quot;, @&quot;two&quot;, @1, @&quot;three&quot;, nil];
+   NSLog(@&quot;arr3 = %@&quot;, arr3);
+
+   //1)获取数组的长度  count获取数组的元素的个数
+   NSLog(@&quot;%ld&quot;, arr3.count);
+
+   //2)根据下标,获取下标对应的对象
+   NSLog(@&quot;%@&quot;, [arr3 objectAtIndex:3]);
+
+   //3)返回元素的下标
+   NSUInteger loc = [arr3 indexOfObject:@&quot;three&quot;];
+   NSLog(@&quot;%ld&quot;, loc);
+
+   //4)数组中是否包含了某个元素
+   if ([arr3 containsObject:@&quot;four&quot;]) {
+
+       NSLog(@&quot;包含此元素&quot;);
+   }
+   else {
+
+       NSLog(@&quot;不包含&quot;);
+   }
+   NSLog(@&quot;arr5 = %@&quot;, arr5);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;简化形式&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //用简化的方式,来定义和访问数组元素
+   //1)用简化的方式,定义数组
+   //格式: @[ 数组元素 ]
+   NSArray* arr = @[ @&quot;1&quot;, @&quot;one&quot;, @&quot;3&quot;, @4, @&quot;ONE&quot; ];
+   NSLog(@&quot;arr = %@&quot;, arr);
+
+   NSString* str = [arr objectAtIndex:2];
+   NSLog(@&quot;%@&quot;, str);
+
+   //2)用简化的方式访问数组元素
+   str = arr[1]; //C语言形式的数组元素访问
+   NSLog(@&quot;%@&quot;, str);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;遍历&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //定义一个数组
+    NSArray* arr = @[ @&quot;one&quot;, @&quot;two&quot;, @&quot;three&quot;, @&quot;four&quot; ];
+
+    //对数组进行遍历
+
+    //1) 普通的方式,通过下标访问
+    for (int i = 0; i &amp;lt; arr.count; i++) {
+        NSLog(@&quot;-&amp;gt; %@&quot;, arr[i]);
+    }
+
+    //2) 快速枚举法 for循环的增强形式
+    for (NSString* str in arr) {
+        NSLog(@&quot;---&amp;gt; %@&quot;, str);
+    }
+
+    //3) 使用block的方式,进行访问
+    //                               数组元素            元素下标     是否停止
+    //stop:YES  会停止, stop:NO 不会停止
+    [arr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL* stop) {
+
+        if (idx == 2) {
+
+            *stop = YES; //停止  // break;
+        }
+        else {
+
+            NSLog(@&quot;idx = %ld,obj = %@&quot;, idx, obj);
+        }
+
+    }];
+    
+    //补充：OC1.0中的方法
+    id obj2;
+    NSEnumerator* enumerator = [arr objectEnumerator];
+    while ((obj2 = [enumerator nextObject]) != nil) {
+        NSLog(@&quot;%@ &quot;, obj2);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;读写文件:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;写入&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   NSArray* array = [NSArray arrayWithObjects:@&quot;one&quot;, @&quot;zbz&quot;, @&quot;cgx&quot;, @&quot;sb&quot;, @&quot;cjk&quot;, @&quot;senni&quot;, nil];
+    //把NSArray 中的内容,写入到文件中
+    //arr.plist 一种特殊的文件格式
+    BOOL isWrite = [array writeToFile:@&quot;/Users/zhaoxiaohu/Desktop/arr.xml&quot; atomically:YES];
+
+    if (isWrite) {
+        NSLog(@&quot;写入成功&quot;);
+    }
+    
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;读取&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //从文件中,读取一个数组信息
+  NSArray *readArr = [NSArray arrayWithContentsOfFile:@&quot;/Users/zhaoxiaohu/Desktop/arr.xml&quot;];
+
+  NSLog(@&quot;readArr = %@&quot;,readArr);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;NSArray与字符串:&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;把数组拼接成为字符串&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; //定义一个数组
+  NSArray *arr = @[@1,@2,@3,@4];
+
+  //1)需求: 把数组中的元素用 &quot;-&quot; 连接起来
+  //  [数组 componentsJoinedByString @&quot;分隔符&quot;];
+  // 1-2-3-4
+  NSString *str = [arr componentsJoinedByString:@&quot;-&quot;];
+  NSLog(@&quot;str = %@&quot;,str);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;把字符串拆分为数组&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  //2) 给一个字符串,分割成一个数组
+  // 400-800-12580   //取得 400    12580    800
+  NSString *str2 = @&quot;400-800-12580&quot;;
+  NSArray *arr2 = [str2 componentsSeparatedByString:@&quot;-&quot;];
+  NSLog(@&quot;%@&quot;,[arr2 firstObject]);
+  NSLog(@&quot;%@&quot;,[arr2 lastObject]);
+ NSLog(@&quot;%@&quot;,arr2[1]);
+ ```
+ 
+- ####NSMutableArray	 
+ 
+ - NSArray子类，内容可变，其余很多操作与NSArray一样。
+  
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;NSMutableArray&amp;lt;NSNumber&lt;em&gt;&amp;gt;&lt;/em&gt; mutablearr = [NSMutableArray array];
+ [mutablearr addObject:[NSNumber numberWithInt:1]];&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; - 虽然有arrayWithCapacity这个方法，但是内容是可以超出设定的值的。应该仅仅是申请内存的需要，毕竟可变长度对于内存操作上比较麻烦。
+ 
+- ####NSDictionary与NSMutableDictionary
+
+ 字典的核心在于key和value。
+   
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;//创建字典
+    //1、使用类方法创建字典
+    //   字典初始化后，内部是无序的
+    NSDictionary* dict1 = [NSDictionary dictionaryWithObjectsAndKeys:@”zhangsan”, @”zs”, @”lisi”, @”ls”, nil];&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//获取字典的长度
+NSLog(@&quot;%ld&quot;, dict1.count);
+//根据key获取 value 只获取zs
+NSString* s = [dict1 objectForKey:@&quot;zs&quot;];
+NSLog(@&quot;%@&quot;, s);
+
+//2、快速创建字典  @{key:value,key1:value1}
+// 在字典中，key值是不能够重复的，重复的时候不会报错
+// 重复的只保留一个（第一次出现的那个）
+NSDictionary* dict2 = @{ @&quot;zs&quot; : @&quot;zhangsan&quot;,
+    @&quot;ls&quot; : @&quot;lisi&quot;,
+    @&quot;zs&quot; : @&quot;fengjie&quot; };
+NSLog(@&quot;%@&quot;, dict2);
+
+//3、遍历
+
+NSLog(@&quot;获取所有keys的遍历&quot;);
+NSArray* keys = [dict2 allKeys];
+for (NSInteger i = 0; i &amp;lt; keys.count; i++) {
+    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)keys[i], [dict2 objectForKey:keys[i]]);
+}
+
+NSLog(@&quot;NSEnumerator遍历&quot;);
+id key;
+NSEnumerator* enumerator = [dict2 keyEnumerator];
+while ((key = [enumerator nextObject]) != nil) {
+    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)key, [dict2 objectForKey:key]);
+}
+
+NSLog(@&quot;快速遍历&quot;);
+for (id key in dict2) {
+    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)key, dict2[key]);
+}
+
+NSLog(@&quot;block遍历&quot;);
+
+[dict2 enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL* _Nonnull stop) {
+    NSLog(@&quot;key = %@  value = %@&quot;, key, obj);
+}];
+
+//4、可变的字典
+NSMutableDictionary* mDic = [NSMutableDictionary dictionaryWithDictionary:dict1];
+
+//4.1 移除数据
+[mDic setValue:nil forKey:@&quot;zs&quot;];
+[mDic removeObjectForKey:@&quot;ls&quot;];
+[mDic removeAllObjects];
+//    [mDic removeObjectForKey:&amp;lt;#(nonnull id)#&amp;gt;];
+
+//4.2 添加数据
+[mDic setObject:@&quot;wei&quot; forKey:@&quot;hua&quot;];
+[mDic setValue:@&quot;xing&quot; forKey:@&quot;zhong&quot;];
+//4.3 改变数据
+[mDic setObject:@&quot;lisi2222&quot; forKey:@&quot;ls&quot;];
+
+NSLog(@&quot;遍历NSMutableDictionary&quot;);
+[mDic enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL* _Nonnull stop) {
+    NSLog(@&quot;key = %@  value = %@&quot;, key, obj);
+}]; ```
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;注意setValue:forKey:这个方法，既可以添加数据也可以移除数据（当value是nil时）。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  /* Send -setObject:forKey: to the receiver, unless the value is nil, in which case send -removeObjectForKey:.
+*/
+- (void)setValue:(nullable ObjectType)value forKey:(NSString *)key;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;####NSSet &amp;amp; NSMutableSet &lt;a href=&quot;http://www.jianshu.com/p/27daa0fa1b78&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	 在Foundation框架中，提供了NSSet类，它是一组单值对象的集合，且NSSet实例中元素是无序，同一个对象只能保存一个。
+	    
+	    一.不可变集合NSSet
+	    
+	    1.NSSet的初始化
+	    
+	    创建一个集合
+	    
+	    NSSet *set1 = [[NSSet alloc] initWithObjects:@&quot;one&quot;, @&quot;two&quot;, nil];
+	    
+	    通过数组的构建集合
+	    
+	    NSArray *array = [NSArrayWithObjects:@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;, nil];
+	    
+	    NSSet *set2 = [[NSSet alloc] initWithArray:array];
+	    
+	    通过已有集合构建集合
+	    
+	    NSSet *set3 = [[NSSet alloc] initWithSet:set2];
+	    
+	    2.NSSet常用方法
+	    
+	    集合中对象的个数
+	    
+	    int count = [set3 count];
+	    
+	    以数组的形式返回集合中所有的对象
+	    
+	    NSArray *allObjects = [set3 allObjects];
+	    
+	    返回集合中的任意一个对象
+	    
+	    id object = [set3 anyObject];
+	    
+	    判断两个集合的元素中有包含的对象，包含返回YES，否则为NO
+	    
+	    BOOL isContain = [set4 containsObject:@&quot;2&quot;];
+	    
+	    判断两个集合的元素是否有相等的对象，存在返回YES，否则为NO
+	    
+	    BOOL isIntersect = [set4 intersectsSet:set2];
+	    
+	    判断两个集合的元素是否完全匹配，匹配返回YES，否则为NO
+	    
+	    BOOL isEqual = [set4 isEqualToSet:set5];
+	    
+	    集合4是否是集合5的子集合，如果是返回YES，否则为NO
+	    
+	    BOOL isSubset = [set4 isSubsetOfSet:set5];
+	    
+	    创建一个新的集合2，集合2有两个对象
+	    
+	    NSSet *set1 = [NSSet setWithObjects:@&quot;a&quot;,nil];
+	    
+	    NSSet *set2 = [set1 setByAddingObject:@&quot;b&quot;];
+	    
+	    通过已有的两个集合，创建新的一个集合
+	    
+	    NSSet *set7 = [NSSet setWithObjects:@&quot;a&quot;,nil];
+	    
+	    NSSet *set8 = [NSSet setWithObjects:@&quot;z&quot;,nil];
+	    
+	    NSSet *set9 = [set7 setByAddingObjectsFromSet:set8];
+	    
+	    通过已有的集合和数组对象，创建一个新的集合
+	    
+	    NSArray *array = [NSArray arrayWithObjects:@&quot;a&quot;,@&quot;b&quot;,@&quot;c&quot;,nil];
+	    
+	    NSSet *set10 = [NSSet setWithObjects:@&quot;z&quot;,nil];
+	    
+	    NSSet *set11 = [set10 setByAddingObjectsFromArray:array];
+	    
+	    二、可变集合NSMutableSet
+	    
+	    常用方法
+	    
+	    创建一个空的集合
+	    
+	    NSMutableSet *set1 = [NSMutableSet set];
+	    
+	    NSMutableSet *set2 = [NSMutableSet setWithObjects:@&quot;1&quot;,@&quot;2&quot;,nil]；
+	    
+	    NSMutableSet *set3 = [NSMutableSet setWithObjects:@&quot;a&quot;,@&quot;2&quot;,nil];
+	    
+	    集合2减去集合3中的元素，集合2最后元素只有1个
+	    
+	    [set2 minusSet:set3];
+	    
+	    集合2与集合3中元素的交集，集合2最后元素只有1个
+	    
+	    [set2 intersectSet:set3];
+	    
+	    集合2与集合3中的元素的并集，集合2最后元素只有3个
+	    
+	    [set2 unionSet:set3];
+	    
+	    将空集合1设置为集合3中的内容
+	    
+	    [set1 setSet:set3];
+	    
+	    根据数组的内容删除集合中的对象
+	    
+	    [set2 addObjectsFromArray:array];
+	    
+	    [set2 removeObject:@&quot;1&quot;];
+	    
+	    [set]2 removeAllObjects];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;####关于遍历&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;从NSArray的遍历中就可以看出目前基本有四种遍历方法，分别是for、快速遍历，OC1.0的Enumerator方法和block遍历。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;对于这四种遍历来说，block应该是通用性最好的。NSArray往往需要下标值，而dictionary需要key和value，NSSet只是需要内容。对于不同的需求来说，前三个方法没有通用性。block方法为不同的集合有不同的实现方法，&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateObjectsUsingBlock&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateKeysAndObjectsUsingBlock&lt;/code&gt;，而且提供了类似&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateKeysAndObjectsWithOptions&lt;/code&gt;这样的方法，可以选择是反序遍历或者并发遍历。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;####关于NSNumber&lt;/p&gt;
+
+    &lt;p&gt;在使用数组和字典时会发现其内容不能使用简单类型，比如int，float，bool类型等，此时就需要用到NSNumber了，通过转换保存数值到数组或者字典。当然也可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;@1&lt;/code&gt;这样的形式来讲数值保存到数字或字典。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSMutableArray* mutablearr = [NSMutableArray arrayWithArray:@[ @9, @8 ]];
+    [mutablearr addObject:[NSNumber numberWithInt:1]];
+    [mutablearr addObject:[NSNumber numberWithInt:2]];
+    [mutablearr addObject:@1];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;####NSCache
+ 缓存应该选择的数据类型，dictionary和array在iOS中并不是很好的缓存选择，更好的选择应该是NSCache。原因如下：&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;1.对于键值是retain而不是copy，这个是很dictionary本质的区别。&lt;/p&gt;
+
+      &lt;p&gt;2.线程安全，支持多线程操作。&lt;/p&gt;
+
+      &lt;p&gt;3.自己实现了很多控制性的功能，比如对象的多少，最大存储量(但是limits are imprecise/not strict，逗比！！！)，在内存不足（&lt;code class=&quot;highlighter-rouge&quot;&gt;didReceiveMemoryWarning&lt;/code&gt;）时可以自动的删除，并且按照优先删除最久未使用的对象。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/597012cef38e&quot;&gt;参考&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;####NSUserDefaults &lt;a href=&quot;http://my.oschina.net/u/1245365/blog/294449&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;了解NSUserDefaults以及它可以直接存储的类型&lt;/p&gt;
+
+    &lt;p&gt;NSUserDefaults是一个单例，在整个程序中只有一个实例对象，他可以用于数据的永久保存，而且简单实用，这是它可以让数据自由传递的一个前提，也是大家喜欢用它保存简单数据的一个主要原因。&lt;/p&gt;
+
+    &lt;p&gt;使用 NSUserDefaults 存储自定义对象的最初，我们必须认识NSUserDefaults可以存储哪一些类型的数据，下面一一列出：&lt;/p&gt;
+
+    &lt;p&gt;NSUserDefaults支持的数据类型有：NSNumber（NSInteger、float、double），NSString，NSDate，NSArray，NSDictionary，BOOL.&lt;/p&gt;
+
+    &lt;p&gt;如果想要将上述数据类型的数据永久保存到NSUserDefaults中去，只需要简单的操作(一个Value 一个Key ),例如，想要保存一个NSString的对象，代码实现为：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//将NSString 对象存储到 NSUserDefaults 中
+	NSString *passWord = @&quot;1234567&quot;;
+	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	[user setObject:passWord forKey:@&quot;userPassWord&quot;];
+	
+	
+	将数据取出也很简单，只需要取出key 对应的值就好了，代码如下：
+	
+	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	NSString *passWord = [ user objectForKey:@&quot;userPassWord&quot;];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&amp;lt;font color=red&amp;gt;注意：对相同的Key赋值约等于一次覆盖，要保证每一个Key的唯一性&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;font color=red&amp;gt;值得注意的是：&amp;lt;/font&amp;gt;
+NSUserDefaults 存储的对象&amp;lt;font color=red&amp;gt;全是不可变的&amp;lt;/font&amp;gt;
+（这一点非常关键，弄错的话程序会出bug），例如，如果我想要存储一个 NSMutableArray 对象，我必须先创建一个不可变数组（NSArray）再将它存入NSUserDefaults中去，代码如下：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSMutableArray *mutableArray = [NSMutableArray arrayWithObjects:@&quot;123&quot;,@&quot;234&quot;, nil];
+	NSArray * array = [NSArray arrayWithArray:mutableArray];
+	    
+	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	[user setObject:array forKey:@&quot;记住存放的一定是不可变的&quot;];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;取出数据是一样的，想要用NSUserDefaults中的数据给可变数组赋值
+
+先给出一个错误的写法：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    /*-------------------------错误的赋值方法-------------------*/
+	    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	    
+	    //这样写后，mutableArray 就变成了不可变数组了，如果你要在数组中添加或删除数据就会出现bug
+	    NSMutableArray *mutableArray = [user objectForKey:@&quot;记住存放的一定是不可变的&quot;];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;正确的写法：
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    /*-------------------------正确的赋值方法-------------------*/
+	    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	    
+	    //可以用alloc 方法代替
+	    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:[user objectForKey:@&quot;记住存放的一定是不可变的&quot;]];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用 NSUserDefaults 存储自定义对象&lt;/p&gt;
+
+    &lt;p&gt;1、将自定义类型转换为NSData类型&lt;/p&gt;
+
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 当数据重复而且多的时候（例如想存储全班同学的学号，姓名，性别（这个数据量可能太大了 ）），如果不用SQLite 存储 （多数据最好还是用这个），你可以选择使用归档，再将文件写入本地，但是这种方式和 NSUserDefaults 比起来麻烦多了（因为NSFileManage 本来就挺复杂） ，但是问题是，NSUserDefaults 本身不支持自定义对象的存储，不过它支持NSData的类型，下面举一个例子来介绍。
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+
+    &lt;p&gt;我们先建立一个叫Student 的类，这个类里有三个属性（学号，姓名，性别）,如图：&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;images/08-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+    &lt;p&gt;我们要做的就是将Student类型变成NSData类型 ，那么就必须实现归档：&lt;/p&gt;
+
+    &lt;p&gt;这里要实现 在.h 文件中申明 NSCoding 协议，再 在 .m 中实现 encodeWithCoder 方法 和&lt;/p&gt;
+
+    &lt;p&gt;initWithCoder 方法就可以了 ：&lt;/p&gt;
+
+    &lt;p&gt;.h 中修改文件如图 ：&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;images/08-2.jpeg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+    &lt;p&gt;.m中加入代码 ：&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;images/08-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+    &lt;p&gt;这样做就可以将自定义类型转变为NSData类型了&lt;/p&gt;
+
+    &lt;p&gt;2、将自定义类型数据存入 NSUserDefaults 中&lt;/p&gt;
+
+    &lt;p&gt;如果要存储全班同学的信息，我们可以建一个NSMutableArray 来存放全班同学的信息（里面存储的全是NSData对象）在需要存储的地方加入代码：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//首先，要建立一个可变数组来存储 NSDate对象
+	Student* student = [[Student alloc] ini];
+	//下面进行的是对student对象的 name ， studentNumber ，sex 的赋值
+	student.name = @&quot;lady-奕奕&quot;;
+	student.studentNumber = @&quot;3100104006&quot;;
+	student.sex = @&quot;女&quot;;
+	
+	//这是一个存放全班同学的数组
+	NSMutableArray* dataArray = [NSMutableArray arrayWithCapacity:50];
+	//将student类型变为NSData类型
+	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:student];
+	//存放数据的数组将data加入进去
+	[dataArray addObject:data];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你只想存一个人的信息，你可以直接将NSData存入NSUserDefaults中 :&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:student];   
+	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	[user setObject:data forKey:@&quot;oneStudent&quot;];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;如果你想存储全班同学的信息，你还要用一个for循环将data 放入 dataArray中，这里具体的操作就不实现了，只给出存放的代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//记住要转换成不可变数组类型
+	NSArray * array = [NSArray arrayWithArray:dataArray];
+	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	[user setObject:array forKey:@&quot;allStudent&quot;];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;从NSUserDefaults中取出数据在还原也很简单。例如还原一个学生的数据：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
+	 
+	NSdData *data = [user objectForKey:@&quot;oneStudent&quot;];
+	    
+	Student *student = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/02%E9%9B%86%E5%90%88/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/02%E9%9B%86%E5%90%88/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>iOS学习笔记-01基本语法</title>
+        <description>&lt;p&gt;##&lt;span id=&quot;syntax&quot;&gt;1.基本语法&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#if __LP64__ || (TARGET_OS_EMBEDDED &amp;amp;&amp;amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+typedef long NSInteger;
+typedef unsigned long NSUInteger;
+#else
+typedef int NSInteger;
+typedef unsigned int NSUInteger;
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在类的定义上分为Interface和Implement两部分，这个与C的头文件和实现文件是一个概念，只不过写法上还是有区别的。Interface作为头文件的基本写法就是这样的，注意到在@Interface上有一句变量的定义，这个是全局静态变量其用法和C中定义静态变量是一样的，在@Interface的花括号中还定义了两变量，其实@private可有可无，写法与C++是一样的。而property则写在中间，在@Interface花括号区域定义的变量目前发现不能使用类似retain这样的写法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;staticIntInFirstViewController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UIViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@private&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;privateInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@public&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;publicInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;withArg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;printRetain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;retain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;字段和属性的使用方法如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstViewController* f = [[FirstViewController alloc] init];
+staticIntInFirstViewController = 1; // 只要引用了头文件，直接使用即可
+f-&amp;gt;publicInt = 2; // C++的用法
+f.arr;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;而Implement则是实现部分，Implement中可以添加一些只用于.m文件中的变量。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;类文件的生成：&lt;/p&gt;
+
+    &lt;p&gt;UI类：右键→New File→选定平台(iOS/OSX等)→Cocoa Class
+分类(category)：右键→New File→选定平台(iOS/OSX等)→Objective-C File→输入名称、选择类型为category，选择基类。&amp;lt;font size=4 color=green&amp;gt;（在这里还可以创建协议(protocol)和类扩展(extension)）&amp;lt;/font&amp;gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的扩展，类的扩展分为分类(category)和使用()的形式来扩展类（class-continuation）。其区别在于category类似一个完整的类文件，有.h和.m。它的文件的名称通常为&lt;code class=&quot;highlighter-rouge&quot;&gt;原类名+分类名&lt;/code&gt;，比如
+&lt;code class=&quot;highlighter-rouge&quot;&gt;FirstViewController+Test&lt;/code&gt;,其Interface和Implement分别为&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController.h&quot;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController+Test.h&quot;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&amp;lt;font color=green&amp;gt;
+注意在分类中可以添加属性，但是会提示
+&lt;img src=&quot;images/01-1.jpg&quot; alt=&quot;&quot; /&gt; 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;而使用()来做的扩展类只是个头文件，形式如下，注意到类名后面有个&lt;code class=&quot;highlighter-rouge&quot;&gt;()&lt;/code&gt;，这个里面定义的方法还是需要在主类的.m文件中实现。&amp;lt;font color=green&amp;gt;&lt;strong&gt;在class-continuation中可以定义属性、实例变量、方法，其无法被外部类访问，这就实现了细节的隐藏。&lt;/strong&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController.h&quot;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;函数的定义,”-“为实例方法，”+”类方法（静态方法），语法上基本没有什么特别注意的，只是在函数和变量的明面上应该遵循oc命名的习惯&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UIViewController&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;withArg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;函数的调用&lt;code class=&quot;highlighter-rouge&quot;&gt;[xxxInstance foo]&lt;/code&gt;或者实例函数&lt;code class=&quot;highlighter-rouge&quot;&gt;[xxxClass foo]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstViewController *f = [[FirstViewController alloc] init];
+[f foo:1];
+[f foo:YES withArg2:1];
+[FirstViewController foo];
+[f release];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;协议(protocol)和代理(delegate)，两者是合起来用，&amp;lt;font size=4 color=green&amp;gt;代理本质上是一个实现了协议的对象的引用。&amp;lt;/font&amp;gt;协议的形式为&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@protocol&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewDelegate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;didClickSomeUI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;代理的形式为 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FirstViewDelegate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;delegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;需要注意的是：因为是个对象的引用，因此在使用的时候可能出现互相引用的问题，这样在定义property的时候需要定义为弱引用，防止对象因为互相调用而无法被释放。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在流程控制上一样使用if else, switch, for, do while等&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)foo:(NSInteger)arg1 {
+  if (arg1 &amp;lt; 1) {
+    return;
+  }
+  NSLog(@&quot;for start&quot;);
+  for (NSInteger i = 0; i &amp;lt; arg1; i++) {
+    if (i % 2 == 0) {
+      NSLog(@&quot;%ld&quot;, i);
+    }
+  }
+
+  NSLog(@&quot;while start&quot;);
+  NSInteger m = 10;
+  while (m &amp;gt; 0) {
+    NSLog(@&quot;%ld&quot;, m);
+    m--;
+  }
+
+  NSLog(@&quot;do while start&quot;);
+  do {
+    NSLog(@&quot;%ld&quot;, m);
+    m++;
+  } while (m &amp;lt; 10);
+  
+  switch (arg1) {
+   case 1:
+       NSLog(@&quot;&quot;);
+       break;
+   case 2: {
+       // do some
+   } break;
+   default:
+       break;
+   }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&amp;lt;font color=red&amp;gt;- FIXME 以后想到再补充。&amp;lt;/font&amp;gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
+        <link>https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</guid>
+        
+        <category>iOS学习笔记</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

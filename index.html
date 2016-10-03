@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="多读书，多看报，少吃零食多睡觉。">
+    <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>笛音夏扇的博客</title>
+
+    <link rel="canonical" href="https://caihua.tech/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">笛音夏扇</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About Me</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>笛音夏扇</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/2016/09/22/08%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/">
+        <h2 class="post-title">
+            解决JSONKit在macOS Sierra上crash的问题
+        </h2>
+        
+        <div class="post-content-preview">
+            按照如下方法修改代码即可
+https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309ccb982a9f1f21b63
+
+懒得改的可以直接clone我修改过的
+https://github.com/klkucan/JSONKit
+
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 22, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/08%E6%9D%82/">
+        <h2 class="post-title">
+            iOS学习笔记-08杂
+        </h2>
+        
+        <div class="post-content-preview">
+            ##8.杂
+
+###表达式
+表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。
+
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/07%E5%BF%85%E8%A6%81%E7%9F%A5%E8%AF%86/">
+        <h2 class="post-title">
+            iOS学习笔记-07必要知识
+        </h2>
+        
+        <div class="post-content-preview">
+            ##7.必要知识
+
+###7.1 APNS
+
+
+  目前在8.0以后的推送需要以下几个步骤：
+
+
+1.使用registerUserNotificationSettings: &amp; registerForRemoteNotifications方法
+
+```
+if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">
+        <h2 class="post-title">
+            iOS学习笔记-06数据处理
+        </h2>
+        
+        <div class="post-content-preview">
+            ##7.数据处理
+
+7.1 plsit
+
+
+  
+    创建plist文件及添加数值
+
+    
+  
+  
+    数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。
+  
+
+
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/">
+        <h2 class="post-title">
+            iOS学习笔记-05线程
+        </h2>
+        
+        <div class="post-content-preview">
+            ##5.线程
+####5.1 GCD
+
+  GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是dispatch_async(queue, block);参数中的queue可以通过dispatch_queue_create或者系统提供的标准dispatch queue。
+
+
+    // 生成一个serial dispatch queue
+    d...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+        <h2 class="post-title">
+            iOS学习笔记-04内存管理
+        </h2>
+        
+        <div class="post-content-preview">
+            ##4.内存管理
+####4.1 手动管理
+
+
+  自己生成的对象自己持有，可以调用release方法减少retain数量。
+  非自己生成的对象也可以持有，通过调用retain方法可以持有对象，引用数+1。
+  不再需要自己持有的对象要及时释放，注意类中的property要在- (void)dealloc
+方法中赋值nil，这样写相当于release了。
+
+
+- (void)dealloc...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/03UI/">
+        <h2 class="post-title">
+            iOS学习笔记-03UI
+        </h2>
+        
+        <div class="post-content-preview">
+            ##3.UI
+
+
+  iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。
+
+
+####3.1 手动编写U...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/02%E9%9B%86%E5%90%88/">
+        <h2 class="post-title">
+            iOS学习笔记-02集合
+        </h2>
+        
+        <div class="post-content-preview">
+            ##2.集合
+
+
+  
+    集合分为可变与不可变。
+  
+  
+    泛型，写法 NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];和NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc]...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+        <h2 class="post-title">
+            iOS学习笔记-01基本语法
+        </h2>
+        
+        <div class="post-content-preview">
+            ##1.基本语法
+
+  与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger
+
+
+#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+t...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+
+    		</div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                                <a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="9">
+                                    iOS学习笔记
+                                </a>
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+                        
+                            <p>多读书，多看报，少吃零食多睡觉。</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                            
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/klkucan">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                <!-- Friends Blog -->
+                
+    		</div>
+        
+	</div>
+</div>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/klkucan">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 笛音夏扇 2016
+                    <!-- <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe> -->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
