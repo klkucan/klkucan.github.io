@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>解决JSONKit在macOS Sierra上crash的问题 - 笛音夏扇的博客</title>
+    <title>笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/">
+    <link rel="canonical" href="https://caihua.tech/page2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,187 +142,181 @@
 </script>
 
 
-    <!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        position: relative;
-        background-image: url('/img/home-bg-o.jpg')
-    }
-
-    
-</style>
-<header class="intro-header" >
-    <div class="header-mask"></div>
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
-                        
-                    </div>
-                    <h1>解决JSONKit在macOS Sierra上crash的问题</h1>
-                    
-                    
-                    <h2 class="subheading"></h2>
-                    
-                    <span class="meta">Posted by 笛音夏扇 on September 22, 2016</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>笛音夏扇</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading"></span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-    <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-				<p>按照如下方法修改代码即可
-https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309ccb982a9f1f21b63</p>
-
-<p>懒得改的可以直接clone我修改过的
-https://github.com/klkucan/JSONKit</p>
-
-
-                <hr>
-
-                
-
-
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2016/09/16/08%E6%9D%82/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-08杂">
-                        Previous<br>
-                        <span>iOS学习笔记-08杂</span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/" data-toggle="tooltip" data-placement="top" title="Github Page爬坑指南">
-                        Next<br>
-                        <span>Github Page爬坑指南</span>
-                        </a>
-                    </li>
-                    
-                </ul>
-
-
-                
-
-                
-
-            </div>  
-
-    <!-- Side Catalog Container -->
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
         
 
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/2016/09/16/02%E9%9B%86%E5%90%88/">
+        <h2 class="post-title">
+            iOS学习笔记-02集合
+        </h2>
+        
+        <div class="post-content-preview">
+            ##2.集合
+
+
+  
+    集合分为可变与不可变。
+  
+  
+    泛型，写法 NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];和NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc]...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+        <h2 class="post-title">
+            iOS学习笔记-01基本语法
+        </h2>
+        
+        <div class="post-content-preview">
+            ##1.基本语法
+
+  与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger
+
+
+#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+t...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/">&larr; Newer Posts</a>
+    </li>
+    
+    
+</ul>
+
+
+    		</div>
     <!-- Sidebar Container -->
             <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-        				
+                        
                             
-                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
+                                <a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
                                     iOS学习笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#iOS" title="iOS" rel="1">
+                                <a href="/tags/#iOS" title="iOS" rel="1">
                                     iOS
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#杂记" title="杂记" rel="1">
+                                <a href="/tags/#杂记" title="杂记" rel="1">
                                     杂记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#VR" title="VR" rel="1">
+                                <a href="/tags/#VR" title="VR" rel="1">
                                     VR
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#Unity3D" title="Unity3D" rel="2">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="2">
                                     Unity3D
                                 </a>
                             
-        				
-        			</div>
+                        
+                    </div>
                 </section>
                 
 
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+                        
+                            <p>Be publicly useful and privately happy.</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                            
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/klkucan">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
                 <!-- Friends Blog -->
                 
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: ''
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
+    		</div>
+        
+	</div>
+</div>
 
 
     <!-- Footer -->

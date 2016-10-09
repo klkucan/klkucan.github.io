@@ -5,9 +5,102 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 04 Oct 2016 17:31:03 +0800</pubDate>
-    <lastBuildDate>Tue, 04 Oct 2016 17:31:03 +0800</lastBuildDate>
+    <pubDate>Mon, 10 Oct 2016 00:09:55 +0800</pubDate>
+    <lastBuildDate>Mon, 10 Oct 2016 00:09:55 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>LOD初探</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;概念&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;LOD全称是Level of Detail，也就是细节层级。&lt;/li&gt;
+  &lt;li&gt;为什么会产生这个技术？根据官方教程的解释是因为在一个很大的场景中，需要进一步考虑性能问题。LOD就是一个很好的解决性能问题的方案，它根据物体与摄像机的距离来展示这个物体不同的mesh，从而使得物体较远是使用面数比较少的mesh，而距离近的时候使用面数多的mesh。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;如何使用&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;LOD在unity中的使用极为简单，基本分为以下几个步骤&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;创建一个空GameObject，然后加上LOD Group组件。
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161009232106898-784286333.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;LOD Group中选择某个LOD块会出现
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161009233343045-133617437.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;拖动对象到&lt;code class=&quot;highlighter-rouge&quot;&gt;add&lt;/code&gt;按钮上后就设置了当前level下的模型。
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161009233221336-502460804.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;依次设置完0、1、2的模型，需要注意LOD 0 表示摄像机最近距离显示，因此模型质量最高，数字越大距离摄像机越远，模型质量越低。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;最终效果
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161009232136822-2074270500.gif&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我设置的是绿色cube在LOD 2，黄色在LOD 1,红色是0，因此从右下角的camera preview看到摄像机距离对象最远时显示的绿色，依次变为黄色和红色。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;几个参数的设置&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在setting的quality中有LOD的两个参数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161009234207377-1568794073.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Maximum LOD Level：最大LOD级别，表示游戏中使用的最高LOD级别。在该级别以上的模型不会被使用，并且在编译时忽略。（这将节省存储空间和内存空间）。&lt;/p&gt;
+
+  &lt;p&gt;Bias LOD：LOD偏离 ，LOD级别基于物体在屏幕上的大小。当物体大小在两个LOD级别之间，可以选择使用低细节模型或高细节模型。数值取值范围为0-1，数值越接近0，越偏向于选择低细节模型。即是：如果该值小，那么摄像机离物体距离稍微有些变化，不同细节物体即会切换，该值大，那么摄像机需要与物体有很大的距离才会切换。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;缺点&lt;/h3&gt;
+&lt;p&gt;它的缺点是需要占用更多的内存，而且如果没有调整好距离的话，可能会造成模拟的突变。&lt;/p&gt;
+</description>
+        <pubDate>Sun, 09 Oct 2016 23:47:35 +0800</pubDate>
+        <link>https://caihua.tech/2016/10/09/LOD%E5%88%9D%E6%8E%A2/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/10/09/LOD%E5%88%9D%E6%8E%A2/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>VR开发环境搭建</title>
+        <description>&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;unity3d的安装&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;目前使用的Deepoon
+1.安装大朋助手。
+2.如果提示require DpnPlatform_x64.dll，则在大朋官网下载platform的sdk，并找到对应的平台的文件夹安装，有个bat文件可以安装。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;安装steam和steamVR。对于steamVR来说正常安装完会显示能识别头盔，但是可能提示未准备好，需要进行房间设置。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 09 Oct 2016 21:59:00 +0800</pubDate>
+        <link>https://caihua.tech/2016/10/09/VR%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/10/09/VR%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</guid>
+        
+        <category>VR</category>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
     
       <item>
         <title>Github Page爬坑指南</title>
@@ -1064,801 +1157,6 @@ objc_release -&amp;gt; dealloc(如果引用计数为0) -&amp;gt; _objc_rootDeall
         <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
         <link>https://caihua.tech/2016/09/16/03UI/</link>
         <guid isPermaLink="true">https://caihua.tech/2016/09/16/03UI/</guid>
-        
-        <category>iOS学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>iOS学习笔记-02集合</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;set&quot;&gt;2.集合&lt;/span&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;集合分为可变与不可变。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;泛型，写法&lt;code class=&quot;highlighter-rouge&quot;&gt; NSMutableArray&amp;lt;NSNumber*&amp;gt;* mutablearr = [NSMutableArray array];&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMutableDictionary&amp;lt;NSString*, NSNumber*&amp;gt;* dic = [[NSMutableDictionary alloc] init];&lt;/code&gt;,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-  NSMutableDictionary&amp;lt;NSString*, NSNumber*&amp;gt;* dic = [[NSMutableDictionary alloc] init];
-  [dic addEntriesFromDictionary:&amp;lt;#(nonnull NSDictionary&amp;lt;NSString *,NSNumber *&amp;gt; *)#&amp;gt;]
- &lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&amp;lt;font color=red&amp;gt;目前来看类型只能是Objective-C object或者block。&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;h4 id=&quot;nsarray-httpwwwjianshucompc8caa30afd9d&quot;&gt;NSArray &lt;a href=&quot;http://www.jianshu.com/p/c8caa30afd9d&quot;&gt;原文&lt;/a&gt;&lt;/h4&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;NSArray特点:	一旦创建成功,内容不可改变，只能存放OC对象。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //1)创建一个空数组
-    NSArray *arr1 = [NSArray array];
-
-    //2)创建数组,只有一个元素
-    NSArray *arr2 = [NSArray arrayWithObject:@&quot;1&quot;];
-
-    //3)创建数组,有多个元素
-    // nil 表示数组赋值结束
-    // 常见写法
-    NSArray *arr3 = [NSArray arrayWithObjects:@&quot;one&quot;,@&quot;two&quot;,@1, nil];
-                    NSLog(@&quot;arr3 = %@&quot;,arr3);
-    //4)调用对象方法,创建数组
-    //nil Nil NULL  NSNULL
-    NSArray *arr4 = [[NSArray alloc] initWithObjects:@&quot;three&quot;,[NSNull null],@&quot;four&quot;, nil];
-                    NSLog(@&quot;arr4 = %@&quot;,arr4);
-    //5)用一个数组可以创建另外一个数组，修改一个数组中的数据不影响另一个数组。
-    NSArray *arr5 = [NSArray arrayWithArray:arr3];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;常用方法:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   NSArray* arr3 = [NSArray arrayWithObjects:@&quot;one&quot;, @&quot;two&quot;, @1, @&quot;three&quot;, nil];
-   NSLog(@&quot;arr3 = %@&quot;, arr3);
-
-   //1)获取数组的长度  count获取数组的元素的个数
-   NSLog(@&quot;%ld&quot;, arr3.count);
-
-   //2)根据下标,获取下标对应的对象
-   NSLog(@&quot;%@&quot;, [arr3 objectAtIndex:3]);
-
-   //3)返回元素的下标
-   NSUInteger loc = [arr3 indexOfObject:@&quot;three&quot;];
-   NSLog(@&quot;%ld&quot;, loc);
-
-   //4)数组中是否包含了某个元素
-   if ([arr3 containsObject:@&quot;four&quot;]) {
-
-       NSLog(@&quot;包含此元素&quot;);
-   }
-   else {
-
-       NSLog(@&quot;不包含&quot;);
-   }
-   NSLog(@&quot;arr5 = %@&quot;, arr5);
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;简化形式&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //用简化的方式,来定义和访问数组元素
-   //1)用简化的方式,定义数组
-   //格式: @[ 数组元素 ]
-   NSArray* arr = @[ @&quot;1&quot;, @&quot;one&quot;, @&quot;3&quot;, @4, @&quot;ONE&quot; ];
-   NSLog(@&quot;arr = %@&quot;, arr);
-
-   NSString* str = [arr objectAtIndex:2];
-   NSLog(@&quot;%@&quot;, str);
-
-   //2)用简化的方式访问数组元素
-   str = arr[1]; //C语言形式的数组元素访问
-   NSLog(@&quot;%@&quot;, str);
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;遍历&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //定义一个数组
-    NSArray* arr = @[ @&quot;one&quot;, @&quot;two&quot;, @&quot;three&quot;, @&quot;four&quot; ];
-
-    //对数组进行遍历
-
-    //1) 普通的方式,通过下标访问
-    for (int i = 0; i &amp;lt; arr.count; i++) {
-        NSLog(@&quot;-&amp;gt; %@&quot;, arr[i]);
-    }
-
-    //2) 快速枚举法 for循环的增强形式
-    for (NSString* str in arr) {
-        NSLog(@&quot;---&amp;gt; %@&quot;, str);
-    }
-
-    //3) 使用block的方式,进行访问
-    //                               数组元素            元素下标     是否停止
-    //stop:YES  会停止, stop:NO 不会停止
-    [arr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL* stop) {
-
-        if (idx == 2) {
-
-            *stop = YES; //停止  // break;
-        }
-        else {
-
-            NSLog(@&quot;idx = %ld,obj = %@&quot;, idx, obj);
-        }
-
-    }];
-    
-    //补充：OC1.0中的方法
-    id obj2;
-    NSEnumerator* enumerator = [arr objectEnumerator];
-    while ((obj2 = [enumerator nextObject]) != nil) {
-        NSLog(@&quot;%@ &quot;, obj2);
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;读写文件:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;写入&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   NSArray* array = [NSArray arrayWithObjects:@&quot;one&quot;, @&quot;zbz&quot;, @&quot;cgx&quot;, @&quot;sb&quot;, @&quot;cjk&quot;, @&quot;senni&quot;, nil];
-    //把NSArray 中的内容,写入到文件中
-    //arr.plist 一种特殊的文件格式
-    BOOL isWrite = [array writeToFile:@&quot;/Users/zhaoxiaohu/Desktop/arr.xml&quot; atomically:YES];
-
-    if (isWrite) {
-        NSLog(@&quot;写入成功&quot;);
-    }
-    
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;读取&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   //从文件中,读取一个数组信息
-  NSArray *readArr = [NSArray arrayWithContentsOfFile:@&quot;/Users/zhaoxiaohu/Desktop/arr.xml&quot;];
-
-  NSLog(@&quot;readArr = %@&quot;,readArr);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;NSArray与字符串:&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;把数组拼接成为字符串&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; //定义一个数组
-  NSArray *arr = @[@1,@2,@3,@4];
-
-  //1)需求: 把数组中的元素用 &quot;-&quot; 连接起来
-  //  [数组 componentsJoinedByString @&quot;分隔符&quot;];
-  // 1-2-3-4
-  NSString *str = [arr componentsJoinedByString:@&quot;-&quot;];
-  NSLog(@&quot;str = %@&quot;,str);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;把字符串拆分为数组&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  //2) 给一个字符串,分割成一个数组
-  // 400-800-12580   //取得 400    12580    800
-  NSString *str2 = @&quot;400-800-12580&quot;;
-  NSArray *arr2 = [str2 componentsSeparatedByString:@&quot;-&quot;];
-  NSLog(@&quot;%@&quot;,[arr2 firstObject]);
-  NSLog(@&quot;%@&quot;,[arr2 lastObject]);
- NSLog(@&quot;%@&quot;,arr2[1]);
- ```
- 
-- ####NSMutableArray	 
- 
- - NSArray子类，内容可变，其余很多操作与NSArray一样。
-  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;NSMutableArray&amp;lt;NSNumber&lt;em&gt;&amp;gt;&lt;/em&gt; mutablearr = [NSMutableArray array];
- [mutablearr addObject:[NSNumber numberWithInt:1]];&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; - 虽然有arrayWithCapacity这个方法，但是内容是可以超出设定的值的。应该仅仅是申请内存的需要，毕竟可变长度对于内存操作上比较麻烦。
- 
-- ####NSDictionary与NSMutableDictionary
-
- 字典的核心在于key和value。
-   
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;//创建字典
-    //1、使用类方法创建字典
-    //   字典初始化后，内部是无序的
-    NSDictionary* dict1 = [NSDictionary dictionaryWithObjectsAndKeys:@”zhangsan”, @”zs”, @”lisi”, @”ls”, nil];&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//获取字典的长度
-NSLog(@&quot;%ld&quot;, dict1.count);
-//根据key获取 value 只获取zs
-NSString* s = [dict1 objectForKey:@&quot;zs&quot;];
-NSLog(@&quot;%@&quot;, s);
-
-//2、快速创建字典  @{key:value,key1:value1}
-// 在字典中，key值是不能够重复的，重复的时候不会报错
-// 重复的只保留一个（第一次出现的那个）
-NSDictionary* dict2 = @{ @&quot;zs&quot; : @&quot;zhangsan&quot;,
-    @&quot;ls&quot; : @&quot;lisi&quot;,
-    @&quot;zs&quot; : @&quot;fengjie&quot; };
-NSLog(@&quot;%@&quot;, dict2);
-
-//3、遍历
-
-NSLog(@&quot;获取所有keys的遍历&quot;);
-NSArray* keys = [dict2 allKeys];
-for (NSInteger i = 0; i &amp;lt; keys.count; i++) {
-    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)keys[i], [dict2 objectForKey:keys[i]]);
-}
-
-NSLog(@&quot;NSEnumerator遍历&quot;);
-id key;
-NSEnumerator* enumerator = [dict2 keyEnumerator];
-while ((key = [enumerator nextObject]) != nil) {
-    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)key, [dict2 objectForKey:key]);
-}
-
-NSLog(@&quot;快速遍历&quot;);
-for (id key in dict2) {
-    NSLog(@&quot;key = %@  value = %@&quot;, (NSString*)key, dict2[key]);
-}
-
-NSLog(@&quot;block遍历&quot;);
-
-[dict2 enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL* _Nonnull stop) {
-    NSLog(@&quot;key = %@  value = %@&quot;, key, obj);
-}];
-
-//4、可变的字典
-NSMutableDictionary* mDic = [NSMutableDictionary dictionaryWithDictionary:dict1];
-
-//4.1 移除数据
-[mDic setValue:nil forKey:@&quot;zs&quot;];
-[mDic removeObjectForKey:@&quot;ls&quot;];
-[mDic removeAllObjects];
-//    [mDic removeObjectForKey:&amp;lt;#(nonnull id)#&amp;gt;];
-
-//4.2 添加数据
-[mDic setObject:@&quot;wei&quot; forKey:@&quot;hua&quot;];
-[mDic setValue:@&quot;xing&quot; forKey:@&quot;zhong&quot;];
-//4.3 改变数据
-[mDic setObject:@&quot;lisi2222&quot; forKey:@&quot;ls&quot;];
-
-NSLog(@&quot;遍历NSMutableDictionary&quot;);
-[mDic enumerateKeysAndObjectsUsingBlock:^(id _Nonnull key, id _Nonnull obj, BOOL* _Nonnull stop) {
-    NSLog(@&quot;key = %@  value = %@&quot;, key, obj);
-}]; ```
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;注意setValue:forKey:这个方法，既可以添加数据也可以移除数据（当value是nil时）。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  /* Send -setObject:forKey: to the receiver, unless the value is nil, in which case send -removeObjectForKey:.
-*/
-- (void)setValue:(nullable ObjectType)value forKey:(NSString *)key;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;####NSSet &amp;amp; NSMutableSet &lt;a href=&quot;http://www.jianshu.com/p/27daa0fa1b78&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	 在Foundation框架中，提供了NSSet类，它是一组单值对象的集合，且NSSet实例中元素是无序，同一个对象只能保存一个。
-	    
-	    一.不可变集合NSSet
-	    
-	    1.NSSet的初始化
-	    
-	    创建一个集合
-	    
-	    NSSet *set1 = [[NSSet alloc] initWithObjects:@&quot;one&quot;, @&quot;two&quot;, nil];
-	    
-	    通过数组的构建集合
-	    
-	    NSArray *array = [NSArrayWithObjects:@&quot;1&quot;, @&quot;2&quot;, @&quot;3&quot;, nil];
-	    
-	    NSSet *set2 = [[NSSet alloc] initWithArray:array];
-	    
-	    通过已有集合构建集合
-	    
-	    NSSet *set3 = [[NSSet alloc] initWithSet:set2];
-	    
-	    2.NSSet常用方法
-	    
-	    集合中对象的个数
-	    
-	    int count = [set3 count];
-	    
-	    以数组的形式返回集合中所有的对象
-	    
-	    NSArray *allObjects = [set3 allObjects];
-	    
-	    返回集合中的任意一个对象
-	    
-	    id object = [set3 anyObject];
-	    
-	    判断两个集合的元素中有包含的对象，包含返回YES，否则为NO
-	    
-	    BOOL isContain = [set4 containsObject:@&quot;2&quot;];
-	    
-	    判断两个集合的元素是否有相等的对象，存在返回YES，否则为NO
-	    
-	    BOOL isIntersect = [set4 intersectsSet:set2];
-	    
-	    判断两个集合的元素是否完全匹配，匹配返回YES，否则为NO
-	    
-	    BOOL isEqual = [set4 isEqualToSet:set5];
-	    
-	    集合4是否是集合5的子集合，如果是返回YES，否则为NO
-	    
-	    BOOL isSubset = [set4 isSubsetOfSet:set5];
-	    
-	    创建一个新的集合2，集合2有两个对象
-	    
-	    NSSet *set1 = [NSSet setWithObjects:@&quot;a&quot;,nil];
-	    
-	    NSSet *set2 = [set1 setByAddingObject:@&quot;b&quot;];
-	    
-	    通过已有的两个集合，创建新的一个集合
-	    
-	    NSSet *set7 = [NSSet setWithObjects:@&quot;a&quot;,nil];
-	    
-	    NSSet *set8 = [NSSet setWithObjects:@&quot;z&quot;,nil];
-	    
-	    NSSet *set9 = [set7 setByAddingObjectsFromSet:set8];
-	    
-	    通过已有的集合和数组对象，创建一个新的集合
-	    
-	    NSArray *array = [NSArray arrayWithObjects:@&quot;a&quot;,@&quot;b&quot;,@&quot;c&quot;,nil];
-	    
-	    NSSet *set10 = [NSSet setWithObjects:@&quot;z&quot;,nil];
-	    
-	    NSSet *set11 = [set10 setByAddingObjectsFromArray:array];
-	    
-	    二、可变集合NSMutableSet
-	    
-	    常用方法
-	    
-	    创建一个空的集合
-	    
-	    NSMutableSet *set1 = [NSMutableSet set];
-	    
-	    NSMutableSet *set2 = [NSMutableSet setWithObjects:@&quot;1&quot;,@&quot;2&quot;,nil]；
-	    
-	    NSMutableSet *set3 = [NSMutableSet setWithObjects:@&quot;a&quot;,@&quot;2&quot;,nil];
-	    
-	    集合2减去集合3中的元素，集合2最后元素只有1个
-	    
-	    [set2 minusSet:set3];
-	    
-	    集合2与集合3中元素的交集，集合2最后元素只有1个
-	    
-	    [set2 intersectSet:set3];
-	    
-	    集合2与集合3中的元素的并集，集合2最后元素只有3个
-	    
-	    [set2 unionSet:set3];
-	    
-	    将空集合1设置为集合3中的内容
-	    
-	    [set1 setSet:set3];
-	    
-	    根据数组的内容删除集合中的对象
-	    
-	    [set2 addObjectsFromArray:array];
-	    
-	    [set2 removeObject:@&quot;1&quot;];
-	    
-	    [set]2 removeAllObjects];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;####关于遍历&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;从NSArray的遍历中就可以看出目前基本有四种遍历方法，分别是for、快速遍历，OC1.0的Enumerator方法和block遍历。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;对于这四种遍历来说，block应该是通用性最好的。NSArray往往需要下标值，而dictionary需要key和value，NSSet只是需要内容。对于不同的需求来说，前三个方法没有通用性。block方法为不同的集合有不同的实现方法，&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateObjectsUsingBlock&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateKeysAndObjectsUsingBlock&lt;/code&gt;，而且提供了类似&lt;code class=&quot;highlighter-rouge&quot;&gt;enumerateKeysAndObjectsWithOptions&lt;/code&gt;这样的方法，可以选择是反序遍历或者并发遍历。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;####关于NSNumber&lt;/p&gt;
-
-    &lt;p&gt;在使用数组和字典时会发现其内容不能使用简单类型，比如int，float，bool类型等，此时就需要用到NSNumber了，通过转换保存数值到数组或者字典。当然也可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;@1&lt;/code&gt;这样的形式来讲数值保存到数字或字典。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSMutableArray* mutablearr = [NSMutableArray arrayWithArray:@[ @9, @8 ]];
-    [mutablearr addObject:[NSNumber numberWithInt:1]];
-    [mutablearr addObject:[NSNumber numberWithInt:2]];
-    [mutablearr addObject:@1];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;####NSCache
- 缓存应该选择的数据类型，dictionary和array在iOS中并不是很好的缓存选择，更好的选择应该是NSCache。原因如下：&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;1.对于键值是retain而不是copy，这个是很dictionary本质的区别。&lt;/p&gt;
-
-      &lt;p&gt;2.线程安全，支持多线程操作。&lt;/p&gt;
-
-      &lt;p&gt;3.自己实现了很多控制性的功能，比如对象的多少，最大存储量(但是limits are imprecise/not strict，逗比！！！)，在内存不足（&lt;code class=&quot;highlighter-rouge&quot;&gt;didReceiveMemoryWarning&lt;/code&gt;）时可以自动的删除，并且按照优先删除最久未使用的对象。&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;p&gt;&lt;a href=&quot;http://www.jianshu.com/p/597012cef38e&quot;&gt;参考&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;####NSUserDefaults &lt;a href=&quot;http://my.oschina.net/u/1245365/blog/294449&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;了解NSUserDefaults以及它可以直接存储的类型&lt;/p&gt;
-
-    &lt;p&gt;NSUserDefaults是一个单例，在整个程序中只有一个实例对象，他可以用于数据的永久保存，而且简单实用，这是它可以让数据自由传递的一个前提，也是大家喜欢用它保存简单数据的一个主要原因。&lt;/p&gt;
-
-    &lt;p&gt;使用 NSUserDefaults 存储自定义对象的最初，我们必须认识NSUserDefaults可以存储哪一些类型的数据，下面一一列出：&lt;/p&gt;
-
-    &lt;p&gt;NSUserDefaults支持的数据类型有：NSNumber（NSInteger、float、double），NSString，NSDate，NSArray，NSDictionary，BOOL.&lt;/p&gt;
-
-    &lt;p&gt;如果想要将上述数据类型的数据永久保存到NSUserDefaults中去，只需要简单的操作(一个Value 一个Key ),例如，想要保存一个NSString的对象，代码实现为：&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//将NSString 对象存储到 NSUserDefaults 中
-	NSString *passWord = @&quot;1234567&quot;;
-	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	[user setObject:passWord forKey:@&quot;userPassWord&quot;];
-	
-	
-	将数据取出也很简单，只需要取出key 对应的值就好了，代码如下：
-	
-	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	NSString *passWord = [ user objectForKey:@&quot;userPassWord&quot;];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&amp;lt;font color=red&amp;gt;注意：对相同的Key赋值约等于一次覆盖，要保证每一个Key的唯一性&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;font color=red&amp;gt;值得注意的是：&amp;lt;/font&amp;gt;
-NSUserDefaults 存储的对象&amp;lt;font color=red&amp;gt;全是不可变的&amp;lt;/font&amp;gt;
-（这一点非常关键，弄错的话程序会出bug），例如，如果我想要存储一个 NSMutableArray 对象，我必须先创建一个不可变数组（NSArray）再将它存入NSUserDefaults中去，代码如下：
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSMutableArray *mutableArray = [NSMutableArray arrayWithObjects:@&quot;123&quot;,@&quot;234&quot;, nil];
-	NSArray * array = [NSArray arrayWithArray:mutableArray];
-	    
-	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	[user setObject:array forKey:@&quot;记住存放的一定是不可变的&quot;];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;取出数据是一样的，想要用NSUserDefaults中的数据给可变数组赋值
-
-先给出一个错误的写法：
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    /*-------------------------错误的赋值方法-------------------*/
-	    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	    
-	    //这样写后，mutableArray 就变成了不可变数组了，如果你要在数组中添加或删除数据就会出现bug
-	    NSMutableArray *mutableArray = [user objectForKey:@&quot;记住存放的一定是不可变的&quot;];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;正确的写法：
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    /*-------------------------正确的赋值方法-------------------*/
-	    NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	    
-	    //可以用alloc 方法代替
-	    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:[user objectForKey:@&quot;记住存放的一定是不可变的&quot;]];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用 NSUserDefaults 存储自定义对象&lt;/p&gt;
-
-    &lt;p&gt;1、将自定义类型转换为NSData类型&lt;/p&gt;
-
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 当数据重复而且多的时候（例如想存储全班同学的学号，姓名，性别（这个数据量可能太大了 ）），如果不用SQLite 存储 （多数据最好还是用这个），你可以选择使用归档，再将文件写入本地，但是这种方式和 NSUserDefaults 比起来麻烦多了（因为NSFileManage 本来就挺复杂） ，但是问题是，NSUserDefaults 本身不支持自定义对象的存储，不过它支持NSData的类型，下面举一个例子来介绍。
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-
-    &lt;p&gt;我们先建立一个叫Student 的类，这个类里有三个属性（学号，姓名，性别）,如图：&lt;/p&gt;
-
-    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181834145-1260516689.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-    &lt;p&gt;我们要做的就是将Student类型变成NSData类型 ，那么就必须实现归档：&lt;/p&gt;
-
-    &lt;p&gt;这里要实现 在.h 文件中申明 NSCoding 协议，再 在 .m 中实现 encodeWithCoder 方法 和&lt;/p&gt;
-
-    &lt;p&gt;initWithCoder 方法就可以了 ：&lt;/p&gt;
-
-    &lt;p&gt;.h 中修改文件如图 ：&lt;/p&gt;
-
-    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181857239-402489604.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-    &lt;p&gt;.m中加入代码 ：&lt;/p&gt;
-
-    &lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181907192-668738465.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-    &lt;p&gt;这样做就可以将自定义类型转变为NSData类型了&lt;/p&gt;
-
-    &lt;p&gt;2、将自定义类型数据存入 NSUserDefaults 中&lt;/p&gt;
-
-    &lt;p&gt;如果要存储全班同学的信息，我们可以建一个NSMutableArray 来存放全班同学的信息（里面存储的全是NSData对象）在需要存储的地方加入代码：&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//首先，要建立一个可变数组来存储 NSDate对象
-	Student* student = [[Student alloc] ini];
-	//下面进行的是对student对象的 name ， studentNumber ，sex 的赋值
-	student.name = @&quot;lady-奕奕&quot;;
-	student.studentNumber = @&quot;3100104006&quot;;
-	student.sex = @&quot;女&quot;;
-	
-	//这是一个存放全班同学的数组
-	NSMutableArray* dataArray = [NSMutableArray arrayWithCapacity:50];
-	//将student类型变为NSData类型
-	NSData* data = [NSKeyedArchiver archivedDataWithRootObject:student];
-	//存放数据的数组将data加入进去
-	[dataArray addObject:data];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;如果你只想存一个人的信息，你可以直接将NSData存入NSUserDefaults中 :&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:student];   
-	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	[user setObject:data forKey:@&quot;oneStudent&quot;];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;如果你想存储全班同学的信息，你还要用一个for循环将data 放入 dataArray中，这里具体的操作就不实现了，只给出存放的代码：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	//记住要转换成不可变数组类型
-	NSArray * array = [NSArray arrayWithArray:dataArray];
-	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	[user setObject:array forKey:@&quot;allStudent&quot;];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;从NSUserDefaults中取出数据在还原也很简单。例如还原一个学生的数据：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	NSUserDefaults *user = [NSUserDefaults standardUserDefaults];
-	 
-	NSdData *data = [user objectForKey:@&quot;oneStudent&quot;];
-	    
-	Student *student = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/16/02%E9%9B%86%E5%90%88/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/16/02%E9%9B%86%E5%90%88/</guid>
-        
-        <category>iOS学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>iOS学习笔记-01基本语法</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;syntax&quot;&gt;1.基本语法&lt;/span&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#if __LP64__ || (TARGET_OS_EMBEDDED &amp;amp;&amp;amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#endif
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在类的定义上分为Interface和Implement两部分，这个与C的头文件和实现文件是一个概念，只不过写法上还是有区别的。Interface作为头文件的基本写法就是这样的，注意到在@Interface上有一句变量的定义，这个是全局静态变量其用法和C中定义静态变量是一样的，在@Interface的花括号中还定义了两变量，其实@private可有可无，写法与C++是一样的。而property则写在中间，在@Interface花括号区域定义的变量目前发现不能使用类似retain这样的写法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;staticIntInFirstViewController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UIViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@private&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;privateInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@public&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;publicInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arg1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;withArg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;printRetain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;retain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSArray&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;字段和属性的使用方法如下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstViewController* f = [[FirstViewController alloc] init];
-staticIntInFirstViewController = 1; // 只要引用了头文件，直接使用即可
-f-&amp;gt;publicInt = 2; // C++的用法
-f.arr;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;而Implement则是实现部分，Implement中可以添加一些只用于.m文件中的变量。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;类文件的生成：&lt;/p&gt;
-
-    &lt;p&gt;UI类：右键→New File→选定平台(iOS/OSX等)→Cocoa Class
-分类(category)：右键→New File→选定平台(iOS/OSX等)→Objective-C File→输入名称、选择类型为category，选择基类。&amp;lt;font size=4 color=green&amp;gt;（在这里还可以创建协议(protocol)和类扩展(extension)）&amp;lt;/font&amp;gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;类的扩展，类的扩展分为分类(category)和使用()的形式来扩展类（class-continuation）。其区别在于category类似一个完整的类文件，有.h和.m。它的文件的名称通常为&lt;code class=&quot;highlighter-rouge&quot;&gt;原类名+分类名&lt;/code&gt;，比如
-&lt;code class=&quot;highlighter-rouge&quot;&gt;FirstViewController+Test&lt;/code&gt;,其Interface和Implement分别为&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController.h&quot;
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController+Test.h&quot;
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;Test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;lt;font color=green&amp;gt;
-注意在分类中可以添加属性，但是会提示
-&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182039301-389964144.jpg&quot; alt=&quot;&quot; /&gt; 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-&lt;p&gt;而使用()来做的扩展类只是个头文件，形式如下，注意到类名后面有个&lt;code class=&quot;highlighter-rouge&quot;&gt;()&lt;/code&gt;，这个里面定义的方法还是需要在主类的.m文件中实现。&amp;lt;font color=green&amp;gt;&lt;strong&gt;在class-continuation中可以定义属性、实例变量、方法，其无法被外部类访问，这就实现了细节的隐藏。&lt;/strong&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;#import &quot;FirstViewController.h&quot;
-&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;函数的定义,”-“为实例方法，”+”类方法（静态方法），语法上基本没有什么特别注意的，只是在函数和变量的明面上应该遵循oc命名的习惯&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewController&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UIViewController&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg1&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;withArg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;arg2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;函数的调用&lt;code class=&quot;highlighter-rouge&quot;&gt;[xxxInstance foo]&lt;/code&gt;或者实例函数&lt;code class=&quot;highlighter-rouge&quot;&gt;[xxxClass foo]&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;FirstViewController *f = [[FirstViewController alloc] init];
-[f foo:1];
-[f foo:YES withArg2:1];
-[FirstViewController foo];
-[f release];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;协议(protocol)和代理(delegate)，两者是合起来用，&amp;lt;font size=4 color=green&amp;gt;代理本质上是一个实现了协议的对象的引用。&amp;lt;/font&amp;gt;协议的形式为&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;@protocol&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FirstViewDelegate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;didClickSomeUI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;@end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;代理的形式为 &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;k&quot;&gt;@property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonatomic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;assign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FirstViewDelegate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;delegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;需要注意的是：因为是个对象的引用，因此在使用的时候可能出现互相引用的问题，这样在定义property的时候需要定义为弱引用，防止对象因为互相调用而无法被释放。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在流程控制上一样使用if else, switch, for, do while等&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)foo:(NSInteger)arg1 {
-  if (arg1 &amp;lt; 1) {
-    return;
-  }
-  NSLog(@&quot;for start&quot;);
-  for (NSInteger i = 0; i &amp;lt; arg1; i++) {
-    if (i % 2 == 0) {
-      NSLog(@&quot;%ld&quot;, i);
-    }
-  }
-
-  NSLog(@&quot;while start&quot;);
-  NSInteger m = 10;
-  while (m &amp;gt; 0) {
-    NSLog(@&quot;%ld&quot;, m);
-    m--;
-  }
-
-  NSLog(@&quot;do while start&quot;);
-  do {
-    NSLog(@&quot;%ld&quot;, m);
-    m++;
-  } while (m &amp;lt; 10);
-  
-  switch (arg1) {
-   case 1:
-       NSLog(@&quot;&quot;);
-       break;
-   case 2: {
-       // do some
-   } break;
-   default:
-       break;
-   }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&amp;lt;font color=red&amp;gt;- FIXME 以后想到再补充。&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-</description>
-        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</guid>
         
         <category>iOS学习笔记</category>
         
