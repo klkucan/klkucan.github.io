@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-01基本语法 - 笛音夏扇的博客</title>
+    <title>Deepoon的相关设置以及如何玩steam游戏 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+    <link rel="canonical" href="https://caihua.tech/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#VR" title="VR">VR</a>
                         
                     </div>
-                    <h1>iOS学习笔记-01基本语法</h1>
+                    <h1>Deepoon的相关设置以及如何玩steam游戏</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on October 12, 2016</span>
                 </div>
             </div>
         </div>
@@ -187,181 +187,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<p>##<span id="syntax">1.基本语法</span></p>
+				<h3 id="section">基本</h3>
 <ul>
-  <li>与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger</li>
+  <li>保证Deepoon助手、显卡驱动是最新的。</li>
+  <li>安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#endif
-</code></pre>
-</div>
-
+<h3 id="dpnngetlasterror">DpnnGetLastError的处理</h3>
 <ul>
-  <li>在类的定义上分为Interface和Implement两部分，这个与C的头文件和实现文件是一个概念，只不过写法上还是有区别的。Interface作为头文件的基本写法就是这样的，注意到在@Interface上有一句变量的定义，这个是全局静态变量其用法和C中定义静态变量是一样的，在@Interface的花括号中还定义了两变量，其实@private可有可无，写法与C++是一样的。而property则写在中间，在@Interface花括号区域定义的变量目前发现不能使用类似retain这样的写法。</li>
+  <li>目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。</li>
+  <li>在setting→play中关闭VR support，这个东西在启动后会被steamVR开启（如果你的程序中用到了steamVR）。</li>
+  <li>按照上述两部则应该不会出现DpnnGetLastError错误，并且只能通过头盔来看游戏内容。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">static</span> <span class="n">NSInteger</span> <span class="n">staticIntInFirstViewController</span><span class="p">;</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">:</span> <span class="nc">UIViewController</span> <span class="p">{</span>
-<span class="k">@private</span>
-    <span class="n">NSInteger</span> <span class="n">privateInt</span><span class="p">;</span>
-<span class="k">@public</span>
-    <span class="n">NSInteger</span> <span class="n">publicInt</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">arg1</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">arg1</span> <span class="nf">withArg2</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg2</span><span class="p">;</span>
-<span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="p">;</span>
-
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">printRetain</span><span class="p">;</span>
-<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">NSArray</span><span class="o">*</span> <span class="n">arr</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>字段和属性的使用方法如下：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>FirstViewController* f = [[FirstViewController alloc] init];
-staticIntInFirstViewController = 1; // 只要引用了头文件，直接使用即可
-f-&gt;publicInt = 2; // C++的用法
-f.arr;
-</code></pre>
-</div>
-
-<ul>
-  <li>而Implement则是实现部分，Implement中可以添加一些只用于.m文件中的变量。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">FirstViewController</span> <span class="p">{</span>
-    <span class="n">NSInteger</span> <span class="n">I</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre>
-</div>
-
+<h3 id="steam">玩steam</h3>
 <ul>
   <li>
-    <p>类文件的生成：</p>
-
-    <p>UI类：右键→New File→选定平台(iOS/OSX等)→Cocoa Class
-分类(category)：右键→New File→选定平台(iOS/OSX等)→Objective-C File→输入名称、选择类型为category，选择基类。&lt;font size=4 color=green&gt;（在这里还可以创建协议(protocol)和类扩展(extension)）&lt;/font&gt;</p>
+    <p>在steam的安装目录下放置xxx\Steam\steamapps\common\SteamVR\drivers\deepoon。如果没有放置这个驱动可能导致steam下无法设置VR房间。设置完成后应该是
+<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161012092230578-1855749103.jpg" alt="image" /></p>
   </li>
   <li>
-    <p>类的扩展，类的扩展分为分类(category)和使用()的形式来扩展类（class-continuation）。其区别在于category类似一个完整的类文件，有.h和.m。它的文件的名称通常为<code class="highlighter-rouge">原类名+分类名</code>，比如
-<code class="highlighter-rouge">FirstViewController+Test</code>,其Interface和Implement分别为</p>
+    <p>经过上面的设置就可以用大朋眼镜玩steam游戏了。</p>
   </li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController.h"
-</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">(</span><span class="nl">Test</span><span class="p">)</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController+Test.h"
-</span>
-<span class="k">@implementation</span> <span class="nc">FirstViewController</span> <span class="p">(</span><span class="nl">Test</span><span class="p">)</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>&lt;font color=green&gt;
-注意在分类中可以添加属性，但是会提示
-<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182039301-389964144.jpg" alt="" /> 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&lt;/font&gt;</p>
-
-<p>而使用()来做的扩展类只是个头文件，形式如下，注意到类名后面有个<code class="highlighter-rouge">()</code>，这个里面定义的方法还是需要在主类的.m文件中实现。&lt;font color=green&gt;<strong>在class-continuation中可以定义属性、实例变量、方法，其无法被外部类访问，这就实现了细节的隐藏。</strong>&lt;/font&gt;</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController.h"
-</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">()</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
-
+<h3 id="section-1">开发相关</h3>
 <ul>
-  <li>函数的定义,”-“为实例方法，”+”类方法（静态方法），语法上基本没有什么特别注意的，只是在函数和变量的明面上应该遵循oc命名的习惯</li>
+  <li>目前发现如果用大朋眼镜可以玩steam，则在unity中是不需要使用DpnCameraRig的，而且也不需要开启大朋助手。</li>
+  <li>从这些表现来看大朋应该用的是Oculus的底层。</li>
 </ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">:</span> <span class="nc">UIViewController</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg1</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">arg1</span> <span class="nf">withArg2</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg2</span><span class="p">;</span>
-<span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<ul>
-  <li>函数的调用<code class="highlighter-rouge">[xxxInstance foo]</code>或者实例函数<code class="highlighter-rouge">[xxxClass foo]</code></li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>FirstViewController *f = [[FirstViewController alloc] init];
-[f foo:1];
-[f foo:YES withArg2:1];
-[FirstViewController foo];
-[f release];
-</code></pre>
-</div>
-
-<ul>
-  <li>协议(protocol)和代理(delegate)，两者是合起来用，&lt;font size=4 color=green&gt;代理本质上是一个实现了协议的对象的引用。&lt;/font&gt;协议的形式为</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@protocol</span> <span class="nc">FirstViewDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
-<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">didClickSomeUI</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>代理的形式为 <code class="highlighter-rouge"><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">id</span><span class="o">&lt;</span><span class="n">FirstViewDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span></code></p>
-
-<p>需要注意的是：因为是个对象的引用，因此在使用的时候可能出现互相引用的问题，这样在定义property的时候需要定义为弱引用，防止对象因为互相调用而无法被释放。</p>
-
-<ul>
-  <li>在流程控制上一样使用if else, switch, for, do while等</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>- (void)foo:(NSInteger)arg1 {
-  if (arg1 &lt; 1) {
-    return;
-  }
-  NSLog(@"for start");
-  for (NSInteger i = 0; i &lt; arg1; i++) {
-    if (i % 2 == 0) {
-      NSLog(@"%ld", i);
-    }
-  }
-
-  NSLog(@"while start");
-  NSInteger m = 10;
-  while (m &gt; 0) {
-    NSLog(@"%ld", m);
-    m--;
-  }
-
-  NSLog(@"do while start");
-  do {
-    NSLog(@"%ld", m);
-    m++;
-  } while (m &lt; 10);
-  
-  switch (arg1) {
-   case 1:
-       NSLog(@"");
-       break;
-   case 2: {
-       // do some
-   } break;
-   default:
-       break;
-   }
-
-}
-</code></pre>
-</div>
-
-<p>&lt;font color=red&gt;- FIXME 以后想到再补充。&lt;/font&gt;</p>
 
 
 
@@ -372,13 +226,13 @@ f.arr;
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2016/09/16/02%E9%9B%86%E5%90%88/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-02集合">
-                        Next<br>
-                        <span>iOS学习笔记-02集合</span>
+                    <li class="previous">
+                        <a href="/2016/10/09/LOD%E5%88%9D%E6%8E%A2/" data-toggle="tooltip" data-placement="top" title="LOD初探">
+                        Previous<br>
+                        <span>LOD初探</span>
                         </a>
                     </li>
+                    
                     
                 </ul>
 

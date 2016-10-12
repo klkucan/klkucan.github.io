@@ -5,9 +5,51 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 10 Oct 2016 07:32:50 +0800</pubDate>
-    <lastBuildDate>Mon, 10 Oct 2016 07:32:50 +0800</lastBuildDate>
+    <pubDate>Wed, 12 Oct 2016 21:22:46 +0800</pubDate>
+    <lastBuildDate>Wed, 12 Oct 2016 21:22:46 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Deepoon的相关设置以及如何玩steam游戏</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;基本&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;保证Deepoon助手、显卡驱动是最新的。&lt;/li&gt;
+  &lt;li&gt;安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;dpnngetlasterror&quot;&gt;DpnnGetLastError的处理&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。&lt;/li&gt;
+  &lt;li&gt;在setting→play中关闭VR support，这个东西在启动后会被steamVR开启（如果你的程序中用到了steamVR）。&lt;/li&gt;
+  &lt;li&gt;按照上述两部则应该不会出现DpnnGetLastError错误，并且只能通过头盔来看游戏内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;steam&quot;&gt;玩steam&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;在steam的安装目录下放置xxx\Steam\steamapps\common\SteamVR\drivers\deepoon。如果没有放置这个驱动可能导致steam下无法设置VR房间。设置完成后应该是
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161012092230578-1855749103.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;经过上面的设置就可以用大朋眼镜玩steam游戏了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;开发相关&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;目前发现如果用大朋眼镜可以玩steam，则在unity中是不需要使用DpnCameraRig的，而且也不需要开启大朋助手。&lt;/li&gt;
+  &lt;li&gt;从这些表现来看大朋应该用的是Oculus的底层。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Wed, 12 Oct 2016 21:21:12 +0800</pubDate>
+        <link>https://caihua.tech/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/</guid>
+        
+        <category>VR</category>
+        
+        
+      </item>
     
       <item>
         <title>LOD初探</title>
@@ -64,7 +106,14 @@
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;section-3&quot;&gt;缺点&lt;/h3&gt;
-&lt;p&gt;它的缺点是需要占用更多的内存，而且如果没有调整好距离的话，可能会造成模拟的突变。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;它的缺点是需要占用更多的内存，而且如果没有调整好距离的话，可能会造成模拟的突变。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果不想占用内存还有种办法是只设置一个LOD在group中，可以通过代码实现，这样只用一个模型即可，不过如果刷新不够快或者设置的不合适可能出现视野中突然多了个物体的情况。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Sun, 09 Oct 2016 23:47:35 +0800</pubDate>
         <link>https://caihua.tech/2016/10/09/LOD%E5%88%9D%E6%8E%A2/</link>
@@ -1002,161 +1051,6 @@ objc_release -&amp;gt; dealloc(如果引用计数为0) -&amp;gt; _objc_rootDeall
         <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
         <link>https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
         <guid isPermaLink="true">https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
-        
-        <category>iOS学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>iOS学习笔记-03UI</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;ui&quot;&gt;3.UI&lt;/span&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;####&lt;span id=&quot;manualui&quot;&gt;3.1 手动编写UI&lt;/span&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。&lt;/li&gt;
-  &lt;li&gt;手动编写的核心在于创建UI对象，设置frame及各种属性。&lt;/li&gt;
-  &lt;li&gt;当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;####&lt;span id=&quot;autolayout&quot;&gt;3.2 autolayout&lt;/span&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;目前在Xcode中可以很好的时候用约束(constraints)来实现UI的自适应。&lt;/li&gt;
-  &lt;li&gt;constraints的使用心得：
-    &lt;ol&gt;
-      &lt;li&gt;按住ctrl+左键来创建约束&lt;/li&gt;
-      &lt;li&gt;可以在Constraints下找到具体的约束，进而进行修改。
- &lt;img src=&quot;http://i.imgur.com/Zg0x473.png&quot; alt=&quot;&quot; /&gt; &lt;img src=&quot;http://i.imgur.com/Ezr8Ny7.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;其基本的使用可以对比NGUI，都是距离superview上下左右的距离，与其它View的间距、size等约束。&lt;/li&gt;
-  &lt;li&gt;需要注意，当存在多层关系时，需要逐层设置，否则效果可能有问题。&lt;/li&gt;
-  &lt;li&gt;对于constraint不但可以通过视图来设置，还可以编写代码来设置或修改。只要关联到代码(类似其它UI关联带代码的方式)就可以控制，一般只修改constraint属性。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;table&gt;
-      &lt;tbody&gt;
-        &lt;tr&gt;
-          &lt;td&gt;活用&lt;/td&gt;
-          &lt;td&gt;-△-&lt;/td&gt;
-          &lt;td&gt;和&lt;/td&gt;
-          &lt;td&gt;-口-&lt;/td&gt;
-          &lt;td&gt;两个图标按钮。&lt;/td&gt;
-        &lt;/tr&gt;
-      &lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;####&lt;span id=&quot;touch&quot;&gt;3.3 触摸和手势识别器&lt;/span&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;触摸的信息包含触摸点的位置、处于的阶段，其包含在UITouch对象中，手势是在触摸的基础上SDK封装的功能，它将一些复杂的连续触摸抽象成一个个手势动作。UITouch对象保存了含有手势识别器的数组。这个 数组里的每个元素都是手势识别器，而每个识别器都用来接收相关的触摸对象。如果创建某个 视图时没有指定手势识别器，那么在系统传给响应者方法的。而UIEvent对象包含了多个UITouch对象，多少由触摸点决定。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;触摸的五个阶段：&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseBegan&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseMoved&lt;/code&gt;、     &lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseStationary&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseEnded&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;UITouchPhaseCancelled&lt;/code&gt;，除了stationary其它都可以在代码中重写方法（其实就是其它四个是可以callUIResponder中预定义好的回调方法）。以下代码演示了拖地效果的touch实现&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event
-{
-	// Calculate and store offset, and pop view into front if needed
-	startLocation = [[touches anyObject] locationInView:self];
-	[self.superview bringSubviewToFront:self];
-}
-
-- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent *)event
-{
-	// Calculate offset
-	CGPoint pt = [[touches anyObject] locationInView:self];
-	float dx = pt.x - startLocation.x;
-	float dy = pt.y - startLocation.y;
-	CGPoint newcenter = CGPointMake(self.center.x + dx, self.center.y + dy);
-	
-	// Set new location
-	self.center = newcenter;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;触摸分为单点和多点触摸，控制代码&lt;code class=&quot;highlighter-rouge&quot;&gt;self.multipleTouchEnabled = YES;&lt;/code&gt;控制。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;手势识别器主要有点击(tap)、滑动(swipe)、手指聚拢(pinch)、旋转(rotate)，拖动(pan)、长按(long press)。其基本用法都一样，类似：&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-        self.gestureRecognizers = @[panRecognizer];
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;一个控件可以同时使用多个手势识别器。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;关于同时识别手势的问题，一般是一个手势由一个控件识别但是通过下面的代码可以让一个手势被多个对象识别。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
-{
-    return YES;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;注意事项：
-    &lt;ol&gt;
-      &lt;li&gt;一些图片带有透明区域，因此有可能点击了透明区域也被识别为tap。&lt;/li&gt;
-      &lt;li&gt;拖动的处理可以通过touch相关的函数或者手势，这就引出了放射变换的一些问题。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;AffineTransform，仿射变换。其中transform定义为&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;gt; ```
-&amp;gt; struct CGAffineTransform {
-&amp;gt;  CGFloat a, b, c, d;
-&amp;gt;  CGFloat tx, ty;
-&amp;gt;};
-&amp;gt; ```
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;它包含了位置、旋转、缩放三个信息。类似U3D中的transform的概念。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;变换的本质是矩阵的计算，（(x,0,0),(0,y,0),(tx,ty,1)）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;SDK中有很多的方法，基础的方法是CGAffineTransformMake(a,b,c,d,tx,ty)，参数对应矩阵。还有GAffineTransformMakeXXX和GAffineTransformXXX两个系列的方法。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;####&lt;span id=&quot;uicontrol&quot;&gt;3.4 控件 &lt;/span&gt;&lt;/p&gt;
-</description>
-        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/16/03UI/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/16/03UI/</guid>
         
         <category>iOS学习笔记</category>
         
