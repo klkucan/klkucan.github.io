@@ -307,9 +307,9 @@ https://github.com/klkucan/JSONKit
         </h2>
         
         <div class="post-content-preview">
-            ##8.杂
+            8.杂
 
-###表达式
+表达式
 表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。
 
         </div>
@@ -327,9 +327,9 @@ https://github.com/klkucan/JSONKit
         </h2>
         
         <div class="post-content-preview">
-            ##7.必要知识
+            7.必要知识
 
-###7.1 APNS
+7.1 APNS
 
 
   目前在8.0以后的推送需要以下几个步骤：
@@ -338,7 +338,7 @@ https://github.com/klkucan/JSONKit
 1.使用registerUserNotificationSettings: &amp; registerForRemoteNotifications方法
 
 ```
-if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
+if ([[UIApplication sharedApplication] respondsToSelector:@selector(reg...
         </div>
     </a>
     <p class="post-meta">
@@ -354,9 +354,9 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
         </h2>
         
         <div class="post-content-preview">
-            ##7.数据处理
+            6.数据处理
 
-7.1 plsit
+6.1 plsit
 
 
   
@@ -369,7 +369,7 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
   
 
 
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data...
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data" ...
         </div>
     </a>
     <p class="post-meta">
@@ -385,14 +385,15 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
         </h2>
         
         <div class="post-content-preview">
-            ##5.线程
-####5.1 GCD
+            5.线程
+
+5.1 GCD
 
   GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是dispatch_async(queue, block);参数中的queue可以通过dispatch_queue_create或者系统提供的标准dispatch queue。
 
 
     // 生成一个serial dispatch queue
-    d...
+    dispat...
         </div>
     </a>
     <p class="post-meta">
@@ -408,8 +409,8 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
         </h2>
         
         <div class="post-content-preview">
-            ##4.内存管理
-####4.1 手动管理
+            4.内存管理
+4.1 手动管理
 
 
   自己生成的对象自己持有，可以调用release方法减少retain数量。
@@ -418,7 +419,9 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selecto...
 方法中赋值nil，这样写相当于release了。
 
 
-- (void)dealloc...
+- (void)dealloc
+{
+   ...
         </div>
     </a>
     <p class="post-meta">

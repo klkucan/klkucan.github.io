@@ -187,8 +187,9 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<p>##<span id="thread">5.线程</span>
-####<span id="gcd">5.1 GCD</span></p>
+				<h2 id="section">5.线程</h2>
+
+<h4 id="gcd">5.1 GCD</h4>
 <ul>
   <li>GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是<code class="highlighter-rouge">dispatch_async(queue, block);</code>参数中的queue可以通过<code class="highlighter-rouge">dispatch_queue_create</code>或者系统提供的标准dispatch queue。</li>
 </ul>
@@ -446,7 +447,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   <li>拾遗：<code class="highlighter-rouge">dipatch_semaphore</code>、<code class="highlighter-rouge">dipatch_suspend</code>、<code class="highlighter-rouge">dipatch_resume</code>等。基本没用过，懒得写了。</li>
 </ul>
 
-<p>####<span id="nsthread">5.2 NSThread和performSelector</span></p>
+<h4 id="nsthreadperformselector">5.2 NSThread和performSelector</h4>
 
 <ul>
   <li>看一组代码和结果。可以看出performSelector方法是在main线程执行，而且performSelectorOnMainThread这个方法的输出在4之后，应该是这个方法会在下一个main thread的runloop中执行。1和4在测试中先后顺序不定，也比较好理解。</li>
@@ -482,8 +483,8 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
 </code></pre>
 </div>
 
-<p>####<span id="operation">5.3 NSOperation</span>
-####<span id="lock">5.4 锁</span></p>
+<h4 id="nsoperation">5.3 NSOperation</h4>
+<h4 id="section-1">5.4 锁</h4>
 
 <ul>
   <li>
@@ -501,7 +502,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   </li>
 </ul>
 
-<p>####<span id="choose">5.5 多线程编程的选择</span></p>
+<h4 id="section-2">5.5 多线程编程的选择</h4>
 
 <ul>
   <li>NSThread功能完善，比较基础，能够完成简单的任务。当需要同步执行或者有一定的依赖要求时编程较为复杂。</li>
@@ -548,7 +549,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   <p>5）通过自定义NSOperation的子类可以实现操作重用，</p>
 </blockquote>
 
-<p>####<span id="concurrent">5.6 并发</span></p>
+<h4 id="section-3">5.6 并发</h4>
 
 
 

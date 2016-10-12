@@ -187,8 +187,8 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<p>##<span id="memorymanage">4.内存管理</span>
-####<span id="manual">4.1 手动管理</span></p>
+				<h2 id="section">4.内存管理</h2>
+<h4 id="section-1">4.1 手动管理</h4>
 
 <ul>
   <li>自己生成的对象自己持有，可以调用<code class="highlighter-rouge">release</code>方法减少retain数量。</li>
@@ -213,7 +213,7 @@
   </li>
 </ul>
 
-<p>####<span id="autorelease">4.2 Autorelease </span></p>
+<h4 id="autorelease">4.2 Autorelease</h4>
 <ul>
   <li>autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。</li>
 </ul>
@@ -240,7 +240,7 @@ NSObject* obj = [[[NSObject alloc] init] autorelease];
 </code></pre>
 </div>
 
-<p>####<span id="arc">4.3 ARC</span></p>
+<h4 id="arc">4.3 ARC</h4>
 <ul>
   <li>我的理解
     <blockquote>

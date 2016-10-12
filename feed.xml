@@ -5,8 +5,8 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 12 Oct 2016 21:22:46 +0800</pubDate>
-    <lastBuildDate>Wed, 12 Oct 2016 21:22:46 +0800</lastBuildDate>
+    <pubDate>Wed, 12 Oct 2016 21:42:49 +0800</pubDate>
+    <lastBuildDate>Wed, 12 Oct 2016 21:42:49 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -236,10 +236,10 @@ https://github.com/klkucan/JSONKit&lt;/p&gt;
     
       <item>
         <title>iOS学习笔记-08杂</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;other&quot;&gt;8.杂&lt;/span&gt;&lt;/p&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;8.杂&lt;/h2&gt;
 
-&lt;p&gt;###表达式
-表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。&lt;/p&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;表达式&lt;/h4&gt;
+&lt;p&gt;表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。&lt;/p&gt;
 </description>
         <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
         <link>https://caihua.tech/2016/09/16/08%E6%9D%82/</link>
@@ -252,9 +252,9 @@ https://github.com/klkucan/JSONKit&lt;/p&gt;
     
       <item>
         <title>iOS学习笔记-07必要知识</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;other&quot;&gt;7.必要知识&lt;/span&gt;&lt;/p&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;7.必要知识&lt;/h2&gt;
 
-&lt;p&gt;###7.1 APNS&lt;/p&gt;
+&lt;h4 id=&quot;apns&quot;&gt;7.1 APNS&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;目前在8.0以后的推送需要以下几个步骤：&lt;/li&gt;
@@ -279,7 +279,7 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
 
 &lt;p&gt;2.实现delegate方法：每个APP都不同，就不写了。&lt;/p&gt;
 
-&lt;p&gt;###7.2 block tips&lt;/p&gt;
+&lt;h4 id=&quot;block-tips&quot;&gt;7.2 block tips&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;多使用typedef来定义block，因为简洁、可复用、对于结构相同的block可以通过命名来区分。&lt;/li&gt;
@@ -387,9 +387,9 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
     
       <item>
         <title>iOS学习笔记-06数据处理</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;data&quot;&gt;7.数据处理&lt;/span&gt;&lt;/p&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;6.数据处理&lt;/h2&gt;
 
-&lt;h3 id=&quot;plsit&quot;&gt;7.1 plsit&lt;/h3&gt;
+&lt;h4 id=&quot;plsit&quot;&gt;6.1 plsit&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -439,13 +439,11 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;h4 id=&quot;xml&quot;&gt;6.2 xml&lt;/h4&gt;
+
+&lt;h4 id=&quot;json&quot;&gt;6.2 JSON&lt;/h4&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;###7.2 xml&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;###7.2 JSON&lt;/p&gt;
-  &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;创建json文件&lt;/p&gt;
 
@@ -500,8 +498,9 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
     
       <item>
         <title>iOS学习笔记-05线程</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;thread&quot;&gt;5.线程&lt;/span&gt;
-####&lt;span id=&quot;gcd&quot;&gt;5.1 GCD&lt;/span&gt;&lt;/p&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;5.线程&lt;/h2&gt;
+
+&lt;h4 id=&quot;gcd&quot;&gt;5.1 GCD&lt;/h4&gt;
 &lt;ul&gt;
   &lt;li&gt;GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(queue, block);&lt;/code&gt;参数中的queue可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt;或者系统提供的标准dispatch queue。&lt;/li&gt;
 &lt;/ul&gt;
@@ -759,7 +758,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   &lt;li&gt;拾遗：&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_suspend&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_resume&lt;/code&gt;等。基本没用过，懒得写了。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;####&lt;span id=&quot;nsthread&quot;&gt;5.2 NSThread和performSelector&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;nsthreadperformselector&quot;&gt;5.2 NSThread和performSelector&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;看一组代码和结果。可以看出performSelector方法是在main线程执行，而且performSelectorOnMainThread这个方法的输出在4之后，应该是这个方法会在下一个main thread的runloop中执行。1和4在测试中先后顺序不定，也比较好理解。&lt;/li&gt;
@@ -795,8 +794,8 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;####&lt;span id=&quot;operation&quot;&gt;5.3 NSOperation&lt;/span&gt;
-####&lt;span id=&quot;lock&quot;&gt;5.4 锁&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;nsoperation&quot;&gt;5.3 NSOperation&lt;/h4&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;5.4 锁&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -814,7 +813,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;####&lt;span id=&quot;choose&quot;&gt;5.5 多线程编程的选择&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;section-2&quot;&gt;5.5 多线程编程的选择&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;NSThread功能完善，比较基础，能够完成简单的任务。当需要同步执行或者有一定的依赖要求时编程较为复杂。&lt;/li&gt;
@@ -861,7 +860,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   &lt;p&gt;5）通过自定义NSOperation的子类可以实现操作重用，&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;####&lt;span id=&quot;concurrent&quot;&gt;5.6 并发&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;section-3&quot;&gt;5.6 并发&lt;/h4&gt;
 
 </description>
         <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
@@ -875,8 +874,8 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
     
       <item>
         <title>iOS学习笔记-04内存管理</title>
-        <description>&lt;p&gt;##&lt;span id=&quot;memorymanage&quot;&gt;4.内存管理&lt;/span&gt;
-####&lt;span id=&quot;manual&quot;&gt;4.1 手动管理&lt;/span&gt;&lt;/p&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;4.内存管理&lt;/h2&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;4.1 手动管理&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;自己生成的对象自己持有，可以调用&lt;code class=&quot;highlighter-rouge&quot;&gt;release&lt;/code&gt;方法减少retain数量。&lt;/li&gt;
@@ -901,7 +900,7 @@ dispatch_set_target_queue(concurrentQueue, serialQueue);
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;####&lt;span id=&quot;autorelease&quot;&gt;4.2 Autorelease &lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;autorelease&quot;&gt;4.2 Autorelease&lt;/h4&gt;
 &lt;ul&gt;
   &lt;li&gt;autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。&lt;/li&gt;
 &lt;/ul&gt;
@@ -928,7 +927,7 @@ NSObject* obj = [[[NSObject alloc] init] autorelease];
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;####&lt;span id=&quot;arc&quot;&gt;4.3 ARC&lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;arc&quot;&gt;4.3 ARC&lt;/h4&gt;
 &lt;ul&gt;
   &lt;li&gt;我的理解
     &lt;blockquote&gt;

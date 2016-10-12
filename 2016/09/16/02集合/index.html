@@ -187,7 +187,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<p>##<span id="set">2.集合</span></p>
+				<h2 id="section">2.集合</h2>
 
 <ul>
   <li>
@@ -392,7 +392,7 @@
  NSLog(@"%@",arr2[1]);
  ```
  
-- ####NSMutableArray	 
+- #### NSMutableArray	 
  
  - NSArray子类，内容可变，其余很多操作与NSArray一样。
   
@@ -402,7 +402,7 @@
  [mutablearr addObject:[NSNumber numberWithInt:1]];</p>
 <div class="highlighter-rouge"><pre class="highlight"><code> - 虽然有arrayWithCapacity这个方法，但是内容是可以超出设定的值的。应该仅仅是申请内存的需要，毕竟可变长度对于内存操作上比较麻烦。
  
-- ####NSDictionary与NSMutableDictionary
+- #### NSDictionary与NSMutableDictionary
 
  字典的核心在于key和value。
    
@@ -484,7 +484,9 @@ NSLog(@"遍历NSMutableDictionary");
 </div>
 
 <ul>
-  <li>####NSSet &amp; NSMutableSet <a href="http://www.jianshu.com/p/27daa0fa1b78">原文</a></li>
+  <li>
+    <h4 id="nsset--nsmutableset-httpwwwjianshucomp27daa0fa1b78">NSSet &amp; NSMutableSet <a href="http://www.jianshu.com/p/27daa0fa1b78">原文</a></h4>
+  </li>
 </ul>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>	 在Foundation框架中，提供了NSSet类，它是一组单值对象的集合，且NSSet实例中元素是无序，同一个对象只能保存一个。
@@ -599,14 +601,14 @@ NSLog(@"遍历NSMutableDictionary");
 
 <ul>
   <li>
-    <p>####关于遍历</p>
+    <h4 id="section-1">关于遍历</h4>
   </li>
   <li>从NSArray的遍历中就可以看出目前基本有四种遍历方法，分别是for、快速遍历，OC1.0的Enumerator方法和block遍历。</li>
   <li>
     <p>对于这四种遍历来说，block应该是通用性最好的。NSArray往往需要下标值，而dictionary需要key和value，NSSet只是需要内容。对于不同的需求来说，前三个方法没有通用性。block方法为不同的集合有不同的实现方法，<code class="highlighter-rouge">enumerateObjectsUsingBlock</code>和<code class="highlighter-rouge">enumerateKeysAndObjectsUsingBlock</code>，而且提供了类似<code class="highlighter-rouge">enumerateKeysAndObjectsWithOptions</code>这样的方法，可以选择是反序遍历或者并发遍历。</p>
   </li>
   <li>
-    <p>####关于NSNumber</p>
+    <h4 id="nsnumber">关于NSNumber</h4>
 
     <p>在使用数组和字典时会发现其内容不能使用简单类型，比如int，float，bool类型等，此时就需要用到NSNumber了，通过转换保存数值到数组或者字典。当然也可以通过<code class="highlighter-rouge">@1</code>这样的形式来讲数值保存到数字或字典。</p>
   </li>
@@ -621,8 +623,8 @@ NSLog(@"遍历NSMutableDictionary");
 
 <ul>
   <li>
-    <p>####NSCache
- 缓存应该选择的数据类型，dictionary和array在iOS中并不是很好的缓存选择，更好的选择应该是NSCache。原因如下：</p>
+    <h4 id="nscache">NSCache</h4>
+    <p>缓存应该选择的数据类型，dictionary和array在iOS中并不是很好的缓存选择，更好的选择应该是NSCache。原因如下：</p>
 
     <blockquote>
       <p>1.对于键值是retain而不是copy，这个是很dictionary本质的区别。</p>
@@ -634,7 +636,9 @@ NSLog(@"遍历NSMutableDictionary");
 
     <p><a href="http://www.jianshu.com/p/597012cef38e">参考</a></p>
   </li>
-  <li>####NSUserDefaults <a href="http://my.oschina.net/u/1245365/blog/294449">原文</a></li>
+  <li>
+    <h4 id="nsuserdefaults-httpmyoschinanetu1245365blog294449">NSUserDefaults <a href="http://my.oschina.net/u/1245365/blog/294449">原文</a></h4>
+  </li>
   <li>
     <p>了解NSUserDefaults以及它可以直接存储的类型</p>
 
