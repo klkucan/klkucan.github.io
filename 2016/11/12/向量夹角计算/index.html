@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-06数据处理 - 笛音夏扇的博客</title>
+    <title>向量夹角计算 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">
+    <link rel="canonical" href="https://caihua.tech/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#3D数学" title="3D数学">3D数学</a>
                         
                     </div>
-                    <h1>iOS学习笔记-06数据处理</h1>
+                    <h1>向量夹角计算</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on November 12, 2016</span>
                 </div>
             </div>
         </div>
@@ -187,105 +187,25 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">6.数据处理</h2>
+				<h4 id="section">向量夹角</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>// 基于点积计算，
+// a.b = ||a|| * ||b|| * sin(θ) 
+// =&gt; θ = arccos(a·b / (||a|| * ||b||))
+// =&gt; θ = arccos(a·b) //当a和b按照单位向量算时
+float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized)) * Mathf.Rad2Deg;
 
-<h4 id="plsit">6.1 plsit</h4>
+// 基于叉积计算，
+// ||a × b|| = ||a|| ||b|| sinθ             
+// =&gt; θ = arcsin(||a × b|| / (||a|| * ||b||))
+// =&gt; θ = arcsin(||a × b||) //当a和b按照单位向量算时
+// 下面公式中有个Distance的计算是因为||a × b||是有长度的
+angle = Mathf.Asin(Vector3.Distance(Vector3.zero, Vector3.Cross(a.normalized, b.normalized))) * Mathf.Rad2Deg;
 
-<ul>
-  <li>
-    <p>创建plist文件及添加数值</p>
-
-    <p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt="" /></p>
-  </li>
-  <li>
-    <p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
-  </li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data" ofType:@"plist"];
-    if (!isEmpty(filePath)) {
-        NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];
-        NSLog(@"%@", dict[@"name"]);
-
-        NSArray* arr = (NSArray*)dict[@"favor"];
-        [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) {
-            NSLog(@"%@", obj);
-        }];
-    }
-    
-    NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@"arr_plist" ofType:@"plist"];
-    NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];
-    NSLog(@"%@", arr2);
-
-</code></pre>
-</div>
-<ul>
-  <li>修改数据，注意工程中的arr_plist文件内容没变，但是实际上安装包里面的文件数据是变了的，可以通过open命令打开filePath2路径下的文件。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>+ (void)writePlistData
-{
-    NSString* filePath2 = [[NSBundle mainBundle] pathForResource:@"arr_plist" ofType:@"plist"];
-    NSMutableArray* arr2 = [NSMutableArray arrayWithContentsOfFile:filePath2];
-    NSLog(@"1 : %@", arr2);
-    [arr2 addObject:@"new obj"];
-    [arr2 writeToFile:filePath2 atomically:YES];
-    NSMutableArray* arr3 = [NSMutableArray arrayWithContentsOfFile:filePath2];
-    NSLog(@"2 : %@", arr3);
-    [arr3 enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) {
-        NSLog(@"%@", obj);
-    }];
-}
+// 最简单计算方式
+Vector3.Angle(a, b)
 </code></pre>
 </div>
 
-<h4 id="xml">6.2 xml</h4>
-
-<h4 id="json">6.2 JSON</h4>
-
-<ul>
-  <li>
-    <p>创建json文件</p>
-
-    <p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003181941707-1069570154.gif" alt="" /></p>
-  </li>
-  <li>
-    <p>数据读写</p>
-  </li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>    NSError* error;
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"data" ofType:@"json"];
-
-    // 1.iOS自己的API解析
-    NSData* data = [NSData dataWithContentsOfFile:path];
-    NSDictionary* jsonDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&amp;error];
-    NSLog(@"%@", jsonDict);
-
-    NSLog(@"name = %@", [jsonDict objectForKey:@"name"]);
-
-    // 2.JSONKit解析
-    NSString* jsonStr = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&amp;error];
-    NSLog(@"%@", jsonStr);
-    NSDictionary* jsonDict2 = [jsonStr objectFromJSONString];
-    NSLog(@"%@", jsonDict2);
-    
-    //3.反向生成JSON
-    NSDictionary* dict = @{ @"age" : @1,
-        @"xx" : @"2",
-        @"favor" : @[ @"cai", @"hua" ] };
-    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
-    NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
-    NSLog(@"%@", jsonStr);
-
-    NSString* jsonStr2 = [dict JSONString];
-    NSLog(@"%@", jsonStr2);
-
-</code></pre>
-</div>
-
-<p>注意：目前的JSONKit是MRC的，需要在编译选项里面加入<code class="highlighter-rouge">-fno-objc-arc</code>,并且修正两个简单的bug。</p>
 
 
                 <hr>
@@ -296,17 +216,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-05线程">
+                        <a href="/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/" data-toggle="tooltip" data-placement="top" title="Deepoon的相关设置以及如何玩steam游戏">
                         Previous<br>
-                        <span>iOS学习笔记-05线程</span>
+                        <span>Deepoon的相关设置以及如何玩steam游戏</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/09/16/07%E5%BF%85%E8%A6%81%E7%9F%A5%E8%AF%86/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-07必要知识">
+                        <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/" data-toggle="tooltip" data-placement="top" title="代码生成AnimatorController">
                         Next<br>
-                        <span>iOS学习笔记-07必要知识</span>
+                        <span>代码生成AnimatorController</span>
                         </a>
                     </li>
                     

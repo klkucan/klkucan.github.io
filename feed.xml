@@ -5,9 +5,420 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 23 Oct 2016 18:22:08 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Oct 2016 18:22:08 +0800</lastBuildDate>
+    <pubDate>Sat, 12 Nov 2016 18:47:04 +0800</pubDate>
+    <lastBuildDate>Sat, 12 Nov 2016 18:47:04 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>代码生成AnimatorController</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;0.出发点&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改后分享出来，基本上应该是包含了状态机常用的功能。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;需要注意我的具体代码中是在一个已有的AnimatorController基础上创建的。如果完全是从0开始可以参考别的资料，其实道理是一样的都是代码创建对象。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;1.数据来源&lt;/h3&gt;
+
+&lt;p&gt;一个典型的XML文件&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;config&amp;gt;&lt;/span&gt;
+	&lt;span class=&quot;nt&quot;&gt;&amp;lt;datas&amp;gt;&lt;/span&gt;
+		&lt;span class=&quot;nt&quot;&gt;&amp;lt;data&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;INDEX=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jump&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BackLeap&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;die&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/data&amp;gt;&lt;/span&gt;
+		&lt;span class=&quot;nt&quot;&gt;&amp;lt;data&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;INDEX=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BackLeap&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;3&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jump&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jump&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/data&amp;gt;&lt;/span&gt;
+		&lt;span class=&quot;nt&quot;&gt;&amp;lt;data&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;INDEX=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;3&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;BackLeap&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip1Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ForwardLeap&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip2Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jump&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;Clip3Count=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/data&amp;gt;&lt;/span&gt;
+	&lt;span class=&quot;nt&quot;&gt;&amp;lt;/datas&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/config&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;2.动画控制器中的主要元素&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Unity中editor的功能十分的强大，能够加载项目中的各种资源，而AnimatorController就是其中之一。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一个AnimatorController的结构基本如下
+&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201611/23250-20161112184411358-1002723478.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AnimatorControllerLayer：一个AnimatorController由多个Layer组成，但是除了BaseLayer外其它的Layer并不主要负责动画逻辑，而是多用于动画遮罩。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AnimatorControllerParameter：顾名思义是状态机中使用的参数，这个参数可以在不同的Layer和子状态机中使用。在代码添加参数时会选择参数类型，它是个枚举&lt;code class=&quot;highlighter-rouge&quot;&gt;AnimatorControllerParameterType&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AnimatorStateMachine：动画状态机，核心逻辑实线层。在一个状态机中可以有多个state，也可以有多个Sub AnimatorStateMachine。通过AddStateMachine方法来生成并添加子状态机。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AnimatorState：动画状态，也是这个系统中的基础单元。其可以设定各种属性，比较常用的是AnimationClip和Speed等。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AnimatorStateTransition：也就是动画转换，其中可以设定触发参数，而且其中还有一个很重要的东西就是动画过度的设定。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;3.完整代码&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
+using UnityEditor;
+using System;
+using UnityEditor.Animations;
+using System.IO;
+using System.Xml;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
+using System.Collections.Generic;
+using System.Linq;
+
+//[CustomEditor(typeof(EditorTools))]
+public class EditorTools : MonoBehaviour
+{
+	#region 创建动画控制器
+
+	/// &amp;lt;summary&amp;gt;
+	///  记录上一个state，用于自状态机中
+	/// &amp;lt;/summary&amp;gt;
+	static AnimatorState lastAnimatorState = null;
+	static string ParameterName;
+	// 动画片段
+	static AnimationClip die;
+	static AnimationClip jump;
+	static AnimationClip BackLeap;
+	static AnimationClip ForwardLeap;
+	/// &amp;lt;summary&amp;gt;
+	/// base layer AnimatorStateMachine
+	/// &amp;lt;/summary&amp;gt;
+	static AnimatorStateMachine mainASM;
+	static int stateHeight = 100;
+	static int stateWidth = 220;
+
+	/// &amp;lt;summary&amp;gt;
+	/// 根据配置文件创建特技组
+	/// &amp;lt;/summary&amp;gt;
+	[MenuItem (&quot;Tools/CreateAnimatorState&quot;)]
+	static void CreateAnimatorState ()
+	{
+		// 获取动画片段
+		List&amp;lt;object&amp;gt; allAssets = new List&amp;lt;object&amp;gt; (AssetDatabase.LoadAllAssetsAtPath (&quot;Assets/Charactors/player2.FBX&quot;));
+		var animationClips = allAssets.Where (o =&amp;gt; o.GetType () == typeof(AnimationClip)).ToList ();
+		foreach (var item in animationClips) {
+			AnimationClip x = item as AnimationClip;
+			switch (x.name) {
+			case &quot;die&quot;:
+				die = x;
+				break;
+			case &quot;jump&quot;:
+				jump = x;
+				break;
+			case &quot;BackLeap&quot;:
+				BackLeap = x;
+				break;
+			case &quot;ForwardLeap&quot;:
+				ForwardLeap = x;
+				break;
+			default:
+				break;
+			}
+		}
+
+		// 当每个动画是一个单独的FBX文件中时可以用下面的方法来获取
+		//die = AssetDatabase.LoadAssetAtPath (&quot;Assets/Charactors/player2.FBX&quot;, typeof(AnimationClip)) as AnimationClip;
+
+
+		// 获取状态机
+		AnimatorController animatorController = AssetDatabase.LoadAssetAtPath (&quot;Assets/AnimatorController/demo.controller&quot;, typeof(AnimatorController)) as AnimatorController;
+		AnimatorControllerLayer layer = animatorController.layers [0];
+		mainASM = layer.stateMachine;
+
+		// 获取当前所有的参数
+		AnimatorControllerParameter[] paras = animatorController.parameters;
+		List&amp;lt;AnimatorControllerParameter&amp;gt; listParas = new List&amp;lt;AnimatorControllerParameter&amp;gt; (paras);
+
+		// 删除指定的参数
+		var acps = listParas.Where (p =&amp;gt; p.name.Contains (&quot;GroupParameter&quot;)).ToArray ();
+		foreach (AnimatorControllerParameter item in acps) {
+			animatorController.RemoveParameter (item);
+		}
+
+		// 删除指定的子状态机
+		ChildAnimatorStateMachine[] childASM = mainASM.stateMachines;
+		List&amp;lt;ChildAnimatorStateMachine&amp;gt; listCASM = new List&amp;lt;ChildAnimatorStateMachine&amp;gt; (childASM);
+		var casms = listCASM.Where (c =&amp;gt; c.stateMachine.name.Contains (&quot;Group&quot;)).ToArray ();
+		foreach (ChildAnimatorStateMachine item in casms) {
+			mainASM.RemoveStateMachine (item.stateMachine);
+		}
+
+		// 读配置文件
+		XmlConfig xc = ReadXml ();
+
+		Vector3 startPos = mainASM.anyStatePosition;
+
+
+		// 根据配置创建自状态机
+		for (int index = 0; index &amp;lt; xc.datas.Count; index++) {
+			Data data = xc.datas [index];
+
+			// 设置特技参数，
+			ParameterName = &quot;GroupParameter&quot; + data.INDEX.ToString ();
+			animatorController.AddParameter (ParameterName, AnimatorControllerParameterType.Trigger);
+
+			// 创建子状态机
+			AnimatorStateMachine sub = AddSubStateMachine&amp;lt;AnimatorEvent&amp;gt; (&quot;Group_&quot; + data.INDEX, ParameterName, mainASM, startPos + new Vector3 (stateWidth * index, -stateHeight, 0));
+			// 创建子状态机中的state
+			SetStateInSubMachine (sub, data);
+			lastAnimatorState = null;
+		}
+	}
+
+	/// &amp;lt;summary&amp;gt;
+	///  创建sub state machine用于放置特效组中的动画
+	/// &amp;lt;/summary&amp;gt;
+	/// &amp;lt;typeparam name=&quot;T&quot;&amp;gt;&amp;lt;/typeparam&amp;gt;
+	/// &amp;lt;param name=&quot;stateName&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	/// &amp;lt;param name=&quot;sm&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	/// &amp;lt;param name=&quot;position&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	/// &amp;lt;param name=&quot;data&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	/// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;
+	private static AnimatorStateMachine AddSubStateMachine&amp;lt;T&amp;gt; (string stateName, string para, AnimatorStateMachine sm, Vector3 position) where T : StateMachineBehaviour
+	{
+		AnimatorStateMachine sub = sm.AddStateMachine (stateName, position);
+		sub.AddStateMachineBehaviour&amp;lt;T&amp;gt; ();
+		AnimatorStateTransition transition = mainASM.defaultState.AddTransition (sub, false);
+		transition.AddCondition (AnimatorConditionMode.If, 0, para);
+		return sub;
+	}
+
+	/// &amp;lt;summary&amp;gt;
+	///  根据配置数据在子状态机中创建state
+	/// &amp;lt;/summary&amp;gt;
+	/// &amp;lt;typeparam name=&quot;T&quot;&amp;gt;&amp;lt;/typeparam&amp;gt;
+	/// &amp;lt;param name=&quot;subSM&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	/// &amp;lt;param name=&quot;data&quot;&amp;gt;&amp;lt;/param&amp;gt;
+	private static void SetStateInSubMachine (AnimatorStateMachine subSM, Data data)
+	{
+		AnimatorState newState;
+		string stateName;
+		Vector3 pos;
+		List&amp;lt;AnimationClip&amp;gt; acArray = new List&amp;lt;AnimationClip&amp;gt; ();
+		SetAnimationClip (data.Clip1, data.Clip1Count, ref acArray);
+		SetAnimationClip (data.Clip2, data.Clip2Count, ref acArray);
+		SetAnimationClip (data.Clip3, data.Clip3Count, ref acArray);
+
+		for (int x = 1; x &amp;lt;= acArray.Count; x++) {
+			stateName = &quot;GroupState_&quot; + data.INDEX + &quot;_&quot; + x.ToString ();
+			pos = subSM.entryPosition + new Vector3 (stateWidth, -stateHeight * x, 0);
+			newState = AddState (stateName, subSM, pos, acArray [x - 1], x, acArray.Count);
+			lastAnimatorState = newState;
+		}
+	}
+
+	static void SetAnimationClip (string clipName, int count, ref List&amp;lt;AnimationClip&amp;gt; acArray)
+	{
+		for (int i = 0; i &amp;lt; count; i++) {
+			if (clipName == die.name) {
+				acArray.Add (die);
+			}
+			if (clipName == jump.name) {
+				acArray.Add (jump);
+			}
+			if (clipName == BackLeap.name) {
+				acArray.Add (BackLeap);
+			}
+			if (clipName == ForwardLeap.name) {
+				acArray.Add (ForwardLeap);
+			}
+		}
+	}
+
+	static AnimatorState AddState&amp;lt;T&amp;gt; (string stateName, AnimatorStateMachine sm, float threshold, string parameter, Vector3 position,
+	                                  AnimationClip clip, bool first = false, bool last = false) where T : StateMachineBehaviour
+	{
+		AnimatorStateTransition animatorStateTransition;
+		//  生成AnimatorState
+		AnimatorState animatorState = sm.AddState (stateName, position);
+		// 设置动画片段
+		animatorState.motion = clip;
+		// 创建AnimatorStateTransition
+		// entry连接到特技组的第一个动画
+		if (first) {
+			animatorStateTransition = sm.AddAnyStateTransition (animatorState);
+			animatorStateTransition.AddCondition (AnimatorConditionMode.Equals, threshold, parameter);
+		}
+		// 最后一个动画连接到stand
+		if (last) {
+			animatorStateTransition = animatorState.AddTransition (mainASM.defaultState);
+		}
+
+		// 特技组内的连接创建
+		if (!first &amp;amp;&amp;amp; !last) {
+			animatorStateTransition = animatorState.AddTransition (mainASM.defaultState);
+		}
+
+		animatorStateTransition = lastAnimatorState.AddTransition (animatorState, true);
+
+		//AnimatorStateTransition 的设置
+		animatorStateTransition.canTransitionToSelf = false;
+		animatorState.AddStateMachineBehaviour&amp;lt;T&amp;gt; ();
+		return animatorState;
+	}
+
+	static AnimatorState AddState (string stateName, AnimatorStateMachine sm, Vector3 position, AnimationClip clip, int index, int count)
+	{
+		AnimatorStateTransition animatorStateTransition = null;
+		//  生成AnimatorState
+		AnimatorState animatorState = sm.AddState (stateName, position);
+		// 设置动画片段
+		animatorState.motion = clip;
+		// 创建AnimatorStateTransition
+		// AnyState连接到特技组的第一个动画
+		if (index == 1) {
+			//animatorStateTransition = sm.AddAnyStateTransition(animatorState);
+			//animatorStateTransition.canTransitionToSelf = false;
+		}
+		// 最后一个动画连接到main animator machine的default state
+		if (index == count) {
+			animatorStateTransition = animatorState.AddTransition (mainASM.defaultState);
+			animatorStateTransition.hasExitTime = true;
+		}
+
+		// 特技组内的连接创建
+		if (lastAnimatorState != null) {
+			animatorStateTransition = lastAnimatorState.AddTransition (animatorState, true);
+		}
+
+		return animatorState;
+	}
+
+	#endregion
+
+	#region public method
+
+	static XmlConfig ReadXml ()
+	{
+		//string xmlStr = File.ReadAllText(Application.dataPath.ToString() + &quot;/StreamingAssets/XMLConfigFiles/Stunt.xml&quot;);
+		//Debug.Log(xmlStr);
+		//string objTxt = Regex.Replace(xmlStr, @&quot;&amp;lt;!--[^-]*--&amp;gt;&quot;, string.Empty, RegexOptions.IgnoreCase);
+		//Debug.Log(objTxt);
+		return DeserializeFromXml&amp;lt;XmlConfig&amp;gt; (Application.dataPath.ToString () + &quot;/StreamingAssets/XMLConfigFiles/data.xml&quot;);
+	}
+
+	/// &amp;lt;summary&amp;gt;
+	/// 从某一XML文件反序列化到某一类型
+	/// &amp;lt;/summary&amp;gt;
+	/// &amp;lt;param name=&quot;filePath&quot;&amp;gt;待反序列化的XML文件名称&amp;lt;/param&amp;gt;
+	/// &amp;lt;param name=&quot;type&quot;&amp;gt;反序列化出的&amp;lt;/param&amp;gt;
+	/// &amp;lt;returns&amp;gt;&amp;lt;/returns&amp;gt;
+	public static T DeserializeFromXml&amp;lt;T&amp;gt; (string filePath)
+	{
+		try {
+			if (!System.IO.File.Exists (filePath))
+				throw new ArgumentNullException (filePath + &quot; not Exists&quot;);
+
+			using (System.IO.StreamReader reader = new System.IO.StreamReader (filePath)) {
+				System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer (typeof(T));
+				T ret = (T)xs.Deserialize (reader);
+				return ret;
+			}
+		}
+		catch (Exception ex) {
+			return default(T);
+		}
+	}
+
+	#endregion
+}
+
+
+#region 序列化需要的model
+[XmlType (TypeName = &quot;config&quot;)]
+public class XmlConfig
+{
+	[XmlArray (&quot;datas&quot;)]
+	public List&amp;lt;Data&amp;gt; datas { get; set; }
+}
+
+[XmlType (TypeName = &quot;data&quot;)]
+public class Data
+{
+	[XmlAttribute]
+	public int INDEX;
+	[XmlAttribute]
+	public string Clip1;
+	[XmlAttribute]
+	public int Clip1Count;
+	[XmlAttribute]
+	public string Clip2;
+	[XmlAttribute]
+	public int Clip2Count;
+	[XmlAttribute]
+	public string Clip3;
+	[XmlAttribute]
+	public int Clip3Count;
+}
+
+#endregion
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;4.最后的说明&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;其实整个过程基本就是读取XML文件内容，然后按照第二部分中描述的结构来一点一点构建状态机。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在设定具体属性时需要按照具体情况来做。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;有个天坑，就是如果在Base Layer界面多次点击CreateAnimatorState按钮时会出现Unity的crash，或者出现界面所有元素消失并报错。我找了很多资料应该是UnityEditor的bug。有一个很简单的解决办法，就是创建一个新的Layer，切换到新Layer的界面，然后点击CreateAnimatorState按钮，再切回Base Layer，这样就不会出错了。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 12 Nov 2016 17:18:16 +0800</pubDate>
+        <link>https://caihua.tech/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>向量夹角计算</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;向量夹角&lt;/h4&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 基于点积计算，
+// a.b = ||a|| * ||b|| * sin(θ) 
+// =&amp;gt; θ = arccos(a·b / (||a|| * ||b||))
+// =&amp;gt; θ = arccos(a·b) //当a和b按照单位向量算时
+float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized)) * Mathf.Rad2Deg;
+
+// 基于叉积计算，
+// ||a × b|| = ||a|| ||b|| sinθ             
+// =&amp;gt; θ = arcsin(||a × b|| / (||a|| * ||b||))
+// =&amp;gt; θ = arcsin(||a × b||) //当a和b按照单位向量算时
+// 下面公式中有个Distance的计算是因为||a × b||是有长度的
+angle = Mathf.Asin(Vector3.Distance(Vector3.zero, Vector3.Cross(a.normalized, b.normalized))) * Mathf.Rad2Deg;
+
+// 最简单计算方式
+Vector3.Angle(a, b)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Sat, 12 Nov 2016 14:15:50 +0800</pubDate>
+        <link>https://caihua.tech/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/</link>
+        <guid isPermaLink="true">https://caihua.tech/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/</guid>
+        
+        <category>3D数学</category>
+        
+        
+      </item>
     
       <item>
         <title>Deepoon的相关设置以及如何玩steam游戏</title>
@@ -490,566 +901,6 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForR
         <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
         <link>https://caihua.tech/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</link>
         <guid isPermaLink="true">https://caihua.tech/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</guid>
-        
-        <category>iOS学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>iOS学习笔记-05线程</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;5.线程&lt;/h2&gt;
-
-&lt;h4 id=&quot;gcd&quot;&gt;5.1 GCD&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(queue, block);&lt;/code&gt;参数中的queue可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt;或者系统提供的标准dispatch queue。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    // 生成一个serial dispatch queue
-    dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);
-    // 生成一个concurrent dispatch queue
-    dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);
-
-    // 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量
-    dispatch_release(serialQueue);
-    dispatch_release(concurrentQueue);
-
-    // 使用系统已经提供的方法来create queue
-    dispatch_queue_t serialQueue2 = dispatch_get_main_queue();
-    dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-    // 因此真正在代码中经常是这样写的
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@&quot;execute in main thread&quot;);
-    });
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@&quot;execute in a concurrent thread&quot;);
-    });
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;GCD中线程分为Serial Dispatch Queue和Concurrent Dispatch Queue，分别为顺序执行和并发执行。在使用dispatch_get_main_queue时获得的是主线程queue，因此它一定是顺序执行的。使用dispatch_get_global_queue获得的queue所能并行的线程数量由系统来确定，并且可以甚至优先级，然后由于XNU内核用于Global Dispatch Queue的线程不保证实时性，因此执行优先级只是大致的判断（说白了就是并不是严格执行的）。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_set_target_queue(dispatch_object_t object, dispatch_queue_t queue);&lt;/code&gt;可以用来改变queue的优先级先度&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 变更queue的priority
-dispatch_set_target_queue(concurrentQueue, serialQueue);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;延迟将block添加到queue中，dispatch_after&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@&quot;dispatch_after&quot;);
-    });
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;&amp;lt;font size=3 color=red&amp;gt;&lt;strong&gt;注意这个方法可以用来做指定一个时间后执行某段代码但是这个时间参数并不准确,因为这个只是在一段时间后将block加入到queue中，但是并不意味着马上执行。&lt;/strong&gt;&amp;lt;/font&amp;gt;&lt;/p&gt;
-
-&lt;p&gt;PS:关于用到的时间的宏的说明&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;NSEC：纳秒。&lt;/p&gt;
-
-  &lt;p&gt;USEC：微妙。&lt;/p&gt;
-
-  &lt;p&gt;SEC：秒&lt;/p&gt;
-
-  &lt;p&gt;PER：每&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;所以：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;NSEC_PER_SEC，每秒有多少纳秒。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;USEC_PER_SEC，每秒有多少毫秒。（注意是指在纳秒的基础上）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;NSEC_PER_USEC，每毫秒有多少纳秒。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;所以，延时1秒可以写成如下几种：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, 1000 * USEC_PER_SEC);&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;dispatch_time(DISPATCH_TIME_NOW, USEC_PER_SEC * NSEC_PER_USEC);&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;最后一个“USEC_PER_SEC * NSEC_PER_USEC”，翻译过来就是“每秒的毫秒数乘以每毫秒的纳秒数”，也就是“每秒的纳秒数”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group&lt;/code&gt;，当在并发完成一些处理后，可能需要一个节点来完成某个操作，这个操作必须等到之前的处理全部完成，那么就需要用到dispatch_group来实现。配合&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group&lt;/code&gt;使用的有两个，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_notify &lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt;,前者是当处理全部完成后执行，后者是等待一段时间后，用返回值判断是否所有的任务都完成了。当等待时间为&lt;code class=&quot;highlighter-rouge&quot;&gt;DISPATCH_TIME_FOREVER&lt;/code&gt;时返回值一定会是0。另外，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt;会阻塞调用的线程。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;       dispatch_queue_t groupQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_group_t group = dispatch_group_create();
-
-    // 第一个处理
-    dispatch_group_async(group, groupQueue, ^{
-        NSLog(@&quot;first&quot;);
-    });
-
-    // 第二个处理
-    dispatch_group_async(group, groupQueue, ^{
-        NSLog(@&quot;secend&quot;);
-    });
-
-    // 完成后最终的处理
-    dispatch_group_notify(group, groupQueue, ^{
-        NSLog(@&quot;done&quot;);
-    });
-
-    long result = dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    if (result == 0) {
-        NSLog(@&quot;done&quot;);
-    }
-    else {
-        NSLog(@&quot;not done&quot;);
-    }
-    // 需要release
-    dispatch_release(group);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;,在代码中会等待之前加入某个queue的block全部执行完，然后使得concurrent queue变为一个serial queue，只能执行用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;添加的block，等完成后，queue变回并发。典型应用场景DB read的操作使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async&lt;/code&gt;，当需要write DB时使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_async&lt;/code&gt;，可以保证数据的一致性，也相当于给写操作加了锁（好吧这样说不够严谨）。&lt;/p&gt;
-
-&lt;p&gt;-&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync&lt;/code&gt;，同步的将block放到某个queue中，执行这个函数的线程会阻塞等待block执行完成。很容易导致死锁，目前看最好别用。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;关于dispatch_sync导致死锁的问题：
-&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_main_queue, ...)&lt;/code&gt;这样写一定会死锁，dispatch_(a)sync这两个函数本质上是将block放到一个queue中，只不过一个会阻塞当前调用函数的线程，一个不会。&lt;/p&gt;
-
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(dispatch_get_main_queue, ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程不会等待block执行，虽然这个block是在main thread中执行的，最有可能的是在下一个loop中才会执行block。&lt;/p&gt;
-
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async(dispatch_get_global_queue(...), ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程不会等待block执行，而是由系统分配另一个线程完成block，这个方式就是典型的多线程。&lt;/p&gt;
-
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_main_queue, ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程会等待block执行，但是这个block又是在main thread执行的，导致死锁。&lt;/p&gt;
-
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync(dispatch_get_global_queue(...), ...)&lt;/code&gt;假设是main thread执行这个函数，那么线程会等待block执行，由系统分配另一个线程完成block，这个方式可用，但是最好不用main thread，而是自己创建一个serial queue。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;最后看一组代码的结果&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  // 使用系统已经提供的方法来create queue
-    dispatch_queue_t serialQueue2 = dispatch_get_main_queue();
-    dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-
-    // 因此真正在代码中经常是这样写的
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@&quot;execute in main thread&quot;);
-    });
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@&quot;execute in a concurrent thread&quot;);
-    });
-
-    // 变更queue的priority
-    //    dispatch_set_target_queue(concurrentQueue, serialQueue);
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3ull * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@&quot;dispatch_after&quot;);
-    });
-
-    dispatch_queue_t groupQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_group_t group = dispatch_group_create();
-
-    // 第一个处理
-    dispatch_group_async(group, groupQueue, ^{
-        NSLog(@&quot;first&quot;);
-    });
-
-    // 第二个处理
-    dispatch_group_async(group, groupQueue, ^{
-        NSLog(@&quot;secend&quot;);
-    });
-
-    // 完成后最终的处理
-    dispatch_group_notify(group, groupQueue, ^{
-        NSLog(@&quot;done&quot;);
-    });
-
-    long result = dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-    if (result == 0) {
-        NSLog(@&quot;result done&quot;);
-    }
-    else {
-        NSLog(@&quot;result not done&quot;);
-    }
-    // 需要release
-    dispatch_release(group);
-
-    dispatch_async(concurrentQueue2, ^{
-        NSLog(@&quot;read1&quot;);
-    });
-    dispatch_async(concurrentQueue2, ^{
-        NSLog(@&quot;read2&quot;);
-    });
-
-    dispatch_barrier_async(concurrentQueue2, ^{
-        NSLog(@&quot;write&quot;);
-    });
-
-    dispatch_async(concurrentQueue2, ^{
-        NSLog(@&quot;read3&quot;);
-    });
-    dispatch_async(concurrentQueue2, ^{
-        NSLog(@&quot;read4&quot;);
-    });
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-07-09 14:46:28.500 CRHelper[3027:231293] execute in a concurrent thread
-2016-07-09 14:46:28.500 CRHelper[3027:231294] first
-2016-07-09 14:46:28.500 CRHelper[3027:231297] secend
-2016-07-09 14:46:28.502 CRHelper[3027:231297] done
-2016-07-09 14:46:28.502 CRHelper[3027:231205] result done
-2016-07-09 14:46:28.507 CRHelper[3027:231297] read1
-2016-07-09 14:46:28.507 CRHelper[3027:231293] read2
-2016-07-09 14:46:28.507 CRHelper[3027:231390] write
-2016-07-09 14:46:28.507 CRHelper[3027:231294] read3
-2016-07-09 14:46:28.507 CRHelper[3027:231297] read4
-2016-07-09 14:46:28.546 CRHelper[3027:231205] execute in main thread
-2016-07-09 14:46:31.782 CRHelper[3027:231294] dispatch_after
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;“execute in main thread”这句话在代码顺序中是第一个但是却在倒数第二个输出，因为是在main thread执行的，可以很明确的看出来这个代码是在下一个loop中执行的，还有就是dispatch_after也并不是严格的按照3秒后执行的.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_apply&lt;/code&gt;的应用场合主要是循环在一个queue中调用某个block，可以用于处理集合。这个函数会想wait一样阻塞线程，因此在非主线程中用比较好。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    NSArray* arr = [NSArray arrayWithObjects:@1, @2, nil];
-    for (NSInteger i = 0; i &amp;lt; [arr count]; i++) {
-        NSLog(@&quot;%@&quot;, [arr objectAtIndex:i]);
-    }
-    dispatch_async(concurrentQueue2, ^{
-        dispatch_apply([arr count], concurrentQueue2, ^(size_t i) {
-            NSLog(@&quot;%@&quot;, [arr objectAtIndex:i]);
-        });
-    });
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;拾遗：&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_suspend&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dipatch_resume&lt;/code&gt;等。基本没用过，懒得写了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;nsthreadperformselector&quot;&gt;5.2 NSThread和performSelector&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;看一组代码和结果。可以看出performSelector方法是在main线程执行，而且performSelectorOnMainThread这个方法的输出在4之后，应该是这个方法会在下一个main thread的runloop中执行。1和4在测试中先后顺序不定，也比较好理解。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)doSome:(NSString*)arg
-{
-    NSLog(@&quot;%@ -&amp;gt; %@&quot;, [NSThread currentThread], arg);
-}
-
-- (void)startThread
-{
-    NSThread* th = [[NSThread alloc] initWithTarget:self selector:@selector(doSome:) object:@&quot;1&quot;];
-    BOOL state = [th isMainThread];
-    state = [th isCancelled];
-    state = [th isFinished];
-    state = [th isExecuting];
-
-    [th start];
-
-    [self performSelectorOnMainThread:@selector(doSome:) withObject:@&quot;2&quot; waitUntilDone:NO];
-    [self performSelector:@selector(doSome:) withObject:@&quot;3&quot; afterDelay:3];
-
-    [self performSelector:@selector(doSome:) withObject:@&quot;4&quot;];
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-08-28 22:40:45.055 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 4
-2016-08-28 22:40:45.055 ARCTest[3619:236310] &amp;lt;NSThread: 0x7fc0c3723f30&amp;gt;{number = 2, name = (null)} -&amp;gt; 1
-2016-08-28 22:40:45.077 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 2
-2016-08-28 22:40:48.056 ARCTest[3619:236163] &amp;lt;NSThread: 0x7fc0c3501b70&amp;gt;{number = 1, name = main} -&amp;gt; 3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;nsoperation&quot;&gt;5.3 NSOperation&lt;/h4&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;5.4 锁&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用：NSLock, @synchronized(self),或者使用&lt;code class=&quot;highlighter-rouge&quot;&gt;DISPATCH_QUEUE_SERIAL&lt;/code&gt;这样的形式来实现锁。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;比较：&lt;/p&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;NSLock控制麻烦，而且要考虑死锁。&lt;/p&gt;
-
-      &lt;p&gt;@synchronized(self)如果很多方法都用self做锁，那么会导致一个长时间执行的方法阻塞其它方法，所以如果用最好不要都使用一个对象来作为锁对象。&lt;/p&gt;
-
-      &lt;p&gt;GCD的锁不需要关注实现，而且是深层次实现的，比较高效，并且方法众多，可以时间多种锁的需要。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;5.5 多线程编程的选择&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;NSThread功能完善，比较基础，能够完成简单的任务。当需要同步执行或者有一定的依赖要求时编程较为复杂。&lt;/li&gt;
-  &lt;li&gt;performSelector缺点很多，首先执行SEL这个东西，需要判定方法是否存在；第二、在ARC下使用如果方法创建并返回一些对象，此时如果不进行一定的处理会导致内存泄露，因为ARC下默认是不做对象的autorelease的。第三、参数传递个数有限，有时需要自己定义个对象传递多个参数。&lt;/li&gt;
-  &lt;li&gt;NSOperation，功能强大尤其是对于依赖性的处理使用起来很方便。&lt;/li&gt;
-  &lt;li&gt;GCD，其实使用GCD基本可以完成任何任务，包括有依赖性的任务，和NSOperation搭配起来灵活使用吧。&lt;/li&gt;
-  &lt;li&gt;GCD和NSOperation的对比：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;1）GCD是纯C语言的API,而操作队列则是Object-C的对象。&lt;/p&gt;
-
-  &lt;p&gt;2）在GCD中，任务用块（block）来表示，而块是个轻量级的数据结构；相反操作队列中的『操作』NSOperation则是个更加重量级的Object-C对象。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;3）具体该使用GCD还是使用NSOperation需要看具体的情况&lt;/p&gt;
-
-  &lt;p&gt;4）需要注意，如果直接使用NSOperation的start方法是直接在调用线程执行的，这意味着可能是在UI线程执行。&lt;/p&gt;
-
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;NSOperation和NSOperationQueue相对GCD的好处有：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;1）NSOperationQueue可以方便的调用cancel方法来取消某个操作，而GCD中的任务是无法被取消的（安排好任务之后就不管了）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2）NSOperation可以方便的指定操作间的依赖关系。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;3）NSOperation可以通过KVO提供对NSOperation对象的精细控制（如监听当前操作是否被取消或是否已经完成等）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;4）NSOperation可以方便的指定操作优先级。操作优先级表示此操作与队列中其它操作之间的优先关系，优先级高的操作先执行，优先级低的后执行。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;5）通过自定义NSOperation的子类可以实现操作重用，&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;5.6 并发&lt;/h4&gt;
-
-</description>
-        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/16/05%E7%BA%BF%E7%A8%8B/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/16/05%E7%BA%BF%E7%A8%8B/</guid>
-        
-        <category>iOS学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>iOS学习笔记-04内存管理</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;4.内存管理&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;4.1 手动管理&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;自己生成的对象自己持有，可以调用&lt;code class=&quot;highlighter-rouge&quot;&gt;release&lt;/code&gt;方法减少retain数量。&lt;/li&gt;
-  &lt;li&gt;非自己生成的对象也可以持有，通过调用&lt;code class=&quot;highlighter-rouge&quot;&gt;retain&lt;/code&gt;方法可以持有对象，引用数+1。&lt;/li&gt;
-  &lt;li&gt;不再需要自己持有的对象要及时释放，注意类中的property要在&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)dealloc
-&lt;/code&gt;方法中赋值nil，这样写相当于release了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dealloc
-{
-    self.arr = nil;
-    [super dealloc];
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;无法释放非自己持有的对象，注意当一个变量持有一次对象后，只能释放一次。也就是说retainCount必须+1和-1对称。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;alloc的实现。其实就是调用calloc方法申请内存和C语言的差不多，只不过对象的头部位有个地址用于存储引用数。而retain、release就是对引用数加减，dealloc则是free掉对象。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;autorelease&quot;&gt;4.2 Autorelease&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-// 当调用autorelease方法时，其实是将对象obj放到了pool的一个对象列表中
-NSObject* obj = [[[NSObject alloc] init] autorelease];
-
-[pool drain]; // obj会被调用release方法
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;注意到main.m中有这样的代码，在最外层就有个autoreleasepool了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;arc&quot;&gt;4.3 ARC&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;我的理解
-    &lt;blockquote&gt;
-      &lt;p&gt;所谓ARC是通过编译器和运行时的协作来实现自动管理引用计数，编译器在ARC有效的代码中加入额外的代码来加减引用计数。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;标识
-    &lt;ol&gt;
-      &lt;li&gt;__strong：默认就是&lt;/li&gt;
-      &lt;li&gt;__weak：需显式使用&lt;/li&gt;
-      &lt;li&gt;__autoreleasing：这个标识一些情况下是不需要显式使用，一些情况下是不需要的，最为致命。&lt;/li&gt;
-      &lt;li&gt;__unsafe_unretained：个人感觉已经被弃用了，在没有weak的时代使用的东西。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;__strong
-    &lt;blockquote&gt;
-      &lt;p&gt;这个修饰符具有持有对象的功能，与retain类似。它的使用分为如下几种情况：
-1、&lt;code class=&quot;highlighter-rouge&quot;&gt;id __strong obj = [[NSObject alloc] init];&lt;/code&gt; 这行代码可以理解为如下代码，可见所谓自动管理，就是在编译出来的代码中对强引用变量调用release方法。&lt;/p&gt;
-
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;id obj = objc_msgSend(NSObject, @selector(alloc));
-objc_msgSend(obj, @selector(init));
-objc_release(obj);
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-
-      &lt;p&gt;2、&lt;code class=&quot;highlighter-rouge&quot;&gt;id __strong obj = [NSMutableArray array];&lt;/code&gt; 这行代码可以理解为以下代码，很有意思的代码。objc_retainAutoreleasedReturnValue是持有(retain)了一个在autoreleasepool中的对象,而这个对象就是array方法的返回值。&lt;/p&gt;
-
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;id obj = objc_msgSend(NSMutableArray, @selector(array));
-objc_retainAutoreleasedReturnValue(obj);
-objc_release(obj); // 离开作用域后自动释放
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-
-      &lt;p&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;成对出现的是这个方法&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_autoreleasedReturnValue&lt;/code&gt;方法，对于NSMutableArray类的array方法可能是这样实现的&lt;/p&gt;
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (id)array
-{
-  return [[NSMutableArray alloc] init];
-}
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-
-      &lt;p&gt;它可以理解为如下代码&lt;/p&gt;
-
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (id)array
-{ 
-     id obj = objc_msgSend(NSMutableArray, @selector(alloc));
-     objc_msgSend(obj, @selector(init));
-     return objc_autoreleasedReturnValue(obj);
-}
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-
-      &lt;p&gt;&amp;lt;font color=green&amp;gt;对于外界调用这个方法赋值的变量来说，只是在使用一个autoreleasepool中的对象。在结合&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;使用时，其实生成的对象并没有进入autoreleasepool，而是直接传递给了使用&lt;code class=&quot;highlighter-rouge&quot;&gt;objc_retainAutoreleasedReturnValue&lt;/code&gt;方法赋值的变量。&amp;lt;/font&amp;gt;&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;__weak&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;1、被__weak修饰的&amp;lt;font color=green&amp;gt;&lt;strong&gt;&lt;em&gt;变量的地址&lt;/em&gt;&lt;/strong&gt;&amp;lt;/font&amp;gt;会被放入到weak表中，这个表是个k-v形式的，key是对象的地址，value是所有引用了这个对象的变量的地址。&lt;/p&gt;
-
-      &lt;p&gt;2、一个对象被释放的过程是个复杂的过程，&lt;/p&gt;
-
-      &lt;p&gt;```
-objc_release -&amp;gt; dealloc(如果引用计数为0) -&amp;gt; _objc_rootDealloc 
--&amp;gt; object_dispose -&amp;gt; objc_destructInstance 
--&amp;gt; objc_clear_deallocating
-{
-  1、用对象地址找到weak表中的value
-  2、所有变量(weak表中记录了地址)赋值nil
-  3、从weak表删除记录
-  4、从引用计数表删除废弃对象的地址为键值的记录
-}&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;```
-从以上的过程可以看出当对象被销毁后所有引用它的__weak变量都会被赋值为nil，这个过程是比较消耗CPU的，少用。&lt;/p&gt;
-
-      &lt;p&gt;3、&amp;lt;font color=green&amp;gt;&lt;strong&gt;使用被__weak修饰的变量就是使用注册到autoreleasepool中的对象&lt;/strong&gt;&amp;lt;/font&amp;gt;，从以下代码来进行理解这句话，&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 	  id __weak obj1 = obj;
-    NSLog(@&quot;%@&quot;, obj1);
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-      &lt;p&gt;这句话会大致被编译器翻译成这样&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  id obj；
-  objc_initWeak(&amp;amp;obj1, obj);
-  id tmp = objc_loadWeakRetaind(&amp;amp;obj1);
-  objc_autorelease(tmp);
-  NSLog(@&quot;%@&quot;, tmp);
-  objc_destroyWeak(&amp;amp;obj1);
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/div&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;可以看到为了能够NSLog执行时obj1引用的对象不被销毁，需要将它赋值给一个strong(默认)修饰的临时变量，而这个临时变量需要放到autoreleasepool中，因此存在一个问题，当你多次在一个作用域中多次使用weak修饰的变量，会导致很多临时变量产生而且会放到autoreleasepool中，作用域结束后autoreleasepool有很多工作要做。所以少用weak，一般就是避免循环引用。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;__autoreleasing，核心就是把修饰的变量放入到autoreleasepool中，没啥多说的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;注意事项：
-    &lt;ol&gt;
-      &lt;li&gt;不能使用retain、release、retainCount、autorelease这样方法&lt;/li&gt;
-      &lt;li&gt;不能使用NSAllocateObject和NSDeallocateObject方法，实际上我根本没用过。&lt;/li&gt;
-      &lt;li&gt;需要在函数命名时遵守规则，比如alloc\new\copy\mutableCopy必须给与调用者对象持有权限。&lt;/li&gt;
-      &lt;li&gt;不能使用NSAutoreleasePool，可以用@autoreleasepool替换。&lt;/li&gt;
-      &lt;li&gt;dealloc方法不能显示调用，很明显的例子就是在MRC中写dealloc方法时一定要调用super的dealloc方法，但是在ARC中不行了，不过notificationCenter的删除等处理还是要写在dealloc方法中的，会自动调用。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Fri, 16 Sep 2016 03:32:23 +0800</pubDate>
-        <link>https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
         
         <category>iOS学习笔记</category>
         
