@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-01基本语法 - 笛音夏扇的博客</title>
+    <title>由一个美术需求引发的Custom Inspector - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+    <link rel="canonical" href="https://caihua.tech/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
                         
                     </div>
-                    <h1>iOS学习笔记-01基本语法</h1>
+                    <h1>由一个美术需求引发的Custom Inspector</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on November 19, 2016</span>
                 </div>
             </div>
         </div>
@@ -187,180 +187,209 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">1.基本语法</h2>
+				<h3 id="section">需求</h3>
 <ul>
-  <li>与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger</li>
+  <li>Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
-typedef long NSInteger;
-typedef unsigned long NSUInteger;
-#else
-typedef int NSInteger;
-typedef unsigned int NSUInteger;
-#endif
-</code></pre>
-</div>
-
-<ul>
-  <li>在类的定义上分为Interface和Implement两部分，这个与C的头文件和实现文件是一个概念，只不过写法上还是有区别的。Interface作为头文件的基本写法就是这样的，注意到在@Interface上有一句变量的定义，这个是全局静态变量其用法和C中定义静态变量是一样的，在@Interface的花括号中还定义了两变量，其实@private可有可无，写法与C++是一样的。而property则写在中间，在@Interface花括号区域定义的变量目前发现不能使用类似retain这样的写法。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">static</span> <span class="n">NSInteger</span> <span class="n">staticIntInFirstViewController</span><span class="p">;</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">:</span> <span class="nc">UIViewController</span> <span class="p">{</span>
-<span class="k">@private</span>
-    <span class="n">NSInteger</span> <span class="n">privateInt</span><span class="p">;</span>
-<span class="k">@public</span>
-    <span class="n">NSInteger</span> <span class="n">publicInt</span><span class="p">;</span>
-<span class="p">}</span>
-<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">arg1</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">arg1</span> <span class="nf">withArg2</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg2</span><span class="p">;</span>
-<span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="p">;</span>
-
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">printRetain</span><span class="p">;</span>
-<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">NSArray</span><span class="o">*</span> <span class="n">arr</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>字段和属性的使用方法如下：</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>FirstViewController* f = [[FirstViewController alloc] init];
-staticIntInFirstViewController = 1; // 只要引用了头文件，直接使用即可
-f-&gt;publicInt = 2; // C++的用法
-f.arr;
-</code></pre>
-</div>
-
-<ul>
-  <li>而Implement则是实现部分，Implement中可以添加一些只用于.m文件中的变量。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@implementation</span> <span class="nc">FirstViewController</span> <span class="p">{</span>
-    <span class="n">NSInteger</span> <span class="n">I</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre>
-</div>
+<h3 id="section-1">需求分析</h3>
 
 <ul>
   <li>
-    <p>类文件的生成：</p>
-
-    <p>UI类：右键→New File→选定平台(iOS/OSX等)→Cocoa Class
-分类(category)：右键→New File→选定平台(iOS/OSX等)→Objective-C File→输入名称、选择类型为category，选择基类。&lt;font size=4 color=green&gt;（在这里还可以创建协议(protocol)和类扩展(extension)）&lt;/font&gt;</p>
+    <p>如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，<code class="highlighter-rouge">transform.GetComponent </code>这样的方法怎么执行？好在unity已经为我们考虑到了这个问题，提供了<code class="highlighter-rouge">[ExecuteInEditMode]</code>Attribute，通过指定这个attribute使得组件类中的方法可以在edit模式下执行，并且是在非运行状态下的。</p>
   </li>
   <li>
-    <p>类的扩展，类的扩展分为分类(category)和使用()的形式来扩展类（class-continuation）。其区别在于category类似一个完整的类文件，有.h和.m。它的文件的名称通常为<code class="highlighter-rouge">原类名+分类名</code>，比如
-<code class="highlighter-rouge">FirstViewController+Test</code>,其Interface和Implement分别为</p>
+    <p>如何在非运行状态下匀速改变数值呢？update方法中配合<code class="highlighter-rouge">Time.deltaTime</code>是一个完美的方案，但是即使设置了<code class="highlighter-rouge">[ExecuteInEditMode]</code>，update的表现在非运行和运行时也是完全不同的，查资料看到<a href="https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html"> is only called when something in the scene changed. </a>这句话时也有种吐槽的冲动。好在unity又为大家考虑到了这个问题（话说unity editor确实功能强大，AssetAtore里面那些插件真是厉害）,Edit模式下提供了<code class="highlighter-rouge">EditorApplication.update</code>，这是一个事件，我们注册一个自己的方法就可以在非运行状态下实现update的功能。我个人比较推荐使用<a href="https://gist.github.com/benblo/10732554">EditorCoroutine</a>，一个基于<code class="highlighter-rouge">EditorApplication.update</code>的协程实现。</p>
   </li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController.h"
-</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">(</span><span class="nl">Test</span><span class="p">)</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController+Test.h"
-</span>
-<span class="k">@implementation</span> <span class="nc">FirstViewController</span> <span class="p">(</span><span class="nl">Test</span><span class="p">)</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>&lt;font color=green&gt;
-注意在分类中可以添加属性，但是会提示
-<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182039301-389964144.jpg" alt="" /> 这是因为除了class-continuation其它分类不支持生成实例变量，而且也不建议在分类中定义属性。&lt;/font&gt;</p>
-
-<p>而使用()来做的扩展类只是个头文件，形式如下，注意到类名后面有个<code class="highlighter-rouge">()</code>，这个里面定义的方法还是需要在主类的.m文件中实现。&lt;font color=green&gt;<strong>在class-continuation中可以定义属性、实例变量、方法，其无法被外部类访问，这就实现了细节的隐藏。</strong>&lt;/font&gt;</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">#import "FirstViewController.h"
-</span>
-<span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">()</span>
-
-<span class="k">@end</span>
-</code></pre>
-</div>
+<h3 id="section-2">功能实现</h3>
 
 <ul>
-  <li>函数的定义,”-“为实例方法，”+”类方法（静态方法），语法上基本没有什么特别注意的，只是在函数和变量的明面上应该遵循oc命名的习惯</li>
+  <li>使用一个自定义组件来实现material中数值的修改，这个类在UI上要体现出能够设置变化速率和初始值。并且在UI上通过点击按钮的形式来触发改变。</li>
+  <li>使用Custom Inspector来实现组件UI的自定义。</li>
+  <li>在运行状态下通过使用默认的update来实现匀速变化，在非运行状态下通过使用EditorCoroutine来实现。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@interface</span> <span class="nc">FirstViewController</span> <span class="p">:</span> <span class="nc">UIViewController</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg1</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">:(</span><span class="n">BOOL</span><span class="p">)</span><span class="nv">arg1</span> <span class="nf">withArg2</span><span class="p">:(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">arg2</span><span class="p">;</span>
-<span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<ul>
-  <li>函数的调用<code class="highlighter-rouge">[xxxInstance foo]</code>或者实例函数<code class="highlighter-rouge">[xxxClass foo]</code></li>
-</ul>
+<h3 id="section-3">代码实现</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>FirstViewController *f = [[FirstViewController alloc] init];
-[f foo:1];
-[f foo:YES withArg2:1];
-[FirstViewController foo];
-[f release];
-</code></pre>
-</div>
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
+using System.Collections;
+using UnityEditor;
+public class UVAnimation : MonoBehaviour
+{
 
-<ul>
-  <li>协议(protocol)和代理(delegate)，两者是合起来用，&lt;font size=4 color=green&gt;代理本质上是一个实现了协议的对象的引用。&lt;/font&gt;协议的形式为</li>
-</ul>
+    public Vector2 TilingSpeed = new Vector2(1, 1);
+    public Vector2 OffsetSpeed = new Vector2(0.1f, 0.1f);
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">@protocol</span> <span class="nc">FirstViewDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
-<span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">didClickSomeUI</span><span class="p">;</span>
-<span class="k">@end</span>
-</code></pre>
-</div>
-<p>代理的形式为 <code class="highlighter-rouge"><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">id</span><span class="o">&lt;</span><span class="n">FirstViewDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span></code></p>
+    public Vector2 Tiling = new Vector2(1, 1);
+    public Vector2 Offset = new Vector2(0, 0);
 
-<p>需要注意的是：因为是个对象的引用，因此在使用的时候可能出现互相引用的问题，这样在定义property的时候需要定义为弱引用，防止对象因为互相调用而无法被释放。</p>
+    float rate = 0.02f;
 
-<ul>
-  <li>在流程控制上一样使用if else, switch, for, do while等</li>
-</ul>
+    EditorCoroutine coroutineOffset;
+    EditorCoroutine coroutineTiling;
 
-<div class="highlighter-rouge"><pre class="highlight"><code>- (void)foo:(NSInteger)arg1 {
-  if (arg1 &lt; 1) {
-    return;
-  }
-  NSLog(@"for start");
-  for (NSInteger i = 0; i &lt; arg1; i++) {
-    if (i % 2 == 0) {
-      NSLog(@"%ld", i);
+    bool isOffset = false;
+    bool isTiling = false;
+
+    // Use this for initialization
+    void Start()
+    {
     }
-  }
 
-  NSLog(@"while start");
-  NSInteger m = 10;
-  while (m &gt; 0) {
-    NSLog(@"%ld", m);
-    m--;
-  }
+    // Update is called once per frame
+    void Update()
+    {
 
-  NSLog(@"do while start");
-  do {
-    NSLog(@"%ld", m);
-    m++;
-  } while (m &lt; 10);
-  
-  switch (arg1) {
-   case 1:
-       NSLog(@"");
-       break;
-   case 2: {
-       // do some
-   } break;
-   default:
-       break;
-   }
+    }
 
+    void FixedUpdate()
+    {
+        if (isOffset)
+        {
+            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * Time.deltaTime;
+        }
+        if (isTiling)
+        {
+            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * Time.deltaTime;
+        }
+    }
+
+    public void ChangeOffset()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            isOffset = true;
+        }
+        else
+        {
+            if (coroutineOffset != null)
+            {
+                coroutineOffset.stop();
+            }
+            coroutineOffset = EditorCoroutine.start(ChangeOffsetCoroutine());
+        }
+
+    }
+
+    IEnumerator ChangeOffsetCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(rate);
+            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * rate;
+        }
+    }
+
+    public void ChangeTiling()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            isTiling = true;
+        }
+        else
+        {
+            if (coroutineTiling != null)
+            {
+                coroutineTiling.stop();
+            }
+            coroutineTiling = EditorCoroutine.start(ChangeTilingCoroutine());
+        }
+    }
+
+    IEnumerator ChangeTilingCoroutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(rate);
+            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * rate;
+        }
+    }
+
+    public void SetOffset()
+    {
+        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = Offset;
+    }
+
+    public void SetTiling()
+    {
+        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = Tiling;
+    }
+
+    public void Reset()
+    {
+        isOffset = false;
+        isTiling = false;
+        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = new Vector2(1, 1);
+        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = new Vector2(0, 0);
+        if (coroutineOffset != null)
+        {
+            coroutineOffset.stop();
+        }
+        if (coroutineTiling != null)
+        {
+            coroutineTiling.stop();
+        }
+    }
 }
+
 </code></pre>
 </div>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
+using System.Collections;
+using UnityEditor;
+
+[CustomEditor(typeof(UVAnimation))]
+public class UVAnimationBuilderEditor : Editor {
+
+
+	public override void OnInspectorGUI ()
+	{
+	   base.OnInspectorGUI ();
+		//DrawDefaultInspector ();
+		UVAnimation uva = (UVAnimation)target;
+
+		if (GUI.changed) {
+			uva.SetTiling ();
+			uva.SetOffset ();
+		}
+
+		if (GUILayout.Button("Change Tiling")) {
+			uva.ChangeTiling ();	
+			EditorUtility.SetDirty (target);
+		}
+
+		if (GUILayout.Button("Change Offset")) {
+			uva.ChangeOffset ();
+		}
+
+		if (GUILayout.Button("Reset")) {
+			uva.Reset ();
+		}
+	}
+}
+
+</code></pre>
+</div>
+
+<h3 id="section-4">代码解析</h3>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">[CustomEditor(typeof(UVAnimation))]</code>为UVAnimation创建的Editor类，在这个类里面可以修改UVAnimation类的UI，可以调用UVAnimation类中的方法。</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">OnInspectorGUI</code>方法，顾名思义在里面可以对UI进行编程，注意一下这个方法会自己生产一句代码<code class="highlighter-rouge">base.OnInspectorGUI ();</code>，我所注释掉的<code class="highlighter-rouge">DrawDefaultInspector ();</code>这句代码都是用来绘制默认UI的，二者只可留其一。</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">transform.GetComponent&lt;Renderer&gt;().sharedMaterials</code>在edit模式下获取材质球的对象需要用<code class="highlighter-rouge">sharedMaterials</code>。</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">mainTextureScale</code>对应的就是UI上的Tiling。命名这让人吐槽。</p>
+  </li>
+</ul>
 
 
                 <hr>
@@ -370,13 +399,13 @@ f.arr;
 
                 <ul class="pager">
                     
-                    
-                    <li class="next">
-                        <a href="/2016/09/16/02%E9%9B%86%E5%90%88/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-02集合">
-                        Next<br>
-                        <span>iOS学习笔记-02集合</span>
+                    <li class="previous">
+                        <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/" data-toggle="tooltip" data-placement="top" title="代码生成AnimatorController">
+                        Previous<br>
+                        <span>代码生成AnimatorController</span>
                         </a>
                     </li>
+                    
                     
                 </ul>
 
