@@ -5,9 +5,79 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 25 Feb 2017 16:38:26 +0800</pubDate>
-    <lastBuildDate>Sat, 25 Feb 2017 16:38:26 +0800</lastBuildDate>
+    <pubDate>Sat, 25 Feb 2017 17:05:53 +0800</pubDate>
+    <lastBuildDate>Sat, 25 Feb 2017 17:05:53 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>游戏设计模式读书笔记：双缓冲</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;第三篇：序列模型&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以&lt;a href=&quot;http://gpp.tkchu.me/sequencing-patterns.html&quot;&gt;下文&lt;/a&gt;来说明下序列模型部分的重要性。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢愉。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;大多数游戏世界都有的特性是时间——虚构世界以其特定的节奏运行。 作为世界的架构师，我们必须发明时间，制造推动游戏时间运作的齿轮。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;这本篇的模式是建构这些的工具。 游戏循环是时钟的中心轴。 对象通过更新方法来聆听时钟的滴答声。 我们可以用双缓冲模式存储快照来隐藏计算机的顺序执行，这样看起来世界可以进行同步更新。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;双缓冲&lt;/h2&gt;
+&lt;h4 id=&quot;section-2&quot;&gt;一个典型的例子&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个例子非常经典，就是渲染时候的双缓冲。只有当一帧的色值数据完全计算出来后，才能在屏幕上展示出来，如果在计算的同时就开始渲染，那么屏幕只会出现一部分的色彩。所以我们在屏幕看到的色彩值其实往往是GPU算出的上一帧的数据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;使用场景&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;我们需要维护一些被逐步改变着的状态量。&lt;/p&gt;
+
+  &lt;p&gt;同个状态可能会在其被修改的同时被访问到。&lt;/p&gt;
+
+  &lt;p&gt;我们希望避免访问状态的代码能看到具体的工作过程。&lt;/p&gt;
+
+  &lt;p&gt;我们希望能够读取状态但不希望等到写入操作的完成。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;我对双缓冲的理解&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;说白了，双缓冲是为了维护完整性。它展示给外界的永远是一个完整的，已经准备好被使用的内容。在其内部，有一个缓冲是用于写入数据的，写入的过程可能是缓慢的，但是没关系，另一个缓冲已经做好了被使用的准备，外界读取的是这个已经写好的缓冲。&lt;/li&gt;
+  &lt;li&gt;当写入完成时，两个缓冲互换，刚刚写完的这个缓冲变为准备被读取的一个，而被读取的缓冲开始作为写入缓冲使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;设计决策&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;缓冲区如何交互？
+    &lt;ul&gt;
+      &lt;li&gt;在文中作者使用的是C++，因此交换只不过是一个指针重定向的过程。&lt;/li&gt;
+      &lt;li&gt;如果不能指针重定向，就要考虑数据拷贝了。&lt;/li&gt;
+      &lt;li&gt;C#中一个集合对象表现出来的也是一个指针（引用），可以直接做重定向。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;缓冲的粒度
+    &lt;ul&gt;
+      &lt;li&gt;书中提到两个粒度，一个是缓冲区是单个整体，也就是渲染的时候一个图像的内容就在一个缓冲区中。&lt;/li&gt;
+      &lt;li&gt;另一种情况就是多个对象中都存在一个缓冲数据。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sat, 25 Feb 2017 16:43:13 +0800</pubDate>
+        <link>https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</guid>
+        
+        <category>游戏设计模式读书笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>游戏设计模式读书笔记：观察者模式与事件队列</title>
@@ -1470,48 +1540,6 @@ Vector3.Angle(a, b)
         <guid isPermaLink="true">https://caihua.tech/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/</guid>
         
         <category>3D数学</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Deepoon的相关设置以及如何玩steam游戏</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;基本&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;保证Deepoon助手、显卡驱动是最新的。&lt;/li&gt;
-  &lt;li&gt;安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;dpnngetlasterror&quot;&gt;DpnnGetLastError的处理&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。&lt;/li&gt;
-  &lt;li&gt;在setting→play中关闭VR support，这个东西在启动后会被steamVR开启（如果你的程序中用到了steamVR）。&lt;/li&gt;
-  &lt;li&gt;按照上述两部则应该不会出现DpnnGetLastError错误，并且只能通过头盔来看游戏内容。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;steam&quot;&gt;玩steam&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;在steam的安装目录下放置xxx\Steam\steamapps\common\SteamVR\drivers\deepoon。如果没有放置这个驱动可能导致steam下无法设置VR房间。设置完成后应该是
-&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201610/23250-20161012092230578-1855749103.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;经过上面的设置就可以用大朋眼镜玩steam游戏了。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;开发相关&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前发现如果用大朋眼镜可以玩steam，则在unity中是不需要使用DpnCameraRig的，而且也不需要开启大朋助手。&lt;/li&gt;
-  &lt;li&gt;从这些表现来看大朋应该用的是Oculus的底层。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 12 Oct 2016 21:21:12 +0800</pubDate>
-        <link>https://caihua.tech/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/</guid>
-        
-        <category>VR</category>
         
         
       </item>

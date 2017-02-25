@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-04内存管理 - 笛音夏扇的博客</title>
+    <title>游戏设计模式读书笔记：双缓冲 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+    <link rel="canonical" href="https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记">游戏设计模式读书笔记</a>
                         
                     </div>
-                    <h1>iOS学习笔记-04内存管理</h1>
+                    <h1>游戏设计模式读书笔记：双缓冲</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on September 16, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on February 25, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,178 +187,64 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">4.内存管理</h2>
-<h4 id="section-1">4.1 手动管理</h4>
-
+				<h2 id="section">第三篇：序列模型</h2>
 <ul>
-  <li>自己生成的对象自己持有，可以调用<code class="highlighter-rouge">release</code>方法减少retain数量。</li>
-  <li>非自己生成的对象也可以持有，通过调用<code class="highlighter-rouge">retain</code>方法可以持有对象，引用数+1。</li>
-  <li>不再需要自己持有的对象要及时释放，注意类中的property要在<code class="highlighter-rouge">- (void)dealloc
-</code>方法中赋值nil，这样写相当于release了。</li>
+  <li>双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以<a href="http://gpp.tkchu.me/sequencing-patterns.html">下文</a>来说明下序列模型部分的重要性。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>- (void)dealloc
-{
-    self.arr = nil;
-    [super dealloc];
-}
-</code></pre>
-</div>
+<blockquote>
+  <p>电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢愉。</p>
+</blockquote>
+
+<blockquote>
+  <p>大多数游戏世界都有的特性是时间——虚构世界以其特定的节奏运行。 作为世界的架构师，我们必须发明时间，制造推动游戏时间运作的齿轮。</p>
+</blockquote>
+
+<blockquote>
+  <p>这本篇的模式是建构这些的工具。 游戏循环是时钟的中心轴。 对象通过更新方法来聆听时钟的滴答声。 我们可以用双缓冲模式存储快照来隐藏计算机的顺序执行，这样看起来世界可以进行同步更新。</p>
+</blockquote>
+
+<h2 id="section-1">双缓冲</h2>
+<h4 id="section-2">一个典型的例子</h4>
 <ul>
-  <li>
-    <p>无法释放非自己持有的对象，注意当一个变量持有一次对象后，只能释放一次。也就是说retainCount必须+1和-1对称。</p>
+  <li>这个例子非常经典，就是渲染时候的双缓冲。只有当一帧的色值数据完全计算出来后，才能在屏幕上展示出来，如果在计算的同时就开始渲染，那么屏幕只会出现一部分的色彩。所以我们在屏幕看到的色彩值其实往往是GPU算出的上一帧的数据。</li>
+</ul>
+
+<h4 id="section-3">使用场景</h4>
+<blockquote>
+  <p>我们需要维护一些被逐步改变着的状态量。</p>
+
+  <p>同个状态可能会在其被修改的同时被访问到。</p>
+
+  <p>我们希望避免访问状态的代码能看到具体的工作过程。</p>
+
+  <p>我们希望能够读取状态但不希望等到写入操作的完成。</p>
+</blockquote>
+
+<h4 id="section-4">我对双缓冲的理解</h4>
+<ul>
+  <li>说白了，双缓冲是为了维护完整性。它展示给外界的永远是一个完整的，已经准备好被使用的内容。在其内部，有一个缓冲是用于写入数据的，写入的过程可能是缓慢的，但是没关系，另一个缓冲已经做好了被使用的准备，外界读取的是这个已经写好的缓冲。</li>
+  <li>当写入完成时，两个缓冲互换，刚刚写完的这个缓冲变为准备被读取的一个，而被读取的缓冲开始作为写入缓冲使用。</li>
+</ul>
+
+<h4 id="section-5">设计决策</h4>
+
+<ul>
+  <li>缓冲区如何交互？
+    <ul>
+      <li>在文中作者使用的是C++，因此交换只不过是一个指针重定向的过程。</li>
+      <li>如果不能指针重定向，就要考虑数据拷贝了。</li>
+      <li>C#中一个集合对象表现出来的也是一个指针（引用），可以直接做重定向。</li>
+    </ul>
   </li>
-  <li>
-    <p>alloc的实现。其实就是调用calloc方法申请内存和C语言的差不多，只不过对象的头部位有个地址用于存储引用数。而retain、release就是对引用数加减，dealloc则是free掉对象。</p>
+  <li>缓冲的粒度
+    <ul>
+      <li>书中提到两个粒度，一个是缓冲区是单个整体，也就是渲染的时候一个图像的内容就在一个缓冲区中。</li>
+      <li>另一种情况就是多个对象中都存在一个缓冲数据。</li>
+    </ul>
   </li>
 </ul>
 
-<h4 id="autorelease">4.2 Autorelease</h4>
-<ul>
-  <li>autorelease这个玩意本质上是将对象加入到最近的一个NSAutoreleasePool中，当NSAutoreleasePool销毁时会将对象release。因此这里就有个坑了，如果这个pool很久都不销毁，里面的对象就始终存在，有可能会造成内存不足。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-// 当调用autorelease方法时，其实是将对象obj放到了pool的一个对象列表中
-NSObject* obj = [[[NSObject alloc] init] autorelease];
-
-[pool drain]; // obj会被调用release方法
-
-</code></pre>
-</div>
-
-<ul>
-  <li>注意到main.m中有这样的代码，在最外层就有个autoreleasepool了。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>int main(int argc, char * argv[]) {
-    @autoreleasepool {
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-    }
-}
-</code></pre>
-</div>
-
-<h4 id="arc">4.3 ARC</h4>
-<ul>
-  <li>我的理解
-    <blockquote>
-      <p>所谓ARC是通过编译器和运行时的协作来实现自动管理引用计数，编译器在ARC有效的代码中加入额外的代码来加减引用计数。</p>
-    </blockquote>
-  </li>
-  <li>标识
-    <ol>
-      <li>__strong：默认就是</li>
-      <li>__weak：需显式使用</li>
-      <li>__autoreleasing：这个标识一些情况下是不需要显式使用，一些情况下是不需要的，最为致命。</li>
-      <li>__unsafe_unretained：个人感觉已经被弃用了，在没有weak的时代使用的东西。</li>
-    </ol>
-  </li>
-  <li>__strong
-    <blockquote>
-      <p>这个修饰符具有持有对象的功能，与retain类似。它的使用分为如下几种情况：
-1、<code class="highlighter-rouge">id __strong obj = [[NSObject alloc] init];</code> 这行代码可以理解为如下代码，可见所谓自动管理，就是在编译出来的代码中对强引用变量调用release方法。</p>
-
-      <div class="highlighter-rouge"><pre class="highlight"><code>id obj = objc_msgSend(NSObject, @selector(alloc));
-objc_msgSend(obj, @selector(init));
-objc_release(obj);
-</code></pre>
-      </div>
-
-      <p>2、<code class="highlighter-rouge">id __strong obj = [NSMutableArray array];</code> 这行代码可以理解为以下代码，很有意思的代码。objc_retainAutoreleasedReturnValue是持有(retain)了一个在autoreleasepool中的对象,而这个对象就是array方法的返回值。</p>
-
-      <div class="highlighter-rouge"><pre class="highlight"><code>id obj = objc_msgSend(NSMutableArray, @selector(array));
-objc_retainAutoreleasedReturnValue(obj);
-objc_release(obj); // 离开作用域后自动释放
-</code></pre>
-      </div>
-
-      <p>与<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>成对出现的是这个方法<code class="highlighter-rouge">objc_autoreleasedReturnValue</code>方法，对于NSMutableArray类的array方法可能是这样实现的</p>
-      <div class="highlighter-rouge"><pre class="highlight"><code>+ (id)array
-{
-  return [[NSMutableArray alloc] init];
-}
-</code></pre>
-      </div>
-
-      <p>它可以理解为如下代码</p>
-
-      <div class="highlighter-rouge"><pre class="highlight"><code>+ (id)array
-{ 
-     id obj = objc_msgSend(NSMutableArray, @selector(alloc));
-     objc_msgSend(obj, @selector(init));
-     return objc_autoreleasedReturnValue(obj);
-}
-</code></pre>
-      </div>
-
-      <p>&lt;font color=green&gt;对于外界调用这个方法赋值的变量来说，只是在使用一个autoreleasepool中的对象。在结合<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>使用时，其实生成的对象并没有进入autoreleasepool，而是直接传递给了使用<code class="highlighter-rouge">objc_retainAutoreleasedReturnValue</code>方法赋值的变量。&lt;/font&gt;</p>
-    </blockquote>
-  </li>
-  <li>
-    <p>__weak</p>
-
-    <blockquote>
-      <p>1、被__weak修饰的&lt;font color=green&gt;<strong><em>变量的地址</em></strong>&lt;/font&gt;会被放入到weak表中，这个表是个k-v形式的，key是对象的地址，value是所有引用了这个对象的变量的地址。</p>
-
-      <p>2、一个对象被释放的过程是个复杂的过程，</p>
-
-      <p>```
-objc_release -&gt; dealloc(如果引用计数为0) -&gt; _objc_rootDealloc 
--&gt; object_dispose -&gt; objc_destructInstance 
--&gt; objc_clear_deallocating
-{
-  1、用对象地址找到weak表中的value
-  2、所有变量(weak表中记录了地址)赋值nil
-  3、从weak表删除记录
-  4、从引用计数表删除废弃对象的地址为键值的记录
-}</p>
-    </blockquote>
-
-    <blockquote>
-      <p>```
-从以上的过程可以看出当对象被销毁后所有引用它的__weak变量都会被赋值为nil，这个过程是比较消耗CPU的，少用。</p>
-
-      <p>3、&lt;font color=green&gt;<strong>使用被__weak修饰的变量就是使用注册到autoreleasepool中的对象</strong>&lt;/font&gt;，从以下代码来进行理解这句话，</p>
-    </blockquote>
-
-    <blockquote>
-      <div class="highlighter-rouge"><pre class="highlight"><code> 	  id __weak obj1 = obj;
-    NSLog(@"%@", obj1);
-</code></pre>
-      </div>
-      <p>这句话会大致被编译器翻译成这样</p>
-    </blockquote>
-
-    <blockquote>
-      <div class="highlighter-rouge"><pre class="highlight"><code>  id obj；
-  objc_initWeak(&amp;obj1, obj);
-  id tmp = objc_loadWeakRetaind(&amp;obj1);
-  objc_autorelease(tmp);
-  NSLog(@"%@", tmp);
-  objc_destroyWeak(&amp;obj1);
-</code></pre>
-      </div>
-    </blockquote>
-
-    <blockquote>
-      <p>可以看到为了能够NSLog执行时obj1引用的对象不被销毁，需要将它赋值给一个strong(默认)修饰的临时变量，而这个临时变量需要放到autoreleasepool中，因此存在一个问题，当你多次在一个作用域中多次使用weak修饰的变量，会导致很多临时变量产生而且会放到autoreleasepool中，作用域结束后autoreleasepool有很多工作要做。所以少用weak，一般就是避免循环引用。</p>
-    </blockquote>
-  </li>
-  <li>
-    <p>__autoreleasing，核心就是把修饰的变量放入到autoreleasepool中，没啥多说的。</p>
-  </li>
-  <li>注意事项：
-    <ol>
-      <li>不能使用retain、release、retainCount、autorelease这样方法</li>
-      <li>不能使用NSAllocateObject和NSDeallocateObject方法，实际上我根本没用过。</li>
-      <li>需要在函数命名时遵守规则，比如alloc\new\copy\mutableCopy必须给与调用者对象持有权限。</li>
-      <li>不能使用NSAutoreleasePool，可以用@autoreleasepool替换。</li>
-      <li>dealloc方法不能显示调用，很明显的例子就是在MRC中写dealloc方法时一定要调用super的dealloc方法，但是在ARC中不行了，不过notificationCenter的删除等处理还是要写在dealloc方法中的，会自动调用。</li>
-    </ol>
-  </li>
-</ul>
 
 
                 <hr>
@@ -369,19 +255,12 @@ objc_release -&gt; dealloc(如果引用计数为0) -&gt; _objc_rootDealloc
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/16/03UI/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-03UI">
+                        <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/" data-toggle="tooltip" data-placement="top" title="游戏设计模式读书笔记：观察者模式与事件队列">
                         Previous<br>
-                        <span>iOS学习笔记-03UI</span>
+                        <span>游戏设计模式读书笔记：观察者模式与事件队列</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-05线程">
-                        Next<br>
-                        <span>iOS学习笔记-05线程</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
