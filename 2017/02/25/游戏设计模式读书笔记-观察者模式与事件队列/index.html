@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>由一个美术需求引发的Custom Inspector - 笛音夏扇的博客</title>
+    <title>游戏设计模式读书笔记：观察者模式与事件队列 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
+    <link rel="canonical" href="https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
+                        <a class="tag" href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记">游戏设计模式读书笔记</a>
                         
                     </div>
-                    <h1>由一个美术需求引发的Custom Inspector</h1>
+                    <h1>游戏设计模式读书笔记：观察者模式与事件队列</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on November 19, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on February 25, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,209 +187,80 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h3 id="section">需求</h3>
+				<h2 id="section">观察者模式</h2>
+<h4 id="section-1">定义</h4>
 <ul>
-  <li>Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。</li>
+  <li><a href="https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F">定义</a>：在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。</li>
+  <li>看图
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/e2/Observer-pattern-class-diagram.png" alt="" /></li>
 </ul>
 
-<h3 id="section-1">需求分析</h3>
-
+<h4 id="section-2">模式的理解</h4>
 <ul>
-  <li>
-    <p>如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，<code class="highlighter-rouge">transform.GetComponent </code>这样的方法怎么执行？好在unity已经为我们考虑到了这个问题，提供了<code class="highlighter-rouge">[ExecuteInEditMode]</code>Attribute，通过指定这个attribute使得组件类中的方法可以在edit模式下执行，并且是在非运行状态下的。</p>
-  </li>
-  <li>
-    <p>如何在非运行状态下匀速改变数值呢？update方法中配合<code class="highlighter-rouge">Time.deltaTime</code>是一个完美的方案，但是即使设置了<code class="highlighter-rouge">[ExecuteInEditMode]</code>，update的表现在非运行和运行时也是完全不同的，查资料看到<a href="https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html"> is only called when something in the scene changed. </a>这句话时也有种吐槽的冲动。好在unity又为大家考虑到了这个问题（话说unity editor确实功能强大，AssetAtore里面那些插件真是厉害）,Edit模式下提供了<code class="highlighter-rouge">EditorApplication.update</code>，这是一个事件，我们注册一个自己的方法就可以在非运行状态下实现update的功能。我个人比较推荐使用<a href="https://gist.github.com/benblo/10732554">EditorCoroutine</a>，一个基于<code class="highlighter-rouge">EditorApplication.update</code>的协程实现。</p>
-  </li>
+  <li>观察者模式由来已久，其目的就是为了解耦。观察对象保存观察者的链接，使得观察者与被观察者解耦。这一点与C#中的事件刚好相反。</li>
+  <li>传统的观察者模式也有其弊端。比如书中提到的使用链表作为观察者集合时，如果删除某个观察者需要遍历。并且每个观察者只有一个next指针的情况，这就使得它只能观察一个对象。当然作者也给出来解决的办法，就是使用链表节点池来解决一个观察者注册多个被观察者的问题。不过在C#的事件系统中这个是不需要的。</li>
+  <li>当出现被观察者或者观察者销毁时需要额外的注意。一个被观察者销毁产生的问题比较小，因为最多就是不发送消息了。而如果一个观察者销毁但是被观察者还不知道，那么被观察者会发送一个消息给空指针，这样问题就大。 在C#中这个问题也是一样的，当要dispose的时候，需要使用<code class="highlighter-rouge">-=</code>操作来去掉观察引用。</li>
 </ul>
 
-<h3 id="section-2">功能实现</h3>
-
+<h4 id="section-3">观察则模式和事件的区别</h4>
 <ul>
-  <li>使用一个自定义组件来实现material中数值的修改，这个类在UI上要体现出能够设置变化速率和初始值。并且在UI上通过点击按钮的形式来触发改变。</li>
-  <li>使用Custom Inspector来实现组件UI的自定义。</li>
-  <li>在运行状态下通过使用默认的update来实现匀速变化，在非运行状态下通过使用EditorCoroutine来实现。</li>
+  <li>长久以来我都认为C#中的事件就是观察者模式，当然实际上有所差别。因为按照经典的设计模式来说观察者是需要类的支持的，当你需要让某个对象可被观察，并为此创建几个观察者时你需要执行诸如继承这样的典型的面向对象编程，需要做一大摊子的事情。但是，很多情况下我们只是希望一个类中的某个对象被观察，也就是一个对象中可能发生多个<code class="highlighter-rouge">事件</code>。这也是C#中事件系统所作的事情，在C#中我们观察的是一个对象，而不是一个事情。（参考原文的旁白说明。）</li>
 </ul>
 
-<h3 id="section-3">代码实现</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
-using System.Collections;
-using UnityEditor;
-public class UVAnimation : MonoBehaviour
-{
-
-    public Vector2 TilingSpeed = new Vector2(1, 1);
-    public Vector2 OffsetSpeed = new Vector2(0.1f, 0.1f);
-
-    public Vector2 Tiling = new Vector2(1, 1);
-    public Vector2 Offset = new Vector2(0, 0);
-
-    float rate = 0.02f;
-
-    EditorCoroutine coroutineOffset;
-    EditorCoroutine coroutineTiling;
-
-    bool isOffset = false;
-    bool isTiling = false;
-
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    void FixedUpdate()
-    {
-        if (isOffset)
-        {
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * Time.deltaTime;
-        }
-        if (isTiling)
-        {
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * Time.deltaTime;
-        }
-    }
-
-    public void ChangeOffset()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isOffset = true;
-        }
-        else
-        {
-            if (coroutineOffset != null)
-            {
-                coroutineOffset.stop();
-            }
-            coroutineOffset = EditorCoroutine.start(ChangeOffsetCoroutine());
-        }
-
-    }
-
-    IEnumerator ChangeOffsetCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * rate;
-        }
-    }
-
-    public void ChangeTiling()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isTiling = true;
-        }
-        else
-        {
-            if (coroutineTiling != null)
-            {
-                coroutineTiling.stop();
-            }
-            coroutineTiling = EditorCoroutine.start(ChangeTilingCoroutine());
-        }
-    }
-
-    IEnumerator ChangeTilingCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * rate;
-        }
-    }
-
-    public void SetOffset()
-    {
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = Offset;
-    }
-
-    public void SetTiling()
-    {
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = Tiling;
-    }
-
-    public void Reset()
-    {
-        isOffset = false;
-        isTiling = false;
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = new Vector2(1, 1);
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = new Vector2(0, 0);
-        if (coroutineOffset != null)
-        {
-            coroutineOffset.stop();
-        }
-        if (coroutineTiling != null)
-        {
-            coroutineTiling.stop();
-        }
-    }
-}
-
-</code></pre>
-</div>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
-using System.Collections;
-using UnityEditor;
-
-[CustomEditor(typeof(UVAnimation))]
-public class UVAnimationBuilderEditor : Editor {
-
-
-	public override void OnInspectorGUI ()
-	{
-	   base.OnInspectorGUI ();
-		//DrawDefaultInspector ();
-		UVAnimation uva = (UVAnimation)target;
-
-		if (GUI.changed) {
-			uva.SetTiling ();
-			uva.SetOffset ();
-		}
-
-		if (GUILayout.Button("Change Tiling")) {
-			uva.ChangeTiling ();	
-			EditorUtility.SetDirty (target);
-		}
-
-		if (GUILayout.Button("Change Offset")) {
-			uva.ChangeOffset ();
-		}
-
-		if (GUILayout.Button("Reset")) {
-			uva.Reset ();
-		}
-	}
-}
-
-</code></pre>
-</div>
-
-<h3 id="section-4">代码解析</h3>
+<h4 id="unity">在unity中的使用</h4>
 
 <ul>
-  <li>
-    <p><code class="highlighter-rouge">[CustomEditor(typeof(UVAnimation))]</code>为UVAnimation创建的Editor类，在这个类里面可以修改UVAnimation类的UI，可以调用UVAnimation类中的方法。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">OnInspectorGUI</code>方法，顾名思义在里面可以对UI进行编程，注意一下这个方法会自己生产一句代码<code class="highlighter-rouge">base.OnInspectorGUI ();</code>，我所注释掉的<code class="highlighter-rouge">DrawDefaultInspector ();</code>这句代码都是用来绘制默认UI的，二者只可留其一。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">transform.GetComponent&lt;Renderer&gt;().sharedMaterials</code>在edit模式下获取材质球的对象需要用<code class="highlighter-rouge">sharedMaterials</code>。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">mainTextureScale</code>对应的就是UI上的Tiling。命名这让人吐槽。</p>
-  </li>
+  <li>这个其实没啥说的，就按照标准的C#程序中使用事件的方式即可，只不过我比较习惯用Action或者Func来替代delegate+event。</li>
 </ul>
+
+<h2 id="section-4">事件队列</h2>
+<ul>
+  <li>对于事件队列，不要只认为是事件，它也包含消息或者请求等等。按照我的理解来说就是一个具体要做的事情。</li>
+  <li>为何要把事件队列和观察者模式写到一起，因为在我看了它们的作用是一样的，就是为了解耦消息的发送者（被观察者）和接受者（观察者）。事件队列在复杂度上要高于观察者模式，这个是因为事件队列在时间上做了进一步的解耦。</li>
+  <li>怎么理解时间上的解耦？事件队列在接收到一个事件后，何时执行是不确定的。考虑到事件会带上发生时的数据，那么在执行时是不需要依赖时间的。</li>
+  <li>时间的解耦有个弊端，就是如果你需要实时反馈，那么这个做不到。</li>
+  <li>还有一个需要注意的是不要形成消息和处理者的循环。</li>
+</ul>
+
+<h4 id="section-5">消息汇总与合并</h4>
+
+<ul>
+  <li>书中作者提到了一个声音播放系统，当队列中存在多个相同音频的请求时需要进行合并。当然这个是因为同一音频短时间内容播放会出现音爆。不过这个也提醒了我们，如果在实际的业务中有这样需要合并的时候，在每个update（也就是要开始执行某个事件时）中要进行合并。</li>
+</ul>
+
+<h4 id="section-6">如何实现队列</h4>
+<ul>
+  <li>作者提到了循环缓冲区的问题，通过使用一个数组来实现消息队列，这样可以有效的减少内存的使用。不过我认为弊端就不好定一个数组的大小，如果过小可能来不及做循环，而如果太大一样存在内存的浪费。</li>
+  <li>从C#角度看，这个队列可以Queue来实现，可以说是完美契合的。</li>
+</ul>
+
+<h4 id="section-7">设计决策</h4>
+<ol>
+  <li>入队的是什么：
+    <ul>
+      <li>事件：如果是事件需要考虑多监听器的情况下让监听器做过滤。其实这个就是一个观察者模式。在这里就有点像异步观察者模式。</li>
+      <li>消息：一般消息都是一对一的，这个其实也是异步的意思。</li>
+    </ul>
+  </li>
+  <li>谁能从队列里读取：
+    <ul>
+      <li>事件的话轮到了执行就好，有没有监听者无所谓。如果是一个固定类型的消息，那么可能就是一个具体的业务的方法来获取队列中的消息了。</li>
+    </ul>
+  </li>
+  <li>谁能写入队列：
+    <ul>
+      <li>如果只有一个写入者，那么这个东西在时间上会执行的很快，和同步的观察者模式差不多。</li>
+      <li>如果是多个写入者，需要将发送方本身的引用加入到事件的数据当中。就像我们在C#中开发基于UI的程序一样，如果你有经验会知道每个事件处理函数中第一个参数总是某个具体的控件。</li>
+    </ul>
+  </li>
+  <li>队列中对象的生命周期
+    <ul>
+      <li>在我看来应该就是事件出队列时就是其周期的结束，当然因为GC的问题这个对象也许并不会立刻被销毁。</li>
+      <li>书中提到了可以将对象的所有权进行转移，到具体的执行方去。也可以让队列一直拥有它。这个方面我还没有觉得有这个必要保留对象，也许是没有遇到一个典型的例子吧。</li>
+    </ul>
+  </li>
+</ol>
+
 
 
                 <hr>
@@ -400,19 +271,12 @@ public class UVAnimationBuilderEditor : Editor {
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/" data-toggle="tooltip" data-placement="top" title="代码生成AnimatorController">
+                        <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%89-Clusters%E5%92%8C%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="《Unity預計算即時GI》笔记：三、Clusters和总结">
                         Previous<br>
-                        <span>代码生成AnimatorController</span>
+                        <span>《Unity預計算即時GI》笔记：三、Clusters和总结</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/" data-toggle="tooltip" data-placement="top" title="游戏设计模式读书笔记：架构、性能、游戏">
-                        Next<br>
-                        <span>游戏设计模式读书笔记：架构、性能、游戏</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
