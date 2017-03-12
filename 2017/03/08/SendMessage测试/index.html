@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>About Me - 笛音夏扇的博客</title>
+    <title>SendMessage测试 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/about/">
+    <link rel="canonical" href="https://caihua.tech/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,149 +142,211 @@
 </script>
 
 
-    <!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/about-bg.jpg')">
+    <!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/home-bg-o.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>About Me</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading"></span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
+                        
+                    </div>
+                    <h1>SendMessage测试</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by 笛音夏扇 on March 8, 2017</span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Main Content -->
-<div class="container">
-	<div class="row">
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<ul>
+  <li>5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.</li>
+  <li>obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。</li>
+  <li>如果Foo的参数不对，会提示<code class="highlighter-rouge">MissingMethodException: The best match for method Foo has some invalid parameter.</code></li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    public void Foo(string s)
+    {
+        Debug.Log(s);
+    }
+
+</code></pre>
+</div>
+<ul>
+  <li>如果Foo是没有参数的，SendMessage有参数也没关系。</li>
+  <li><strong>总之最好指定的函数是存在的，参数是匹配的。</strong></li>
+</ul>
+
+
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/" data-toggle="tooltip" data-placement="top" title="关于AssetBundle解压的讨论结果">
+                        Previous<br>
+                        <span>关于AssetBundle解压的讨论结果</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>  
+
+    <!-- Side Catalog Container -->
         
 
-<!-- USE SIDEBAR -->
-    <!-- PostList Container -->
-    		<div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                postlist-container
-            ">
-    			<!-- Language Selector -->
-
-<!-- Chinese Version -->
-<div class="zh post-container">
-    <p>Hey，我是<strong>蔡华</strong>，一个普通的程序员。</p>
-</div>
-
-
-
-    		</div>
     <!-- Sidebar Container -->
             <div class="
-                col-lg-3 col-lg-offset-0
-                col-md-3 col-md-offset-0
-                col-sm-12
-                col-xs-12
-                sidebar-container
-            ">
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
+        				
                             
-                                <a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
+                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
                                     iOS学习笔记
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#iOS" title="iOS" rel="1">
+                				<a href="/tags/#iOS" title="iOS" rel="1">
                                     iOS
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#杂记" title="杂记" rel="1">
+                				<a href="/tags/#杂记" title="杂记" rel="1">
                                     杂记
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#VR" title="VR" rel="2">
+                				<a href="/tags/#VR" title="VR" rel="2">
                                     VR
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="6">
+                				<a href="/tags/#Unity3D" title="Unity3D" rel="6">
                                     Unity3D
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#3D数学" title="3D数学" rel="1">
+                				<a href="/tags/#3D数学" title="3D数学" rel="1">
                                     3D数学
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="4">
+                				<a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="4">
                                     游戏设计模式读书笔记
                                 </a>
                             
-                        
+        				
                             
-                                <a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
+                				<a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
                                     Unity預計算即時GI笔记
                                 </a>
                             
-                        
-                    </div>
+        				
+        			</div>
                 </section>
                 
 
-                <!-- Short About -->
-                <section class="visible-md visible-lg">
-                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
-                    <div class="short-about">
-                        
-                            <img src="/img/avatar.jpg" />
-                        
-                        
-                            <p>Be publicly useful and privately happy.</p>
-                        
-                        <!-- SNS Link -->
-                        <ul class="list-inline">
-                            
-                            
-                            
-                            
-                            
-                            
-                            <li>
-                                <a target="_blank" href="https://github.com/klkucan">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            
-                            
-                        </ul>
-                    </div>
-                </section>
                 <!-- Friends Blog -->
                 
-    		</div>
-        
-	</div>
-</div>
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: ''
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
 
     <!-- Footer -->
