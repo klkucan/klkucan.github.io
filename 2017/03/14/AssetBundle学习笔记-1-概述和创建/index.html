@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>由一个美术需求引发的Custom Inspector - 笛音夏扇的博客</title>
+    <title>AssetBundle学习笔记：1、概述和创建 - 笛音夏扇的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
+    <link rel="canonical" href="https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
+                        <a class="tag" href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记">AssetBundle学习笔记</a>
                         
                     </div>
-                    <h1>由一个美术需求引发的Custom Inspector</h1>
+                    <h1>AssetBundle学习笔记：1、概述和创建</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on November 19, 2016</span>
+                    <span class="meta">Posted by 笛音夏扇 on March 14, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,208 +187,318 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h3 id="section">需求</h3>
+				<h2 id="section">前言</h2>
 <ul>
-  <li>Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。</li>
+  <li>打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。</li>
 </ul>
 
-<h3 id="section-1">需求分析</h3>
+<h2 id="section-1">概述</h2>
+
+<ul>
+  <li>AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。</li>
+</ul>
+
+<h4 id="ab">AB流程</h4>
+<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundlesBuildPlusUpload.jpg" alt="image" /></p>
+
+<ul>
+  <li>Editor编辑，场景中使用。</li>
+  <li>上传AB到服务器，其实这个不是必须的，也可以放到本地，后面会讲到这种case下怎么做才是最高效的。程序会按需加载AB，然后每个AB中的asset各自处理。其实就是在AssetBundle中按照需要加载不同的资源。</li>
+  <li>下载AB到本地，方法也非常多，各有优劣，后面会说。</li>
+  <li>从AssetBundle中加载GameObject，这个有一个AssetBundle→asset→GameObject的过程。而AB之前还可能有www。</li>
+</ul>
+
+<h4 id="section-2">友情提示</h4>
+
+<ul>
+  <li>你必须看<a href="http://unity3d.com/learn/tutorials/topics/best-practices/guide-assetbundles-and-resources">这个</a></li>
+</ul>
+
+<h2 id="assetbundle">创建AssetBundle</h2>
+
+<h4 id="assetbundle-1">设置AssetBundle</h4>
+<ul>
+  <li>定义AssetBundle名称，在一个资源的最下方会有一个AssetBundle的设置。</li>
+</ul>
+
+<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundleInspectorNewBundle.png" alt="image" /></p>
+
+<ul>
+  <li>点击New按钮可以创建新包，并给它命名。下图的例子中资源被添加到一个名为environment/desert的AssetBundle中，这里面可能包含了之前已经放置的资源。另外在AssetBundle命名时unity会当名称转为小写。</li>
+</ul>
+
+<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundleEditor.png" alt="image" /></p>
+
+<ul>
+  <li>如果创建了一些AssetBundle，但是没有放置任何的资源通过Remove Unused Names选项可以删除定义的名字。</li>
+</ul>
+
+<blockquote>
+  <p>从上述的说明感觉这个new出来的是一个空文件夹识，在设置资源时这个文件夹的名字作为了标识来使用。而Remove Unused Names按钮就是一键删除空文件夹。</p>
+</blockquote>
+
+<h4 id="assetbundle-2">代码生成AssetBundle</h4>
+
+<ul>
+  <li>这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEditor;
+
+public class CreateAssetBundles
+{
+    [MenuItem ("Assets/Build AssetBundles")]
+    static void BuildAllAssetBundles ()
+    {
+        BuildPipeline.BuildAssetBundles ("Assets/AssetBundles", BuildAssetBundleOptions.None, BuildTarget.StandaloneOSXUniversal);
+    }
+}
+
+</code></pre>
+</div>
+
+<ul>
+  <li>同时生成的manifest文件包含一下内容：
+    <ul>
+      <li><a href="https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%86%97%E9%A4%98%E6%A0%A1%E9%A9%97">CRC</a></li>
+      <li>AssetFileHash：AssetBundle中所有asset文件的hash，一个单独的hash。只用来做增量build时的检查。</li>
+      <li>TypeTreeHash：AssetBundle中所有类型的hash，只用来做增量build时的检查。</li>
+      <li>ClassTypes： AssetBundle中包含的所有类类型，这些数据用来得到一个新的单独的hash当typetree做增量build检测。</li>
+      <li>Asset names.所有在AssetBundle中的asset的名称。</li>
+      <li>Dependent AssetBundle names. AssetBundle所依赖的其它AssetBundle的名字</li>
+      <li>这个manifest文件只是用来做增量build的，非运行时必须。</li>
+    </ul>
+  </li>
+  <li>放一个自己的测试数据</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ManifestFileVersion: 0
+CRC: 1763426742
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: eed209af1be31231fa135faaff2ab7b6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
+HashAppended: 0
+ClassTypes: []
+Assets:
+- Assets/Test.unity
+Dependencies:
+- E:/CodeDemo/New Unity Project 2/Assets/AssetBundles/sphere
+</code></pre>
+</div>
+
+<ul>
+  <li>还有两个文件生成，文件名就是打包目的地文件夹的名字，比如上面的代码就在AssetBundles文件夹下生成，名字是AssetBundles，一个是没有后缀的一个是以manifest为后缀，打开manifest文件可以看到下面的内容，可以看出来是这个目录下AssetBundle的信息。<strong><em>其实它只包含两个  信息，一个是所有的AssetBundle名字和它们的依赖。</em></strong></li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ManifestFileVersion: 0
+CRC: 4270654667
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies: {}
+</code></pre>
+</div>
+
+<blockquote>
+  <p>做了个小测试，添加了两个新的AssetBundle，名字也不一样，每次添加这个文件的内容跟着变，并且CRC也在变。</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ManifestFileVersion: 0
+CRC: 2591254959
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+        Dependency_1: capsule
+    Info_2:
+      Name: sphere
+      Dependencies: {}
+    Info_3:
+      Name: capsule
+      Dependencies: {}
+</code></pre>
+</div>
+
+<blockquote>
+  <p>继续小测试，把Capsule的AssetBundle从capsule改为sphere。果然只是简单记录了下目录中的AssetBundle信息。</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ManifestFileVersion: 0
+CRC: 3856405611
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+    Info_2:
+      Name: sphere
+      Dependencies: {}
+      
+</code></pre>
+</div>
+
+<blockquote>
+  <p>再次小测试，在UI的AssetBundle设定中第一栏设定了多层次的名称结果如下。而且从文件夹结构上看one和two都是两个文件夹，而在two里面则是一个名为xx.three的文件。</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ManifestFileVersion: 0
+CRC: 2167406161
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+    Info_1:
+      Name: sphere
+      Dependencies: {}
+    Info_2:
+      Name: one/two/xx.three
+      Dependencies: {}
+</code></pre>
+</div>
+
+<h4 id="shadershader-stripping">shader剥离（Shader stripping）</h4>
+
+<ul>
+  <li>如果AssetBundle中包含shader，unity编辑器会根据当前场景和光照贴图的设置来决定使用哪种Lightmap modes。这还意味着你在打包的时候需要将打开着一个配置的场景。我的理解是因为需要根据当前场景来作为因素来做某个事情，所以这个场景需要时打开的。</li>
+  <li>也可以指定一个场景用来计算光照贴图模式，这个在用命令行buildbundle时是必须的。</li>
+</ul>
+
+<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundleShaderStripping.png" alt="image" /></p>
+
+<h4 id="section-3">引擎代码剥离</h4>
+<ul>
+  <li>代码剥离这个事情是将没有在任何场景（特指Build Settings &gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。</li>
+</ul>
+
+<p><img src="https://docs.unity3d.com/uploads/Main/BuildingAssetBundles-enginecodestripping.png" alt="image" /></p>
 
 <ul>
   <li>
-    <p>如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，<code class="highlighter-rouge">transform.GetComponent </code>这样的方法怎么执行？好在unity已经为我们考虑到了这个问题，提供了<code class="highlighter-rouge">[ExecuteInEditMode]</code>Attribute，通过指定这个attribute使得组件类中的方法可以在edit模式下执行，并且是在非运行状态下的。</p>
+    <p>如果一个引擎代码在build的时候被剥离了，但是在运行时又被请求使用，那么就会报错，因为被剥离的代码无法再被访问。如何避免这个错呢？把player（此处我认为不是玩家的意思，而是引擎）可能用到的AssetBundle列出来，放置到一个manifest文件中，代码剥离系统使用这个文件中列出来的AssetBundle (along with the Scenes in the build)来确定哪些code需要保留。当一些平台或build不支持代码剥离，又或者没有勾选剥离时assetBundleManifestPath属性是被忽略的。</p>
   </li>
   <li>
-    <p>如何在非运行状态下匀速改变数值呢？update方法中配合<code class="highlighter-rouge">Time.deltaTime</code>是一个完美的方案，但是即使设置了<code class="highlighter-rouge">[ExecuteInEditMode]</code>，update的表现在非运行和运行时也是完全不同的，查资料看到<a href="https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html"> is only called when something in the scene changed. </a>这句话时也有种吐槽的冲动。好在unity又为大家考虑到了这个问题（话说unity editor确实功能强大，AssetAtore里面那些插件真是厉害）,Edit模式下提供了<code class="highlighter-rouge">EditorApplication.update</code>，这是一个事件，我们注册一个自己的方法就可以在非运行状态下实现update的功能。我个人比较推荐使用<a href="https://gist.github.com/benblo/10732554">EditorCoroutine</a>，一个基于<code class="highlighter-rouge">EditorApplication.update</code>的协程实现。</p>
+    <p>从代码角度来看就是</p>
   </li>
 </ul>
-
-<h3 id="section-2">功能实现</h3>
-
-<ul>
-  <li>使用一个自定义组件来实现material中数值的修改，这个类在UI上要体现出能够设置变化速率和初始值。并且在UI上通过点击按钮的形式来触发改变。</li>
-  <li>使用Custom Inspector来实现组件UI的自定义。</li>
-  <li>在运行状态下通过使用默认的update来实现匀速变化，在非运行状态下通过使用EditorCoroutine来实现。</li>
-</ul>
-
-<h3 id="section-3">代码实现</h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
-using System.Collections;
+
 using UnityEditor;
-public class UVAnimation : MonoBehaviour
+
+namespace AssetBundles
+
 {
 
-    public Vector2 TilingSpeed = new Vector2(1, 1);
-    public Vector2 OffsetSpeed = new Vector2(0.1f, 0.1f);
+    public class BuildScript
 
-    public Vector2 Tiling = new Vector2(1, 1);
-    public Vector2 Offset = new Vector2(0, 0);
-
-    float rate = 0.02f;
-
-    EditorCoroutine coroutineOffset;
-    EditorCoroutine coroutineTiling;
-
-    bool isOffset = false;
-    bool isTiling = false;
-
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
     {
 
-    }
+        public static void BuildPlayer()
 
-    void FixedUpdate()
-    {
-        if (isOffset)
         {
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * Time.deltaTime;
-        }
-        if (isTiling)
-        {
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * Time.deltaTime;
-        }
-    }
 
-    public void ChangeOffset()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isOffset = true;
-        }
-        else
-        {
-            if (coroutineOffset != null)
-            {
-                coroutineOffset.stop();
-            }
-            coroutineOffset = EditorCoroutine.start(ChangeOffsetCoroutine());
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
+
+            // example hard-coded platform manifest path
+
+            buildPlayerOptions.assetBundleManifestPath = "AssetBundles/iOS/iOS.manifest";
+
+            // build the Player ensuring engine code is included for 
+
+            // AssetBundles in the manifest.
+
+            BuildPipeline.BuildPlayer(buildPlayerOptions);
+
         }
 
     }
 
-    IEnumerator ChangeOffsetCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * rate;
-        }
-    }
-
-    public void ChangeTiling()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isTiling = true;
-        }
-        else
-        {
-            if (coroutineTiling != null)
-            {
-                coroutineTiling.stop();
-            }
-            coroutineTiling = EditorCoroutine.start(ChangeTilingCoroutine());
-        }
-    }
-
-    IEnumerator ChangeTilingCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * rate;
-        }
-    }
-
-    public void SetOffset()
-    {
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = Offset;
-    }
-
-    public void SetTiling()
-    {
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = Tiling;
-    }
-
-    public void Reset()
-    {
-        isOffset = false;
-        isTiling = false;
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureScale = new Vector2(1, 1);
-        transform.GetComponent&lt;Renderer&gt;().sharedMaterials[0].mainTextureOffset = new Vector2(0, 0);
-        if (coroutineOffset != null)
-        {
-            coroutineOffset.stop();
-        }
-        if (coroutineTiling != null)
-        {
-            coroutineTiling.stop();
-        }
-    }
 }
-
 </code></pre>
 </div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
-using System.Collections;
-using UnityEditor;
-
-[CustomEditor(typeof(UVAnimation))]
-public class UVAnimationBuilderEditor : Editor {
-
-
-	public override void OnInspectorGUI ()
-	{
-	   base.OnInspectorGUI ();
-		//DrawDefaultInspector ();
-		UVAnimation uva = (UVAnimation)target;
-
-		if (GUI.changed) {
-			uva.SetTiling ();
-			uva.SetOffset ();
-		}
-
-		if (GUILayout.Button("Change Tiling")) {
-			uva.ChangeTiling ();	
-			EditorUtility.SetDirty (target);
-		}
-
-		if (GUILayout.Button("Change Offset")) {
-			uva.ChangeOffset ();
-		}
-
-		if (GUILayout.Button("Reset")) {
-			uva.Reset ();
-		}
-	}
-}
-
-</code></pre>
-</div>
-
-<h3 id="section-4">代码解析</h3>
+<h4 id="section-4">几个小工具代码</h4>
 
 <ul>
-  <li>
-    <p><code class="highlighter-rouge">[CustomEditor(typeof(UVAnimation))]</code>为UVAnimation创建的Editor类，在这个类里面可以修改UVAnimation类的UI，可以调用UVAnimation类中的方法。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">OnInspectorGUI</code>方法，顾名思义在里面可以对UI进行编程，注意一下这个方法会自己生产一句代码<code class="highlighter-rouge">base.OnInspectorGUI ();</code>，我所注释掉的<code class="highlighter-rouge">DrawDefaultInspector ();</code>这句代码都是用来绘制默认UI的，二者只可留其一。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">transform.GetComponent&lt;Renderer&gt;().sharedMaterials</code>在edit模式下获取材质球的对象需要用<code class="highlighter-rouge">sharedMaterials</code>。</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">mainTextureScale</code>对应的就是UI上的Tiling。命名这让人吐槽。</p>
-  </li>
+  <li>列出所有在build process中产生的AssetBundle的名称</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEditor;
+using UnityEngine;
+
+public class GetAssetBundleNames
+{
+    [MenuItem ("Assets/Get AssetBundle names")]
+    static void GetNames ()
+    {
+        var names = AssetDatabase.GetAllAssetBundleNames();
+        foreach (var name in names)
+            Debug.Log ("AssetBundle: " + name);
+    }
+}
+
+</code></pre>
+</div>
+
+<ul>
+  <li>一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。<em>从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。</em></li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
+using UnityEditor;
+
+public class MyPostprocessor : AssetPostprocessor {
+
+    void OnPostprocessAssetbundleNameChanged ( string path,
+            string previous, string next) {
+        Debug.Log("AB: " + path + " old: " + previous + " new: " + next);
+    }
+}
+</code></pre>
+</div>
+
+<h4 id="assetbundle-3">AssetBundle变体</h4>
+
+<ul>
+  <li>这个玩意有什么意义呢？</li>
+  <li>下图中在后一个label中填入一个名字，就可以形成变体。</li>
+</ul>
+
+<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundle50Editor.png" alt="image" /></p>
+
+<ul>
+  <li>从文档上看可以同一批asset创建不同的变体，而且在这些变体AssetBundle中asset有意义的内部ID。需要注意这样的变体AssetBundle的全名是由AssetBundle name + the variant name组成的，如果你创建了一个名为MyAssets.hd的AssetBundle，那它只是一个普通的AssetBundle而不是变体的。而且 “MyAssets”+“hd”和“MyAssets.hd”+”“不能同时存在因为它们具有相同的全称。</li>
+</ul>
+
+<h4 id="section-5">脚本建议</h4>
+
+<ul>
+  <li>妈蛋总算快完了。</li>
+  <li>呵呵，我不打算写了。</li>
+</ul>
+
+<h4 id="typetrees">Typetrees</h4>
+<ul>
+  <li>默认写到AssetBundle中，但是metro除外，因为不同的序列化方案。</li>
 </ul>
 
 
@@ -400,17 +510,17 @@ public class UVAnimationBuilderEditor : Editor {
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/" data-toggle="tooltip" data-placement="top" title="代码生成AnimatorController">
+                        <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/" data-toggle="tooltip" data-placement="top" title="SendMessage测试">
                         Previous<br>
-                        <span>代码生成AnimatorController</span>
+                        <span>SendMessage测试</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/" data-toggle="tooltip" data-placement="top" title="游戏设计模式读书笔记：架构、性能、游戏">
+                        <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/" data-toggle="tooltip" data-placement="top" title="游戏设计模式读书笔记：原型模式">
                         Next<br>
-                        <span>游戏设计模式读书笔记：架构、性能、游戏</span>
+                        <span>游戏设计模式读书笔记：原型模式</span>
                         </a>
                     </li>
                     

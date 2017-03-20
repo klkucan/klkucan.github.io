@@ -5,9 +5,557 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 12 Mar 2017 12:24:05 +0800</pubDate>
-    <lastBuildDate>Sun, 12 Mar 2017 12:24:05 +0800</lastBuildDate>
+    <pubDate>Mon, 20 Mar 2017 22:11:58 +0800</pubDate>
+    <lastBuildDate>Mon, 20 Mar 2017 22:11:58 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>AssetBundle学习笔记：2、压缩</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;格式&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。&lt;/li&gt;
+  &lt;li&gt;LZ4：5.3以后才加入的一种压缩格式，被unity自己大量使用。这是一种基于块的压缩方式，当一个对象从LZ4压缩的AssetBundle中加载时，会按照需要解压部分的块。这样的好处在于快速的加载对象，后面会提到一个最佳实践。当然，按照这个原理，你也可以想象如果一个LZ4AssetBundle中只包含了一个GameObject，那么也不存在什么按需加载了。&lt;/li&gt;
+  &lt;li&gt;AssetBundle也可以选择不压缩，这样体积最大但是加载最快。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundle&quot;&gt;缓冲被压缩的AssetBundle&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;WWW.LoadFromCacheOrDownload方法下载并缓冲AssetBundle到磁盘，5.3以后缓冲的文件可以是LZ4格式的压缩文件了，这直接导致了一个很2的事情。就是当你下载了LZMA格式的AssetBundle后，每当你通过socket下载到足够的数据后，unity就在后台悄悄的解压然后重新压缩为LZ4格式的文件直到下载结束，这个压缩发生在下载流（download streaming）中。当用到缓冲中的数据时，就会按照解压LZ4的套路走了。也就是按需按块解压。&lt;/li&gt;
+  &lt;li&gt;缓冲压缩是默认的，然后可以通过 Caching.compressionEnabled属性来控制。会影响到包缓冲到磁盘和保存在内存中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundleapi&quot;&gt;AssetBundle加载API概述&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;具体表格可以参考&lt;a href=&quot;https://docs.unity3d.com/Manual/AssetBundleCompression.html&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;对这个表格总结以下，从API的角度看：
+    &lt;ul&gt;
+      &lt;li&gt;在使用WWW时需要及时释放，因为它会在内存（WebStream）中保留下载的文件的大小。&lt;/li&gt;
+      &lt;li&gt;LoadFromCacheOrDownload没有什么额外的内存使用（其实应该有序列化文件（SerializedFile）的内存使用，而且如果prefab过多，有可能SerializedFile比WebStream还大，&lt;a href=&quot;http://blog.uwa4d.com/archives/ABTheory.html&quot;&gt;来源&lt;/a&gt;）。而且从表中可以看到在性能上也只有读磁盘的操作，然而LoadFromCacheOrDownload本质上是个网络操作，因此它会产生一些例如CRC检测的操作，所以unity的建议是如果是本地的AssetBundle不要用这个函数加载。&lt;/li&gt;
+      &lt;li&gt;LoadFromMemory (Async)，不推荐使用。后面会说使用场景。&lt;/li&gt;
+      &lt;li&gt;LoadFromFile(Async)，so beautiful。&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://docs.unity3d.com/Manual/UnityWebRequest-HLAPI.html&quot;&gt;WebRequest&lt;/a&gt;。
+ (also supports caching)，这个东西算是WWW的替代品，很好用，回头写个总结。&lt;/li&gt;
+      &lt;li&gt;使用WWW, WebRequest下载AssetBundle时，还有一个8x64KB的缓冲池buff来保存socket中的数据。so，这也是内存啊。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;从压缩格式角度看:
+    &lt;ul&gt;
+      &lt;li&gt;不压缩没啥优势，除了访问速度快。其实如果是不考虑内存或者磁盘的占用问题，倒是可以用这个。&lt;/li&gt;
+      &lt;li&gt;LZ4，从文档看unity应该用的是&lt;a href=&quot;http://www.findbestopensource.com/product/lz4hc&quot;&gt;LZ4HC&lt;/a&gt;，一个LZ4的高压缩版本。由于unity从5.3以后缓存也可以压缩了，而且这个算法是基于块的，所以在综合性上比较好。&lt;/li&gt;
+      &lt;li&gt;LZMA，必须先解压在压缩，如果不是因为网络传输需要节省流量，不建议使用。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;指导方针，满满的干货&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果是将AssetBundle打包到游戏中，也就是AssetBundle跟着安装包走的话，推荐LZ4+AssetBundle.LoadFromFileAsync，既有压缩省空间，又有最快的加载性能可能性，给你读取内存buff的快感。&lt;/li&gt;
+  &lt;li&gt;如果是网络下载可下载内容（DLC），则使用LZMA+LoadFromCacheOrDownload/WebRequest，这样可以获得最好的压缩比。缓存到本地后使用AssetBundle.LoadFromFile加载。这里需要注意，如果是一些需要持久化的内容，是需要实实在在的保存到本地的，否则进程结束后内存中的cache会清除。&lt;/li&gt;
+  &lt;li&gt;如果是加密的AssetBundle，则使用LZ4+LoadFromMemoryAsync。其实也可以理解，毕竟需要加载到内容后进行解密。而且这个差不多是LoadFromMemory[Async]唯一的使用场景。&lt;/li&gt;
+  &lt;li&gt;当使用自定义压缩时，请使用不压缩来创建AssetBundle，然后自己解压后使用AssetBundle.LoadFromFileAsync来加载。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 20 Mar 2017 18:00:00 +0800</pubDate>
+        <link>https://caihua.tech/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/</guid>
+        
+        <category>AssetBundle学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>我所了解的法线贴图</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;两篇文章&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;http://www.66acg.com/m/?post=468&quot;&gt;凹凸映射&lt;/a&gt;&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/flytrace/p/3387748.html&quot;&gt;写给笨人的法线贴图原理&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;一些基本的概念&lt;/h2&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;1.法线贴图的定义&lt;/h4&gt;
+
+&lt;p&gt;顾名思义，法线贴图保存的是法线的信息贴图。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;2.用来干什么&lt;/h4&gt;
+&lt;p&gt;用来进行凹凸映射。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法不会真的改变模型的顶点位置，只是让模型看起来好像是“凹凸不平”的，但可以从模型的轮廓处看出“破绽”。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有两种主要的方法可以用来进行凹凸映射：一种方法是使用一张高度纹理(height map)来模拟表面位移(displacement)，然后得到一个修改后的法线值，这种方法也被称为高度映射(height mapping);另一种方法则是使用一张法线纹理(normal map)来直接存储表面法线，这种方法又被称为法线映射(normal mapping)。尽管我们常常将凹凸映射和法线映射当成是相同的技术，但要知道它们之间的不同。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;3.种类&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;世界空间下的法线纹理&lt;/li&gt;
+  &lt;li&gt;模型空间下的法线纹理&lt;/li&gt;
+  &lt;li&gt;切线空间下的法线纹理&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;对比不同的法线贴图&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;首先按照不同的坐标系得到了不同类型的法线贴图。模型顶点的法线根据所处坐标系的不同，在成图后表现也是不同的。以模型法线贴图和切线法线贴图为例：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.66acg.com/content/uploadfile/201609/8e0f1474641756.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;上图 左边: 模型空间下的法线纹理   右边: 切线空间下的法线纹理&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;不同的颜色是因为法线作为一个Vector3类型的需要转换到2D的颜色，而通常来说我们可以把颜色的RGB看成一个坐标系，这样法线就对应了一个RGB颜色。但是法线的范围是[-1,1]，而颜色是没有赋值的，因此有以下的转换过程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;法线纹理存储的是表面的法线方向。由于法线方向的分量范围在[-1, 1]，而像素的分量范围为[0, 1]，因此我们需要做一个映射，通常使用的映射就是： 
+pixel=(normal + 1) / 2 
+这就要求，我们在Shader中对法线纹理进行纹理采样后，还需要对结果进行一次反映射的过程，以得到原先的法线方向。反映射的过程实际就是使用上面映射函数的逆函数： 
+normal=pixel × 2 - 1&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;world-space-normal-map&quot;&gt;1.world space normal map&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;一旦从贴图里解压出来后,就可以直接用了,效率很高.但是有个缺点,这个world space normal 是固定了,如果物体没有保持原来的方向和位置,那原来生成的normal map就作废了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;世界坐标下的顶点的法线是现成的，因此好用。不过如果进入模型在U3D里面进行了位置或者方向的转换，那么在没有转换矩阵的情况下，法线信息就是错误的，也就无法使用了。进一步思考如果场景中存在大量的静态模型，可以考虑用这个。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;object-space-normal-map&quot;&gt;2.object space normal map&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;对于模型顶点自带的法线，它们是定义在模型空间中的，因此一种直接的想法就是将修改后的模型空间中的表面法线存储在一张纹理中，这种纹理被称为模型空间的法线纹理(object-space normal map)。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;对象空间的法线贴图，这个贴图中记录的法线信息是基于模型空间的，因此数值是相对的，这样模型在场景中是可以位移和旋转的，只要在计算的时候乘上对应的矩阵即可。而且从上面的图里可以看到贴图是彩色的，因为模型上的顶点法线在这个空间中是朝各个方向的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;对象空间的法线贴图比起世界空间的在使用了已经有了很大的进步，不过它仍旧有自己的局限性，就是这样的贴图还是依赖于模型本身。从其定义也可以看出来，它也是一种“绝对位置”。如果模型发生了形变，则这个贴图的信息就是错误的。从目前来看，我只能想到模型在场景中存在动画这个问题。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;tangent-space-normal-map&quot;&gt;3.tangent space normal map&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;对于模型的每一个顶点，它都有一个属于自己的切线空间，这个切线空间的原点就是该顶点本身，而z轴是顶点的法线方向(n),x轴是顶点的切线方向(t)，而y轴可由法线和切线叉积而得，也被称为副切线(bitangent, b)或副法线。这种纹理被称为是切线空间的法线纹理(tangent-space normal map)。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;定义很好理解，从本质上讲切线空间的法线贴图解决了模型变形的问题。因为在另一个模型上的顶点的切线空间坐标系里面，法线贴图中的信息是可以使用的，它不依赖于模型本身、也不依赖于模型所处的坐标系。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;4.切线空间下的法线贴图如何生成&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;以3DMAX为例，法线贴图需要高模和低模配合，具体过程不说了，网上大把的视频。&lt;/li&gt;
+  &lt;li&gt;重点是法线贴图的生成需要高模和低模，因为没有高模就不知道法线方向,没有低模,就不知道高模上某点的法线对应于低模上哪个点。&lt;/li&gt;
+  &lt;li&gt;下面才是重点，因为多个高模的面使用了同一个低模的面，因此在生成法线贴图时，高模不能使用自己的tangent space，而是使用低模的tangent space。这样一些高模上的点的法线与低模面上的法线出现了不一致，你可以想象低模上的某个面上的法线指向一个方向，但是对应了几个高模的点，可能一些点的法线与低模面的法线方向一样，那么很好，完美融入低模的切线空间，颜色呈现出淡蓝色。但是其它那些和低模面法线不一致的点的法线就产生了夹角，就造成了在切线法线贴图上那些不是[0.5,0.5,1]色值的点。
+    &lt;blockquote&gt;
+      &lt;p&gt;低模上的这个tangent space，也必须与高模上的坐标系tangent space。因为低模上的一个面,可能对应了高模上的几个面(精度高)，按照新方法每个面都有一个局部坐标系，那对于低模上的每个面，高模因为存在好几个面，就会出现好几个局部坐标系，这肯定是不行的。所以高模所用的tangent space，就是低模上的。生成法线贴图，必定会确认高模上哪些面都对应低模上的哪个面，然后高模上的这几个面的法线，都会转换为低模这个面上所构建的tangent space的坐标。这样，当低模变形时，即三角面变化时，它的tangent space也会跟着变化，保存在贴图里的法线乘以低模这个面的tangent space到外部坐标系的转换矩阵即可得到外部坐标。顺便再提一点，高模保存的这个法线，是高模上object space里的法线。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;对于上述的内容，这张图做了很好的诠释。
+&lt;img src=&quot;http://images.cnitblog.com/blog/278594/201310/26011616-6fe1f456a1b94c408c883ab302c59f99.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;如何将高模的法线贴图用在低模上&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;对于object space normal map，低模的object space坐标系与高模中的object space坐标系是重合的。所以不需要构建,所以低模上某点才能直接用高模的法线替换自己的法线。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 16 Mar 2017 15:20:05 +0800</pubDate>
+        <link>https://caihua.tech/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>游戏设计模式读书笔记：原型模式</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;原型模式&lt;/h2&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;定义&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F&quot;&gt;定义&lt;/a&gt;：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
+原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。&lt;/li&gt;
+  &lt;li&gt;看图
+&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Prototype_UML.svg/678px-Prototype_UML.svg.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;模式的理解&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;当需要快速并且尽可能少的占用内存的情况下，创建一个新的对象可以采用这个模式。前提是浅拷贝，因为深拷贝就是创建一个新的对象。&lt;/li&gt;
+  &lt;li&gt;如果在必须是深拷贝，那么这个模式只是在使用上有便利，或者说代码上更优雅而已。&lt;/li&gt;
+  &lt;li&gt;在扩展一个基础类型时，可以使用原型模式。但是C#中如果是结构体还好说，如果是个类完全可以用继承。&lt;/li&gt;
+  &lt;li&gt;根据定义这个不是新建一个实例，那么本质上是浅拷贝。至于到底是深拷贝还是浅拷贝我认为可以根据自己的需要去做。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;unity&quot;&gt;Unity中的实现&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实在C#中已经实现了ICloneable接口，直接继承接口，然后实现方法即可。而且.net还提供了MemberwiseClone方法，直接实现了浅拷贝。&lt;/li&gt;
+  &lt;li&gt;要做深拷贝就是new一个对象返回即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;吐槽&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个文章不知所谓。作者自己都不喜欢这个模式。或者说他用这个模式的方向应该不是这个模式原本希望人们使用的方式吧。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 16 Mar 2017 15:20:05 +0800</pubDate>
+        <link>https://caihua.tech/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid>
+        
+        <category>游戏设计模式读书笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>AssetBundle学习笔记：1、概述和创建</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;前言&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;概述&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ab&quot;&gt;AB流程&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundlesBuildPlusUpload.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Editor编辑，场景中使用。&lt;/li&gt;
+  &lt;li&gt;上传AB到服务器，其实这个不是必须的，也可以放到本地，后面会讲到这种case下怎么做才是最高效的。程序会按需加载AB，然后每个AB中的asset各自处理。其实就是在AssetBundle中按照需要加载不同的资源。&lt;/li&gt;
+  &lt;li&gt;下载AB到本地，方法也非常多，各有优劣，后面会说。&lt;/li&gt;
+  &lt;li&gt;从AssetBundle中加载GameObject，这个有一个AssetBundle→asset→GameObject的过程。而AB之前还可能有www。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;友情提示&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;你必须看&lt;a href=&quot;http://unity3d.com/learn/tutorials/topics/best-practices/guide-assetbundles-and-resources&quot;&gt;这个&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;assetbundle&quot;&gt;创建AssetBundle&lt;/h2&gt;
+
+&lt;h4 id=&quot;assetbundle-1&quot;&gt;设置AssetBundle&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;定义AssetBundle名称，在一个资源的最下方会有一个AssetBundle的设置。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleInspectorNewBundle.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;点击New按钮可以创建新包，并给它命名。下图的例子中资源被添加到一个名为environment/desert的AssetBundle中，这里面可能包含了之前已经放置的资源。另外在AssetBundle命名时unity会当名称转为小写。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleEditor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果创建了一些AssetBundle，但是没有放置任何的资源通过Remove Unused Names选项可以删除定义的名字。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;从上述的说明感觉这个new出来的是一个空文件夹识，在设置资源时这个文件夹的名字作为了标识来使用。而Remove Unused Names按钮就是一键删除空文件夹。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;assetbundle-2&quot;&gt;代码生成AssetBundle&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEditor;
+
+public class CreateAssetBundles
+{
+    [MenuItem (&quot;Assets/Build AssetBundles&quot;)]
+    static void BuildAllAssetBundles ()
+    {
+        BuildPipeline.BuildAssetBundles (&quot;Assets/AssetBundles&quot;, BuildAssetBundleOptions.None, BuildTarget.StandaloneOSXUniversal);
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;同时生成的manifest文件包含一下内容：
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%86%97%E9%A4%98%E6%A0%A1%E9%A9%97&quot;&gt;CRC&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;AssetFileHash：AssetBundle中所有asset文件的hash，一个单独的hash。只用来做增量build时的检查。&lt;/li&gt;
+      &lt;li&gt;TypeTreeHash：AssetBundle中所有类型的hash，只用来做增量build时的检查。&lt;/li&gt;
+      &lt;li&gt;ClassTypes： AssetBundle中包含的所有类类型，这些数据用来得到一个新的单独的hash当typetree做增量build检测。&lt;/li&gt;
+      &lt;li&gt;Asset names.所有在AssetBundle中的asset的名称。&lt;/li&gt;
+      &lt;li&gt;Dependent AssetBundle names. AssetBundle所依赖的其它AssetBundle的名字&lt;/li&gt;
+      &lt;li&gt;这个manifest文件只是用来做增量build的，非运行时必须。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;放一个自己的测试数据&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
+CRC: 1763426742
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: eed209af1be31231fa135faaff2ab7b6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
+HashAppended: 0
+ClassTypes: []
+Assets:
+- Assets/Test.unity
+Dependencies:
+- E:/CodeDemo/New Unity Project 2/Assets/AssetBundles/sphere
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;还有两个文件生成，文件名就是打包目的地文件夹的名字，比如上面的代码就在AssetBundles文件夹下生成，名字是AssetBundles，一个是没有后缀的一个是以manifest为后缀，打开manifest文件可以看到下面的内容，可以看出来是这个目录下AssetBundle的信息。&lt;strong&gt;&lt;em&gt;其实它只包含两个  信息，一个是所有的AssetBundle名字和它们的依赖。&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
+CRC: 4270654667
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies: {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;做了个小测试，添加了两个新的AssetBundle，名字也不一样，每次添加这个文件的内容跟着变，并且CRC也在变。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
+CRC: 2591254959
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+        Dependency_1: capsule
+    Info_2:
+      Name: sphere
+      Dependencies: {}
+    Info_3:
+      Name: capsule
+      Dependencies: {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;继续小测试，把Capsule的AssetBundle从capsule改为sphere。果然只是简单记录了下目录中的AssetBundle信息。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
+CRC: 3856405611
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cube
+      Dependencies: {}
+    Info_1:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+    Info_2:
+      Name: sphere
+      Dependencies: {}
+      
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;再次小测试，在UI的AssetBundle设定中第一栏设定了多层次的名称结果如下。而且从文件夹结构上看one和two都是两个文件夹，而在two里面则是一个名为xx.three的文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
+CRC: 2167406161
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: scene
+      Dependencies:
+        Dependency_0: sphere
+    Info_1:
+      Name: sphere
+      Dependencies: {}
+    Info_2:
+      Name: one/two/xx.three
+      Dependencies: {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;shadershader-stripping&quot;&gt;shader剥离（Shader stripping）&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果AssetBundle中包含shader，unity编辑器会根据当前场景和光照贴图的设置来决定使用哪种Lightmap modes。这还意味着你在打包的时候需要将打开着一个配置的场景。我的理解是因为需要根据当前场景来作为因素来做某个事情，所以这个场景需要时打开的。&lt;/li&gt;
+  &lt;li&gt;也可以指定一个场景用来计算光照贴图模式，这个在用命令行buildbundle时是必须的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleShaderStripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;引擎代码剥离&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;代码剥离这个事情是将没有在任何场景（特指Build Settings &amp;gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/BuildingAssetBundles-enginecodestripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果一个引擎代码在build的时候被剥离了，但是在运行时又被请求使用，那么就会报错，因为被剥离的代码无法再被访问。如何避免这个错呢？把player（此处我认为不是玩家的意思，而是引擎）可能用到的AssetBundle列出来，放置到一个manifest文件中，代码剥离系统使用这个文件中列出来的AssetBundle (along with the Scenes in the build)来确定哪些code需要保留。当一些平台或build不支持代码剥离，又或者没有勾选剥离时assetBundleManifestPath属性是被忽略的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;从代码角度来看就是&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
+
+using UnityEditor;
+
+namespace AssetBundles
+
+{
+
+    public class BuildScript
+
+    {
+
+        public static void BuildPlayer()
+
+        {
+
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
+
+            // example hard-coded platform manifest path
+
+            buildPlayerOptions.assetBundleManifestPath = &quot;AssetBundles/iOS/iOS.manifest&quot;;
+
+            // build the Player ensuring engine code is included for 
+
+            // AssetBundles in the manifest.
+
+            BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        }
+
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;几个小工具代码&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;列出所有在build process中产生的AssetBundle的名称&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEditor;
+using UnityEngine;
+
+public class GetAssetBundleNames
+{
+    [MenuItem (&quot;Assets/Get AssetBundle names&quot;)]
+    static void GetNames ()
+    {
+        var names = AssetDatabase.GetAllAssetBundleNames();
+        foreach (var name in names)
+            Debug.Log (&quot;AssetBundle: &quot; + name);
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。&lt;em&gt;从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+
+public class MyPostprocessor : AssetPostprocessor {
+
+    void OnPostprocessAssetbundleNameChanged ( string path,
+            string previous, string next) {
+        Debug.Log(&quot;AB: &quot; + path + &quot; old: &quot; + previous + &quot; new: &quot; + next);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;assetbundle-3&quot;&gt;AssetBundle变体&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个玩意有什么意义呢？&lt;/li&gt;
+  &lt;li&gt;下图中在后一个label中填入一个名字，就可以形成变体。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundle50Editor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;从文档上看可以同一批asset创建不同的变体，而且在这些变体AssetBundle中asset有意义的内部ID。需要注意这样的变体AssetBundle的全名是由AssetBundle name + the variant name组成的，如果你创建了一个名为MyAssets.hd的AssetBundle，那它只是一个普通的AssetBundle而不是变体的。而且 “MyAssets”+“hd”和“MyAssets.hd”+”“不能同时存在因为它们具有相同的全称。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;脚本建议&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;妈蛋总算快完了。&lt;/li&gt;
+  &lt;li&gt;呵呵，我不打算写了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;typetrees&quot;&gt;Typetrees&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;默认写到AssetBundle中，但是metro除外，因为不同的序列化方案。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 14 Mar 2017 11:40:00 +0800</pubDate>
+        <link>https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/</guid>
+        
+        <category>AssetBundle学习笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>SendMessage测试</title>
@@ -707,508 +1255,6 @@ Auto UV Max Distance:0.5  /  Auto UV Max Angle:50&lt;/p&gt;
         <guid isPermaLink="true">https://caihua.tech/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%BA%8C-%E5%85%89%E7%85%A7%E5%9B%BE/</guid>
         
         <category>Unity預計算即時GI笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>《Unity預計算即時GI》笔记：一、基本概念与一些设置</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;说明&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这篇文章是对&lt;a href=&quot;http://unitytaiwan.blogspot.tw/2016/12/unity-gi-1.html&quot;&gt;《Unity預計算即時GI》&lt;/a&gt;这个系列文章的笔记。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;基本概念&lt;/h2&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;在Unity裡，可以用兩種不同的技術來計算全域光照GI或光源反射，就是烘焙全域光照(Baked GI)和預計算即時全域光照(Precomputed Realtime GI)。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;當啟用PRGI時，一個光照預計算就是用來計算靜態幾何物件周圍光的反射，並存成資料給Runtime執行使用的一個過程。這個過程減少了原本必須在Runtime執行時的光照計算數量，讓專案得以在保持FPS的穩定之下還能計算光的反射。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;baked-gi&quot;&gt;与Baked GI有什么不同&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;先看下5.X中Baked GI的定义
-    &lt;blockquote&gt;
-      &lt;p&gt;當啟用烘焙GI(Baked GI)時，預計算的過程會計算並產生傳統的光照貼圖(Lightmap)，這些貼圖會以資源(Assets)的形式存在專案中，而且無法再Runtime執行時更改。PRGI並非用一樣的方法產生光照貼圖，相反的，PRGI算好的結果會被存成一個光照資料檔(Lighting Data Asset)，這個資料檔存的資料能讓專案在Runtime執行時能即時產生一組低解析度的光照圖。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;从本质上看就是PRGI还是实时计算的，只不过光的反射路径已经提前计算了，因此在实际的光照计算时会减少计算量，进而提升效率。而Baked GI仍旧是传统的light map的机制。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;prgi&quot;&gt;PRGI的相关设置&lt;/h2&gt;
-
-&lt;h4 id=&quot;realtime-resolution&quot;&gt;Realtime Resolution的设置&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;设置的依据&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Realtime Resolution的值可以由你的遊戲規模來制定，例如，是否你的場景是一個小小的，卻有豐富光照變化的室內環境? 在這種情況下，高一點的值比如2-3，可以捕捉更詳細或”高頻”的光照。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;如果你的場景是一個世界規模較大的大型戶外環境。可能有著幾千或幾百個物件表面幾乎不會去修改光照反射顏色。在這樣的情況下，把適合計算複雜室內場景的設定用在有大量相同特徵的室外環境是很浪費的。我們會浪費寶貴的CPU時間和記憶體儲存/更新那些對整體外觀貢獻不大的光照貼圖。為了教學目的，我們會提高PRGI期間必須考慮貼圖像素的量，這會對預計算的時間造成很大的影響。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在場景裡有大物件的室外環境情況下，合適的設定可以設在0.5-1之間，針對地形可以設定0.1-0.5之間。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;場景與Realtime Resolution值對照表&lt;/p&gt;
-
-  &lt;p&gt;室內:2-3 像素/單位&lt;/p&gt;
-
-  &lt;p&gt;戶外:0.5-1 像素/單位&lt;/p&gt;
-
-  &lt;p&gt;地形:0.1-0.5 像素/單位&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;与Baked GI在数值上的差异&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Unity PRGI所需要的Realtime Resolution值比傳統光照貼圖密度要小好幾個等級，這是因為我們只從這些光照圖裡擷取間接光源資料，這些資料通常解析度都很低。所以使用PRGI時，清晰的陰影通常都是即時運算而非從高解析度的光照圖來提供。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在這裡使用傳統光照慣用的值，例如:30 texels，可能會導致預計算失敗或無法計算。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;关于Realtime Resolution的使用&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;當設定場景即時解析度時，Unity會指定給場景內的靜態物件。帶有Mesh Renderer且標有靜態光照標籤(Lightmap Static)的物件，會引用這個值一直到它被外力修改。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;除了幫場景加上解析度設定外，我們還能針對每個物件調整光照貼圖的解析度，在需要高解析度來提供更高真實感的情況下，我們可以選擇性的提高這個值。通常是將場上最多的物件解析度設為預設值，然後手動調高需要更多照明細節物件的值。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;最后放一个不同数值对光照图的影响，可以看出数值越小单个光照图越小，数值 大时导致光照贴图单位面积中像素越多，从而使得对应的光照图变大。（个人理解）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201702/23250-20170214163630769-1933493116.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;runtime resolution 0.5&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201702/23250-20170214163702707-1660489302.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;runtime resolution 1&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://images2015.cnblogs.com/blog/23250/201702/23250-20170214163712441-606092785.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;runtime resolution 2&lt;/p&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;物件的设置&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;需要设置为static&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;light&quot;&gt;Light面板设置&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;auto与否个人认为不重要。只不过在auto模式下如果已经在某些参数的情况下生成过一次后续改动参数再改回来不需要再次生成。这个东西是否在非auto模式下奏效没试过。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;光照探测&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;what &amp;amp; why
-    &lt;blockquote&gt;
-      &lt;p&gt;我們已經理解場景裡的圖表數量對預計算時間的影響，這樣我們就能從預計算流程裡想辦法降低一些物件計算來讓光照效能大躍進，同時也會減少圖表產生的數量．取而代之的，我們可以對這些物件做光照探測(Probe Lighting)處理，它是一種讓物件接收場景間接照明的好方法，雖然被光照探針指定的物件無法計算場景的光照反射，但通常影響不大。這種方法非常適合用在場景裡的小物件，因為小物件對光照反射計算幾乎沒什麼影響。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;光照探測技術是一個能在遊戲裡讓即時光照更逼真的快速演算法，通常會用在處理遊戲世界的人物角色或是動態物件的光照，它的優點在於Runtime處理效能佳而且還能預先計算好。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;弊端
-    &lt;blockquote&gt;
-      &lt;p&gt;使用光照探測是有些限制的，其中一個限制是在不提高探針數量的前提下很難在球型範圍上表現出高頻或斑駁的光照，但精度和消耗成本成正比，代表在效能的前提下，我們必須限制較低階的球諧函數。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;實際上一個3D座標只能用一個球體來紀錄照明資料，所以光照探測不適合用在有大量光照投射在大物件的狀況。另外一個限制是當用球諧函數在一個球體上編碼時，通常不擅於處理用有廣大平面的物件或帶有很深的凹洞的物件．如果你正計畫要把光照探測技術用在大型物件上，Unity有提供另一個光照探測代理體(Light Probe Proxy Volumes,LPPV)的技術可以參考手冊說明。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;适用于
-    &lt;blockquote&gt;
-      &lt;p&gt;儘管有這些限制，光照探測還是很適合和符合條件的小物件一起搭配使用，產生成本低廉效果卓越的結果。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 22 Feb 2017 22:43:49 +0800</pubDate>
-        <link>https://caihua.tech/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/</guid>
-        
-        <category>Unity預計算即時GI笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：命令模式</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;模式定义&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Command_pattern&quot;&gt;定义&lt;/a&gt;：将一个请求封装成一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;看图（图片资源来自于百度，侵删）
-&lt;img src=&quot;http://images.cnitblog.com/i/511616/201403/231247427711364.x-png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;模式的理解&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;所谓命令模式说白了就是把一个方法对象化。怎么来理解这句话呢？可以看下UML图中的Command的interface，里面有个execute方法，还有一个undo方法。undo我们后面说，从内容上看这个接口非常的简单，它主要是为一个方法（execute）提供一个对象的载体。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;这样做有什么用?
-    &lt;ol&gt;
-      &lt;li&gt;使你可用不同的请求对客户进行参数化；&lt;/li&gt;
-      &lt;li&gt;对请求排队或者记录请求日志;&lt;/li&gt;
-      &lt;li&gt;支持可撤销的操作。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;因为一个方法的执行过程中往往是无法中断或者取消的，另外就是如果不做特殊的编码或者写相对应的方法，一个方法的执行往往不可逆。命令模式通过将方法封装成对象，进而可以制作出一个方法对象的列表，这样在顺序执行列表的过程中就可以将未执行的方法取消掉，而且保留这个列表相当于保留了一个操作的日志，在反向执行undo的操作就相当于对执行顺序进行逆转了。所以undo方法基本上是execute方法的逆向操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;unity&quot;&gt;在unity中的使用&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在这里我没有什么自己的例子，而是推荐&lt;a href=&quot;http://www.habrador.com/tutorials/programming-patterns/1-command-pattern/&quot;&gt;这篇文章&lt;/a&gt;，这里已经很好的讲述的如何在unity中使用，并且也有了示例代码。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;进一步的思考&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;《游戏设计模式》的作者也提到了是类风格化还是函数风格化的问题，他提到了JS写的代码如何实现这个模式。在我看来，C#的Action和Func一样可以替代类来实现方法的封装。因为命令模式的核心是将请求（方法）封装成对象，因此是用类或者一个delegate都是可以的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;那么何时使用类，又何时使用delegate呢？
-    &lt;ol&gt;
-      &lt;li&gt;如果有undo的需求时采用类比较好，反之可以考虑delegate。&lt;/li&gt;
-      &lt;li&gt;如果你的方法中使用了很多的共享的数据，你考虑使用享元模式时应该使用类，如果你的execute方法还调用了父类的方法，需要使用沙盒模式时应该考虑使用类。可以说一个复杂的逻辑方法中往往代表了数据和算法以及调用其它函数，这样的话一个Action可能并不能满足你的需要，因此类是你唯一的选择。&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;命令模式的一个很大的用途在于制作录像，也就是说如果我们有一个赛车游戏，那么录像的制作可以考虑只记录玩家的操作（命令），而其它的运动交给游戏逻辑（比如加速后的移动，碰撞后受到的影响等）本身来完成。这个应该是很多录像的实现方式。但是有个问题就是如何保障只使用命令的情况下，每次的游戏过程都能保证一致性。比如说一个赛车游戏中，玩家在躲避障碍的时候发布了左转命令，录像也忠实的记录了这个命令，但是在录像播放（游戏场景重现）时，依赖游戏逻辑是否能够完全正确的重现当时的场景，并且让这个左转的命令看上去是恰当的，这个十分考验引擎的计算准确性。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;在多人联机游戏中是否应该使用命令模式来重现其他玩家的操作？因为我一直做的竞速游戏，所以如果考虑行为的一致性应该是使用命令模式来做的，但是有个问题就是帧率太高的话，可能出现客户端无法快速响应命令的问题，尤其是设备FPS不同的情况下。因此在使用命令模式的同时，做补帧是必要的。当然这个主要针对的是位移这个问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 26 Dec 2016 22:09:16 +0800</pubDate>
-        <link>https://caihua.tech/2016/12/26/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/12/26/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：架构、性能、游戏</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;架构、性能、游戏&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;在开始读第一章的时候会觉得有点混乱，作者提出了什么是架构这个问题，但是并没有像其它书里那样给出一个明确的定义，而是提到了：&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;这本书是关于上面这一切要使用的代码的组织方式。这里少谈代码，多谈代码组织。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;仔细品读这句话，你会发现这里面其实已经提到了什么是架构：所谓架构就是代码的组织方式。但是从我个人的认识来看这并不够全面，在这里在引用几段&lt;a href=&quot;http://www.infoq.com/cn/arch-talk&quot;&gt;《架构漫谈》&lt;/a&gt;中的文字来阐述什么是架构：&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;在每个人都必须自己完成所有生活必须品的生产的时候，是没有架构
-的(当然在个人来讲，同一时刻只能做有限的事情，在时间上还是可能会
-产生架构的)。一旦产生的分工，就把所有的事情，切分成由不同角色的什么是架构
-人来完成，最后再通过交易，使得每个个体都拥有生活必须品，而不需要
-每个个体做所有的事情，只需要每个个体做好自己擅长的事情，并具备一
-定的交易能力即可。&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;这实际上就形成了社会的架构。那么怎么定义架构呢?以上面这个例
-子为例，把一个整体(完成人类生存的所有工作)切分成不同的部分(分 工)，由不同角色来完成这些分工，并通过建立不同部分相互沟通的机制， 使得这些部分能够有机的结合为一个整体，并完成这个整体所需要的所有 活动，这就是架构。&lt;/p&gt;
-    &lt;/blockquote&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;软件架构实际上包括了:代码架构， 以及承载代码运行的硬件部署架构。实际上，硬件部署架构最终还是由代 码的架构来决定。因为代码架构不合理，是无法把一个运行单元分拆出多 个来的，那么硬件架构能分拆的就非常的有限，整个系统最终很难长的更大。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;关于架构和性能的冲突，我认为这个点写的很好，可以说我之前没有这样的认识。长久以来我都希望写出非常面向对象的代码，在我长久的认知中，代码的灵活性、高扩展性和可维护性是最重要的，因此设计模式是我在编写代码时所追求的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;但是作者提出良好的架构是需要很大的代价的，因为这需要遵守一些列的准则，Coder必须谨慎的组织代码，而且在引入了抽象，引入了可扩展性，引入的某个设计模式时，我们在增加了代码的灵活性的同时也增加了不可读性，增加了代码复杂度，这就增加了理解的难度。过度的架构设计往往会导致代码库失控，也许你会看到接口和抽象无处不在，我们可能需要花费大量时间才能找到真正功能的代码。关于这一点我也是深有体会，最近在看UniRx库，发现各种接口齐飞，大量的重载，梳理起来确实很费劲。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;同时，从代码本身执行角度来说，灵活的代码往往意味着执行速度比较慢。从UNITY的角度来说，因为有类似CLR的东西，当使用面向接口编程时，往往意味这具体类型的判断需要在运行期，JIT做的越多，性能也越差。而且还很可能导致无法实现代码缓存，每次运行都需要实时的做判定。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;原型代码&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;原型代码中可能包含大量的一次性代码，但是原型代码往往意味着不可维护，必须被重写。目前在项目的开发过程中，往往出现原型代码被最终使用在项目中，简直就是灾难。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;寻求平衡&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;快速编写出的代码未必是执行最快的代码，而且这样的代码在后面往往需要花费很多时间来优化，这都是需要时间的。这些都需要平衡。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;我们在工作中就是在不断的寻找平衡，有时候看到自己写的或者别人写的代码，就想去重构一下，但是现实又往往不给这个时间。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Sat, 17 Dec 2016 19:45:25 +0800</pubDate>
-        <link>https://caihua.tech/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>由一个美术需求引发的Custom Inspector</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;需求&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;需求分析&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，&lt;code class=&quot;highlighter-rouge&quot;&gt;transform.GetComponent &lt;/code&gt;这样的方法怎么执行？好在unity已经为我们考虑到了这个问题，提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;[ExecuteInEditMode]&lt;/code&gt;Attribute，通过指定这个attribute使得组件类中的方法可以在edit模式下执行，并且是在非运行状态下的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;如何在非运行状态下匀速改变数值呢？update方法中配合&lt;code class=&quot;highlighter-rouge&quot;&gt;Time.deltaTime&lt;/code&gt;是一个完美的方案，但是即使设置了&lt;code class=&quot;highlighter-rouge&quot;&gt;[ExecuteInEditMode]&lt;/code&gt;，update的表现在非运行和运行时也是完全不同的，查资料看到&lt;a href=&quot;https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html&quot;&gt; is only called when something in the scene changed. &lt;/a&gt;这句话时也有种吐槽的冲动。好在unity又为大家考虑到了这个问题（话说unity editor确实功能强大，AssetAtore里面那些插件真是厉害）,Edit模式下提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;EditorApplication.update&lt;/code&gt;，这是一个事件，我们注册一个自己的方法就可以在非运行状态下实现update的功能。我个人比较推荐使用&lt;a href=&quot;https://gist.github.com/benblo/10732554&quot;&gt;EditorCoroutine&lt;/a&gt;，一个基于&lt;code class=&quot;highlighter-rouge&quot;&gt;EditorApplication.update&lt;/code&gt;的协程实现。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;功能实现&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;使用一个自定义组件来实现material中数值的修改，这个类在UI上要体现出能够设置变化速率和初始值。并且在UI上通过点击按钮的形式来触发改变。&lt;/li&gt;
-  &lt;li&gt;使用Custom Inspector来实现组件UI的自定义。&lt;/li&gt;
-  &lt;li&gt;在运行状态下通过使用默认的update来实现匀速变化，在非运行状态下通过使用EditorCoroutine来实现。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;代码实现&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
-using System.Collections;
-using UnityEditor;
-public class UVAnimation : MonoBehaviour
-{
-
-    public Vector2 TilingSpeed = new Vector2(1, 1);
-    public Vector2 OffsetSpeed = new Vector2(0.1f, 0.1f);
-
-    public Vector2 Tiling = new Vector2(1, 1);
-    public Vector2 Offset = new Vector2(0, 0);
-
-    float rate = 0.02f;
-
-    EditorCoroutine coroutineOffset;
-    EditorCoroutine coroutineTiling;
-
-    bool isOffset = false;
-    bool isTiling = false;
-
-    // Use this for initialization
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    void FixedUpdate()
-    {
-        if (isOffset)
-        {
-            transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * Time.deltaTime;
-        }
-        if (isTiling)
-        {
-            transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * Time.deltaTime;
-        }
-    }
-
-    public void ChangeOffset()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isOffset = true;
-        }
-        else
-        {
-            if (coroutineOffset != null)
-            {
-                coroutineOffset.stop();
-            }
-            coroutineOffset = EditorCoroutine.start(ChangeOffsetCoroutine());
-        }
-
-    }
-
-    IEnumerator ChangeOffsetCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureOffset += OffsetSpeed * rate;
-        }
-    }
-
-    public void ChangeTiling()
-    {
-        if (EditorApplication.isPlaying)
-        {
-            isTiling = true;
-        }
-        else
-        {
-            if (coroutineTiling != null)
-            {
-                coroutineTiling.stop();
-            }
-            coroutineTiling = EditorCoroutine.start(ChangeTilingCoroutine());
-        }
-    }
-
-    IEnumerator ChangeTilingCoroutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(rate);
-            transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureScale += TilingSpeed * rate;
-        }
-    }
-
-    public void SetOffset()
-    {
-        transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureOffset = Offset;
-    }
-
-    public void SetTiling()
-    {
-        transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureScale = Tiling;
-    }
-
-    public void Reset()
-    {
-        isOffset = false;
-        isTiling = false;
-        transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureScale = new Vector2(1, 1);
-        transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials[0].mainTextureOffset = new Vector2(0, 0);
-        if (coroutineOffset != null)
-        {
-            coroutineOffset.stop();
-        }
-        if (coroutineTiling != null)
-        {
-            coroutineTiling.stop();
-        }
-    }
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
-using System.Collections;
-using UnityEditor;
-
-[CustomEditor(typeof(UVAnimation))]
-public class UVAnimationBuilderEditor : Editor {
-
-
-	public override void OnInspectorGUI ()
-	{
-	   base.OnInspectorGUI ();
-		//DrawDefaultInspector ();
-		UVAnimation uva = (UVAnimation)target;
-
-		if (GUI.changed) {
-			uva.SetTiling ();
-			uva.SetOffset ();
-		}
-
-		if (GUILayout.Button(&quot;Change Tiling&quot;)) {
-			uva.ChangeTiling ();	
-			EditorUtility.SetDirty (target);
-		}
-
-		if (GUILayout.Button(&quot;Change Offset&quot;)) {
-			uva.ChangeOffset ();
-		}
-
-		if (GUILayout.Button(&quot;Reset&quot;)) {
-			uva.Reset ();
-		}
-	}
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-4&quot;&gt;代码解析&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;[CustomEditor(typeof(UVAnimation))]&lt;/code&gt;为UVAnimation创建的Editor类，在这个类里面可以修改UVAnimation类的UI，可以调用UVAnimation类中的方法。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;OnInspectorGUI&lt;/code&gt;方法，顾名思义在里面可以对UI进行编程，注意一下这个方法会自己生产一句代码&lt;code class=&quot;highlighter-rouge&quot;&gt;base.OnInspectorGUI ();&lt;/code&gt;，我所注释掉的&lt;code class=&quot;highlighter-rouge&quot;&gt;DrawDefaultInspector ();&lt;/code&gt;这句代码都是用来绘制默认UI的，二者只可留其一。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;transform.GetComponent&amp;lt;Renderer&amp;gt;().sharedMaterials&lt;/code&gt;在edit模式下获取材质球的对象需要用&lt;code class=&quot;highlighter-rouge&quot;&gt;sharedMaterials&lt;/code&gt;。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;mainTextureScale&lt;/code&gt;对应的就是UI上的Tiling。命名这让人吐槽。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 19 Nov 2016 15:52:25 +0800</pubDate>
-        <link>https://caihua.tech/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/</link>
-        <guid isPermaLink="true">https://caihua.tech/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/</guid>
-        
-        <category>Unity3D</category>
         
         
       </item>

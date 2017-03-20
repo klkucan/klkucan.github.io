@@ -173,6 +173,123 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：2、压缩
+        </h2>
+        
+        <div class="post-content-preview">
+            格式
+
+  
+    谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。
+  
+  LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。
+  LZ4：5.3以后才加入的一种压缩格式...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on March 20, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/">
+        <h2 class="post-title">
+            我所了解的法线贴图
+        </h2>
+        
+        <div class="post-content-preview">
+            两篇文章
+
+  
+    本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。
+
+    凹凸映射
+
+    写给笨人的法线贴图原理
+  
+
+
+一些基本的概念
+
+1.法线贴图的定义
+
+顾名思义，法线贴图保存的是法线的信息贴图。
+
+2.用来干什么
+用来进行凹凸映射。
+
+
+  凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法不会真的改变模型的顶点...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on March 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：原型模式
+        </h2>
+        
+        <div class="post-content-preview">
+            原型模式
+定义
+
+  定义：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
+原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。
+  看图
+
+
+
+模式的理解
+
+  当需要快速并且尽可能少的占用内存的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on March 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：1、概述和创建
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
+
+
+概述
+
+
+  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
+
+
+AB流程
+
+
+
+  Editor编辑，...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 笛音夏扇 on March 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
         <h2 class="post-title">
             SendMessage测试
@@ -322,117 +439,6 @@ Clusters
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/">
-        <h2 class="post-title">
-            《Unity預計算即時GI》笔记：一、基本概念与一些设置
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-
-  这篇文章是对《Unity預計算即時GI》这个系列文章的笔记。
-
-
-基本概念
-
-  在Unity裡，可以用兩種不同的技術來計算全域光照GI或光源反射，就是烘焙全域光照(Baked GI)和預計算即時全域光照(Precomputed Realtime GI)。
-
-
-
-  當啟用PRGI時，一個光照預計算就是用來計算靜態幾何物件周圍光的反射，並存成資料給Runtime執行使用的一個過...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 笛音夏扇 on February 22, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/12/26/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：命令模式
-        </h2>
-        
-        <div class="post-content-preview">
-            模式定义
-
-  
-    定义：将一个请求封装成一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。
-  
-  
-    看图（图片资源来自于百度，侵删）
-
-  
-
-
-模式的理解
-
-
-  
-    所谓命令模式说白了就是把一个方法对象化。怎么来理解这句话呢？可以看下UML图中的Command的interface，里面有个execute方法，还有...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 笛音夏扇 on December 26, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：架构、性能、游戏
-        </h2>
-        
-        <div class="post-content-preview">
-            架构、性能、游戏
-
-
-  
-    在开始读第一章的时候会觉得有点混乱，作者提出了什么是架构这个问题，但是并没有像其它书里那样给出一个明确的定义，而是提到了：
-
-    
-      这本书是关于上面这一切要使用的代码的组织方式。这里少谈代码，多谈代码组织。
-    
-  
-  
-    仔细品读这句话，你会发现这里面其实已经提到了什么是架构：所谓架构就是代码的组织方式。但是从我个人的认识来...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 笛音夏扇 on December 17, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
-        <h2 class="post-title">
-            由一个美术需求引发的Custom Inspector
-        </h2>
-        
-        <div class="post-content-preview">
-            需求
-
-  Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。
-
-
-需求分析
-
-
-  
-    如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，transform.GetComponent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 笛音夏扇 on November 19, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -487,7 +493,7 @@ Clusters
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="6">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="7">
                                     Unity3D
                                 </a>
                             
@@ -499,7 +505,7 @@ Clusters
                             
                         
                             
-                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="4">
+                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="5">
                                     游戏设计模式读书笔记
                                 </a>
                             
@@ -507,6 +513,12 @@ Clusters
                             
                                 <a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
                                     Unity預計算即時GI笔记
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="2">
+                                    AssetBundle学习笔记
                                 </a>
                             
                         
