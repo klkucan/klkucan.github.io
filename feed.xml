@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>笛音夏扇</title>
+    <title>蔡华的博客</title>
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 04 Apr 2017 12:09:46 +0800</pubDate>
-    <lastBuildDate>Tue, 04 Apr 2017 12:09:46 +0800</lastBuildDate>
+    <pubDate>Sun, 04 Jun 2017 22:06:15 +0800</pubDate>
+    <lastBuildDate>Sun, 04 Jun 2017 22:06:15 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>写点东西，证明我还在更新</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;最近的一些情况&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;很久没有更新博客了，从4月份开始为了项目赶进度开始了996模式，实在没有什么时间写东西。这个是公司也是我自己做的第一个VR旅游项目，可以说从零开始吧，毕竟与游戏开发不一样，期间学到了多东西，也走了不少的弯路。&lt;/li&gt;
+  &lt;li&gt;在项目期间很神奇的看了一大半冯乐乐写的《Shader入门精要》，在这给这本书打打广告，这是一本很适合入门的Shader书籍，而且紧密的结合了Unity5。对于我这样想要编写shader的人来说是很好的入门。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;后续的计划&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;本来今年的计划是搞定AssetBundle和热更新，然后看完《游戏编程模式》这本书。之前的blog中也陆续写了一些读书笔记，其实在写AssetBundle的最后一篇时的最后一个link指向了AssetBundle的一个官方实践教程，是必须读的文章。我基本已经看完了，后续会写读书笔记，现在年纪大了不写点东西感觉自己记不住了。XD&lt;/li&gt;
+  &lt;li&gt;另外就是上面提到的项目完成后会写一点总结。&lt;/li&gt;
+  &lt;li&gt;还有就是上半年最大的收获，学会了写unity shader。以前一些特效总要找特效的同事做，而且有时候用了一些特效发现很影响性能但是不知为何，在学了shader之后很多事情知道是怎么回事了，虽然PBR这样的shader还是不能完全写出来，但是基本的写法和理论都已经知道了，遇到问题的时候不会再一脸懵逼。这算是上半年最大的收获吧。当然，读书笔记必不可少，等我刷第二遍书的时候会开始写。&lt;/li&gt;
+  &lt;li&gt;下半年的项目计划已经出来了，做一个VR教育的产品，涉及到AssetBundle和热更新，好吧真是太巧了，刚好在项目中要好好学学热更新了。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 04 Jun 2017 21:44:23 +0800</pubDate>
+        <link>https://caihua.tech/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/</guid>
+        
+        <category>杂记</category>
+        
+        
+      </item>
     
       <item>
         <title>AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</title>
@@ -198,20 +224,20 @@ go.AddComponent(type);
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;normal-assetbundle-structure&quot;&gt;Normal AssetBundle structure&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleStructureNormal.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。&lt;a href=&quot;https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html&quot;&gt;具体代码参考引用的第二部分&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;streamed-scene-assetbundle-structure&quot;&gt;Streamed scene AssetBundle structure&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleStructureStreamedScene.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureStreamedScene.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;虽然结构不同，但是是一样的压缩方式。&lt;/li&gt;
   &lt;li&gt;
     &lt;h4 id=&quot;assetbundle-compression&quot;&gt;AssetBundle compression&lt;/h4&gt;
-    &lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleArchiveFileSystem.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleArchiveFileSystem.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;LZ4（ chunk-based compression）将原始数据分隔后独立压缩，在解压的时候是随机读取的开销很小。而LZMA(stream-based compression)提供了高压缩比，但是解压时必须按照顺序读取。&lt;/p&gt;
@@ -444,7 +470,7 @@ normal=pixel × 2 - 1&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;ab&quot;&gt;AB流程&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundlesBuildPlusUpload.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundlesBuildPlusUpload.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Editor编辑，场景中使用。&lt;/li&gt;
@@ -466,13 +492,12 @@ normal=pixel × 2 - 1&lt;/p&gt;
   &lt;li&gt;定义AssetBundle名称，在一个资源的最下方会有一个AssetBundle的设置。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleInspectorNewBundle.png&quot; alt=&quot;image&quot; /&gt;
-d&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleInspectorNewBundle.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;点击New按钮可以创建新包，并给它命名。下图的例子中资源被添加到一个名为environment/desert的AssetBundle中，这里面可能包含了之前已经放置的资源。另外在AssetBundle命名时unity会当名称转为小写。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleEditor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleEditor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;如果创建了一些AssetBundle，但是没有放置任何的资源通过Remove Unused Names选项可以删除定义的名字。&lt;/li&gt;
@@ -485,8 +510,8 @@ d&lt;/p&gt;
 &lt;h4 id=&quot;assetbundle-2&quot;&gt;代码生成AssetBundle&lt;/h4&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。
-```
+  &lt;li&gt;这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。&lt;/li&gt;
+  &lt;li&gt;```
 using UnityEditor;&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -611,7 +636,7 @@ AssetBundleManifest:
       Dependencies: {}
     Info_2:
       Name: one/two/xx.three
-      Dependencies: {}
+      Dependencies: {} 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -620,46 +645,52 @@ AssetBundleManifest:
 &lt;ul&gt;
   &lt;li&gt;如果AssetBundle中包含shader，unity编辑器会根据当前场景和光照贴图的设置来决定使用哪种Lightmap modes。这还意味着你在打包的时候需要将打开着一个配置的场景。我的理解是因为需要根据当前场景来作为因素来做某个事情，所以这个场景需要时打开的。&lt;/li&gt;
   &lt;li&gt;也可以指定一个场景用来计算光照贴图模式，这个在用命令行buildbundle时是必须的。
-&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundleShaderStripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleShaderStripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;section-3&quot;&gt;引擎代码剥离&lt;/h4&gt;
 &lt;ul&gt;
-  &lt;li&gt;代码剥离这个事情是将没有在任何场景（特指Build Settings &amp;gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。
-&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/BuildingAssetBundles-enginecodestripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;代码剥离这个事情是将没有在任何场景（特指Build Settings &amp;gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。
+&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/BuildingAssetBundles-enginecodestripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;如果一个引擎代码在build的时候被剥离了，但是在运行时又被请求使用，那么就会报错，因为被剥离的代码无法再被访问。如何避免这个错呢？把player（此处我认为不是玩家的意思，而是引擎）可能用到的AssetBundle列出来，放置到一个manifest文件中，代码剥离系统使用这个文件中列出来的AssetBundle (along with the Scenes in the build)来确定哪些code需要保留。当一些平台或build不支持代码剥离，又或者没有勾选剥离时assetBundleManifestPath属性是被忽略的。&lt;/p&gt;
   &lt;/li&gt;
-  &lt;li&gt;从代码角度来看就是
-```
-using UnityEngine;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;从代码角度来看就是&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;using UnityEditor;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
 
-&lt;p&gt;namespace AssetBundles&lt;/p&gt;
+using UnityEditor;
 
-&lt;p&gt;{&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class BuildScript
+namespace AssetBundles
 
 {
 
-    public static void BuildPlayer()
+    public class BuildScript
 
     {
 
-        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
+        public static void BuildPlayer()
 
-        // example hard-coded platform manifest path
+        {
 
-        buildPlayerOptions.assetBundleManifestPath = &quot;AssetBundles/iOS/iOS.manifest&quot;;
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
 
-        // build the Player ensuring engine code is included for 
+            // example hard-coded platform manifest path
 
-        // AssetBundles in the manifest.
+            buildPlayerOptions.assetBundleManifestPath = &quot;AssetBundles/iOS/iOS.manifest&quot;;
 
-        BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // build the Player ensuring engine code is included for 
+
+            // AssetBundles in the manifest.
+
+            BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        }
 
     }
 
@@ -667,39 +698,42 @@ using UnityEngine;&lt;/li&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-#### 几个小工具代码
+&lt;h4 id=&quot;section-4&quot;&gt;几个小工具代码&lt;/h4&gt;
 
-- 列出所有在build process中产生的AssetBundle的名称
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;using UnityEditor;
-using UnityEngine;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;列出所有在build process中产生的AssetBundle的名称&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;public class GetAssetBundleNames
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEditor;
+using UnityEngine;
+
+public class GetAssetBundleNames
 {
-    [MenuItem (“Assets/Get AssetBundle names”)]
+    [MenuItem (&quot;Assets/Get AssetBundle names&quot;)]
     static void GetNames ()
     {
         var names = AssetDatabase.GetAllAssetBundleNames();
         foreach (var name in names)
-            Debug.Log (“AssetBundle: “ + name);
+            Debug.Log (&quot;AssetBundle: &quot; + name);
     }
-}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-- 一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。*从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。* 
+}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;using UnityEngine;
-using UnityEditor;&lt;/p&gt;
 
-&lt;p&gt;public class MyPostprocessor : AssetPostprocessor {&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。&lt;em&gt;从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void OnPostprocessAssetbundleNameChanged ( string path,
-        string previous, string next) {
-    Debug.Log(&quot;AB: &quot; + path + &quot; old: &quot; + previous + &quot; new: &quot; + next);
-} } ```
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
+using UnityEditor;
+
+public class MyPostprocessor : AssetPostprocessor {
+
+    void OnPostprocessAssetbundleNameChanged ( string path,
+            string previous, string next) {
+        Debug.Log(&quot;AB: &quot; + path + &quot; old: &quot; + previous + &quot; new: &quot; + next);
+    }
+}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -710,13 +744,13 @@ using UnityEditor;&lt;/p&gt;
   &lt;li&gt;下图中在后一个label中填入一个名字，就可以形成变体。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/AssetBundle50Editor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundle50Editor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;从文档上看可以同一批asset创建不同的变体，而且在这些变体AssetBundle中asset有意义的内部ID。需要注意这样的变体AssetBundle的全名是由AssetBundle name + the variant name组成的，如果你创建了一个名为MyAssets.hd的AssetBundle，那它只是一个普通的AssetBundle而不是变体的。而且 “MyAssets”+“hd”和“MyAssets.hd”+”“不能同时存在因为它们具有相同的全称。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;section-4&quot;&gt;脚本建议&lt;/h4&gt;
+&lt;h4 id=&quot;section-5&quot;&gt;脚本建议&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;妈蛋总算快完了。&lt;/li&gt;
@@ -728,7 +762,7 @@ using UnityEditor;&lt;/p&gt;
   &lt;li&gt;默认写到AssetBundle中，但是metro除外，因为不同的序列化方案。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;section-5&quot;&gt;一些实验&lt;/h4&gt;
+&lt;h4 id=&quot;section-6&quot;&gt;一些实验&lt;/h4&gt;
 
 &lt;ul&gt;
   &lt;li&gt;以熊作为测试，如果将bear文件夹下的所有asset打包，会出现明显的依赖。而且贴图的AssetBundle大小比prefab本身要大。&lt;/li&gt;
@@ -919,92 +953,6 @@ AssetBundleManifest:
         <pubDate>Sat, 25 Feb 2017 16:43:13 +0800</pubDate>
         <link>https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：观察者模式与事件队列</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;观察者模式&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;定义&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F&quot;&gt;定义&lt;/a&gt;：在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。&lt;/li&gt;
-  &lt;li&gt;看图
-&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/e/e2/Observer-pattern-class-diagram.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;模式的理解&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;观察者模式由来已久，其目的就是为了解耦。观察对象保存观察者的链接，使得观察者与被观察者解耦。这一点与C#中的事件刚好相反。&lt;/li&gt;
-  &lt;li&gt;传统的观察者模式也有其弊端。比如书中提到的使用链表作为观察者集合时，如果删除某个观察者需要遍历。并且每个观察者只有一个next指针的情况，这就使得它只能观察一个对象。当然作者也给出来解决的办法，就是使用链表节点池来解决一个观察者注册多个被观察者的问题。不过在C#的事件系统中这个是不需要的。&lt;/li&gt;
-  &lt;li&gt;当出现被观察者或者观察者销毁时需要额外的注意。一个被观察者销毁产生的问题比较小，因为最多就是不发送消息了。而如果一个观察者销毁但是被观察者还不知道，那么被观察者会发送一个消息给空指针，这样问题就大。 在C#中这个问题也是一样的，当要dispose的时候，需要使用&lt;code class=&quot;highlighter-rouge&quot;&gt;-=&lt;/code&gt;操作来去掉观察引用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;观察则模式和事件的区别&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;长久以来我都认为C#中的事件就是观察者模式，当然实际上有所差别。因为按照经典的设计模式来说观察者是需要类的支持的，当你需要让某个对象可被观察，并为此创建几个观察者时你需要执行诸如继承这样的典型的面向对象编程，需要做一大摊子的事情。但是，很多情况下我们只是希望一个类中的某个对象被观察，也就是一个对象中可能发生多个&lt;code class=&quot;highlighter-rouge&quot;&gt;事件&lt;/code&gt;。这也是C#中事件系统所作的事情，在C#中我们观察的是一个对象，而不是一个事情。（参考原文的旁白说明。）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity&quot;&gt;在unity中的使用&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个其实没啥说的，就按照标准的C#程序中使用事件的方式即可，只不过我比较习惯用Action或者Func来替代delegate+event。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;事件队列&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于事件队列，不要只认为是事件，它也包含消息或者请求等等。按照我的理解来说就是一个具体要做的事情。&lt;/li&gt;
-  &lt;li&gt;为何要把事件队列和观察者模式写到一起，因为在我看了它们的作用是一样的，就是为了解耦消息的发送者（被观察者）和接受者（观察者）。事件队列在复杂度上要高于观察者模式，这个是因为事件队列在时间上做了进一步的解耦。&lt;/li&gt;
-  &lt;li&gt;怎么理解时间上的解耦？事件队列在接收到一个事件后，何时执行是不确定的。考虑到事件会带上发生时的数据，那么在执行时是不需要依赖时间的。&lt;/li&gt;
-  &lt;li&gt;时间的解耦有个弊端，就是如果你需要实时反馈，那么这个做不到。&lt;/li&gt;
-  &lt;li&gt;还有一个需要注意的是不要形成消息和处理者的循环。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;消息汇总与合并&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;书中作者提到了一个声音播放系统，当队列中存在多个相同音频的请求时需要进行合并。当然这个是因为同一音频短时间内容播放会出现音爆。不过这个也提醒了我们，如果在实际的业务中有这样需要合并的时候，在每个update（也就是要开始执行某个事件时）中要进行合并。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;如何实现队列&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;作者提到了循环缓冲区的问题，通过使用一个数组来实现消息队列，这样可以有效的减少内存的使用。不过我认为弊端就不好定一个数组的大小，如果过小可能来不及做循环，而如果太大一样存在内存的浪费。&lt;/li&gt;
-  &lt;li&gt;从C#角度看，这个队列可以Queue来实现，可以说是完美契合的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;设计决策&lt;/h4&gt;
-&lt;ol&gt;
-  &lt;li&gt;入队的是什么：
-    &lt;ul&gt;
-      &lt;li&gt;事件：如果是事件需要考虑多监听器的情况下让监听器做过滤。其实这个就是一个观察者模式。在这里就有点像异步观察者模式。&lt;/li&gt;
-      &lt;li&gt;消息：一般消息都是一对一的，这个其实也是异步的意思。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;谁能从队列里读取：
-    &lt;ul&gt;
-      &lt;li&gt;事件的话轮到了执行就好，有没有监听者无所谓。如果是一个固定类型的消息，那么可能就是一个具体的业务的方法来获取队列中的消息了。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;谁能写入队列：
-    &lt;ul&gt;
-      &lt;li&gt;如果只有一个写入者，那么这个东西在时间上会执行的很快，和同步的观察者模式差不多。&lt;/li&gt;
-      &lt;li&gt;如果是多个写入者，需要将发送方本身的引用加入到事件的数据当中。就像我们在C#中开发基于UI的程序一样，如果你有经验会知道每个事件处理函数中第一个参数总是某个具体的控件。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;队列中对象的生命周期
-    &lt;ul&gt;
-      &lt;li&gt;在我看来应该就是事件出队列时就是其周期的结束，当然因为GC的问题这个对象也许并不会立刻被销毁。&lt;/li&gt;
-      &lt;li&gt;书中提到了可以将对象的所有权进行转移，到具体的执行方去。也可以让队列一直拥有它。这个方面我还没有觉得有这个必要保留对象，也许是没有遇到一个典型的例子吧。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-</description>
-        <pubDate>Sat, 25 Feb 2017 13:11:05 +0800</pubDate>
-        <link>https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/</guid>
         
         <category>游戏设计模式读书笔记</category>
         

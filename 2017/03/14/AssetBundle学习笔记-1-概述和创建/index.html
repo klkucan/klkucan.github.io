@@ -10,7 +10,7 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>AssetBundle学习笔记：1、概述和创建 - 笛音夏扇的博客</title>
+    <title>AssetBundle学习笔记：1、概述和创建 - 蔡华的博客</title>
 
     <link rel="canonical" href="https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
 
@@ -62,7 +62,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">笛音夏扇</a>
+            <a class="navbar-brand" href="/">蔡华的博客</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -169,7 +169,7 @@
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 笛音夏扇 on March 14, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on March 14, 2017</span>
                 </div>
             </div>
         </div>
@@ -199,7 +199,7 @@
 </ul>
 
 <h4 id="ab">AB流程</h4>
-<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundlesBuildPlusUpload.jpg" alt="image" /></p>
+<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundlesBuildPlusUpload.jpg" alt="image" /></p>
 
 <ul>
   <li>Editor编辑，场景中使用。</li>
@@ -221,13 +221,12 @@
   <li>定义AssetBundle名称，在一个资源的最下方会有一个AssetBundle的设置。</li>
 </ul>
 
-<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundleInspectorNewBundle.png" alt="image" />
-d</p>
+<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleInspectorNewBundle.png" alt="" /></p>
 <ul>
   <li>点击New按钮可以创建新包，并给它命名。下图的例子中资源被添加到一个名为environment/desert的AssetBundle中，这里面可能包含了之前已经放置的资源。另外在AssetBundle命名时unity会当名称转为小写。</li>
 </ul>
 
-<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundleEditor.png" alt="image" /></p>
+<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleEditor.png" alt="image" /></p>
 
 <ul>
   <li>如果创建了一些AssetBundle，但是没有放置任何的资源通过Remove Unused Names选项可以删除定义的名字。</li>
@@ -240,8 +239,8 @@ d</p>
 <h4 id="assetbundle-2">代码生成AssetBundle</h4>
 
 <ul>
-  <li>这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。
-```
+  <li>这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。</li>
+  <li>```
 using UnityEditor;</li>
 </ul>
 
@@ -366,7 +365,7 @@ AssetBundleManifest:
       Dependencies: {}
     Info_2:
       Name: one/two/xx.three
-      Dependencies: {}
+      Dependencies: {} 
 </code></pre>
 </div>
 
@@ -375,46 +374,52 @@ AssetBundleManifest:
 <ul>
   <li>如果AssetBundle中包含shader，unity编辑器会根据当前场景和光照贴图的设置来决定使用哪种Lightmap modes。这还意味着你在打包的时候需要将打开着一个配置的场景。我的理解是因为需要根据当前场景来作为因素来做某个事情，所以这个场景需要时打开的。</li>
   <li>也可以指定一个场景用来计算光照贴图模式，这个在用命令行buildbundle时是必须的。
-<img src="https://docs.unity3d.com/uploads/Main/AssetBundleShaderStripping.png" alt="image" /></li>
+<img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleShaderStripping.png" alt="image" /></li>
 </ul>
 
 <h4 id="section-3">引擎代码剥离</h4>
 <ul>
-  <li>代码剥离这个事情是将没有在任何场景（特指Build Settings &gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。
-<img src="https://docs.unity3d.com/uploads/Main/BuildingAssetBundles-enginecodestripping.png" alt="image" /></li>
+  <li>
+    <p>代码剥离这个事情是将没有在任何场景（特指Build Settings &gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。
+<img src="https://docs.unity3d.com/550/Documentation/uploads/Main/BuildingAssetBundles-enginecodestripping.png" alt="image" /></p>
+  </li>
   <li>
     <p>如果一个引擎代码在build的时候被剥离了，但是在运行时又被请求使用，那么就会报错，因为被剥离的代码无法再被访问。如何避免这个错呢？把player（此处我认为不是玩家的意思，而是引擎）可能用到的AssetBundle列出来，放置到一个manifest文件中，代码剥离系统使用这个文件中列出来的AssetBundle (along with the Scenes in the build)来确定哪些code需要保留。当一些平台或build不支持代码剥离，又或者没有勾选剥离时assetBundleManifestPath属性是被忽略的。</p>
   </li>
-  <li>从代码角度来看就是
-```
-using UnityEngine;</li>
+  <li>
+    <p>从代码角度来看就是</p>
+  </li>
 </ul>
 
-<p>using UnityEditor;</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
 
-<p>namespace AssetBundles</p>
+using UnityEditor;
 
-<p>{</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>public class BuildScript
+namespace AssetBundles
 
 {
 
-    public static void BuildPlayer()
+    public class BuildScript
 
     {
 
-        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
+        public static void BuildPlayer()
 
-        // example hard-coded platform manifest path
+        {
 
-        buildPlayerOptions.assetBundleManifestPath = "AssetBundles/iOS/iOS.manifest";
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
 
-        // build the Player ensuring engine code is included for 
+            // example hard-coded platform manifest path
 
-        // AssetBundles in the manifest.
+            buildPlayerOptions.assetBundleManifestPath = "AssetBundles/iOS/iOS.manifest";
 
-        BuildPipeline.BuildPlayer(buildPlayerOptions);
+            // build the Player ensuring engine code is included for 
+
+            // AssetBundles in the manifest.
+
+            BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+        }
 
     }
 
@@ -422,39 +427,42 @@ using UnityEngine;</li>
 </code></pre>
 </div>
 
-<p>}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-#### 几个小工具代码
+<h4 id="section-4">几个小工具代码</h4>
 
-- 列出所有在build process中产生的AssetBundle的名称
-</code></pre>
-</div>
-<p>using UnityEditor;
-using UnityEngine;</p>
+<ul>
+  <li>列出所有在build process中产生的AssetBundle的名称</li>
+</ul>
 
-<p>public class GetAssetBundleNames
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEditor;
+using UnityEngine;
+
+public class GetAssetBundleNames
 {
-    [MenuItem (“Assets/Get AssetBundle names”)]
+    [MenuItem ("Assets/Get AssetBundle names")]
     static void GetNames ()
     {
         var names = AssetDatabase.GetAllAssetBundleNames();
         foreach (var name in names)
-            Debug.Log (“AssetBundle: “ + name);
+            Debug.Log ("AssetBundle: " + name);
     }
-}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-- 一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。*从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。* 
+}
 </code></pre>
 </div>
-<p>using UnityEngine;
-using UnityEditor;</p>
 
-<p>public class MyPostprocessor : AssetPostprocessor {</p>
+<ul>
+  <li>一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。<em>从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。</em></li>
+</ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>void OnPostprocessAssetbundleNameChanged ( string path,
-        string previous, string next) {
-    Debug.Log("AB: " + path + " old: " + previous + " new: " + next);
-} } ```
+<div class="highlighter-rouge"><pre class="highlight"><code>using UnityEngine;
+using UnityEditor;
+
+public class MyPostprocessor : AssetPostprocessor {
+
+    void OnPostprocessAssetbundleNameChanged ( string path,
+            string previous, string next) {
+        Debug.Log("AB: " + path + " old: " + previous + " new: " + next);
+    }
+}
 </code></pre>
 </div>
 
@@ -465,13 +473,13 @@ using UnityEditor;</p>
   <li>下图中在后一个label中填入一个名字，就可以形成变体。</li>
 </ul>
 
-<p><img src="https://docs.unity3d.com/uploads/Main/AssetBundle50Editor.png" alt="image" /></p>
+<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundle50Editor.png" alt="image" /></p>
 
 <ul>
   <li>从文档上看可以同一批asset创建不同的变体，而且在这些变体AssetBundle中asset有意义的内部ID。需要注意这样的变体AssetBundle的全名是由AssetBundle name + the variant name组成的，如果你创建了一个名为MyAssets.hd的AssetBundle，那它只是一个普通的AssetBundle而不是变体的。而且 “MyAssets”+“hd”和“MyAssets.hd”+”“不能同时存在因为它们具有相同的全称。</li>
 </ul>
 
-<h4 id="section-4">脚本建议</h4>
+<h4 id="section-5">脚本建议</h4>
 
 <ul>
   <li>妈蛋总算快完了。</li>
@@ -483,7 +491,7 @@ using UnityEditor;</p>
   <li>默认写到AssetBundle中，但是metro除外，因为不同的序列化方案。</li>
 </ul>
 
-<h4 id="section-5">一些实验</h4>
+<h4 id="section-6">一些实验</h4>
 
 <ul>
   <li>以熊作为测试，如果将bear文件夹下的所有asset打包，会出现明显的依赖。而且贴图的AssetBundle大小比prefab本身要大。</li>
@@ -582,7 +590,7 @@ AssetBundleManifest:
                             
         				
                             
-                				<a href="/tags/#杂记" title="杂记" rel="1">
+                				<a href="/tags/#杂记" title="杂记" rel="2">
                                     杂记
                                 </a>
                             
@@ -705,7 +713,7 @@ AssetBundleManifest:
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 笛音夏扇 2017
+                    Copyright &copy; 蔡华的博客 2017
                     <!-- <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe
