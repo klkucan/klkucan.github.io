@@ -5,8 +5,8 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 04 Jun 2017 22:06:15 +0800</pubDate>
-    <lastBuildDate>Sun, 04 Jun 2017 22:06:15 +0800</lastBuildDate>
+    <pubDate>Wed, 07 Jun 2017 22:33:51 +0800</pubDate>
+    <lastBuildDate>Wed, 07 Jun 2017 22:33:51 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -342,7 +342,7 @@ go.AddComponent(type);
 &lt;p&gt;上图 左边: 模型空间下的法线纹理   右边: 切线空间下的法线纹理&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;不同的颜色是因为法线作为一个Vector3类型的需要转换到2D的颜色，而通常来说我们可以把颜色的RGB看成一个坐标系，这样法线就对应了一个RGB颜色。但是法线的范围是[-1,1]，而颜色是没有赋值的，因此有以下的转换过程。&lt;/li&gt;
+  &lt;li&gt;不同的颜色是因为法线作为一个Vector3类型的需要转换到2D的颜色，而通常来说我们可以把颜色的RGB看成一个坐标系，这样法线就对应了一个RGB颜色。但是法线的范围是[-1,1]，而颜色是没有负值的，因此有以下的转换过程。&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;blockquote&gt;
