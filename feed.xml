@@ -5,9 +5,90 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 07 Jun 2017 22:33:51 +0800</pubDate>
-    <lastBuildDate>Wed, 07 Jun 2017 22:33:51 +0800</lastBuildDate>
+    <pubDate>Mon, 10 Jul 2017 00:05:25 +0800</pubDate>
+    <lastBuildDate>Mon, 10 Jul 2017 00:05:25 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>5.6混合光照</title>
+        <description>&lt;h3 id=&quot;httpforumchinaunity3dcomthread-24402-1-1html&quot;&gt;&lt;a href=&quot;http://forum.china.unity3d.com/thread-24402-1-1.html&quot;&gt;原文地址&lt;/a&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;section&quot;&gt;原有混合光照的问题&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;5.6之前的光照存在一个严重的问题就是: &lt;strong&gt;混合光照仅当只有一个定向光时才能正常工作。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;这是什么个意思呢？
+    &lt;ul&gt;
+      &lt;li&gt;首先说一下unity的GI一直以来都是依靠烘焙来做的，但是在unity5中加入了PRGI。&lt;/li&gt;
+      &lt;li&gt;目前的unity在一个场景中可以混合使用烘焙光照和实时光照，一部分静态对象使用烘焙好的光照和影子，而一些非静态的对象可以继续接受实时光照的影响。这个需要我们把Light Type设置为Mixed。&lt;/li&gt;
+      &lt;li&gt;不过静态对象会既受烘焙的影响又受实时光的影响，从而产生不好的效果。mixed模式就是为了解决这个问题而出现的，&lt;code class=&quot;highlighter-rouge&quot;&gt;理想情况下，混合模式会为你料理好一切，照亮相同平衡范围内的动、静态对象（从而保留了视觉逼真度与一致性）。&lt;/code&gt;只是一切都不是那么的美好，事实上是动态物体不会从spotlight上产生阴影。&lt;/li&gt;
+      &lt;li&gt;需要特别声明一下，我自己的测试中完全没有发现上面的问题，目前不知道原因。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;5.6引入的混合光照模式&lt;/h3&gt;
+
+&lt;h4 id=&quot;subtractive&quot;&gt;Subtractive&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个就是以前的混合方式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shadowmask&quot;&gt;Shadowmask&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在Shadowmask模式中，静态对象通过shadowmask从其他静态对象接收阴影，不必考虑阴影距离。来自动态对象的阴影仅能通过阴影距离内的阴影贴图获得。动态对象通过阴影距离内的阴影贴图接受来自其他动态对象的阴影。来自静态对象的阴影仅能通过光照探针获得。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这段读着有点绕口，其实分析起来就是针对静态和动态物体获得阴影进行了区分。相对来说静态物体获取阴影会比较简单（至少我认为是）。而动态物理为了得到静态物体的阴影需要使用光照探针。而文中的&lt;code class=&quot;highlighter-rouge&quot;&gt;阴影距离内的阴影贴图&lt;/code&gt;这个推测是阴影图，熟悉unity shader中阴影产生的人应该知道这个东西。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;distance-shadowmask&quot;&gt;Distance Shadowmask&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Distance Shadowmask的行为是由阴影距离决定的。在阴影距离内，动、静态对象都会渲染进阴影贴图，静态对象可以在动态对象上投射锐阴影。超出阴影距离，静态对象会通过预计算shadowmask接收来自其他静态对象的高质量阴影，而动态对象则通过光照探针与LPPV，接收来自静态对象的低分辨率阴影。
+普通的Shadowmask模式要比Distance Shadowmask模式产生更少的Draw Call，因为阴影贴图的性能消耗要高于烘焙阴影（因为它们在每帧都进行渲染，而烘焙阴影是保存在一个纹理/光照贴图中的）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;这个就有意思了，根据阴影距离决定对象是否渲染金阴影贴图（这里的阴影贴图应该就是阴影映射纹理，它是通过ShadowCaster这个pass产生的），动态和静态的对象满足条件时都会参与渲染，所以会有性能消耗。因为每个对象的都要执行一次pass，而这个pass造成了draw call。（这个不是很能理解了，为何不是在一次DC中执行这个pass？）&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Distance Shadowmask模式更适合高端PC或游戏主机。而Shadowmask则作为一种更廉价的解决方案，推荐在中低端设备使用。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;baked-indirect&quot;&gt;Baked Indirect&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Baked Indirect没有使用任何Shadowmask。所以在这个模式中没有远距离阴影。在阴影距离之内，所有静态和动态的对象都投射 实时阴影贴图。但超出阴影距离后，就没有阴影。在Baked Indirect中，除了间接照明之外所有的东西都是实时的。这意味着，实时光照、实时阴影以及实时镜面高光，但是反弹的光照信息储存在光照贴图中，是静态的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个东西和shadowmask的区别在于超出阴影距离后就没有阴影了。还有非间接照明是实时的难道说明烘焙出来的静态物体在直线光下其实和没烘焙一样？只有间接光是在lightmap中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;总结一下：&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;5.6可以说是unity在渲染上又迈进了一步。处理更加精细的影子效果外，还加入了简单的后处理流程，让开发者能够更简单的做出优美的画面。&lt;/li&gt;
+  &lt;li&gt;本文只是对官方内容的简单的总结，在实际使用中不同的硬件环境应该有不同的选择。&lt;/li&gt;
+  &lt;li&gt;文中的各种不同的选项对应的物体的影子的互相影响需要参考&lt;a href=&quot;https://docs.google.com/spreadsheets/d/1v-LnDOJcsSsa0ViF7kBs6xgY9Q_z-1k6h95LE0lf46U/edit?usp=drive_web&quot;&gt;Reference card for Light Modes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;如何烘焙&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;主要光的baking是baked，静态物体勾选哪里Lightmap Static。点击bake进行烘焙。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 09 Jul 2017 23:51:01 +0800</pubDate>
+        <link>https://caihua.tech/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
     
       <item>
         <title>写点东西，证明我还在更新</title>
@@ -885,76 +966,6 @@ AssetBundleManifest:
         <guid isPermaLink="true">https://caihua.tech/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/</guid>
         
         <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：双缓冲</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;第三篇：序列模型&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以&lt;a href=&quot;http://gpp.tkchu.me/sequencing-patterns.html&quot;&gt;下文&lt;/a&gt;来说明下序列模型部分的重要性。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢愉。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;大多数游戏世界都有的特性是时间——虚构世界以其特定的节奏运行。 作为世界的架构师，我们必须发明时间，制造推动游戏时间运作的齿轮。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;这本篇的模式是建构这些的工具。 游戏循环是时钟的中心轴。 对象通过更新方法来聆听时钟的滴答声。 我们可以用双缓冲模式存储快照来隐藏计算机的顺序执行，这样看起来世界可以进行同步更新。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;双缓冲&lt;/h2&gt;
-&lt;h4 id=&quot;section-2&quot;&gt;一个典型的例子&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个例子非常经典，就是渲染时候的双缓冲。只有当一帧的色值数据完全计算出来后，才能在屏幕上展示出来，如果在计算的同时就开始渲染，那么屏幕只会出现一部分的色彩。所以我们在屏幕看到的色彩值其实往往是GPU算出的上一帧的数据。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;使用场景&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;我们需要维护一些被逐步改变着的状态量。&lt;/p&gt;
-
-  &lt;p&gt;同个状态可能会在其被修改的同时被访问到。&lt;/p&gt;
-
-  &lt;p&gt;我们希望避免访问状态的代码能看到具体的工作过程。&lt;/p&gt;
-
-  &lt;p&gt;我们希望能够读取状态但不希望等到写入操作的完成。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;我对双缓冲的理解&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;说白了，双缓冲是为了维护完整性。它展示给外界的永远是一个完整的，已经准备好被使用的内容。在其内部，有一个缓冲是用于写入数据的，写入的过程可能是缓慢的，但是没关系，另一个缓冲已经做好了被使用的准备，外界读取的是这个已经写好的缓冲。&lt;/li&gt;
-  &lt;li&gt;当写入完成时，两个缓冲互换，刚刚写完的这个缓冲变为准备被读取的一个，而被读取的缓冲开始作为写入缓冲使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;设计决策&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;缓冲区如何交互？
-    &lt;ul&gt;
-      &lt;li&gt;在文中作者使用的是C++，因此交换只不过是一个指针重定向的过程。&lt;/li&gt;
-      &lt;li&gt;如果不能指针重定向，就要考虑数据拷贝了。&lt;/li&gt;
-      &lt;li&gt;C#中一个集合对象表现出来的也是一个指针（引用），可以直接做重定向。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;缓冲的粒度
-    &lt;ul&gt;
-      &lt;li&gt;书中提到两个粒度，一个是缓冲区是单个整体，也就是渲染的时候一个图像的内容就在一个缓冲区中。&lt;/li&gt;
-      &lt;li&gt;另一种情况就是多个对象中都存在一个缓冲数据。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Sat, 25 Feb 2017 16:43:13 +0800</pubDate>
-        <link>https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
         
         
       </item>
