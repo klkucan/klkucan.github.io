@@ -173,6 +173,34 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+        <h2 class="post-title">
+            iOS学习笔记-04内存管理
+        </h2>
+        
+        <div class="post-content-preview">
+            4.内存管理
+4.1 手动管理
+
+
+  自己生成的对象自己持有，可以调用release方法减少retain数量。
+  非自己生成的对象也可以持有，通过调用retain方法可以持有对象，引用数+1。
+  不再需要自己持有的对象要及时释放，注意类中的property要在- (void)dealloc
+方法中赋值nil，这样写相当于release了。
+
+
+- (void)dealloc
+{
+   ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/09/16/03UI/">
         <h2 class="post-title">
             iOS学习笔记-03UI
@@ -320,7 +348,7 @@ typ...
                             
                         
                             
-                                <a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="4">
+                                <a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="5">
                                     AssetBundle学习笔记
                                 </a>
                             
