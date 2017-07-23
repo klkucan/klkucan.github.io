@@ -5,9 +5,180 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 16 Jul 2017 00:17:33 +0800</pubDate>
-    <lastBuildDate>Sun, 16 Jul 2017 00:17:33 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Jul 2017 23:39:48 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Jul 2017 23:39:48 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Unity返回Value的协程</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;起因&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实一直以来就有个想法，希望能让unity中的coroutine返回一个具体的数值，比如int，比如string或者一个GameObject。最近也查了些资料，然后总结一下这个功能如何实现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;回调函数实现&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个算是一个取巧的办法，在调用协程时传递一个回调函数，在执行过程中根据情况调用回调即可。不废话，直接上代码：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; IEnumerator CoroutineWithCallback(Action&amp;lt;string&amp;gt; callback)
+{
+    WWW www = new WWW(&quot;https://caihua.tech&quot;);
+    yield return www;
+    if (string.IsNullOrEmpty(www.error))
+    {
+        callback(www.text);
+    }
+    else
+    {
+        callback(&quot;www fail&quot;);
+    }
+}
+
+// 调用方式
+
+IEnumerator Start()
+{
+    yield return StartCoroutine(CoroutineWithCallback(s =&amp;gt;
+    {
+        Debug.Log(s);
+    }));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;利于协程的原理来制作一个可以返回数值的包装器&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;协程本身就是利用IEnumerator的可遍历来实现的，在运行期间如果约到yield语句就会等后面的代码执行完成后返回结果。如果在代码块的后面还有yield就会继续执行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 包装器
+public class CoroutineWithData
+{
+    public Coroutine coroutine { get; private set; }
+    public object result;
+    private IEnumerator target;
+    public CoroutineWithData(MonoBehaviour owner, IEnumerator target)
+    {
+        this.target = target;
+        this.coroutine = owner.StartCoroutine(Run());
+    }
+
+    private IEnumerator Run()
+    {
+        while (target.MoveNext())
+        {
+            result = target.Current;
+            yield return result;
+        }
+    }
+}
+
+
+// 真正执行逻辑的代码
+IEnumerator LoadSomeStuff()
+{
+    WWW www = new WWW(&quot;https://caihua.tech&quot;);
+    yield return www;
+    if (string.IsNullOrEmpty(www.error))
+    {
+        yield return www.text;
+    }
+    else
+    {
+        yield return &quot;fail&quot;;
+    }
+}
+
+// 使用
+...
+CoroutineWithData cd = new CoroutineWithData(this, LoadSomeStuff());
+yield return cd.coroutine;
+Debug.Log(&quot;result is &quot; + cd.result);
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 23 Jul 2017 23:31:11 +0800</pubDate>
+        <link>https://caihua.tech/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>AssetBundle学习笔记：Resources文件夹</title>
+        <description>&lt;h2 id=&quot;resources&quot;&gt;Resources文件夹&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个章节内容不多，但是也很有用。我们可以从这个章节中学习如何更合理的使用它。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;resources-1&quot;&gt;Resources系统的最佳实践&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;不要使用它&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;是的，不要使用它。因为它有以下问题：
+    &lt;ul&gt;
+      &lt;li&gt;使用 Resources 文件夹会让内存颗粒度管理变得更困难&lt;/li&gt;
+      &lt;li&gt;不正确的使用 Resources 文件夹会增加应用启动时间（因为要创建上一章讲的映射图）和包的大小，随着在 Resources 文件中的文件增加，管理这些文件会变得很困难。&lt;/li&gt;
+      &lt;li&gt;Resources系统降低了项目自定义分发内容到具体平台的能力，消除了增量更新的可能。AssetBundle 变体是 Unity 用来在不同设备上调整内容的基础。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;正确的使用资源文件夹&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;下面两种情况 Resources 系统很有用处：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1.因为 Resources 系统很容易使用，它很适合是在快速原型制作和试验。但是当项目要转成产品时，强烈建议不要使用 Resources 文件夹.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2.Resources 文件夹对一些满足如下条件的案例很有用：&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;存储在 Resources 文件夹下的内容不要很大的内存&lt;/li&gt;
+    &lt;li&gt;存储在 Resources 文件夹下的内容在整个项目周期都有用&lt;/li&gt;
+    &lt;li&gt;内容基本不用升级&lt;/li&gt;
+    &lt;li&gt;在各平台都一样的&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;序列化资源&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一个工程中可能包含了多个名叫Resources的文件夹，所有这些文件夹下的对象和资材会在build的时候全部序列化到一个文件中，这个文件可以理解为一个特殊的AssetBundle。想来这就是为何不利于增量更新的原因了。
+    &lt;blockquote&gt;
+      &lt;p&gt;AssetBundle包中索引信息里面包括了处理对象名字到对应的文件 GUID 和本地ID 的查找树。它也用来定位对象在序列化文件中的偏移位置。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;用于查找的数据结构是平衡搜索树[1]（在大多数平台上），它的构建时间增长到了 O(nLog(N)), 其中 N 是在查找树内的对象的个数。这个增长也使 Resources 文件夹内的对象增加时，索引的加载时间会比线性增长时间长。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;说了这么多就是告诉大家，应用启动时初始化resources文件夹（按照上一章说的应该是建立实例ID的映射图）这个事是不可避免的，当resources文件夹中内容太多时会严重影响启动速度。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 23 Jul 2017 23:28:45 +0800</pubDate>
+        <link>https://caihua.tech/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/</guid>
+        
+        <category>AssetBundle学习笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>AssetBundle学习笔记：资产、对象和序列化</title>
@@ -146,6 +317,17 @@
         <guid isPermaLink="true">https://caihua.tech/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
         
         <category>AssetBundle学习笔记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity roadshow</title>
+        <description>
+</description>
+        <pubDate>Sun, 16 Jul 2017 00:00:00 +0800</pubDate>
+        <link>https://caihua.tech/2017/07/16/Unity-RoadShow/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/07/16/Unity-RoadShow/</guid>
         
         
       </item>
@@ -632,429 +814,6 @@ normal=pixel × 2 - 1&lt;/p&gt;
         <pubDate>Thu, 16 Mar 2017 15:20:05 +0800</pubDate>
         <link>https://caihua.tech/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：原型模式</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;原型模式&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;定义&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F&quot;&gt;定义&lt;/a&gt;：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
-原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。&lt;/li&gt;
-  &lt;li&gt;看图
-&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Prototype_UML.svg/678px-Prototype_UML.svg.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;模式的理解&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;当需要快速并且尽可能少的占用内存的情况下，创建一个新的对象可以采用这个模式。前提是浅拷贝，因为深拷贝就是创建一个新的对象。&lt;/li&gt;
-  &lt;li&gt;如果在必须是深拷贝，那么这个模式只是在使用上有便利，或者说代码上更优雅而已。&lt;/li&gt;
-  &lt;li&gt;在扩展一个基础类型时，可以使用原型模式。但是C#中如果是结构体还好说，如果是个类完全可以用继承。&lt;/li&gt;
-  &lt;li&gt;根据定义这个不是新建一个实例，那么本质上是浅拷贝。至于到底是深拷贝还是浅拷贝我认为可以根据自己的需要去做。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;unity&quot;&gt;Unity中的实现&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;其实在C#中已经实现了ICloneable接口，直接继承接口，然后实现方法即可。而且.net还提供了MemberwiseClone方法，直接实现了浅拷贝。&lt;/li&gt;
-  &lt;li&gt;要做深拷贝就是new一个对象返回即可。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;吐槽&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个文章不知所谓。作者自己都不喜欢这个模式。或者说他用这个模式的方向应该不是这个模式原本希望人们使用的方式吧。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 16 Mar 2017 15:20:05 +0800</pubDate>
-        <link>https://caihua.tech/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：1、概述和创建</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;前言&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;概述&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;ab&quot;&gt;AB流程&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundlesBuildPlusUpload.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Editor编辑，场景中使用。&lt;/li&gt;
-  &lt;li&gt;上传AB到服务器，其实这个不是必须的，也可以放到本地，后面会讲到这种case下怎么做才是最高效的。程序会按需加载AB，然后每个AB中的asset各自处理。其实就是在AssetBundle中按照需要加载不同的资源。&lt;/li&gt;
-  &lt;li&gt;下载AB到本地，方法也非常多，各有优劣，后面会说。&lt;/li&gt;
-  &lt;li&gt;从AssetBundle中加载GameObject，这个有一个AssetBundle→asset→GameObject的过程。而AB之前还可能有www。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;友情提示&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;你必须看&lt;a href=&quot;http://unity3d.com/learn/tutorials/topics/best-practices/guide-assetbundles-and-resources&quot;&gt;这个&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;assetbundle&quot;&gt;创建AssetBundle&lt;/h2&gt;
-
-&lt;h4 id=&quot;assetbundle-1&quot;&gt;设置AssetBundle&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;定义AssetBundle名称，在一个资源的最下方会有一个AssetBundle的设置。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleInspectorNewBundle.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;点击New按钮可以创建新包，并给它命名。下图的例子中资源被添加到一个名为environment/desert的AssetBundle中，这里面可能包含了之前已经放置的资源。另外在AssetBundle命名时unity会当名称转为小写。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleEditor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果创建了一些AssetBundle，但是没有放置任何的资源通过Remove Unused Names选项可以删除定义的名字。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;从上述的说明感觉这个new出来的是一个空文件夹识，在设置资源时这个文件夹的名字作为了标识来使用。而Remove Unused Names按钮就是一键删除空文件夹。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;assetbundle-2&quot;&gt;代码生成AssetBundle&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这里有一段代码。代码很简单，而且没有很多容错机制。而且说实话这个代码很粗暴，所有被标记（就是上面说的设置）了AssetBundle的资源：prefab、scene文件等都会被无脑的build进指定的AssetBundle中。&lt;/li&gt;
-  &lt;li&gt;```
-using UnityEditor;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;public class CreateAssetBundles
-{
-    [MenuItem (“Assets/Build AssetBundles”)]
-    static void BuildAllAssetBundles ()
-    {
-        BuildPipeline.BuildAssetBundles (“Assets/AssetBundles”, BuildAssetBundleOptions.None, BuildTarget.StandaloneOSXUniversal);
-    }
-}&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- 同时生成的manifest文件包含一下内容：
-    - [CRC](https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%92%B0%E5%86%97%E9%A4%98%E6%A0%A1%E9%A9%97)
-    - AssetFileHash：AssetBundle中所有asset文件的hash，一个单独的hash。只用来做增量build时的检查。
-    - TypeTreeHash：AssetBundle中所有类型的hash，只用来做增量build时的检查。
-    - ClassTypes： AssetBundle中包含的所有类类型，这些数据用来得到一个新的单独的hash当typetree做增量build检测。
-    - Asset names.所有在AssetBundle中的asset的名称。
-    - Dependent AssetBundle names. AssetBundle所依赖的其它AssetBundle的名字
-    - 这个manifest文件只是用来做增量build的，非运行时必须。
-    
-- 放一个自己的测试数据
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;ManifestFileVersion: 0
-CRC: 1763426742
-Hashes:
-  AssetFileHash:
-    serializedVersion: 2
-    Hash: eed209af1be31231fa135faaff2ab7b6
-  TypeTreeHash:
-    serializedVersion: 2
-    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
-HashAppended: 0
-ClassTypes: []
-Assets:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Assets/Test.unity
-Dependencies:&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;E:/CodeDemo/New Unity Project 2/Assets/AssetBundles/sphere
-```&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;还有两个文件生成，文件名就是打包目的地文件夹的名字，比如上面的代码就在AssetBundles文件夹下生成，名字是AssetBundles，一个是没有后缀的一个是以manifest为后缀，打开manifest文件可以看到下面的内容，可以看出来是这个目录下AssetBundle的信息。&lt;strong&gt;&lt;em&gt;其实它只包含两个  信息，一个是所有的AssetBundle名字和它们的依赖。&lt;/em&gt;&lt;/strong&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
-CRC: 4270654667
-AssetBundleManifest:
-AssetBundleInfos:
-  Info_0:
-    Name: cube
-    Dependencies: {}
-  Info_1:
-    Name: scene
-    Dependencies: {}
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;做了个小测试，添加了两个新的AssetBundle，名字也不一样，每次添加这个文件的内容跟着变，并且CRC也在变。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
-CRC: 2591254959
-AssetBundleManifest:
-  AssetBundleInfos:
-    Info_0:
-      Name: cube
-      Dependencies: {}
-    Info_1:
-      Name: scene
-      Dependencies:
-        Dependency_0: sphere
-        Dependency_1: capsule
-    Info_2:
-      Name: sphere
-      Dependencies: {}
-    Info_3:
-      Name: capsule
-      Dependencies: {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;继续小测试，把Capsule的AssetBundle从capsule改为sphere。果然只是简单记录了下目录中的AssetBundle信息。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
-CRC: 3856405611
-AssetBundleManifest:
-  AssetBundleInfos:
-    Info_0:
-      Name: cube
-      Dependencies: {}
-    Info_1:
-      Name: scene
-      Dependencies:
-        Dependency_0: sphere
-    Info_2:
-      Name: sphere
-      Dependencies: {}
-      
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;再次小测试，在UI的AssetBundle设定中第一栏设定了多层次的名称结果如下。而且从文件夹结构上看one和two都是两个文件夹，而在two里面则是一个名为xx.three的文件。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
-CRC: 2167406161
-AssetBundleManifest:
-  AssetBundleInfos:
-    Info_0:
-      Name: scene
-      Dependencies:
-        Dependency_0: sphere
-    Info_1:
-      Name: sphere
-      Dependencies: {}
-    Info_2:
-      Name: one/two/xx.three
-      Dependencies: {} 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;shadershader-stripping&quot;&gt;shader剥离（Shader stripping）&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果AssetBundle中包含shader，unity编辑器会根据当前场景和光照贴图的设置来决定使用哪种Lightmap modes。这还意味着你在打包的时候需要将打开着一个配置的场景。我的理解是因为需要根据当前场景来作为因素来做某个事情，所以这个场景需要时打开的。&lt;/li&gt;
-  &lt;li&gt;也可以指定一个场景用来计算光照贴图模式，这个在用命令行buildbundle时是必须的。
-&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleShaderStripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;引擎代码剥离&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;代码剥离这个事情是将没有在任何场景（特指Build Settings &amp;gt; Scene list中的场景）中使用的代码移除，减少了包的大小。不过只能用在iOS、Android和webGL。选择IL2CPP的是时候是默认打开的。而且顾名思义，只剥离引擎代码，你自己的代码不会被剥离。
-&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/BuildingAssetBundles-enginecodestripping.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;如果一个引擎代码在build的时候被剥离了，但是在运行时又被请求使用，那么就会报错，因为被剥离的代码无法再被访问。如何避免这个错呢？把player（此处我认为不是玩家的意思，而是引擎）可能用到的AssetBundle列出来，放置到一个manifest文件中，代码剥离系统使用这个文件中列出来的AssetBundle (along with the Scenes in the build)来确定哪些code需要保留。当一些平台或build不支持代码剥离，又或者没有勾选剥离时assetBundleManifestPath属性是被忽略的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;从代码角度来看就是&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
-
-using UnityEditor;
-
-namespace AssetBundles
-
-{
-
-    public class BuildScript
-
-    {
-
-        public static void BuildPlayer()
-
-        {
-
-            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();   
-
-            // example hard-coded platform manifest path
-
-            buildPlayerOptions.assetBundleManifestPath = &quot;AssetBundles/iOS/iOS.manifest&quot;;
-
-            // build the Player ensuring engine code is included for 
-
-            // AssetBundles in the manifest.
-
-            BuildPipeline.BuildPlayer(buildPlayerOptions);
-
-        }
-
-    }
-
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;几个小工具代码&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;列出所有在build process中产生的AssetBundle的名称&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEditor;
-using UnityEngine;
-
-public class GetAssetBundleNames
-{
-    [MenuItem (&quot;Assets/Get AssetBundle names&quot;)]
-    static void GetNames ()
-    {
-        var names = AssetDatabase.GetAllAssetBundleNames();
-        foreach (var name in names)
-            Debug.Log (&quot;AssetBundle: &quot; + name);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一个asset发生改变时的监听，讲道理这个函数从说明到函数名都看着真么不协调。&lt;em&gt;从函数名看感觉是AssetBundle名字变化，但是说明又是AssetBundle中一个asset发生变化。&lt;/em&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
-using UnityEditor;
-
-public class MyPostprocessor : AssetPostprocessor {
-
-    void OnPostprocessAssetbundleNameChanged ( string path,
-            string previous, string next) {
-        Debug.Log(&quot;AB: &quot; + path + &quot; old: &quot; + previous + &quot; new: &quot; + next);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;assetbundle-3&quot;&gt;AssetBundle变体&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个玩意有什么意义呢？&lt;/li&gt;
-  &lt;li&gt;下图中在后一个label中填入一个名字，就可以形成变体。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundle50Editor.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从文档上看可以同一批asset创建不同的变体，而且在这些变体AssetBundle中asset有意义的内部ID。需要注意这样的变体AssetBundle的全名是由AssetBundle name + the variant name组成的，如果你创建了一个名为MyAssets.hd的AssetBundle，那它只是一个普通的AssetBundle而不是变体的。而且 “MyAssets”+“hd”和“MyAssets.hd”+”“不能同时存在因为它们具有相同的全称。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;脚本建议&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;妈蛋总算快完了。&lt;/li&gt;
-  &lt;li&gt;呵呵，我不打算写了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;typetrees&quot;&gt;Typetrees&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;默认写到AssetBundle中，但是metro除外，因为不同的序列化方案。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;一些实验&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;以熊作为测试，如果将bear文件夹下的所有asset打包，会出现明显的依赖。而且贴图的AssetBundle大小比prefab本身要大。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ManifestFileVersion: 0
-CRC: 519453993
-AssetBundleManifest:
-  AssetBundleInfos:
-    Info_0:
-      Name: xiong.assetbundle
-      Dependencies:
-        Dependency_0: baixiong.assetbundle
-        Dependency_1: baixiongyachi.assetbundle
-        Dependency_2: xiong@run.assetbundle
-        Dependency_3: xiong@stand.assetbundle
-    Info_1:
-      Name: baixiong.assetbundle
-      Dependencies: {}
-    Info_2:
-      Name: baixiongyachi.assetbundle
-      Dependencies: {}
-    Info_3:
-      Name: xiong@run.assetbundle
-      Dependencies: {}
-    Info_4:
-      Name: xiong@stand.assetbundle
-      Dependencies: {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果只是打包xiong这个prefab，会产生一个100多K的xiaong的AssetBundle。可以正常使用。&lt;/li&gt;
-  &lt;li&gt;但是如果做一个xiong2，其实就是xiong的复制体的话。会发现运行的时候avatar、mesh、shader等都是双份的。这个就是不把依赖单独打包的坏处了。&lt;/li&gt;
-  &lt;li&gt;对于shader的双份问题可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;Editor-&amp;gt;Project Settings-&amp;gt;Graphics-&amp;gt;Always Included Shaders&lt;/code&gt;添加你用的shader，这样就不会出现了。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 14 Mar 2017 11:40:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/</guid>
-        
-        <category>AssetBundle学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>SendMessage测试</title>
-        <description>&lt;ul&gt;
-  &lt;li&gt;5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.&lt;/li&gt;
-  &lt;li&gt;obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。&lt;/li&gt;
-  &lt;li&gt;如果Foo的参数不对，会提示&lt;code class=&quot;highlighter-rouge&quot;&gt;MissingMethodException: The best match for method Foo has some invalid parameter.&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    public void Foo(string s)
-    {
-        Debug.Log(s);
-    }
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果Foo是没有参数的，SendMessage有参数也没关系。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;总之最好指定的函数是存在的，参数是匹配的。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 08 Mar 2017 15:34:13 +0800</pubDate>
-        <link>https://caihua.tech/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/</guid>
         
         <category>Unity3D</category>
         
