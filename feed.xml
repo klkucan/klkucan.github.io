@@ -5,9 +5,500 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 29 Jul 2017 23:44:39 +0800</pubDate>
-    <lastBuildDate>Sat, 29 Jul 2017 23:44:39 +0800</lastBuildDate>
+    <pubDate>Mon, 07 Aug 2017 22:27:40 +0800</pubDate>
+    <lastBuildDate>Mon, 07 Aug 2017 22:27:40 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：第二周</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;内存&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;概述&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;资源内存&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;大头在纹理，其次在网格、动画片段和音频。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;纹理&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;从格式解决内存占用问题&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;选择正确的格式，比如Android上是ETC，ios的PVRTC，PC上DXT。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;不同格式可能出现的问题：&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;因为ETC、PVRTC都是有损压缩因此可能出现色阶问题，如果用RGB32这样的格式虽然能解决问题但是内存占用太大。好的办法是在做纹理的时候减少色差范围，必要做出高对比度的阶梯式的图。&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;比如，同样一张1024x1024的纹理，如果不开启Mipmap，并且为PVRTC格式，则其内存占用为512KB，而如果转换为RGBA32位，则很可能占用达到4MB。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;OpenGL ES2的设备只支持ETC1，但是ETC1不支持alpha通道。解决办法是将透明图分成两张，一个RGB24的保存RGB通道，一个alpha8的保存A通道，然后在使用时使用定制的shader去分别读取两个纹理图。&lt;/li&gt;
+  &lt;li&gt;PS：OpenGL ES 3.0支持ETC2甚至ASTC，都是很好的支持透明通道的压缩格式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;选择合适的纹理设置&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;能512解决的事情别用1024&lt;/li&gt;
+  &lt;li&gt;选择性的使用mipmap，对于UI这样的纹理使用完全没有必要用mipmap。&lt;/li&gt;
+  &lt;li&gt;Read &amp;amp; Write选项会使得纹理的内存使用量增加一倍。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;网格&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;mesh中顶点信息可以进行相关的优化，比如Normal、Color和Tangent这些数据要按照需要来做，不用的就不要做。而且顶点信息超多900还不能动态批处理。不需要就计算发现的时候就可以不用tangent数据了，有贴图的话color数据也不需要。&lt;/li&gt;
+  &lt;li&gt;Color数据和Normal数据主要为3DMax、Maya等建模软件导出时设置所生成，而Tangent一般为导入引擎时生成。&lt;/li&gt;
+  &lt;li&gt;如果项目对Mesh进行Draw Call Batching操作的话，那么将很有可能进一步增大总体内存的占用。比如，100个Mesh进行拼合，其中99个Mesh均没有Color、Tangent等属性，剩下一个则包含有Color、Normal和Tangent属性，那么Mesh拼合后，CombinedMesh中将为每个Mesh来添加上此三个顶点属性，进而造成很大的内存开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;引擎模块自身占用内存&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;引擎自身中存在内存开销的部分纷繁复杂，可以说是由巨量的“微小”内存所累积起来的，比如GameObject及其各种Component（最大量的Component应该算是Transform了）、ParticleSystem、MonoScript以及各种各样的模块Manager（SceneManager、CanvasManager、PersistentManager等)…&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;一般情况下，上面所指出的引擎各组成部分的内存开销均比较小，真正占据较大内存开销的是这两处：WebStream 和 SerializedFile。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;PS：5.4以后没有webStream的概念了，不过还是要考虑WWW和LoadFromMemory中会保存AssetBundle原始数据的问题，参见&lt;a href=&quot;https://docs.unity3d.com/550/Documentation/Manual/AssetBundleCompression.html&quot;&gt;Asset Bundle Compression&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;AssetBundle所占的内存也需要考虑，尽可能做到按需加载，用完后及时的清理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;mono&quot;&gt;托管堆内存占用/无效的Mono堆内存开销&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Mono的堆内存一旦分配，就不会返还给系统。这意味着Mono的堆内存是只升不降的。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-9&quot;&gt;不必要的堆内存分配主要来自于以下几个方面：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;高频率地 New Class/Container/Array等。不要再update占用的函数中实例化对象。&lt;/li&gt;
+  &lt;li&gt;Log输出，需要适当的减少log，只保留最关键的。&lt;/li&gt;
+  &lt;li&gt;UIPanel.LateUpdate。这是NGUI中CPU和堆内存开销最大的函数,是由UI网格的重建造成。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-10&quot;&gt;一些推荐的办法&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;不要一次加载一个过大的资源，比如配置文件、纹理图等。这样会造成一次性申请过多的内存，但是还不回去了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-11&quot;&gt;内存泄漏&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先通过工具发现场景切换开始和结束时内存使用没有一致，这个现象不能说明内存就一定有泄漏。比如资源加载后常驻内存以备后续使用、Mono堆内存的只升不降等等，这些均可造成内存无法完全回落。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-12&quot;&gt;检查资源的使用情况，特别是纹理、网格等资源的使用&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;这段主要介绍了如何使用UWA的工具对纹理和网格进行检查，查看是否出现资源的内存泄漏。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;profilerwebstreamserializedfile&quot;&gt;通过Profiler来检测WebStream或SerializedFile的使用情况&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;直接通过Profiler Memory中的Take Sample来对其进行检测，通过直接查看WebStream或SerializedFile中的AssetBundle名称，即可判断是否存在“泄露”情况。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-13&quot;&gt;资源冗余&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;是指在某一时刻内存中存在两份甚至多份同样的资源。导致这种情况的出现主要有两种原因：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;assetbundle&quot;&gt;AssetBundle打包机制出现问题&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;显而易见，对于公用资源需要进行合理的划分打包。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-14&quot;&gt;资源的实例化所致&lt;/h5&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在Unity引擎中，当我们修改了一些特定GameObject的资源属性时，引擎会为该GameObject自动实例化一份资源供其使用，比如Material、Mesh等。以Material为例，我们在研发时经常会有这样的做法：在角色被攻击时，改变其Material中的属性来得到特定的受击效果。这种做法则会导致引擎为特定的GameObject重新实例化一个Material，后缀会加上（instance）字样。其本身没有特别大的问题，但是当有改变Material属性需求的GameObject越来越多时（比如ARPG、MMORPG、MOBA等游戏类型），其内存中的冗余数量则会大量增长。虽然Material的内存占用不大，但是过多的冗余资源却为Resources.UnloadUnusedAssets API的调用效率增加了相当大的压力。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;上面描述的material的问题是个常见的问题。如果是直接改变还好说，会产生一个material instance，但是如果是在一段时间内线性的改变某个属性，那么后果很难说。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;建议&lt;/p&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;一般情况下，资源属性的改变情况都是固定的，并非随机出现。比如，假设GameObject受到攻击时，其Material属性改变随攻击类型的不同而有三种不同的参数设置。那么，对于这种需求，我们建议你直接制作三种不同的Material，在Runtime情况下通过代码直接替换对应GameObject的Material，而非改变其Material的属性。这样，你会发现，成百上千的instance Material在内存中消失了，取而代之的，则是这三个不同的Material资源。其中的益处，对于能够阅读到这里的你来说，应该已经不需要我多说了。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-15&quot;&gt;粒子&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Navmesh是不支持动态加载的目前的，办法是将多个场景做成prefab，然后用LoadLevelAdditive的方式加载，去拼接。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;assetbundle-1&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;本周第一篇关于AssetBundle的文章可以说有点陈旧了，在5.3以后解决了一些功能，比如AssetBundle.LoadFromFile加载LZMA文件的失败的问题。&lt;/li&gt;
+  &lt;li&gt;还有就是在5.4以后已经没有webstream的概念了。&lt;/li&gt;
+  &lt;li&gt;最后开始使用UnityWebRequest&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;lightmapsnapshotassetlightmap&quot;&gt;热更新打包时LightmapSnapshot.asset无法导出，导致场景丢失lightmap&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;LightmapSnapshot.asset是editor模式下的无法打包。解决办法是整个scene打包，lightmap信息会打包进去。或者在运行时调用Lightmapsettings.Lightmaps来设置，但是5.x后lightmap信息不会保存在prefab中，因此需要重设Prefab的Lightmap信息（Lightmapindex和Lightmapscaleoffset）。&lt;/li&gt;
+  &lt;li&gt;还有一种可能是因为打包场景的时候shader会根据当前场景的使用情况来打包，如果打包是在一个空场景中那么bundle中的shader会失去lightmap和fog的支持。这个&lt;/li&gt;
+  &lt;li&gt;PS: 这个问题在5.5.2中也存在，而且打包的时候是按照场景打包的，但是是不是shader丢失确实需要测试。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;prefab&quot;&gt;prefab打包&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果有一个Prefab，它的Dependencies都在Resources文件夹中，那么，当我在AssetBundle打包时，只打包这个Prefab（不指定BuildAssetBundleOptions.CompleteAssets和BuildAssetBundleOptionsCollectDependencies）是不能正确实例化的，因为AssetBundle中的资源和Resource文件夹下资源是不会建立依赖关系的（脚本除外，因为开启BuildAssetBundleOptionsCollectDependencies 时，脚本依然不会打包到AssetBundle中）。所以会出现Mesh、Material等的丢失。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;assetbundle-2&quot;&gt;卸载依赖AssetBundle的问题&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;比如prefabA和prefabB依赖于AtlasC，那么分别打包的话首先肯定是要先加载AtlasC的AssetBundle的。&lt;/li&gt;
+  &lt;li&gt;但是如果先从AtlasC的AssetBundle中load了AtlasC，然后unload这个AssetBundle，此后加载或实例化A和B时，引擎将无法自动将C绑定给A和B进行使用。这个需要注意。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-16&quot;&gt;纹理格式&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;目前来讲，并不存在一个所有GPU平台都支持硬件解压的压缩格式。&lt;/li&gt;
+  &lt;li&gt;ETC1 和 PVRTC 分别是Android和iOS上我们最推荐的格式。 但对于透明纹理，ETC1不支持，而 PVRTC 则可能有较大失真，因此更推荐使用 RGBA 16。&lt;/li&gt;
+  &lt;li&gt;一般来说建议直接使用 Unity 默认的压缩格式（即选择 Compressed 即可，不需要做特殊设置），Unity 会做如下处理：
+    &lt;ul&gt;
+      &lt;li&gt;Android 上不带Alpha通道的图片采用 ETC1，带Alpha通道的图片采用True Color中的RGB16，TrueColor中的 RGBA16 会&amp;gt;比 RGBA32 更节省空间，但图像的显示质量会差一些；&lt;/li&gt;
+      &lt;li&gt;iOS 上使用 PVRTC，但PVRTC格式要求纹理的长宽相等，且都是2的幂次（即POT，在ImportSettings中可以将NPOT的纹理自动转换成POT）。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;同时，我们不建议直接使用 RGBA32 格式的纹理，因为它占用了很大的内存。一般建议使用 RGBA16 和 ETC 格式的纹理来进行加载。 如果转换到 RGBA16 格式时出现了类似“色阶”的颜色问题，则建议尽可能避免大量的过渡色使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-17&quot;&gt;工具&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;unity的分析工具中的Reserved Total 和 Used Total为Unity引擎在内存方面的总体分配量和总体使用量。 一般来说，引擎在分配内存时并不是向操作系统 “即拿即用”，而是首先获取一定量的连续内存，然后供自己内部使用，待空余内存不够时，引擎才会向系统再次申请一定量的连续内存进行使用。&lt;/li&gt;
+  &lt;li&gt;Overhead：
+    &lt;ul&gt;
+      &lt;li&gt;Overhead的计算方法是：Profiler当前帧统计的总耗时时间减去所有已知选项的累加时间，即引擎当前还无法识别模块的耗时时间。&lt;/li&gt;
+      &lt;li&gt;Overhead数值理论上是趋向于0的，但是由于目前市面上的硬件设备、系统框架过于丰富，所以引擎可能无法识别所有模块的CPU开销。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Unity Profiler反馈的则是引擎的真实物理使用内存，有时内存使用数值比原生的分析工具小是正常的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Profiler中ManagedHeap.UsedSize是项目逻辑代码在运行时申请的堆内存， 
+ManagedHeap.UsedSize过大，一方面可能会影响一次GC的耗时；另一方面也可能反映出脚本中不合理的GC Alloc。该选项只能通过优化代码来进行降低。 优化方法一般如下：
+    &lt;ul&gt;
+      &lt;li&gt;尽可能地复用变量，减少new的次数；&lt;/li&gt;
+      &lt;li&gt;使用StringBuilder代替String连接，使用for代替foreach；&lt;/li&gt;
+      &lt;li&gt;对于局部变量或非常驻变量，尽可能使用Struct来代替Class。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;本周读到的所有关于内存监控的部分都提到了一个概念就是Profiler所监控到的数据和Android上的PSS或者ios上检测到的会不一致，这                                                   个是因为Unity Profiler反馈的是引擎的真实分配的物理内存，而PSS中记录的则包括系统的部分缓存。一般情况下，Android或iOS并不会及时将所有App卸载数据进行清理，为了保证下次使用时的流畅性，OS会将部分数据放入到缓存，待自身内存不足时，OS Kernel会启动类似LowMemoryKiller的机制来查询缓存甚至杀死一些进程来释放内存。因此，并不能通过一两次的PSS内存没有完全回落来说明内存泄露问题。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Reserved GFX 中的内存，主要是纹理和网格资源。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-18&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;lightmappcandroid&quot;&gt;Lightmap在PC上显示正常，但是转到Android平台上存在色差，颜色普遍偏暗的问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Unity烘焙的Lightmap是32bit的HDR图，而移动设备通常不支持HDR图(32bit per channel)，会按照LDR图(8bit per channel)的形式进行处理，因此会出现色偏问题。因此需要如下的处理：
+    &lt;ul&gt;
+      &lt;li&gt;在移动平台下使用Mobile/Diffuse材质，可载入Standard Assets(Mobile) package获得。&lt;/li&gt;
+      &lt;li&gt;如果要获得更合适的效果，需要自行修改Lightmap的DecodeLightmap函数，该函数可在Unity\Editor\Data\CGIncludes\UnityCG.cginc文件中找到。需要说明的是，这种方法也不能达到与PC端完全一致的效果。&lt;/li&gt;
+      &lt;li&gt;如果需要PC和移动平台的显示效果一致，可以用图像编辑软体修改Lightmap為LDR格式，例如PNG(8bit per channel)。&lt;/li&gt;
+      &lt;li&gt;为了避免类似问题，请不要使用过于强烈的Light进行烘焙，因為Light的强度(Intensity)越高，色偏问题会越严重。若有阴影丢失时，可以尝试检查一下模型的Lightmapindex、Lightmapscaleoffset、UV2等影响Lightmap采样的一些参数。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;另一种可能是存在过曝现象，可以尝试将playersettings -&amp;gt; use direct3d 11关闭，看问题是否解决。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;lightmap&quot;&gt;lightmap动态加载&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Lightmap的动态加载，需要通过脚本将烘焙时每个物件的Lightmapindex和Lightmapscaleoffset记录下，并在运行时动态加载后设置回去的方式来实现。因为目前Lightmapindex和Lightmapscaleoffset信息是和场景绑定在一起，储存在Lightmapsnap.assets 中，发布时也是放在场景信息中，因此不会记录在Prefab 上。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 07 Aug 2017 22:17:31 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Lua学习笔记：高级概念</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;高级概念&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这部分中会记录一些lua语言中的高级概念和技术。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;模块&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;概念&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。&lt;/li&gt;
+  &lt;li&gt;一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。&lt;/li&gt;
+  &lt;li&gt;具体实现看教程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;使用&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- 创建一个叫Class的模块
+Class = {}
+
+Class.Name = &quot;name&quot;
+
+Class.Grades =
+{
+  &quot;Grade1&quot;,
+  &quot;Grade2&quot;,
+  &quot;Grade3&quot;
+}
+
+temp = &quot;a&quot;
+local temp2 = &quot;b&quot;
+Class.temp3 = &quot;c&quot;
+
+function Class.FindGrade(key)
+   return Class.Grades[key]
+end
+
+return Class
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- temp = &quot;local temp1&quot;
+
+-- 导入模块
+require(&quot;Class&quot;)
+
+-- temp = &quot;local temp1&quot;
+
+print(temp)
+print(Class.temp2)
+print(Class.temp3)
+
+-- 调用模块函数
+print(Class.FindGrade(1))
+
+-- 结果
+a
+nil
+c
+Grade1-abc
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;分析一下模块的变量，从例子中可以总结，模块中的以模块名+&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;形成的变量（Class.temp3）是全局变量，而且即使在模块内部调用用也要用模块名+&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;的形式使用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;没有加模块名的变量其实也是全局变量，外部代码也可以直接访问。注意代码中在require的前后分别定义了一个和模块中名字相同的变量，这里有一个很有意思的事情，就是如果是之前定义的，那么在print时是模块中的值，如果在之后定义那么就是本地定义的值。这说明require这种过程实际上等于在本地定义了一些变量。所以最终输出的值可以按照后定义的输出。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;显示标记为local的变量是本地变量，在模块内部使用是没有问题的，但是外部代码无法访问。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;加载机制&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;基本上遵循C的加载机制，也就是先找同一目录下的文件，然后会找全局变量中path里面定义的文件。&lt;/li&gt;
+  &lt;li&gt;通常我们在编写代码的时候肯定是会有物理的文件夹结构的，此时如果我们不去改package.path的值，那么可以在引用时加速文件夹名字，比如我把class和student放到了Module文件夹下，那么代码中写&lt;code class=&quot;highlighter-rouge&quot;&gt;require(&quot;Module/Class&quot;)&lt;/code&gt;即可正常调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;协程&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;首先是真的多线程，并非unity的那种主线程内部的线程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;require(&quot;MyCoroutine&quot;)
+cor1 = MyCoroutine.CreatCor()
+print(cor1)
+for i = 1,  10 do
+	MyCoroutine.RunCor(cor1)
+end
+
+
+cor2 = MyCoroutine.CreatCor()
+print(cor2)
+for i = 1,  10 do
+	MyCoroutine.RunCor(cor2)
+end
+
+-- 结果
+thread: 0089D628
+1
+2
+3
+running
+thread: 0089D628
+4
+5
+6
+7
+8
+9
+10
+thread: 00897D60
+1
+2
+3
+running
+thread: 00897D60
+4
+5
+6
+7
+8
+9
+10
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;用法比较繁琐，但是可以明确的控制协程的执行步骤。有点类似python。&lt;/li&gt;
+  &lt;li&gt;建议直接看教程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;metatable&quot;&gt;元表（MetaTable）&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;metatable更像是lua为table提供的依赖倒置的接口&lt;/strong&gt;，以&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;这个函数为例，本身如果lua提供了固定的函数，那么我们在取值时候只能遵从lua的规定。但是现在提供了一个&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;，你可以自定义这个&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的行为，而lua在运行期间遇到了需要用到&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的时候就会按照你所规定的准则行事了。这个思维是很好的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;下面是&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的用法，metatable。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Lua查找一个表元素时的规则，其实就是如下3个步骤:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1.在表中查找，如果找到，返回该元素，找不到则继续&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2.判断该表是否有元表，如果没有元表，返回nil，有元表则继续。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;3.判断元表有没有__index方法，如果__index方法为nil，则返回nil；如果__index方法是一个表，则重复1、2、3；如果__index方法是一个函数，则返回该函数的返回值。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;代码示例：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mt = {}
+
+mt.__index =
+function (t,key)
+	if key == &quot;key3&quot; then
+		return 5
+	elseif key == &quot;key4&quot;  then
+		return 6
+	else
+		return 0
+	end
+	
+end
+
+mt.__newindex =
+function (t,key,value)
+	t.key = value
+end
+
+mt.__tostring = function (t)
+	local tempTable = {}
+	local index = 0
+	for i,v in pairs(t) do
+		index = index + 1
+		tempTable[index] = v
+		print(i..&quot;/&quot;..v)
+	end
+	return '{' .. table.concat(tempTable, ', ') .. '}'
+end
+
+-- 一旦定义了__metatable，就代表getmetatable只能得到这个函数的值，
+-- 而不能再次赋值,否则会报错“cannot change a protected metatable”
+mt.__metatable = &quot;不能看啊不能看&quot;
+
+
+local t = {1, 2, 3, key1 = 3,key2 = 4}
+setmetatable(t, mt)
+print(t)
+
+print(getmetatable(t))
+
+print(t[&quot;key4&quot;])
+
+
+mt2 = {}
+
+-- 下面的代码会报错
+--setmetatable(t,mt2)
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;这个东西有个好处，如果我写的key不存在，那么我是可以自定义它的行为的。我可以返回一个数值，也可以执行一段代码。但是一般来说还是提前预置好数据比较好。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;PS：元表本身是一个table，如果按照table就是类这个概念来看的话，元表对应了类类型，而实际的使用中它也是起了这样的作用。元表中以&lt;code class=&quot;highlighter-rouge&quot;&gt;__&lt;/code&gt;开头的方法们算是它保留的方法，我们可以给一个元表定义这些方法实际是一个什么样的行为。比如&lt;code class=&quot;highlighter-rouge&quot;&gt;__tostring&lt;/code&gt;方法，我们可以在一个元表中重新定义它的实现，有点像C#中override ToString方法。&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;面向对象&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;lua的oop是基于table的，table中可以设置全局或局部的变量、方法等。&lt;/li&gt;
+  &lt;li&gt;继承通过子类调用父类的构造函数（其实lua没有构造函数一说，只是我们人为的在代码中创造出来了一个创建对象的函数）来创建，然后在扩展，从而实现了继承。&lt;/li&gt;
+  &lt;li&gt;从本质上说，lua的继承和C的继承是一样的，依赖的是table嵌套table，而C中是结构体嵌套结构体。&lt;/li&gt;
+  &lt;li&gt;具体看下链接里教程的例子吧。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;一些体会&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实只要学过一个脚本语言，lua就不算陌生，还算是上手比较快。&lt;/li&gt;
+  &lt;li&gt;所有语言的核心在api的使用，所以熟悉标准库是关键。&lt;/li&gt;
+  &lt;li&gt;lua与C/C++的交互也是大头，不过目前暂时不用就先不学了，等后续学了再填坑。&lt;/li&gt;
+  &lt;li&gt;多写，多写，多写。&lt;/li&gt;
+  &lt;li&gt;一个学习lua编程的方法是看WOW的插件源码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-8&quot;&gt;调试&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;因为用的是LuaStudio，在调试的过程中也遇到了很多的问题。首先正常的自己写的代码都可以require成功，os\io\math这样的库也都没有问题，但是用到socket库的时候怎么都无法require。最后发现在LuaStudio中必须这样设置才行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG45bFJFdFZwNEVuU216QnRPaEtaaHcwTFU3MW1PS2tuUWl2cWkwZE1EWC9RPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-9&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/booirror/article/details/7881820&quot;&gt;table参考&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.runoob.com/lua/lua-tutorial.html&quot;&gt;lua教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/klkucan/LuaStudy&quot;&gt;我在学习中写的所有代码&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.jb51.net/list/list_245_3.htm&quot;&gt;脚本之家-lua&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 07 Aug 2017 22:10:24 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/</guid>
+        
+        <category>Lua</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第一周</title>
@@ -1086,84 +1577,6 @@ go.AddComponent(type);
         <pubDate>Tue, 04 Apr 2017 12:06:27 +0800</pubDate>
         <link>https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/</guid>
-        
-        <category>AssetBundle学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：3、AssetBundle内部结构</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;本质&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;normal-assetbundle-structure&quot;&gt;Normal AssetBundle structure&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。&lt;a href=&quot;https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html&quot;&gt;具体代码参考引用的第二部分&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;streamed-scene-assetbundle-structure&quot;&gt;Streamed scene AssetBundle structure&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureStreamedScene.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;虽然结构不同，但是是一样的压缩方式。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;h4 id=&quot;assetbundle-compression&quot;&gt;AssetBundle compression&lt;/h4&gt;
-    &lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleArchiveFileSystem.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;LZ4（ chunk-based compression）将原始数据分隔后独立压缩，在解压的时候是随机读取的开销很小。而LZMA(stream-based compression)提供了高压缩比，但是解压时必须按照顺序读取。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;总结:这篇的内容基本都是图，从normal bundle和scene bundle中可以看到些不同。它们都有一个主序列化文件，然后是&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Tue, 04 Apr 2017 12:04:45 +0800</pubDate>
-        <link>https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/</guid>
-        
-        <category>AssetBundle学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：2、压缩</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;格式&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。&lt;/li&gt;
-  &lt;li&gt;LZ4：5.3以后才加入的一种压缩格式，被unity自己大量使用。这是一种基于块的压缩方式，当一个对象从LZ4压缩的AssetBundle中加载时，会按照需要解压部分的块。这样的好处在于快速的加载对象，后面会提到一个最佳实践。当然，按照这个原理，你也可以想象如果一个LZ4AssetBundle中只包含了一个GameObject，那么也不存在什么按需加载了。当使用AssetBundle.LoadFromFile加载LZ4格式的文件时，其实不会将问价加载到内容，而是加载AssetBundle的Header。&lt;/li&gt;
-  &lt;li&gt;AssetBundle也可以选择不压缩，这样体积最大但是加载最快。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundle&quot;&gt;缓冲被压缩的AssetBundle&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;WWW.LoadFromCacheOrDownload方法下载并缓冲AssetBundle到磁盘，5.3以后缓冲的文件可以是LZ4格式的压缩文件了，这直接导致了一个很2的事情。就是当你下载了LZMA格式的AssetBundle后，每当你通过socket下载到足够的数据后，unity就在后台悄悄的解压然后重新压缩为LZ4格式的文件直到下载结束，这个压缩发生在下载流（download streaming）中。当用到缓冲中的数据时，就会按照解压LZ4的套路走了。也就是按需按块解压。&lt;/li&gt;
-  &lt;li&gt;缓冲压缩是默认的，然后可以通过 Caching.compressionEnabled属性来控制。会影响到包缓冲到磁盘和保存在内存中。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;指导方针，满满的干货&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果是将AssetBundle打包到游戏中，也就是AssetBundle跟着安装包走的话，推荐LZ4+AssetBundle.LoadFromFileAsync，既有压缩省空间，又有最快的加载性能可能性，给你读取内存buff的快感。&lt;/li&gt;
-  &lt;li&gt;如果是网络下载可下载内容（DLC），则使用LZMA+LoadFromCacheOrDownload/WebRequest，这样可以获得最好的压缩比。缓存到本地后使用AssetBundle.LoadFromFile加载。这里需要注意，如果是一些需要持久化的内容，是需要实实在在的保存到本地的，否则进程结束后内存中的cache会清除。&lt;/li&gt;
-  &lt;li&gt;如果是加密的AssetBundle，则使用LZ4+LoadFromMemoryAsync。其实也可以理解，毕竟需要加载到内容后进行解密。而且这个差不多是LoadFromMemory[Async]唯一的使用场景。&lt;/li&gt;
-  &lt;li&gt;当使用自定义压缩时，请使用不压缩来创建AssetBundle，然后自己解压后使用AssetBundle.LoadFromFileAsync来加载。&lt;/li&gt;
-  &lt;li&gt;为了节约内存，如果是不含prefab的AssetBundle，比如是texture的。最好用LoadFromCacheOrDownload，前提是通过网络获取，因为只有少量的序列化文件在内存。如果是保护prefab比较多的，用new WWW可能占用的内存会比序列化文件的都少。&lt;/li&gt;
-  &lt;li&gt;总之，AssetBundle的使用需要进行灵活的应用。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 20 Mar 2017 18:00:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/</guid>
         
         <category>AssetBundle学习笔记</category>
         
