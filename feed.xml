@@ -5,9 +5,366 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 07 Aug 2017 22:27:40 +0800</pubDate>
-    <lastBuildDate>Mon, 07 Aug 2017 22:27:40 +0800</lastBuildDate>
+    <pubDate>Mon, 14 Aug 2017 23:00:24 +0800</pubDate>
+    <lastBuildDate>Mon, 14 Aug 2017 23:00:24 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Lua学习笔记：迭代和闭包</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;关系&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由&lt;strong&gt;闭包函数本身&lt;/strong&gt;和一个&lt;strong&gt;创建该闭包函数的工厂函数&lt;/strong&gt;组成。&lt;/li&gt;
+  &lt;li&gt;以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t和i这两个变量中。其实在我看来主要是i中。在循环中每次调用闭包（迭代器）都是在更新它的状态i。这段代码完美的展示了迭代器的概念，看完之后对于迭代的理解更近了一步。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tt = {10,20,30}
+
+function GetValue(t)
+	local i =0
+	return function ()
+		i=i+1
+		return t[i]
+	end
+end
+
+iterator = GetValue(tt)
+
+while true do
+	local v = iterator()
+	if v == nil then
+		break
+	end
+	print(v)
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;for&quot;&gt;泛型for&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;泛型for在内部保存了3个值，分别是一个迭代器函数、一个恒定状态和一个控制变量。其形态如下，其中var-list是变量列表，exp-list表达式列表。var-list第一个原始就是控制变量，在循环中它不会是nil，如果是nil了循环就结束了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for &amp;lt;var-list&amp;gt; in &amp;lt;exp-list&amp;gt; do
+    &amp;lt;body&amp;gt;
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;迭代器是for中内部保存的，恒定状态应该是你需要循环的数据，比如一个table，控制变量是返回值变量列表的第一个变量，同时它也是用恒定状态和控制变量调用迭代器后得到的结果。假设迭代器函数是f，恒定状态是s，控制变量初始是a0，那么有&lt;code class=&quot;highlighter-rouge&quot;&gt;a1 = f(s,a0) a2 = f(s,a1)...&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;lua中将for的迭代器返回值固定为了3个，因此得到的是next\t\nil.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;无状态迭代器&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;不保存任何状态的迭代器，可以在多个循环中使用同一个迭代器。例子：ipairs。准确说ipairs是个工厂，它生产了一个简单的迭代器。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一个简单的迭代器&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local function getNext(list, node)
+	if not node then
+		return list
+	else
+		return node.next
+	end
+end
+
+function tra(list)
+	return getNext,list,nil
+end
+
+list = nil
+for line in io.lines() do
+	list  = {val = line, next = list}
+end
+
+for node in list do
+	print(tra(node.val))
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;关于迭代的的一些理解&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;在lua中for迭代的迭代器其实主要是个生成器，它生成了iterator，然后依靠for来循环调用。注意生成迭代的函数的返回值必须是函数、恒定状态、控制变量这个顺序。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 14 Aug 2017 22:57:15 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/</guid>
+        
+        <category>Lua</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Lua学习笔记：函数深入</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;闭包&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;lua中的函数都可以认为是闭包，只不过为了便于理解还是用了函数的概念。&lt;/li&gt;
+  &lt;li&gt;lua中函数的返回值可以是匿名函数，也就是闭包。以下面的代码为例，提出一个概念：非局部的变量。在下面的代码中，匿名函数访问了一个变量i，它对于newCount来说是局部变量，对于匿名函数来说是既不是局部变量也不是全局变量，在lua中这个称谓&lt;em&gt;非局部的变量&lt;/em&gt;。&lt;/li&gt;
+  &lt;li&gt;在lua中一个闭包指的是一个函数和该函数所需要访问的非局部的变量。lua会把它们看做是一个整体，因此在下面的代码中多次允许c1和c2，会发现变量i是在递增的。这是因为&lt;code class=&quot;highlighter-rouge&quot;&gt;c1 = newCount()&lt;/code&gt;这句代码相当于给c1赋值了一个闭包，它包含了i这个变量。因此多次执行相当于就是在反复执行一个对象，这样i就一直是原来那个i。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function newCount()
+	local i =0
+	return function ()
+		i=i+1
+		print(i)
+	end
+end
+
+c1 = newCount()
+print(c1())
+print(c1())
+
+c2 = newCount()
+print(c2())
+print(c2())
+print(c1())
+
+-- 结果
+1
+2
+1
+2
+3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;利用闭包的沙盒&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;下面这段代码中，修改了math库的sin方法。类似的还可以用来处理一些不安全的代码，这样的方式类似沙盒，将不安全包装了起来。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;print(math.sin(45))
+
+oldSin = math.sin
+math.sin = function (x)
+	return oldSin(x*math.pi/180)
+end
+
+print(math.sin(45))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;直接使用非全局函数做递归会报错&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;当你尝试调用下面的代码时，会提示&lt;code class=&quot;highlighter-rouge&quot;&gt;attempt to call global 'foo' (a nil value)
+&lt;/code&gt;，很奇怪对吧，明明定义的foo是个local的，怎么会提示是global呢？这个是因为在调用foo(x-1)时，这个foo函数还没有定义完，因此表达式在尝试调用一个全局的函数foo，但是显然这个全局函数是不存在的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local foo = function (x)
+	if x == 1 then
+		return 1
+	else return x*foo(x-1)
+	end
+end
+
+print(foo(3))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;正确的递归函数姿势，第二种&lt;code class=&quot;highlighter-rouge&quot;&gt;local function foo(x)&lt;/code&gt;其实是第一个方法的语法糖。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local foo
+foo = function (x)
+	if x == 1 then
+		return 1
+	else return x*foo(x-1)
+	end
+end
+
+print(foo(3))
+
+-- 相当于
+local function foo(x)
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;正确的尾调用&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;本质是为了不记录函数的返回位置，这样在栈中就可以无限的调用函数。在lua中只有&lt;code class=&quot;highlighter-rouge&quot;&gt;return  &amp;lt;func&amp;gt;(&amp;lt;args&amp;gt;)&lt;/code&gt;这样的形式才是尾调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 14 Aug 2017 22:56:11 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/</guid>
+        
+        <category>Lua</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第三周</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;内存&lt;/h2&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;资源复用&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时PersistentManager会认为是一个新的对象。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uiprofile&quot;&gt;UI在多次开关后出现profile中资源重复&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;刚进游戏时获取的图中出现的“重复”资源可能并不是冗余，因为 Atlas的一个 Group 中可能包含多张一样大小的Page（即纹理），而这几个Page在内存中的名字是一样的。&lt;/li&gt;
+  &lt;li&gt;但是，如果同一UI界面多次开启后，内存中出现了更多同样的资源，则说明UI的管理方式存在一定问题。对于频繁使用的UI，我们建议在加载之后通过缓冲池对其进行缓存，后续使用时，直接通过缓冲池获取即可。而不要每次均通过AssetBundle进行加载，这种做法既会造成更大的CPU占用，同样会很大几率造成资源的冗余。&lt;/li&gt;
+  &lt;li&gt;同时，如果多次开启的是不同UI界面，并且造成内存中同种资源的增加，则很有可能是UI在AssetBundle打包时形成了冗余（这种情况在目前的UGUI系统中较为常见）。对此，如果开发团队使用的是UGUI，那么我们的建议如下：
+    &lt;ul&gt;
+      &lt;li&gt;对于使用Unity 5.x的新AssetBundle打包系统，则打包时尽可能将同种Atlas的UI界面打成一个AssetBundle文件，否则将很有可能出现资源冗余的情况；&lt;/li&gt;
+      &lt;li&gt;对于使用Unity 4.x的老AssetBundle打包系统，则可以将一个含有Atlas的Prefab（或其他Object）先打包，其他UI元素对其进行依赖即可。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;rigidbody--capsulecollidercharactercontroller&quot;&gt;RigidBody + CapsuleCollider替换CharacterController&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;高效一些，因为 move 函数本身会进行较复杂的模拟运算。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;static-collidermove-expensive-delayed-cost&quot;&gt;Static Collider.Move (Expensive Delayed cost)警告&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Static Collider.Move (Expensive Delayed cost) 意味着场景中有静态碰撞体（不带有RigidBody的Collider）发生了移动，而该操作在Unity 4.x版本的PhysX 中会在后续的模拟中产生较高的开销，但在 5.x 中理论上开销并不明显。如果要消除该问题，只需定位到发生位移的Collider并挂上RigidBody 组件，打开其is kinematic 选项即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;lightmap&quot;&gt;什么在影响lightmap尺寸&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先确认下Lightmap的类型，Single类型只生成一张，而Dual和Directional会生成两张。&lt;/li&gt;
+  &lt;li&gt;其次，确认下当前的发布平台，Android下的Lightmap会比Standalone更小。因为不同平台采用的压缩格式不同。此外，Lightmapping中的Lock Atlas，Resolution，Padding等选项也会影响最后烘焙光照图的大小。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;lightmapmesh&quot;&gt;原先的Lightmap不再影响合并后的Mesh&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;总结一句就是不要讲使用了多个lightmap的mesh进行合并。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;bloom&quot;&gt;关于抗锯齿和BLOOM，有什么好的优化方案或者优秀插件推荐？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通常在中低端的设备上，抗锯齿并没有比较高效的方案；而对于中高端的设备，可尝试直接使用 Unity 内置的 MSAA 功能，但也只推荐使用 2x。
+关于Bloom效果，以下是适用于移动端，且评价较好的一款插件：BloomPro&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;xassetbundle-name&quot;&gt;5.x后设置好AssetBundle Name就可以实现依赖资源的独立打包&lt;/h4&gt;
+
+&lt;h4 id=&quot;xassetbundle&quot;&gt;4.x时代不同版本之间的AssetBundle不能通用&lt;/h4&gt;
+
+&lt;h4 id=&quot;unload&quot;&gt;unload顺序&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在 Resources.UnloadUnusedAssets() 时，如果还没有进行AssetBunlde的Unload 操作，那么从AssetBunlde中加载的资源依然会因为被AssetBunlde引用而无法被卸载。&lt;/li&gt;
+  &lt;li&gt;开发团队可以尝试 Destory 后做 AssetBunlde的Unload，最后进行 Resources.UnloadUnusedAssets()。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundlemanifestassetbundle&quot;&gt;生成AssetBundle的时候每个文件会多生成一个Manifest文件，这个文件也需要一起随着AssetBundle上传吗，在资源加载的时候具体怎么用呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;每个文件多生成的Manifest 文件是不需要上传的，其作用就是供开发人员查看AssetBundle 中的依赖关系等信息。&lt;/li&gt;
+  &lt;li&gt;但除了每个文件多生成的 Manifest 以外，根目录下还会有一个与根目录同名的AssetBundle 以及 Manifest 文件，通过运行时加载这个AssetBundle，可以得到一个 AssetBundleManifest 对象，然后就可以通过这个对象得到AssetBundle直接的依赖关系。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;editorshader&quot;&gt;选择移动平台后，editor下shader显示错误&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;是Unity已知的一个问题，Android 和 iOS 的部分Shader在打包后，在Editor 下无法正常显示。 主要原因是在打包时，只会把对应平台的Shader预编译代码（如 gles ）打入包中，因此在 Editor 下会执行失败（通常 Editor 是 d3d 驱动）。 因此，目前只能尝试在Editor下重新指定Shader来绕过这个问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+&lt;h4 id=&quot;iosastc&quot;&gt;ios上的ASTC格式&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;ASTC在 iOS 的高端机上是被支持的，因此理论上在 Editor 下不会强制把 ASTC 转为 RGBA32，建议尝试设置为 ASTC 后打包，从 Editor.log 中或者直接从包体大小上可以看出是否确实使用了ASTC。&lt;/li&gt;
+  &lt;li&gt;一般来说，如果 RGBA16 的效果可以接受的话，建议使用 RGBA16，虽然打包时相对大一些，但是内存中相比 RGBA32 能够减半，但使用 ASTC 的话，虽然打包时比较小，但是在普通机型上会被处理成 RGBA32，导致过大的内存开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;shared-ui-mesh&quot;&gt;Shared UI Mesh&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Shared UI Mesh是在Unity 5.2 版本后UGUI系统维护的UI Mesh。在以前的版本中，UGUI会为每一个Canvas维护一个Mesh（名为BatchedMesh，其中再按材质分为不同的SubMesh）。而在Unity 5.2版本后，UGUI底层引入了多线程机制，而其Mesh的维护也发生了改变，目前Shared UI Mesh作为静态全局变量，由底层直接维护，其大小与当前场景中所有激活的UI元素所生成的网格数相关。&lt;/li&gt;
+  &lt;li&gt;一般来说当界面上UI元素较多，或者文字较多时该值都会较高，在使用UI/Effect/shadow和UI/Effect/Outline时需要注意该值，因为这两个Effect会明显增加文字所带来的网格数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;build&quot;&gt;Build&lt;/h2&gt;
+&lt;h4 id=&quot;section-4&quot;&gt;打包注意&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;打包的时候Resources文件夹下所有的内容都会被打入resources.assets，要想包体小就删除不要的资源。而且Resources目录下所以资源启动时参与persistentmanager的初始化，内容多了会卡。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;static&quot;&gt;static选项&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果在Editor中进行勾选，则会在项目中生成一个较大的VBO，Runtime时通过该VBO来进行渲染，优点是有效减少了Draw Call，缺点是增大了发布游戏包的体积。&lt;/li&gt;
+  &lt;li&gt;如果在Runtime通过脚本来进行Batching，则相当于把拼合的时间由Editor中搬到了Runtime，所以加载时间（一般在场景加载时执行Batching）会稍有增加，但游戏包的体积将相应减少。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;动画&lt;/h2&gt;
+&lt;h4 id=&quot;optimize-gameobject&quot;&gt;Optimize GameObject&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在选择Optimize GameObjects后，可在Extra Transforms中加入你想挂载特效的骨骼结点，这样该骨骼结点将不会进行优化处理，即其Transfrom将不会消失。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-6&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;waitfortargetfps&quot;&gt;WaitForTargetFPS&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;该参数一般出现在CPU开销过低，且通过设定了目标帧率的情况下（Application.targetFrameRate）。当上一帧低于目标帧率时，将会在本帧产生一个WaitForTargetFPS的空闲等待耗时，以维持目标帧率。&lt;/li&gt;
+  &lt;li&gt;该项在Unity引擎的主循环中其实是最早执行的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;gfxwaitforpresent--graphicspresentandsync&quot;&gt;Gfx.WaitForPresent &amp;amp; Graphics.PresentAndSync&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这两个参数在Profiler中经常出现CPU占用较高的情况，其实是CPU和GPU之间的垂直同步（VSync）导致的，之所以会有两种参数，主要是与项目是否开启多线程渲染有关。当项目开启多线程渲染时，你看到的则是Gfx.WaitForPresent；当项目未开启多线程渲染时，看到的则是Graphics.PresentAndSync。&lt;/li&gt;
+  &lt;li&gt;Gfx.WaitForPresent其真实的意思应该是为了在渲染子线程（Rendering Thread）中进行Present，当前主线程（MainThread）需要等待的时间。&lt;/li&gt;
+  &lt;li&gt;最后，如何优化并降低这两个参数的CPU占用呢？ 那就是，忽略Gfx.WaitForPresent 和 Graphics.PresentAndSync这两个参数，优化其他你能优化的一切！WTF！&lt;/li&gt;
+  &lt;li&gt;PS：这篇内容相当不错，建议看&lt;a href=&quot;https://blog.uwa4d.com/archives/presentandsync.html&quot;&gt;原文&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;editorassetdatabase&quot;&gt;editor下出现AssetDatabase内存过高可以无视&lt;/h4&gt;
+
+&lt;h4 id=&quot;canvassendwillrendercanvases&quot;&gt;Canvas.SendWillRenderCanvases&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Canvas.SendWillRenderCanvases为UGUI中非常重要的接口，经常会出现较高的性能开销。当Canvas中的UI元素出现了长、宽或Alpha变化时，UGUI会更新其所在Canvas中所有UI元素的Transform、状态等等。Canvas中UI Mesh顶点较多的话，则该项将会出现较高的CPU开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;loadingupdatepreloading&quot;&gt;Loading.UpdatePreloading&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Loading.UpdatePreloading为Unity引擎的主要加载函数。场景中的资源加载（包括Texture、Mesh、Shader、AnimationClip等）和相关序列化操作均在其中体现。因此，如果该值开销较高，建议研发团队对资源进行进一步的优化和控制。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;脚本&lt;/h2&gt;
+&lt;h4 id=&quot;gameobjectgameobject&quot;&gt;如果脚本引用了GameObject，那转换场景的时候脚本和GameObject都没了，还会产生堆内存的吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果脚本是MonoBehaviour，而且在切换场景后所挂的Game Object被释放了，那么这个脚本对象所引用的堆内存就会在GC的时候被释放。 但有一种例外，如果是通过Static变量引用的堆内存，那么依然是释放不掉的，除非手动解开引用，比如变量置Null，数组Clear等等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-8&quot;&gt;粒子&lt;/h2&gt;
+&lt;h4 id=&quot;section-9&quot;&gt;粒子动态合并&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;del&gt;粒子系统的Draw Call动态拼合与半透明物体的动态拼合机制相当（粒子基本都是半透明材质）。而对半透明物体，由于其渲染顺序的限制（必须从后向前渲染，以保证渲染结果的正确性），动态拼合只能对渲染顺序相邻且材质相同的物体有效。而在决定半透明物体的渲染顺序时，Unity首先会按Shader中的RenderQueue进行排序；其次（相同RenderQueue时），会根据每个半透明物件到屏幕的距离，距离大的优先渲染。&lt;/del&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;del&gt;因此，需要尽可能地将相同材质的粒子系统放在比较接近的深度下，才能更多地使动态拼合生效。但通常由于相机的运动、粒子系统的分散分布等原因造成粒子系统之间的穿插，能够动态拼合的数量往往都是很少的。&lt;/del&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;目前粒子系统已经不再进行 Draw Call 的拼合，因为在新版本5.3 中已通过多线程进行更新，暂时无法支持拼合，但性能已经得到提升。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 14 Aug 2017 22:54:29 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第二周</title>
@@ -1289,294 +1646,6 @@ Debug.Log(&quot;result is &quot; + cd.result);
         <pubDate>Sun, 16 Jul 2017 00:13:52 +0800</pubDate>
         <link>https://caihua.tech/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
-        
-        <category>AssetBundle学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>5.6混合光照</title>
-        <description>&lt;h3 id=&quot;httpforumchinaunity3dcomthread-24402-1-1html&quot;&gt;&lt;a href=&quot;http://forum.china.unity3d.com/thread-24402-1-1.html&quot;&gt;原文地址&lt;/a&gt;&lt;/h3&gt;
-&lt;h3 id=&quot;section&quot;&gt;原有混合光照的问题&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;5.6之前的光照存在一个严重的问题就是: &lt;strong&gt;混合光照仅当只有一个定向光时才能正常工作。&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;这是什么个意思呢？
-    &lt;ul&gt;
-      &lt;li&gt;首先说一下unity的GI一直以来都是依靠烘焙来做的，但是在unity5中加入了PRGI。&lt;/li&gt;
-      &lt;li&gt;目前的unity在一个场景中可以混合使用烘焙光照和实时光照，一部分静态对象使用烘焙好的光照和影子，而一些非静态的对象可以继续接受实时光照的影响。这个需要我们把Light Type设置为Mixed。&lt;/li&gt;
-      &lt;li&gt;不过静态对象会既受烘焙的影响又受实时光的影响，从而产生不好的效果。mixed模式就是为了解决这个问题而出现的，&lt;code class=&quot;highlighter-rouge&quot;&gt;理想情况下，混合模式会为你料理好一切，照亮相同平衡范围内的动、静态对象（从而保留了视觉逼真度与一致性）。&lt;/code&gt;只是一切都不是那么的美好，事实上是动态物体不会从spotlight上产生阴影。&lt;/li&gt;
-      &lt;li&gt;需要特别声明一下，我自己的测试中完全没有发现上面的问题，目前不知道原因。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;5.6引入的混合光照模式&lt;/h3&gt;
-
-&lt;h4 id=&quot;subtractive&quot;&gt;Subtractive&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个就是以前的混合方式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;shadowmask&quot;&gt;Shadowmask&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在Shadowmask模式中，静态对象通过shadowmask从其他静态对象接收阴影，不必考虑阴影距离。来自动态对象的阴影仅能通过阴影距离内的阴影贴图获得。动态对象通过阴影距离内的阴影贴图接受来自其他动态对象的阴影。来自静态对象的阴影仅能通过光照探针获得。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这段读着有点绕口，其实分析起来就是针对静态和动态物体获得阴影进行了区分。相对来说静态物体获取阴影会比较简单（至少我认为是）。而动态物理为了得到静态物体的阴影需要使用光照探针。而文中的&lt;code class=&quot;highlighter-rouge&quot;&gt;阴影距离内的阴影贴图&lt;/code&gt;这个推测是阴影图，熟悉unity shader中阴影产生的人应该知道这个东西。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;distance-shadowmask&quot;&gt;Distance Shadowmask&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Distance Shadowmask的行为是由阴影距离决定的。在阴影距离内，动、静态对象都会渲染进阴影贴图，静态对象可以在动态对象上投射锐阴影。超出阴影距离，静态对象会通过预计算shadowmask接收来自其他静态对象的高质量阴影，而动态对象则通过光照探针与LPPV，接收来自静态对象的低分辨率阴影。
-普通的Shadowmask模式要比Distance Shadowmask模式产生更少的Draw Call，因为阴影贴图的性能消耗要高于烘焙阴影（因为它们在每帧都进行渲染，而烘焙阴影是保存在一个纹理/光照贴图中的）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;这个就有意思了，根据阴影距离决定对象是否渲染金阴影贴图（这里的阴影贴图应该就是阴影映射纹理，它是通过ShadowCaster这个pass产生的），动态和静态的对象满足条件时都会参与渲染，所以会有性能消耗。因为每个对象的都要执行一次pass，而这个pass造成了draw call。（这个不是很能理解了，为何不是在一次DC中执行这个pass？）&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Distance Shadowmask模式更适合高端PC或游戏主机。而Shadowmask则作为一种更廉价的解决方案，推荐在中低端设备使用。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;baked-indirect&quot;&gt;Baked Indirect&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Baked Indirect没有使用任何Shadowmask。所以在这个模式中没有远距离阴影。在阴影距离之内，所有静态和动态的对象都投射 实时阴影贴图。但超出阴影距离后，就没有阴影。在Baked Indirect中，除了间接照明之外所有的东西都是实时的。这意味着，实时光照、实时阴影以及实时镜面高光，但是反弹的光照信息储存在光照贴图中，是静态的。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个东西和shadowmask的区别在于超出阴影距离后就没有阴影了。还有非间接照明是实时的难道说明烘焙出来的静态物体在直线光下其实和没烘焙一样？只有间接光是在lightmap中。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;总结一下：&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;5.6可以说是unity在渲染上又迈进了一步。处理更加精细的影子效果外，还加入了简单的后处理流程，让开发者能够更简单的做出优美的画面。&lt;/li&gt;
-  &lt;li&gt;本文只是对官方内容的简单的总结，在实际使用中不同的硬件环境应该有不同的选择。&lt;/li&gt;
-  &lt;li&gt;文中的各种不同的选项对应的物体的影子的互相影响需要参考&lt;a href=&quot;https://docs.google.com/spreadsheets/d/1v-LnDOJcsSsa0ViF7kBs6xgY9Q_z-1k6h95LE0lf46U/edit?usp=drive_web&quot;&gt;Reference card for Light Modes&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;如何烘焙&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;主要光的baking是baked，静态物体勾选哪里Lightmap Static。点击bake进行烘焙。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 09 Jul 2017 23:51:01 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>写点东西，证明我还在更新</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;最近的一些情况&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;很久没有更新博客了，从4月份开始为了项目赶进度开始了996模式，实在没有什么时间写东西。这个是公司也是我自己做的第一个VR旅游项目，可以说从零开始吧，毕竟与游戏开发不一样，期间学到了多东西，也走了不少的弯路。&lt;/li&gt;
-  &lt;li&gt;在项目期间很神奇的看了一大半冯乐乐写的《Shader入门精要》，在这给这本书打打广告，这是一本很适合入门的Shader书籍，而且紧密的结合了Unity5。对于我这样想要编写shader的人来说是很好的入门。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;后续的计划&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;本来今年的计划是搞定AssetBundle和热更新，然后看完《游戏编程模式》这本书。之前的blog中也陆续写了一些读书笔记，其实在写AssetBundle的最后一篇时的最后一个link指向了AssetBundle的一个官方实践教程，是必须读的文章。我基本已经看完了，后续会写读书笔记，现在年纪大了不写点东西感觉自己记不住了。XD&lt;/li&gt;
-  &lt;li&gt;另外就是上面提到的项目完成后会写一点总结。&lt;/li&gt;
-  &lt;li&gt;还有就是上半年最大的收获，学会了写unity shader。以前一些特效总要找特效的同事做，而且有时候用了一些特效发现很影响性能但是不知为何，在学了shader之后很多事情知道是怎么回事了，虽然PBR这样的shader还是不能完全写出来，但是基本的写法和理论都已经知道了，遇到问题的时候不会再一脸懵逼。这算是上半年最大的收获吧。当然，读书笔记必不可少，等我刷第二遍书的时候会开始写。&lt;/li&gt;
-  &lt;li&gt;下半年的项目计划已经出来了，做一个VR教育的产品，涉及到AssetBundle和热更新，好吧真是太巧了，刚好在项目中要好好学学热更新了。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 04 Jun 2017 21:44:23 +0800</pubDate>
-        <link>https://caihua.tech/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/</guid>
-        
-        <category>杂记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle的下载&lt;/h2&gt;
-&lt;h4 id=&quot;assetbundle-1&quot;&gt;下载AssetBundle&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;首先需要理解的是这个下载就是指的从网络下载。因此只有WWW和 WWW.LoadFromCacheOrDownload两个方法。&lt;/li&gt;
-  &lt;li&gt;www是不带缓存的，而后者是带缓存的。&lt;/li&gt;
-  &lt;li&gt;LoadFromCacheOrDownload的version参数，如果缓存中不存在，或者version低于指定的版本就会重新下载，否则直接从缓存拿数据。&lt;strong&gt;缓存数据应该是始终在磁盘上的，而5.3以后缓存文件也压缩为LZ4(好像是可配置的)，所以读取cache的数据很可能与LoadFromFile是等效的。&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;如果多个AssetBundle使用WWW.LoadFromCacheOrDownload下载，每帧只能完成一个。&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.unity3d.com/ScriptReference/WWW.LoadFromCacheOrDownload.html&quot;&gt;LoadFromCacheOrDownload&lt;/a&gt;中如果发现缓存文件夹已经满了，会优先删除最近没有使用的cache，但是如果磁盘本身就满了或者说cache folder已经满了（这个东西是有容量限制的）那么会把AssetBundle数据直接按照stream的形式放到内存，这个和new WWW的做法完全一样。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundle-2&quot;&gt;生成AssetBundle&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;当访问&lt;code class=&quot;highlighter-rouge&quot;&gt; .assetBundle&lt;/code&gt;属性时，会从下载的数据中提取并生产AssetBundle对象。此时就可以加载AssetBundle中的asset了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;其它&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;后面在editor中加载asset的demo中API已经过时，可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;AssetDatabase.LoadAssetAtPath&lt;/code&gt;代替。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;asset&quot;&gt;Asset加载&lt;/h2&gt;
-
-&lt;h3 id=&quot;assetbundleapi&quot;&gt;AssetBundle加载API概述&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;具体表格可以参考&lt;a href=&quot;https://docs.unity3d.com/Manual/AssetBundleCompression.html&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;www&quot;&gt;WWW&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在使用WWW时需要及时释放，因为它会在内存（WebStream）中保留下载的文件的大小。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadfromcacheordownload&quot;&gt;LoadFromCacheOrDownload&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LoadFromCacheOrDownload没有什么额外的内存使用（其实应该有序列化文件（SerializedFile）的内存使用，而且如果prefab过多，有可能SerializedFile比WebStream还大，&lt;a href=&quot;http://blog.uwa4d.com/archives/ABTheory.html&quot;&gt;来源&lt;/a&gt;）&lt;/li&gt;
-  &lt;li&gt;从表中可以看到在性能上也只有读磁盘的操作，然而LoadFromCacheOrDownload本质上是个网络操作，因此它会产生一些例如CRC检测的操作，所以unity的建议是如果是本地的AssetBundle不要用这个函数加载。&lt;/li&gt;
-  &lt;li&gt;如果是加载缓存行为与 LoadFromFile一致，但是按照上面的说法看应该有差异吧。&lt;/li&gt;
-  &lt;li&gt;补充：关于SerializedFile在4.7上每个的大小并不一定。&lt;code class=&quot;highlighter-rouge&quot;&gt;在5.3-5.5期间Unity引擎目前的做法，为了保证Android端apk解压速度而保证的两个256KB的buffer，在pc上只有7KB&lt;/code&gt;。而到了5.6会改为2x8KB。但是经过测试这个不是必然的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadfrommemory-async&quot;&gt;LoadFromMemory (Async)&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LoadFromMemory (Async)，不推荐使用，因为它的操作几乎都是在内存中完成的。加载AssetBundle需要占用大概AB size两倍的内存，一个API创建的内容还有就是参数里面的数据内存。如果是load一个asset会在内存中出现三个asset的拷贝，一个是托管代码字节数组，一个是 AssetBundle 的本地内存，第三个是在 GPU 或者系统内存中的资产本身。（第一个是参数、一个是AssetBundle本身、一个是Load函数产生的对象内存）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadfromfileasync&quot;&gt;LoadFromFile(Async)&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LoadFromFile(Async)，&lt;strong&gt;++不能加载LZMA（特么的你敢信）。而且在Android上5.3和之前的unity无法加载StreamingAssets中的AssetBundle。++&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;移动端上：当使用AssetBundle.LoadFromFile加载LZ4格式的文件时，其实不会将问价加载到内容，而是加载AssetBundle的Header。&lt;/li&gt;
-  &lt;li&gt;Editor下会将AssetBundle加载到内容，因此在Profiler中会出现峰值，不用担心。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;webrequest&quot;&gt;WebRequest&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.unity3d.com/Manual/UnityWebRequest-HLAPI.html&quot;&gt;WebRequest&lt;/a&gt;。
- (also supports caching)，这个东西算是WWW的替代品，很好用，回头写个总结。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;其它&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用WWW, WebRequest下载AssetBundle时，还有一个8x64KB的缓冲池buff来保存socket中的数据。so，这也是内存啊。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;从压缩格式角度看:&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;不压缩没啥优势，除了访问速度快。其实如果是不考虑内存或者磁盘的占用问题，倒是可以用这个。&lt;/li&gt;
-  &lt;li&gt;LZ4，从文档看unity应该用的是&lt;a href=&quot;http://www.findbestopensource.com/product/lz4hc&quot;&gt;LZ4HC&lt;/a&gt;，一个LZ4的高压缩版本。由于unity从5.3以后缓存也可以压缩了，而且这个算法是基于块的，所以在综合性上比较好。&lt;/li&gt;
-  &lt;li&gt;LZMA，必须先解压在压缩，如果不是因为网络传输需要节省流量，不建议使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;加载二进制数据&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;按照建议应该将原始的二进制文件保存为后缀为&lt;code class=&quot;highlighter-rouge&quot;&gt;.bytes&lt;/code&gt;的文件，unity会视这个后缀的文件为TextAsset，作为一个TextAsset文件然后打包到AssetBundle。加载的时候也是一样，从AssetBundle中按照TextAsset类型得到asset，然后TextAsset.bytes属性得到byte数组。
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;string url = &quot;http://www.mywebsite.com/mygame/assetbundles/assetbundle1.unity3d&quot;;
-IEnumerator Start () {
-  while (!Caching.ready)
-      yield return null;
-
-  // Start a download of the given URL
-  WWW www = WWW.LoadFromCacheOrDownload (url, 1);
-
-  // Wait for download to complete
-  yield return www;
-
-  // Load and retrieve the AssetBundle
-  AssetBundle bundle = www.assetBundle;
-
-  // Load the TextAsset object
-  TextAsset txt = bundle.Load(&quot;myBinaryAsText&quot;, typeof(TextAsset)) as TextAsset;
-
-  // Retrieve the binary data as an array of bytes
-  byte[] bytes = txt.bytes;
-}
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;对于加密资源的处理&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;三个套路：
-    &lt;ul&gt;
-      &lt;li&gt;加密自己的原始数据，然后改后缀为.byte，按照上面说的二进制的套路走。客户端拿到二进制数据后进行解密。&lt;/li&gt;
-      &lt;li&gt;加密AssetBundle，后缀名不限。用WWW的形式拿到数据后解密，然后用AssetBundle.CreateFromMemory生成AssetBundle。&lt;/li&gt;
-      &lt;li&gt;一个普通的AssetBundle中包含一个加密的AssetBundle（蛋疼不？）。需要经历获取TextAsset-&amp;gt;拿到二进制数据-&amp;gt;解密二进制数据-&amp;gt;生成未加密AssetBundle-&amp;gt;加载AssetBundle中的asset。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;script-asset&quot;&gt;Script Asset的处理&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;script-&amp;gt;assembly(pre-compiled)-&amp;gt;TextAsset-&amp;gt;AssetBundle-&amp;gt;TextAsset-&amp;gt;byte[]-&amp;gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var assembly = System.Reflection.Assembly.Load(txt.bytes);
-var type = assembly.GetType(&quot;MyClassDerivedFromMonoBehaviour&quot;);
-
-// Instantiate a GameObject and add a component with the loaded class
-GameObject go = new GameObject();
-go.AddComponent(type);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;assetassetbundle&quot;&gt;卸载asset或者说AssetBundle&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;AssetBundle.Unload方法是目前AssetBundle唯一能够使用的方法，与Resources.UnloadAsset比起来缺乏灵活性。&lt;/li&gt;
-  &lt;li&gt;参数是个bool，传递false&lt;code class=&quot;highlighter-rouge&quot;&gt;unload the compressed data from memory&lt;/code&gt;，按照第二部分的说明，什么是压缩的数据，那就是LZ4的数据，也就是AssetBundle。如果传递true，那么已经load出来的asset也会被清理。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;一些策略&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一个AssetBundle对象在同一时刻只能存在一份，所以当反复使用www下载并调用www.assetBundle时会报错&lt;code class=&quot;highlighter-rouge&quot;&gt; Cannot load cached AssetBundle. A file of the same name is already loaded from another AssetBundle&lt;/code&gt;。这个时候要么自己unload要么就代码控制只保留一个对象。unity的建议是尽快删除不用的AssetBundle。&lt;/li&gt;
-  &lt;li&gt;unity5之前bundle在unload之前如果有load，需要等到load结束才会执行unload。so，可能会卡线程。&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://docs.unity3d.com/560/Documentation/Manual/keepingtrackofloadedassetbundles.html&quot;&gt;文中&lt;/a&gt;有一个完整的解决方案。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;assetbundleseek&quot;&gt;优化AssetBundle的磁盘寻道(Seek)&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;unity序列化数据是为使得数据在读取时是线性的，减少寻道的次数。因为HDDs的硬盘比SSD慢很多。&lt;/li&gt;
-  &lt;li&gt;一个场景的数据按照对象类型进行排序，在场景加载时，场景中的asset先按顺序加载，然后画面中的对象才加载。（完全可以理解，场景中摆放的多是prefab，肯定要先加载prefab所需要的资源。）而Scene AssetBundle也是这个顺序。&lt;/li&gt;
-  &lt;li&gt;一个来自non-Scene AssetBundles中的asset在序列化上是和Scene AssetBundles一样的，但是加载方式取决于调用的API。LoadAllAssets这样的API会采用线性的方式加载所有的资源。但是如果是LoadAsset会随机读取的形式加载。&lt;/li&gt;
-  &lt;li&gt;DeterministicAssetBundles不破坏线性读取和类型排序，但是保留对象位置在一个特点的范围(没看懂)。&lt;/li&gt;
-  &lt;li&gt;LZ4不影响线性读取，但是会影响读取的颗粒度。（想来是因为按需加载，所以。。。）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;一些需要注意的行为&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一些异步加载API会打破线性读取的模式，即使是读取场景。&lt;/li&gt;
-  &lt;li&gt;因为有依赖的存在，所即使AssetBundle.LoadAllAssets这样的API也不能保证是线性读取的。因为可能出现依赖的资源在别的AssetBundle中，所以最好是将所有依赖的资源都读取出来放好了，这样可以使用最小的寻道次数。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;参考&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/huxiao-tee/p/4660352.html&quot;&gt;MMAP&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/lodypig/article/details/51879702&quot;&gt;一些内存测试数据&lt;/a&gt;。第二个测试结果符合unity使用MMAP的结论。&lt;/li&gt;
-  &lt;li&gt;一些不错的文章
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://minhhh.github.io/posts/unity-asset-bundle&quot;&gt;简单好理解&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;http://blog.shuiguzi.com/2016/12/15/GuideToABAndRes/&quot;&gt;震惊！男人看了会沉默，女人看了会流泪，不看不是中国人之事实的真相系列。&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 04 Apr 2017 12:06:27 +0800</pubDate>
-        <link>https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/</guid>
         
         <category>AssetBundle学习笔记</category>
         
