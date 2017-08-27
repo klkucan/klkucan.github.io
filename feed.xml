@@ -5,8 +5,8 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 27 Aug 2017 18:31:41 +0800</pubDate>
-    <lastBuildDate>Sun, 27 Aug 2017 18:31:41 +0800</lastBuildDate>
+    <pubDate>Sun, 27 Aug 2017 18:36:36 +0800</pubDate>
+    <lastBuildDate>Sun, 27 Aug 2017 18:36:36 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -284,7 +284,7 @@ set b=%a%2
         <link>https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/</guid>
         
-        <category>UWA</category>
+        <category>杂记</category>
         
         
       </item>
