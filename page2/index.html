@@ -173,6 +173,102 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/07/29/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+        <h2 class="post-title">
+            Lua学习笔记：基本语法
+        </h2>
+        
+        <div class="post-content-preview">
+            初步印象
+
+  语法和python、js这些很像，解释型语言、弱类型等等。写着舒服是真的。
+  while do\repeat until这样的语法其实真心不舒服，感觉在语法上有些累赘。大多数语言都是do while，但是它非要是repeat until，也是无语。
+  我个人认为语法中的then和do设计的很混淆。比如if是和then，for是和do。从我对语言的理解上感觉可以统一用do或...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 29, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/">
+        <h2 class="post-title">
+            Unity返回Value的协程
+        </h2>
+        
+        <div class="post-content-preview">
+            起因
+
+  其实一直以来就有个想法，希望能让unity中的coroutine返回一个具体的数值，比如int，比如string或者一个GameObject。最近也查了些资料，然后总结一下这个功能如何实现。
+
+
+回调函数实现
+
+
+  这个算是一个取巧的办法，在调用协程时传递一个回调函数，在执行过程中根据情况调用回调即可。不废话，直接上代码：
+
+
+ IEnumerator CoroutineWit...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：Resources文件夹
+        </h2>
+        
+        <div class="post-content-preview">
+            Resources文件夹
+
+  这个章节内容不多，但是也很有用。我们可以从这个章节中学习如何更合理的使用它。
+
+
+Resources系统的最佳实践
+
+
+  不要使用它
+
+
+
+  是的，不要使用它。因为它有以下问题：
+    
+      使用 Resources 文件夹会让内存颗粒度管理变得更困难
+      不正确的使用 Resources 文件夹会增加应用启动时间（因为要创建上一章讲的映...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：资产、对象和序列化
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  这篇及后续的几篇笔记是我阅读A guide to AssetBundles and Resources的一些记录。官方的这个系列文章详细的阐述了unity是管理资源的。从一个asset的导入开始，unity就在背后开始了它的工作。它为每个资源创造了一个mate文件，给予了资源一个唯一的ID，从此这个资源的一切都与这个ID紧密结合到了一起。可能我们的一些操作会导致资源丢失它的mat...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/">
         <h2 class="post-title">
             5.6混合光照
@@ -321,102 +417,6 @@ Normal AssetBundle structure
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：原型模式
-        </h2>
-        
-        <div class="post-content-preview">
-            原型模式
-定义
-
-  定义：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
-原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。
-  看图
-
-
-
-模式的理解
-
-  当需要快速并且尽可能少的占用内存的...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 16, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：1、概述和创建
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
-
-
-概述
-
-
-  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
-
-
-AB流程
-
-
-
-  Editor编辑，...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
-        <h2 class="post-title">
-            SendMessage测试
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.
-  obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。
-  如果Foo的参数不对，会提...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
-        <h2 class="post-title">
-            关于AssetBundle解压的讨论结果
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  一切的起源在于这篇文章，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
-    
-      在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 5, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -511,7 +511,7 @@ AB流程
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="3">
+                                <a href="/tags/#UWA" title="UWA" rel="7">
                                     UWA
                                 </a>
                             

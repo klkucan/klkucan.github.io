@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>关于AssetBundle解压的讨论结果 - 蔡华的博客</title>
+    <title>bat学习 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
+    <link rel="canonical" href="https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
+                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>关于AssetBundle解压的讨论结果</h1>
+                    <h1>bat学习</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on March 5, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on August 27, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,42 +187,181 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<ul>
-  <li>一切的起源在于<a href="《http://blog.uwa4d.com/archives/ABTheory.html》">这篇文章</a>，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
-    <blockquote>
-      <p>在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载进阶】部分的【前者劣势】部分，又有【每次加载都涉及到解压操作】，请问这个【加载】指的是什么？是www.assetBundle还是AssetBundle.Load？还有【解压缩】是指的什么？不是在WWW的时候已经解压缩了吗？</p>
-    </blockquote>
-  </li>
-  <li>张鑫大神是这样回答的
-    <blockquote>
-      <p>是这样的，我们所说的AssetBundle【加载】指的是New WWW（或其他加载AB的API）和www.assetbundle的统称，而真正的【解压】过程，是在New WWW进行的。同时，需要说明的是，这个是5.3版本之前Unity对于AssetBundle的处理方式，5.3版本后，由于Unity新增了LZ4压缩方式，所以如果AssetBundle在制作时已经是LZ4格式的，那么在加载时就已经不会在进行解压了。</p>
-    </blockquote>
-  </li>
-  <li>身为一个程序猿一定要弄清楚才行，所以有了另一个疑问
-    <blockquote>
-      <p>那么【每次加载都涉及到解压操作】是不是可以这样理解：对于new WWW实际是解压到webstream。而如果是用的LoadFromCacheOrDownload，那么资源是在磁盘的，所以在调用www.assetbundle时才做解压。或者正如你说的只要是加载AB的API，都会有一个解压过程。那么有个问题，如果使用直接获取AssetBundle的那些API，解压过程是怎样的呢？CreateFromFile是在调用assetbundle.load的时候从磁盘解压，CreateFromMemory是直接解压到webstream？还有个问题，对于WebStream来说，同一个www对象多次调用www.assetbundle方法时，得到了栈上的多个变量，但是这些变量都指向同一个WebStream中的对象吗？</p>
-    </blockquote>
-  </li>
-  <li>其实在这里我犯了一个错误，就是对于资源最终放到磁盘上的AB来说在调用LoadFromCacheOrDownload和LoadFromFile（5.3之前是CreateFromFile）方法的过程中就已经解压缩了，LoadFromCacheOrDownload是上面文章中说明了我自己看漏了，但是LoadFromFile是有一个演进的过程的。
-    <blockquote>
-      <p>在5.3之前，如果需要解压，都在四个API（New WWW、CreateFromFile、LoadFromMemory、LoadFromCache等）中进行，而不是在后面执行</p>
+				<h3 id="section">概念</h3>
+<ul>
+  <li>批处理的本质，是一堆DOS和cmd命令按一定顺序排列而形成的集合。</li>
+  <li>熟悉DOS语法，然后按照正确的顺序来进行指令的运行。</li>
+</ul>
 
-      <p>CreateFromFile在4.x的API，只能加载非压缩的AB，而在5.0以后，对应的是LoadFromFile，5.3之后可以加载任何压缩格式的AB了</p>
-    </blockquote>
-  </li>
-  <li>
-    <p>至此可以总结一点就是<strong><em>解压缩发生在New WWW、CreateFromFile、LoadFromMemory、LoadFromCache函数调用过程中</em></strong>。</p>
-  </li>
-  <li>至于张鑫大神提到的LZ4不要解压缩这个事情，从<a href="https://docs.unity3d.com/Manual/AssetBundleCompression.html">文档</a>上看LZ4还是需要解压缩的，只不过是基于块的，也就是说当你从LZ4文件中加载一个object的时候，只会解压缩这个object对应的压缩块，这个当然效率就高了很多。但是这句我甚是不解，如果一个LZ4文件压缩了一个很大的对象且只有这个对象，解压的时候难道不要时间？？在群里问完大神在来补充吧。
-    <blockquote>
-      <p>This occurs on-the-fly, meaning there are no wait times for the entire bundle to be decompressed before use.</p>
-    </blockquote>
-  </li>
-  <li><em>第二天的更新</em>：</li>
-  <li>
-    <p>看了文档也和群里讨论了一下，应该还是我理解上有误。所谓<code class="highlighter-rouge">5.3版本后，由于Unity新增了LZ4压缩方式，所以如果AssetBundle在制作时已经是LZ4格式的，那么在加载时就已经不会在进行解压了。</code>的前提是在AB的基础上的，5.3以后的AB压缩格式3种：LZMA、LZ4和不压缩（Uncompressed Format，原文如此），LZMA是默认的AB压缩格式，unity在使用socket下载LZMA格式的文件时，一边下载，一边解压，并且一边压缩为LZ4。和大家讨论了下认为应该是考虑到传输的流量成本、节约内存和磁盘的空间，所以解压后再压缩为LZ4。一是因为LZMA压缩比高，适合传输，但是解压后会占用内容和磁盘空间比较大，而且是整体解压并且过程较慢，不适合用时在解压。所以解压后使用LZ4压缩一下节约空间，而且LZ4前面也说了是按需逐块解压的速度比较快，因此适合已经是内存中或者本地的解压。从这个角度说，如果直接AB压成LZ4就可以直接在需要的时候解压了，没有了解压再压缩的过程。</p>
-  </li>
-  <li>最后还是要刷<a href="https://unity3d.com/cn/learn/tutorials/topics/best-practices/guide-assetbundles-and-resources?playlist=30089">这个</a>才行。</li>
+<h3 id="section-1">系统教程</h3>
+<ul>
+  <li>使用/?查看if的功能，使用与很多指令，<code class="highlighter-rouge">%</code>似乎不行。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>if /?
+pause
+
+--------------------------------------------
+
+C:\Users\Administrator\Desktop&gt;
+执行批处理程序中的条件处理。
+
+IF [NOT] ERRORLEVEL number command
+IF [NOT] string1==string2 command
+IF [NOT] EXIST filename command
+
+  NOT               指定只有条件为 false 的情况下，Windows 才
+                    应该执行该命令。
+
+  ERRORLEVEL number 如果最后运行的程序返回一个等于或大于
+                    指定数字的退出代码，指定条件为 true。
+
+  string1==string2  如果指定的文字字符串匹配，指定条件为 true。
+
+  EXIST filename    如果指定的文件名存在，指定条件为 true。
+
+  command           如果符合条件，指定要执行的命令。如果指定的
+                    条件为 FALSE，命令后可跟 ELSE 命令，该命令将
+                    在 ELSE 关键字之后执行该命令。
+
+ELSE 子句必须出现在同一行上的 IF 之后。例如:
+
+    IF EXIST filename. (
+请按任意键继续. . .
+</code></pre>
+</div>
+
+<h3 id="demo">从一个demo中学习</h3>
+
+<ul>
+  <li>这个demo的作用是用来更新游戏客户端的。一般来说我们的端游客户端会有一个launcher来启动真正的游戏，它还要负责来更新游戏。同时，它还要更新自己，以前WOW中的做法是有个专门的update.exe来做更新（不过现在是靠battle.net来更新了），我觉得bat文件一样可以做，因此写了这个demo。下面代码中TL代表launcher，TC代码client。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>@echo on
+cls
+
+:: 当前程序所在目录
+set LocalPath=%~dp0
+:: TL更新包完全路径名,不带后缀，同时也是解压缩后的文件夹名称
+set  TLZipFile=%~dp0TLUpgradeData\TL_%1
+:: TL更新包解压路径
+set  TLDecompressPath=%~dp0TLUpgradeData\
+
+echo 执行更新，请稍后...
+
+echo ----1.关闭客户端进程----
+tasklist /nh|find /i "TL.exe"
+if ERRORLEVEL 1 (echo TL客户端进程已经结束) else (taskkill /f /im TL.exe)
+tasklist /nh|find /i "TC.exe"
+if ERRORLEVEL 1 (echo TC客户端进程已经结束) else (taskkill /f /im TC.exe)
+
+echo ----2.开始解压缩安装包----
+if exist %TLZipFile%.zip   %LocalPath%7z x %TLZipFile%.zip -o%TLDecompressPath% -aoa
+
+echo ----3.开始复制文件----
+xcopy %TLZipFile%  %LocalPath% /e /f /k /y
+:: xcopy switch说明：
+:: /E           复制目录和子目录，包括空目录。
+:: /F           复制时显示完整的源文件名和目标文件名。
+:: /K           复制属性。一般的 Xcopy 会重置只读属性。
+:: /Y           取消提示以确认要覆盖
+
+echo ----4.删除临时文件----
+del %TLZipFile%.zip
+rmdir %TLZipFile% /s /q
+:: 删除当文件夹和里面的所有文件，/s 表示包含子文件夹，/q 表示不需要确实提示 
+pause
+
+</code></pre>
+</div>
+
+<h4 id="section-2"><code class="highlighter-rouge">@</code></h4>
+<ul>
+  <li>它的作用是让执行窗口中不显示它后面这一行的命令本身。行首有了它的话，这一行的命令就不显示了。首行的@echo off中，@的作用就是让脚本在执行时不显示后面的echo off部分。</li>
+</ul>
+
+<h4 id="section-3"><code class="highlighter-rouge">::</code> -双冒号</h4>
+<ul>
+  <li>类似注释符号</li>
+</ul>
+
+<h4 id="section-4"><code class="highlighter-rouge">&gt;</code>和<code class="highlighter-rouge">&gt;&gt;</code></h4>
+
+<ul>
+  <li><code class="highlighter-rouge">&gt;</code>指示将内容写入某个文件</li>
+  <li><code class="highlighter-rouge">&gt;&gt;</code>的作用，和&gt;的相同，区别是把结果追加到前一行得出的结果的后面，类似写文件时的append。</li>
+</ul>
+
+<h4 id="echo"><code class="highlighter-rouge">echo</code>的三个用法</h4>
+<ul>
+  <li>命令显示与否的开关，有off和on两个选项。设置为off后，后续所有的命令都不会显示命令本身，只显示命令的结果。</li>
+  <li>类似于print，用于输出信息。</li>
+  <li>可以直接编辑文本文件。</li>
+</ul>
+
+<h4 id="pause-"><code class="highlighter-rouge">pause </code></h4>
+<ul>
+  <li>就是字面意思</li>
+</ul>
+
+<h4 id="goto"><code class="highlighter-rouge">:</code>和<code class="highlighter-rouge">goto</code></h4>
+<ul>
+  <li>goto用于与其它语言是一样的，就是跳转到一个指定的标签</li>
+  <li><code class="highlighter-rouge">:</code>是定义一个标签</li>
+</ul>
+
+<h4 id="if"><code class="highlighter-rouge">if</code></h4>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>@echo off
+
+if "%1" == "1" goto goto1
+if "%1" == "2" goto goto2
+
+:goto1
+echo 参数是goto1
+
+:goto2
+echo 参数是goto2
+pause
+exit
+</code></pre>
+</div>
+
+<ul>
+  <li>就是条件判断，只不过跟着不同的命令产生不同的功能</li>
+  <li>if exist判定存在</li>
+  <li>结果判断</li>
+  <li>if not 否定判定</li>
+</ul>
+
+<h4 id="section-5">变量</h4>
+<ul>
+  <li>使用set来进行变量设置，set还有几个switch。当变量的来源是输入内容时用<code class="highlighter-rouge">set /p</code>。</li>
+  <li><code class="highlighter-rouge">set variable=value</code>注意这个语句中等号前后没有空格，我发现有空格的话变量赋值有问题。</li>
+  <li>使用变量时用<code class="highlighter-rouge">%variable%</code>的形式，即两个百分号夹住变量名。</li>
+  <li>与传统的编程语言不同，bat中变量不能连接使用，比如下面这样是不行的。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>set a=1
+set b=%a%2
+</code></pre>
+</div>
+
+<h4 id="section-6">外部参数</h4>
+<ul>
+  <li>%（0-9）来表示参数，其中%0代表自己，demo中只有一个参数是当前最新的版本号，用的是%1。</li>
+  <li>bat中参数有很多用法，具体不描述了。</li>
+</ul>
+
+<h4 id="cmd">其它的cmd命令</h4>
+<ul>
+  <li>demo中还是有tasklist、taskkill、del、rmdir这样的命令，这些就不一一解释了。其实这些全部都是cmd的命令，这样验证了开始时说的，其实bat就是顺序执行一些dos和cmd命令。</li>
+</ul>
+
+<h3 id="section-7">资源</h3>
+<ul>
+  <li>这个demo的完整资源在GitHub的<a href="https://github.com/klkucan/UpgradeByBat">这个</a>位置。</li>
+  <li>另外推荐一篇<a href="http://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html">bat学习的文章</a>，写的很不错。</li>
 </ul>
 
 
@@ -235,17 +374,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/" data-toggle="tooltip" data-placement="top" title="游戏设计模式读书笔记：双缓冲">
+                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：加载模块深度解析">
                         Previous<br>
-                        <span>游戏设计模式读书笔记：双缓冲</span>
+                        <span>每天一点UWA：加载模块深度解析</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/" data-toggle="tooltip" data-placement="top" title="SendMessage测试">
+                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第五周">
                         Next<br>
-                        <span>SendMessage测试</span>
+                        <span>每天一点UWA：第五周</span>
                         </a>
                     </li>
                     

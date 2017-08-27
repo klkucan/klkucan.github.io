@@ -173,6 +173,102 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：原型模式
+        </h2>
+        
+        <div class="post-content-preview">
+            原型模式
+定义
+
+  定义：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
+原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。
+  看图
+
+
+
+模式的理解
+
+  当需要快速并且尽可能少的占用内存的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：1、概述和创建
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
+
+
+概述
+
+
+  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
+
+
+AB流程
+
+
+
+  Editor编辑，...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
+        <h2 class="post-title">
+            SendMessage测试
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.
+  obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。
+  如果Foo的参数不对，会提...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 8, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
+        <h2 class="post-title">
+            关于AssetBundle解压的讨论结果
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  一切的起源在于这篇文章，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
+    
+      在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 5, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/">
         <h2 class="post-title">
             游戏设计模式读书笔记：双缓冲
@@ -343,98 +439,6 @@ Clusters
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：架构、性能、游戏
-        </h2>
-        
-        <div class="post-content-preview">
-            架构、性能、游戏
-
-
-  
-    在开始读第一章的时候会觉得有点混乱，作者提出了什么是架构这个问题，但是并没有像其它书里那样给出一个明确的定义，而是提到了：
-
-    
-      这本书是关于上面这一切要使用的代码的组织方式。这里少谈代码，多谈代码组织。
-    
-  
-  
-    仔细品读这句话，你会发现这里面其实已经提到了什么是架构：所谓架构就是代码的组织方式。但是从我个人的认识来...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 17, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
-        <h2 class="post-title">
-            由一个美术需求引发的Custom Inspector
-        </h2>
-        
-        <div class="post-content-preview">
-            需求
-
-  Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。
-
-
-需求分析
-
-
-  
-    如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，transform.GetComponent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/">
-        <h2 class="post-title">
-            代码生成AnimatorController
-        </h2>
-        
-        <div class="post-content-preview">
-            0.出发点
-
-  
-    现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 12, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/">
-        <h2 class="post-title">
-            向量夹角计算
-        </h2>
-        
-        <div class="post-content-preview">
-            向量夹角
-// 基于点积计算，
-// a.b = ||a|| * ||b|| * sin(θ) 
-// =&gt; θ = arccos(a·b / (||a|| * ||b||))
-// =&gt; θ = arccos(a·b) //当a和b按照单位向量算时
-float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized))...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 12, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -529,7 +533,7 @@ float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized))...
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="3">
+                                <a href="/tags/#UWA" title="UWA" rel="7">
                                     UWA
                                 </a>
                             

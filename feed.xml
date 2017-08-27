@@ -5,9 +5,521 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 14 Aug 2017 23:22:33 +0800</pubDate>
-    <lastBuildDate>Mon, 14 Aug 2017 23:22:33 +0800</lastBuildDate>
+    <pubDate>Sun, 27 Aug 2017 18:31:41 +0800</pubDate>
+    <lastBuildDate>Sun, 27 Aug 2017 18:31:41 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：第五周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;shader&quot;&gt;shader加载&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先 Shader. WarmupAllShaders 并不影响 Shader 的加载，因为该函数的作用是将所有已加载的 Shader 都做一次快速渲染(渲染单个像素，GPU 在首次使用某一个 Shader 时会有额外开销，Warm 相当于是将这部分开销提前)。&lt;/li&gt;
+  &lt;li&gt;可以通过AssetBundle.LoadAll等接口预加载 AssetBundle 中的 Shader。而对于 Always Included Shaders 中的 Shader 则可以通过 Shader. Find 来预加载。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;streamingassetpath--persistantdatapathloadassetbundle&quot;&gt;StreamingAssetPath 和 PersistantDataPath直接load非AssetBundle资源？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以但是只能用WWW这样的有限的API.&lt;/li&gt;
+  &lt;li&gt;如果load MP3、JPG这样的非内部资源格式效率低，尤其是JPG还要软解码，效率更低。&lt;/li&gt;
+  &lt;li&gt;还是推荐AssetBundle。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-5x--fbx--mesh--animationclip--assetbundle-name&quot;&gt;在Unity 5.x 的打包机制下确实无法手动为 FBX 下的 Mesh 或 AnimationClip 单独资源设置 AssetBundle Name。&lt;/h4&gt;
+
+&lt;h4 id=&quot;animatorfbxfbxfbxassetbundle&quot;&gt;如果Animator是直接引用了FBX里的动画文件，而不是复制了FBX的动画文件出来再引用，那么打包的时候不会把FBX打进AssetBundle。&lt;/h4&gt;
+
+&lt;h4 id=&quot;resourcesunloadunusedassetsassetbundleloadassetbundleunloadfalse&quot;&gt;Resources.UnloadUnusedAssets同样可以卸载由AssetBundle.Load加载的资源，只是前提是其对应的AssetBundle已经调用Unload(false)，且并没有被引用。&lt;/h4&gt;
+
+&lt;h3 id=&quot;assetbundle-1&quot;&gt;总结一下AssetBundle的加载和卸载&lt;/h3&gt;
+&lt;h4 id=&quot;section&quot;&gt;加载&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;AssetBundle的各种创建函数可以从本地文件(LoadFromXXX)或者内存中将AssetBundle加载到一块内存区域（use from memory or unitywebrequest）或者只是建立一个序列化引用(use loadformfile)。&lt;/li&gt;
+  &lt;li&gt;AssetBundle的各种load函数会将真正的asset从AssetBundle中加载出来到内存中。&lt;/li&gt;
+  &lt;li&gt;instantiate函数创建GameObject实例&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;卸载&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;AssetBundle的实例函数unload（false）会卸载内存中的AssetBundle（虽然函数的说明中是Unloads all assets in the bundle.），参数是true的话删除AssetBundle和用它创建的asset。&lt;/li&gt;
+  &lt;li&gt;上面的函数针对的单个AssetBundle，而UnloadAllAssetBundles这个静态函数就是针对所有当前已经load的AssetBundle了。&lt;/li&gt;
+  &lt;li&gt;对于一个具体的asset可以使用Resources.UnloadAsset来卸载，或者使用Resources.UnloadUnusedAssets将多有没有引用的asset卸载。前提就是调用过AssetBundle的Unload（不论参数是false还是true）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;build&quot;&gt;Build&lt;/h2&gt;
+&lt;h4 id=&quot;optimize-mesh-data&quot;&gt;Optimize Mesh Data选项&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;build时我们在player setting里面有这个选项，它只针对Build Player或者Bundle 时才生效的，所以提前做的AssetBundle是无效的。&lt;/li&gt;
+  &lt;li&gt;模型导入时也有个Optimize Mesh选项，是调整面片排序的，和build时的是两回事。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;ugui-resourcesunloadunusedassets&quot;&gt;UGUI做的一个界面中有一个背景图片，关闭销毁这个界面后调用 Resources.UnloadUnusedAssets，图片还在内存中&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在使用 Resources.Load 加载 UI 界面的情况下，即使“关闭销毁这个界面”后，Resources.UnloadUnusedAssets 确实还是无法卸载对应的图集的。因为此时该图集依然被 Resources.Load 加载出来的 Prefab 引用。&lt;/li&gt;
+  &lt;li&gt;建议是手动调用 Resources.UnloadAssets 来手动释放图集（可以通过 Sprite.texture 来找到对应的图集），在重新实例化该 UI 界面时，图集也会自动进行 Reload 的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;模型&lt;/h2&gt;
+&lt;h4 id=&quot;meshbaker-meshprefabfbxmodelgenerate-lightmap-uvs-&quot;&gt;MeshBaker 烘焙的Mesh可以保存到Prefab中，但是不能像FBX一样，设置Model导入设置中的Generate Lightmap UVs 等信息，请问有没有大招可以处理此情况？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先从理论上说，一个 Mesh 只能有一个 LightmapIndex 和 LightmapOffset 属性，这就决定了 Mesh 的合并必须在 Lightmap 的烘焙之前。&lt;/li&gt;
+  &lt;li&gt;做Mesh合并时，需要注意到UV2对于一个Mesh而言，其所有三角面的UV区域都必须是互不重叠的，所以不能简单直接地合并。
+考虑到合并前每一个Mesh的UV2区域都应该是在[0,1]x[0,1]的区间中，在合并时可以给每一个UV2区域做一个缩小和平移，从而可以把每个区间在互不重叠的情况下，放到同一个[0,1]x[0,1]的区间中。
+在UV2也正确拼合后，重新进行Lightmap的烘焙即可得到正确的效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;batch&quot;&gt;关于静态batch&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;勾选Static的GameObject下的Mesh都会被合入CombineMesh（无论什么材质），且每个Mesh都作为SubMesh存在。&lt;/li&gt;
+  &lt;li&gt;在Unity 5.3之前，对于渲染顺序相邻且材质相同的SubMesh则会动态将其索引数组拼合，从而合成一个Draw Call。&lt;/li&gt;
+  &lt;li&gt;而Unity 5.3之后（还是在同材质，渲染顺序相邻的前提下）则不再拼合索引数组，因为在不切换材质时产生多个Draw Call的开销并不大，而这多个Draw Call会被统计为一个Batch。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;staticbatchingutilitycombinecombined-mesh&quot;&gt;如何删除StaticBatchingUtility.Combine会产生Combined Mesh的内存&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过某个使用了该Combined Mesh的MeshFilter来获取其引用（MeshFilter.sharedMesh），然后通过Destroy接口来将其卸载。因为Combined Mesh不属于真正的Assets（在Deep Memory中不属于Assets下，而是在Scene Memory下），所以不能用Resources.UnloadAsset来卸载。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;内存&lt;/h2&gt;
+&lt;h4 id=&quot;assetbundle-2&quot;&gt;AssetBundle内存占用问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在webStream仍旧存在时（似乎是5.4之前），一个AssetBundle（1mb）解压到websream后如果是2mb，那么这个AssetBundle最终所占的内存就是2mb，因为webstream中已经包含了AssetBundle。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundle-3&quot;&gt;AssetBundle资源卸载&lt;/h4&gt;
+&lt;p&gt;AssetBundle加载好以后立刻通过Instantiate实例化一个对象，然后通过Resources.UnloadAsset和Resources.UnloadUnusedAssets来进行卸载，如果无法卸载，则该资源一定被缓存了。&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 27 Aug 2017 18:27:46 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>bat学习</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;概念&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;批处理的本质，是一堆DOS和cmd命令按一定顺序排列而形成的集合。&lt;/li&gt;
+  &lt;li&gt;熟悉DOS语法，然后按照正确的顺序来进行指令的运行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;系统教程&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用/?查看if的功能，使用与很多指令，&lt;code class=&quot;highlighter-rouge&quot;&gt;%&lt;/code&gt;似乎不行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;if /?
+pause
+
+--------------------------------------------
+
+C:\Users\Administrator\Desktop&amp;gt;
+执行批处理程序中的条件处理。
+
+IF [NOT] ERRORLEVEL number command
+IF [NOT] string1==string2 command
+IF [NOT] EXIST filename command
+
+  NOT               指定只有条件为 false 的情况下，Windows 才
+                    应该执行该命令。
+
+  ERRORLEVEL number 如果最后运行的程序返回一个等于或大于
+                    指定数字的退出代码，指定条件为 true。
+
+  string1==string2  如果指定的文字字符串匹配，指定条件为 true。
+
+  EXIST filename    如果指定的文件名存在，指定条件为 true。
+
+  command           如果符合条件，指定要执行的命令。如果指定的
+                    条件为 FALSE，命令后可跟 ELSE 命令，该命令将
+                    在 ELSE 关键字之后执行该命令。
+
+ELSE 子句必须出现在同一行上的 IF 之后。例如:
+
+    IF EXIST filename. (
+请按任意键继续. . .
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;demo&quot;&gt;从一个demo中学习&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个demo的作用是用来更新游戏客户端的。一般来说我们的端游客户端会有一个launcher来启动真正的游戏，它还要负责来更新游戏。同时，它还要更新自己，以前WOW中的做法是有个专门的update.exe来做更新（不过现在是靠battle.net来更新了），我觉得bat文件一样可以做，因此写了这个demo。下面代码中TL代表launcher，TC代码client。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@echo on
+cls
+
+:: 当前程序所在目录
+set LocalPath=%~dp0
+:: TL更新包完全路径名,不带后缀，同时也是解压缩后的文件夹名称
+set  TLZipFile=%~dp0TLUpgradeData\TL_%1
+:: TL更新包解压路径
+set  TLDecompressPath=%~dp0TLUpgradeData\
+
+echo 执行更新，请稍后...
+
+echo ----1.关闭客户端进程----
+tasklist /nh|find /i &quot;TL.exe&quot;
+if ERRORLEVEL 1 (echo TL客户端进程已经结束) else (taskkill /f /im TL.exe)
+tasklist /nh|find /i &quot;TC.exe&quot;
+if ERRORLEVEL 1 (echo TC客户端进程已经结束) else (taskkill /f /im TC.exe)
+
+echo ----2.开始解压缩安装包----
+if exist %TLZipFile%.zip   %LocalPath%7z x %TLZipFile%.zip -o%TLDecompressPath% -aoa
+
+echo ----3.开始复制文件----
+xcopy %TLZipFile%  %LocalPath% /e /f /k /y
+:: xcopy switch说明：
+:: /E           复制目录和子目录，包括空目录。
+:: /F           复制时显示完整的源文件名和目标文件名。
+:: /K           复制属性。一般的 Xcopy 会重置只读属性。
+:: /Y           取消提示以确认要覆盖
+
+echo ----4.删除临时文件----
+del %TLZipFile%.zip
+rmdir %TLZipFile% /s /q
+:: 删除当文件夹和里面的所有文件，/s 表示包含子文件夹，/q 表示不需要确实提示 
+pause
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@&lt;/code&gt;&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;它的作用是让执行窗口中不显示它后面这一行的命令本身。行首有了它的话，这一行的命令就不显示了。首行的@echo off中，@的作用就是让脚本在执行时不显示后面的echo off部分。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt; -双冒号&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;类似注释符号&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt;&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;指示将内容写入某个文件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&amp;gt;&lt;/code&gt;的作用，和&amp;gt;的相同，区别是把结果追加到前一行得出的结果的后面，类似写文件时的append。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;echo&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;echo&lt;/code&gt;的三个用法&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;命令显示与否的开关，有off和on两个选项。设置为off后，后续所有的命令都不会显示命令本身，只显示命令的结果。&lt;/li&gt;
+  &lt;li&gt;类似于print，用于输出信息。&lt;/li&gt;
+  &lt;li&gt;可以直接编辑文本文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;pause-&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pause &lt;/code&gt;&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;就是字面意思&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;goto&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;goto&lt;/code&gt;&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;goto用于与其它语言是一样的，就是跳转到一个指定的标签&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;是定义一个标签&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;if&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt;&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@echo off
+
+if &quot;%1&quot; == &quot;1&quot; goto goto1
+if &quot;%1&quot; == &quot;2&quot; goto goto2
+
+:goto1
+echo 参数是goto1
+
+:goto2
+echo 参数是goto2
+pause
+exit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;就是条件判断，只不过跟着不同的命令产生不同的功能&lt;/li&gt;
+  &lt;li&gt;if exist判定存在&lt;/li&gt;
+  &lt;li&gt;结果判断&lt;/li&gt;
+  &lt;li&gt;if not 否定判定&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;变量&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用set来进行变量设置，set还有几个switch。当变量的来源是输入内容时用&lt;code class=&quot;highlighter-rouge&quot;&gt;set /p&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;set variable=value&lt;/code&gt;注意这个语句中等号前后没有空格，我发现有空格的话变量赋值有问题。&lt;/li&gt;
+  &lt;li&gt;使用变量时用&lt;code class=&quot;highlighter-rouge&quot;&gt;%variable%&lt;/code&gt;的形式，即两个百分号夹住变量名。&lt;/li&gt;
+  &lt;li&gt;与传统的编程语言不同，bat中变量不能连接使用，比如下面这样是不行的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set a=1
+set b=%a%2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;外部参数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;%（0-9）来表示参数，其中%0代表自己，demo中只有一个参数是当前最新的版本号，用的是%1。&lt;/li&gt;
+  &lt;li&gt;bat中参数有很多用法，具体不描述了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cmd&quot;&gt;其它的cmd命令&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;demo中还是有tasklist、taskkill、del、rmdir这样的命令，这些就不一一解释了。其实这些全部都是cmd的命令，这样验证了开始时说的，其实bat就是顺序执行一些dos和cmd命令。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;资源&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个demo的完整资源在GitHub的&lt;a href=&quot;https://github.com/klkucan/UpgradeByBat&quot;&gt;这个&lt;/a&gt;位置。&lt;/li&gt;
+  &lt;li&gt;另外推荐一篇&lt;a href=&quot;http://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html&quot;&gt;bat学习的文章&lt;/a&gt;，写的很不错。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 27 Aug 2017 18:22:24 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：加载模块深度解析</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;专题&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;因为UWA上会对一些技术进行系列的专题讲解，而且文章并不连续，如果按照每周的形式就会割裂这些内容，因此针对这样的情况统一写成专题形式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;概述&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;载模块中最为耗时的性能开销可以归结为以下几类：资源加载、资源卸载、Object的实例化和代码的序列化等。&lt;/li&gt;
+  &lt;li&gt;资源加载是加载模块中最为耗时的部分，其CPU开销在Unity引擎中主要体现在Loading.UpdatePreloading和Loading.ReadObject两项中。&lt;/li&gt;
+  &lt;li&gt;Loading.UpdatePreloading，这一项仅在调用类似LoadLevel（Async）的接口处出现，主要负责卸载当前场景的资源，并且加载下一场景中的相关资源和序列化信息等。下一场景中，自身所拥有的GameObject和资源越多，其加载开销越大。&lt;/li&gt;
+  &lt;li&gt;Loading.ReadObject，这一项记录的则是资源加载时的真正资源读取性能开销，基本上引擎的主流资源（纹理资源、网格资源、动画片段等等）读取均是通过该项来进行体现。可以说，这一项很大程度上决定了项目场景的切换效率。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;纹理篇&lt;/h2&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;只给出结论&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;同一的格式下（ETC1（Android）和PVRTC（iOS）、且关闭Mipmap功能），图片分辨率越大加载越慢，但是在Android上中（红米NOTE2）高（S6）端机在加载效率上差不多。&lt;/li&gt;
+  &lt;li&gt;同一分辨率（1024x1024）上
+  -不同格式（对于Android平台，使用ETC1、ETC2、RGBA16和RGBA32四种格式，对于iOS平台，使用PVRTC 4BPP、RGBA16和RGBA32三种格式）
+    &lt;ul&gt;
+      &lt;li&gt;所占的内容首先是有差异的（三组纹理的内存占用分别为1MB、1MB、4MB 和 8MB（Android平台）/1MB、4MB 和 8MB（iOS平台））。&lt;/li&gt;
+      &lt;li&gt;加载效率上，ETC1、ETC2、RGBA16基本一致；PVRTC 4BPP、RGBA16基本一致。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;开启Mipmap功能会导致资源加载更为耗时，且设备性能越差，其加载效率影响越大。&lt;strong&gt;打破了Android上同一分辨率下ETC1、ETC2、RGBA16基本一致的情况，需要慎用。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PS：压缩后的文件大小，和解压缩的效率与纹理的内容相关，这是因为图片的压缩本质是用矩阵对图片数据进行变换，最终得到一个较小的数据。解压缩也是一样，数据的内容影响了反向计算的效率。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;uwa&quot;&gt;UWA给出的建议&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;严格控制RGBA32和ARGB32纹理的使用，在保证视觉效果的前提下，尽可能采用“够用就好”的原则，降低纹理资源的分辨率，以及使用硬件支持的纹理格式。&lt;/li&gt;
+  &lt;li&gt;在硬件格式（ETC、PVRTC）无法满足视觉效果时，RGBA16格式是一种较为理想的折中选择，既可以增加视觉效果，又可以保持较低的加载耗时。&lt;/li&gt;
+  &lt;li&gt;严格检查纹理资源的Mipmap功能，特别注意UI纹理的Mipmap是否开启。在UWA测评过的项目中，有不少项目的UI纹理均开启了Mipmap功能，不仅造成了内存占用上的浪费，同时也增加了不小的加载时间。&lt;/li&gt;
+  &lt;li&gt;ETC2对于支持OpenGL ES3.0的Android移动设备来说，是一个很好的处理半透明的纹理格式。但是，如果你的游戏需要在大量OpenGL ES2.0的设备上进行运行，那么我们不建议使用ETC2格式纹理。因为不仅会造成大量的内存占用（ETC2转成RGBA32），同时也增加一定的加载时间。下图为测试2中所用的测试纹理在三星S3和S4设备上加载性能表现。可以看出，在OpenGL ES2.0设备上，ETC2格式纹理的加载要明显高于ETC1格式，且略高于RGBA16格式纹理。因此，建议研发团队在项目中谨慎使用ETC2格式纹理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;网格篇&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;总结一下：网格的加载效率的影响因素在于网格面数、顶点信息（tangent、color）数和read/write是否开启。&lt;/li&gt;
+  &lt;li&gt;结论很简单，面数多、信息多、开启会造成内存的变大和加载的变慢。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;建议&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;在保证视觉效果的前提下，尽可能采用“够用就好”的原则，即降低网格资源的顶点数量和面片数量；&lt;/li&gt;
+  &lt;li&gt;研发团队对于顶点属性的使用需谨慎处理。通过以上分析可以看出，顶点属性越多，则内存占用越高，加载时间越长；&lt;/li&gt;
+  &lt;li&gt;如果在项目运行过程中对网格资源数据不进行读写操作（比如Morphing动画等），那么建议将Read/Write功能关闭，既可以提升加载效率，又可以大幅度降低内存占用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;shader&quot;&gt;Shader篇&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Shader资源的效率加载瓶颈并不在其自身大小的加载上，而是在Shader内容的解析上。&lt;/li&gt;
+  &lt;li&gt;总结一下：，Mobile-Bumped Diffuse、Mobile-Diffuse、Mobile-VertexLit和Mobile-Particles Additive加载耗时依次减少，对于的normal版本也是一样。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;shader-1&quot;&gt;影响shader解析的因素&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;一般情况下，Shader加载的CPU耗时与其Keyword数量有关，Keyword数量越多，则加载开销也越大。&lt;a href=&quot;https://blog.uwa4d.com/archives/LoadingPerformance_Shader.html&quot;&gt;（具体数据看原文）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Shader的Keyword数量是会随着场景设置的不同而变化的。在Unity 5.x中，Unity默认会根据场景设置、Shader Pass等来调整Shader的Keyword，比如如果存在Lightmap的使用，则会默认将对应的Keyword打开，而对于没有使用Fog的项目，则会直接将相关Keyword关闭。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;如何提高解析速度&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;就是减少keyword数量。&lt;/li&gt;
+  &lt;li&gt;首先可以使用skip variant来减少
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/UWALab%2FLoadingPerformance%2FShader_SkipVariantsCode.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;其次去掉Fallback选项，因为文中认为目前不支持Mobile/Diffuse和Mobile/Bumped Diffuse的设备已经相当少，没有必要做这层保险了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;避免重复解析&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;因为一个游戏内用到的shader的数量不会太多，如果shader打包到场景或者模型的AssetBundle中，那么在资源加载卸载的过程中会出现同一个shader多次加载解析的问题。因此建议shader单独打包。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：对于Unity4.x版本，Shader的AssetBundle加载后只需LoadAll即可完成所有Shader的加载和解析，但对于Unity5.x版本，除执行LoadAllAssets操作外，还需要进行Shader.WarmupAllShaders操作，因为在Unity5.x版本中，Shader的解析和CreateGPUProgram操作是分离的。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;对于Unity 5.x版本且正在使用Resources.Load来加载资源的研发团队，可以尝试使用ShaderVariantCollection来对Shader进行Preload，同样也可以达到避免相同Shader重复加载的效果。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：对于Unity5.x版本，如果可以通过AssetBundle来加载和解析Shader，则不建议通过ShaderVariantCollection来处理Shader的加载。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;总结&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;综上所述，shader的处理就是减少keyword、对于简单的渲染去掉Fallback、尽量对shader进行单独打包。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 27 Aug 2017 18:20:55 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第四周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;resourcesunloadassetgameobjectcomponenttexturemeshprefabobjectcomponent&quot;&gt;Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Texture、Mesh等真正的资源。对于由Prefab加载出来的Object或Component，则不能通过该函数来进行释放。&lt;/h4&gt;
+
+&lt;h4 id=&quot;resourceprefab-load&quot;&gt;用的是Resource的加载方式，并且已经预加载好了材质所在的Prefab ，但是为什么在第一次显示材质的时候还要Load这个材质？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;我的理解是prefab只是个资源GUID的合集，并不包含真正的资源。所以要使用真正的资源（mesh\texture等时要加载。）&lt;/li&gt;
+  &lt;li&gt;通过 Resources 加载和通过 AssetBundle 加载是有所区别的。Resources.Load 和 Instantiate 操作都不会立刻加载其依赖的材质，因此在loadPrefab = Resources.Load之后，其依赖的材质（包括相关的 Shader 和纹理）实际并没有被加载到内存中，在实例化后也是一样，直到某个 Camera 需要对其进行渲染时（调用了 Material.SetPastFast），才发现该材质还没进内存，此时才开始进行加载。&lt;/li&gt;
+  &lt;li&gt;因此，在使用 Resources 加载的情况下，如果希望提前加载该 Material 以及相关的 Shader 和纹理，可以尝试通过调用 Resources.Load 直接加载该材质和纹理，并通过 Shader.Find 来加载 Shader。也可以尝试通过 Player Settings 中的 Preload Shaders（配合 Graphics Settings 下的 Preloaded Shaders） 和 Preloaded Assets 来批量预加载。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;build&quot;&gt;Build&lt;/h2&gt;
+&lt;h4 id=&quot;editoronly-tag&quot;&gt;EditorOnly tag&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;prefab打上EditorOnly tag，但是放到了Resources文件夹下一样会打包进入，因为理论上只对场景中的GameObject有效。- 不放到Resources文件夹下，然后在使用EditorOnly tag，打包时就会认为没有场景中的物件引用prefab，就不会打包了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shader&quot;&gt;内置的shader怎么打包？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通常有两种方式对内置的Shader进行打包：&lt;/li&gt;
+  &lt;li&gt;将其添加到Graphics Settings中的Always Included Shaders 中，此时添加后的内置Shader就不会被打入AssetBundle包中；&lt;/li&gt;
+  &lt;li&gt;在http://unity3d.com/cn/get-unity/download/archive下载内置的 Shader，将其导入项目，并替换成非内置的材质球，从而可以直接通过脚本来控制其打包的方式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;gcmarkdependenciescpuresourcesunloadunusedassets-&quot;&gt;GC.MarkDependencies的CPU消耗有过高，虽然在退出战斗的时候调用了Resources.UnloadUnusedAssets(); 可是卡顿还是很明显&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;GC.MarkDependencies的消耗是由Resources.UnloadUnusedAssets引起的。该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内。&lt;/li&gt;
+  &lt;li&gt;对于该函数的优化，我们建议一方面控制场景中不必要的资源量，同时通过UnloadAsset来及时卸载不再使用的资源，以减少Resources.UnloadUnusedAssets的耗时压力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundlemd5&quot;&gt;打包时候AssetBundle的md5总变化(被打包的东西没变)&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于Unity 4.x版本的AssetBundle文件，其md5值在某些情况下确实会前后不一致（哪怕是完全一样的内容进行打包）。对于该系列版本，仅能建议开发团队建立配置文件来对AssetBundle进行管理。&lt;/li&gt;
+  &lt;li&gt;而对于Unity 5.x版本，则可以在打包时开启 AppendHashToAssetBundleName 选项，这样Unity引擎会在每个AssetBundle文件后生成一个唯一的HashID（显示地放在文件名后），开发团队可以通过该ID来判断对应的AssetBundle文件是否发生改变。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;cpu&quot;&gt;CPU&lt;/h2&gt;
+&lt;h4 id=&quot;gameobjectinstantiate&quot;&gt;第一次执行GameObject.Instantiate一些资源的时候会卡&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Instantiate的卡顿与三部分开销相关：相关资源加载、脚本组件的序列化和构造函数的执行，并且绝大部分原因均是相关资源加载导致。所以，我们的建议如下：
+    &lt;ul&gt;
+      &lt;li&gt;通过 Profiler 查看 Instantiate 具体的CPU分配情况；&lt;/li&gt;
+      &lt;li&gt;如果是资源加载导致的性能瓶颈，则一方面通过简化资源来缓解CPU耗时压力，另一方面通过 AssetBundle 依赖关系打包将资源预先加载，即将此处 Instantiate 的总体耗时拆分，平摊到之前帧进行执行（比如切换场景处等），从而让 Instantiate 实例化操作的局部耗时更加平滑；&lt;/li&gt;
+      &lt;li&gt;如果是脚本组件序列化导致的性能瓶颈，则可尝试减少脚本中的序列化信息；
+  -如果是构造函数的执行导致的性能瓶颈，一般只能在策略上进行规避，比如降低 Instantiate 的调用频率等。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;ui-1&quot;&gt;本周的UI有很多不错的技术知识&lt;/h4&gt;
+
+&lt;h4 id=&quot;ngui&quot;&gt;能否对提升NGUI的渲染效率提供一些思路？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;开发团队可以从以下几点入手：
+    &lt;ul&gt;
+      &lt;li&gt;通常一个Panel会产生1个或多个Draw Call，以一个Panel为单位，Draw Call 的数量通常由当前 Panel 中使用的Atlas、Font的数量所决定。&lt;/li&gt;
+      &lt;li&gt;要降低UI渲染时的 Draw Call数量则需要对 Atlas 的制作进行合理的规划，即在保证使用较少的 Atlas 的同时，还需要保证 Atlas之间不会存在交叉遮挡。&lt;/li&gt;
+      &lt;li&gt;要注意UI Texture的使用，每个UITexture自身会占用一个Draw Call，同时如果其Depth值穿插在了其他来自相同Atlas的UISprite中，还会导致Draw Call的打断，造成不必要的额外Draw Call。&lt;/li&gt;
+      &lt;li&gt;另外还可以借助Panel Tool和Draw Call Tool来对UI部分的Draw Call进行分析，前者可以显示每个UIPanel包含了多少个Draw Call，而后者可以显示每个Draw Call由哪些UIWidget组成。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;rebuild-batch-memory-profiler&quot;&gt;如何查看每次Rebuild Batch影响的顶点数， Memory Profiler是个办法但是不好定位。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;5.2后开始使用Shared UI Mesh来存储UI Mesh，所以很难查看每次Rebuild的UI顶点数。可以尝试通过Frame Debugger工具对UI界面进行进一步的查看。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uiuipanellateupdatecpusetactive&quot;&gt;通过移动位置来隐藏UI界面，会使得被隐藏的UIPanel继续执行更新（LateUpdate有持续开销），那么如果打开的界面比较多，CPU的持续开销是否就会超过一次SetActive所带来的开销？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过移动的方式“隐藏”的UI界面只适用于几个切换频率最高的界面&lt;/li&gt;
+  &lt;li&gt;一般来说在没有UI元素变化的情况下，持续的 Update 开销是不太明显的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uiuiui-setactivefalse-setactivetrue--gcalloc--batches--gc-alloc-&quot;&gt;游戏中出现UI界面重叠，该怎么处理较好？比如当前有一个全屏显示的UI界面，点其中一个按钮会再起一个全屏界面，并把第一个UI界面盖住。我现在的做法是把被覆盖的界面 SetActive(False)，但发现后续 SetActive(True) 的时候会有 GC.Alloc 产生。这种情况下，希望既降低 Batches 又降低 GC Alloc 的话，有什么推荐的方案吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以尝试通过添加一个 Layer 如 OutUI， 且在 Camera 的 Culling Mask 中将其取消勾选（即不渲染该 Layer）。从而在 UI 界面切换时，直接通过修改 Canvas 的 Layer 来实现“隐藏”。但需要注意事件的屏蔽，禁用动态的 UI 元素等等。
+这种做法的优点在于切换时基本没有开销，也不会产生多余的 Draw Call，但缺点在于“隐藏时”依然还会有一定的持续开销（通常不太大），而其对应的 Mesh 也会始终存在于内存中（通常也不太大）。&lt;/li&gt;
+  &lt;li&gt;PS：一个经典的场景，一个非常巧妙的答案。学到了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uicanvasrecttransform&quot;&gt;在UI界面中，用Canvas还是用RectTransform做根节点更好？哪种方法效率更高？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;简单来说，因为一个Canvas下的所有UI元素都是合在一个Mesh中的，过大的Mesh在更新时开销很大，所以一般建议每个较复杂的UI界面，都自成一个Canvas(可以是子Canvas)，在UI界面很复杂时，甚至要划分更多的子Canvas。&lt;/li&gt;
+  &lt;li&gt;同时还要注意动态元素和静态元素的分离，因为动态元素会导致Canvas的mesh的更新。最后，Canvas又不能细分的太多，因为会导致Draw Call的上升。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PS：总结来说就是不分子Canvas会导致mesh过大，分的太多dc过高，在于平衡。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;filebytes512x512rgba322mb&quot;&gt;使用File类来读取图片的bytes流，512x512的RGBA32格式图片使用了2MB内存&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;首先正常的512x512的RGBA32图片的大小为4byte * 512 * 512 / 1024 / 1024 = 1MB，这个2MB是因为内存和显存各需要一份。file read的时候本身会产出一份，在向GPU发送的时候会备份一份，推测是这样。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;一般来说，比较建议通过AssetBundle来动态加载资源，而非通过bytes流来进行加载。如果你的项目正在使用这种方式来加载纹理，我们建议从策略上考虑将其更改。&lt;/li&gt;
+  &lt;li&gt;在我们目前来看，通过bytes流来生成资源，绝大部分原因是想对其进行加密，从而让资源难于破解。但其实这种加密方式用处不大，因为据我们所知，现在有很多工具可以直接通过底层显卡层来直接查看各种纹理、Mesh资源，比如Mali Graphics Debugger、Qualcomn Profiler等。因此，如果是从加密的角度来通过bytes流生成资源，那么我们建议通过AssetBundle这种直接的方式进行加载。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;动画&lt;/h2&gt;
+&lt;h4 id=&quot;cullcompletely&quot;&gt;CullCompletely&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用 CullCompletely 在开启 RootMotion 时是需要注意的，比如人物有一个巡逻动画是通过 RootMotion 制作的，那么在人物走出屏幕后，其动画就停止了，即不会再走回屏幕中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;渲染&lt;/h2&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;场景中一个点光源，烘焙前暗，后亮是为何？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;简单来说，这就是实时的直接光照和全局光照的差别。
+在渲染时前者只能处理光源和单个物件之间的直接光照，而后者在烘焙时是通过光线跟踪或者辐射度等复杂算法，计算出所有物体各个表面之间相互反射的光照信息，这也是烘焙Lightmap需要较久的时间的原因 。可以发现在全局光照下，即使是物体的背面也会因为其它表面的反射而被照亮，这在直接光线下就无法实现这样的效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shader--vf-surface&quot;&gt;相同效果前提下，就性能而言，Shader 是用 V&amp;amp;F 还是Surface好？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;V&amp;amp;F，Surface生成的V&amp;amp;F比较庞杂，分支较多，如果不注意 #pragma surface 参数的选择，容易出现不必要的开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;baked-gi&quot;&gt;大面积的面片会导致baked GI时间过久，拆分大面积的面片对渲染性能也会有所提升&lt;/h4&gt;
+
+&lt;h4 id=&quot;handheldplayfullscreenmovie&quot;&gt;Handheld.PlayFullScreenMovie&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先这天放在这里似乎不合适。&lt;/li&gt;
+  &lt;li&gt;Android上PlayFullScreenMovie 的实现实际上是通过Android原生的接口直接播放的，播放过程中Unity也是停止更新的，因此这部分的内存理论上并不会记录在 Unity 中，同样也不影响mono。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 27 Aug 2017 18:19:29 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%9B%9B%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%9B%9B%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
     
       <item>
         <title>Lua学习笔记：迭代和闭包</title>
@@ -962,692 +1474,6 @@ mt2 = {}
         <guid isPermaLink="true">https://caihua.tech/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/</guid>
         
         <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Lua学习笔记：基本语法</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;初步印象&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;语法和python、js这些很像，解释型语言、弱类型等等。写着舒服是真的。&lt;/li&gt;
-  &lt;li&gt;while do\repeat until这样的语法其实真心不舒服，感觉在语法上有些累赘。大多数语言都是do while，但是它非要是repeat until，也是无语。&lt;/li&gt;
-  &lt;li&gt;我个人认为语法中的then和do设计的很混淆。比如if是和then，for是和do。从我对语言的理解上感觉可以统一用do或者then。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;基本语法&lt;/h2&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;变量&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;只有布尔、字符串、数字、table和nil。但是没有一个明确的类型定义，完全按照赋值来进行推断。&lt;/li&gt;
-  &lt;li&gt;默认是public，如果想private需要变量前加local。&lt;/li&gt;
-  &lt;li&gt;可以一次性多复制，如果变量和值不对称，没有复制的变量为nil。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;a,b,c = 1,2
-print(a)
-print(b)
-print(c)
-
---结果
-
-1
-2
-nil
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;h4 id=&quot;section-3&quot;&gt;作用域&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在lua中一个local变量的作用域可以是在一个循环中或者在一段if代码中。也可以是贯穿整个的table中（感觉table在某种角度完全可以看做是一个类）。但是如果你想控制一个local变量的值作用域某个区间，那么可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;do  end&lt;/code&gt;来明确划分一个block。下面这个例子的结果是nil，因为x在作用域只在&lt;code class=&quot;highlighter-rouge&quot;&gt;do end&lt;/code&gt;之间。但是这个不适用于全局变量，需要注意。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;do
-	local x = 10
-end
-print(x)
-
--- 结果
-
-nil
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;对比一下下面两段代码的不同结果。其实尽可能的不要出现变量同名的情况，尤其是第二段代码的行为可能不是我们想要的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;x = 1
-do
-	local x = 10
-	print(x)
-end
-print(x)
-
--- 结果
-10
-1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;x = 1
-
-local x = 10
-print(x)
-
-print(x)
-
--- 结果
-1
-1
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;关于&lt;code class=&quot;highlighter-rouge&quot;&gt;do  end&lt;/code&gt;还有个用法，在lua中return和break需要在end\else\until之前（发现在print之前也可以），否则编译会出错。此时就需要&lt;code class=&quot;highlighter-rouge&quot;&gt;do  end&lt;/code&gt;来包住return了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function boo()
-	local x = 10
-	do
-		return
-	end
-	local i = 10
-	print(1)
-end
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-4&quot;&gt;循环&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;for\while do\repeat until，最后一个对象do while。&lt;/li&gt;
-  &lt;li&gt;for分为数值型和泛型：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- var从exp1变化到exp2，每次变化以exp3为步长递增var，并执行一次&quot;执行体&quot;。exp3是可选的，如果不指定，默认为1。
-for var=exp1,exp2,exp3 do  
-    &amp;lt;执行体&amp;gt;  
-end  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for i,v in ipairs(a) 
-	do print(v) 
-end  
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;for的循环中没有continue，这样导致了在for中可能出现if嵌套if的情况，因为没办法通过拆解if来实现简练的代码。不爽！！另外lua的&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-5&quot;&gt;迭代&lt;/h3&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;需要注意pairs 和 ipairs异同
-同：都是能遍历集合（表、数组）
-异：ipairs 仅仅遍历值，按照索引升序遍历，索引中断停止遍历。即不能返回 nil,只能返回数字 0，如果遇到 nil 则退出。它只能遍历到集合中出现的第一个不是整数的 key。
-pairs 能遍历集合的所有元素。即 pairs 可以遍历集合中所有的 key，并且除了迭代器本身以及遍历表本身还可以返回 nil。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Demo1：
-local tabFiles = {
-        [1] = &quot;test2&quot;,
-        [6] = &quot;test3&quot;,
-        [4] = &quot;test1&quot;
-    }
-
-for k, v in ipairs(tabFiles) do    --输出&quot;test2&quot;,在key等于2处断开
-    print(k, v)
-end
-
-Demo2：
-local tabFiles = {
-    [2] = &quot;test2&quot;,
-    [6] = &quot;test3&quot;,
-    [4] = &quot;test1&quot;
-}
-
-for k, v in ipairs(tabFiles) do  --[[什么都没输出，为什么？因为控制变量初始值是按升序来遍历的，当key为1时，value为nil，此时便停止了遍历， 所有什么结果都没输出]]--
-    print(k, v)
-end
-
-Demo3：
-local tabFiles = {
-    [2] = &quot;test2&quot;,
-    [6] = &quot;test3&quot;,
-    [4] = &quot;test1&quot;
-}
-
-for k, v in pairs(tabFiles) do  --输出2 test2, 6 test3, 4 test1
-    print(k, v)
-end
-
-Demo4：
-local tabFiles = {&quot;alpha&quot;, &quot;beta&quot;, [3] = &quot;no&quot;, [&quot;two&quot;] = &quot;yes&quot;}  for i,v in ipairs(tabFiles ) do    --输出前三个   备注：因为第四个key不是整数
-    print( tabFiles [i] )   
-end   
-  
-for i,v in pairs(tabFiles ) do    --全部输出   
-    print( tabFiles [i] )   
-end 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;table&quot;&gt;table&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;概念&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;table 是 Lua 的一种数据结构用来帮助我们创建不同的数据类型，如：数字、字典等。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lua table 使用关联型数组，你可以用任意类型的值来作数组的索引，但这个值不能是 nil。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lua table 是不固定大小的，你可以根据自己需要进行扩容。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;上面是runoob.com的lua教程中对table的描述。在我看来很难去描述table是个什么东西，但是我们可以通过对它的使用来总结它所扮演的一些角色，或者说什么场景下table能够作为什么来使用。&lt;/li&gt;
-  &lt;li&gt;看下第二条，table中索引可以是任何类型的值，&lt;strong&gt;所以索引是个table也是可以的&lt;/strong&gt;。但是必须不是nil，所以&lt;code class=&quot;highlighter-rouge&quot;&gt;look = {[www] = &quot;ok&quot;} 这样是不对的，www没有赋值，所以默认为nil因此出错table index is nil&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;常见用法&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;数组&lt;/strong&gt; ： table一个典型的用法就是作为其它语言中的数组&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;str = { 1,2,3}
-print(str[2])
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;字典&lt;/strong&gt; ： 也是常见的用法&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;str = {name=&quot;Sai&quot;,age=33}
-print(str[&quot;age&quot;])
-print(str.name)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;table-1&quot;&gt;table使用中容易出现的问题&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;看下这段代码&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;temp = 1
-tab = {[temp] = 1, 11}
-print(tab[1])
-for i,v in pairs(tab) do
-	print(i,v)
-end
-
--- 输出的结果是 ： 
-
-11
-1	11
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;why?第一个print中为何结果不是1，因为tab[]这个用法的参数是key，而像11这样没有显示定义key的value默认的key就是1，所以这句话认为是输出key=1的value了。而且从遍历看居然只有一个数据，也就是说value 1的数据被替换掉了。&lt;/li&gt;
-  &lt;li&gt;那么怎么让这个1显示出来呢？以我目前掌握的只能是改temp的值。&lt;/li&gt;
-  &lt;li&gt;总结一下就是注意三点：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;第一，所有元素之间，总是用逗号 “，” 隔开；&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;第二，所有索引值都需要用 “[“和”]”括起来；如果是字符串，还可以去掉引号和中括号； 即如果没有[]括起，则认为是字符串索引&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;第三，如果不写索引，则索引就会被认为是数字，并按顺序自动从 1往后编；&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;数组（lua叫table）下标从1开始，有点不习惯。&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;判断table是否是空&lt;a href=&quot;http://www.jb51.net/article/64378.htm&quot;&gt;（参考）&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;a={2}
-if next(a) ~= nil then
-	print(next(a))
-end
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-8&quot;&gt;字符串&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;..&lt;/code&gt;是字符串相加，my god…&lt;/li&gt;
-  &lt;li&gt;对于string的处理，除了用string.xxx(strArg)这样的方式外，还可以用strArg:xxx的方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-9&quot;&gt;函数&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;function可以返回也可以不返回结果，在定义时没有明确的约束。&lt;/li&gt;
-  &lt;li&gt;支持多返回值，nice&lt;/li&gt;
-  &lt;li&gt;Lua函数不支持参数默认值，可以通过or来实现。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function sum(a , b)
-    a = a or 1.1
-    b = b or 2.2
-    return a + b
-end
- 
-print(sum())
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;支持闭包&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;tab = {1,2,3,4,5,6,7,8}
- 
-function iter()
-    local index = 0
-    return function()
-        index = index + 1 
-        return tab[index]
-    end
-end
- 
-for i in iter() do
-   print(i)
-end
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;可变参数，这里有点小特别：
-    &lt;blockquote&gt;
-      &lt;p&gt;Lua将函数的参数放在一个叫arg的表中，#arg 表示传入参数的个数。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function average(...)
-   result = 0
-   local arg={...}
-   for i,v in ipairs(arg) do
-      result = result + v
-   end
-   print(&quot;总共传入 &quot; .. #arg .. &quot; 个数&quot;)
-   return result/#arg
-end
-
-print(&quot;平均值为&quot;,average(10,5,3,4,5,6))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;这个#还能来取table中元素的个数，但是使用限制比较大。建议还是开启循环来计算个数。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;的区别:&lt;/p&gt;
-
-    &lt;p&gt;是个语法糖，调用的函数会自动传递参数self，即：&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local a = {x = 0}
-function a.foo(self, a)
-    self.x = a
-end
-function a:foo2(a)
-    self.x = a
-end
-
-
---调用时：
-a.foo(a, 2)
-a.foo2(2)
-
---上述两个操作是等价的，用:时就省去了定义和调用时需要额外添加self用来指代自身的麻烦.
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;需要注意的是如果一个table中的方法调local的非table方法（简单来说就是一个类方法要访问非类方法）需要将非类的方法定义在前面，这个和C的机制一样。同样的，非类方法之间的调用也要有顺序，都尼玛血泪的教训&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;api&quot;&gt;API&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;标准库的API可以在&lt;a href=&quot;https://www.lua.org/manual/5.1/&quot;&gt;这里&lt;/a&gt;查询到。&lt;/li&gt;
-  &lt;li&gt;math.random的行为很是奇怪，一次调用永远产生相同的值。如果想得到不同的值，需要多次调用。&lt;/li&gt;
-  &lt;li&gt;对于table等的操作建议看参考2的连接。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Sat, 29 Jul 2017 23:15:54 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/29/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/29/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/</guid>
-        
-        <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity返回Value的协程</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;起因&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;其实一直以来就有个想法，希望能让unity中的coroutine返回一个具体的数值，比如int，比如string或者一个GameObject。最近也查了些资料，然后总结一下这个功能如何实现。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;回调函数实现&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个算是一个取巧的办法，在调用协程时传递一个回调函数，在执行过程中根据情况调用回调即可。不废话，直接上代码：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; IEnumerator CoroutineWithCallback(Action&amp;lt;string&amp;gt; callback)
-{
-    WWW www = new WWW(&quot;https://caihua.tech&quot;);
-    yield return www;
-    if (string.IsNullOrEmpty(www.error))
-    {
-        callback(www.text);
-    }
-    else
-    {
-        callback(&quot;www fail&quot;);
-    }
-}
-
-// 调用方式
-
-IEnumerator Start()
-{
-    yield return StartCoroutine(CoroutineWithCallback(s =&amp;gt;
-    {
-        Debug.Log(s);
-    }));
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;利于协程的原理来制作一个可以返回数值的包装器&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;协程本身就是利用IEnumerator的可遍历来实现的，在运行期间如果约到yield语句就会等后面的代码执行完成后返回结果。如果在代码块的后面还有yield就会继续执行。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 包装器
-public class CoroutineWithData
-{
-    public Coroutine coroutine { get; private set; }
-    public object result;
-    private IEnumerator target;
-    public CoroutineWithData(MonoBehaviour owner, IEnumerator target)
-    {
-        this.target = target;
-        this.coroutine = owner.StartCoroutine(Run());
-    }
-
-    private IEnumerator Run()
-    {
-        while (target.MoveNext())
-        {
-            result = target.Current;
-            yield return result;
-        }
-    }
-}
-
-
-// 真正执行逻辑的代码
-IEnumerator LoadSomeStuff()
-{
-    WWW www = new WWW(&quot;https://caihua.tech&quot;);
-    yield return www;
-    if (string.IsNullOrEmpty(www.error))
-    {
-        yield return www.text;
-    }
-    else
-    {
-        yield return &quot;fail&quot;;
-    }
-}
-
-// 使用
-...
-CoroutineWithData cd = new CoroutineWithData(this, LoadSomeStuff());
-yield return cd.coroutine;
-Debug.Log(&quot;result is &quot; + cd.result);
-...
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Sun, 23 Jul 2017 23:31:11 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：Resources文件夹</title>
-        <description>&lt;h2 id=&quot;resources&quot;&gt;Resources文件夹&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个章节内容不多，但是也很有用。我们可以从这个章节中学习如何更合理的使用它。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;resources-1&quot;&gt;Resources系统的最佳实践&lt;/h3&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;不要使用它&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;是的，不要使用它。因为它有以下问题：
-    &lt;ul&gt;
-      &lt;li&gt;使用 Resources 文件夹会让内存颗粒度管理变得更困难&lt;/li&gt;
-      &lt;li&gt;不正确的使用 Resources 文件夹会增加应用启动时间（因为要创建上一章讲的映射图）和包的大小，随着在 Resources 文件中的文件增加，管理这些文件会变得很困难。&lt;/li&gt;
-      &lt;li&gt;Resources系统降低了项目自定义分发内容到具体平台的能力，消除了增量更新的可能。AssetBundle 变体是 Unity 用来在不同设备上调整内容的基础。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;正确的使用资源文件夹&lt;/h3&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;下面两种情况 Resources 系统很有用处：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;1.因为 Resources 系统很容易使用，它很适合是在快速原型制作和试验。但是当项目要转成产品时，强烈建议不要使用 Resources 文件夹.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2.Resources 文件夹对一些满足如下条件的案例很有用：&lt;/p&gt;
-  &lt;ul&gt;
-    &lt;li&gt;存储在 Resources 文件夹下的内容不要很大的内存&lt;/li&gt;
-    &lt;li&gt;存储在 Resources 文件夹下的内容在整个项目周期都有用&lt;/li&gt;
-    &lt;li&gt;内容基本不用升级&lt;/li&gt;
-    &lt;li&gt;在各平台都一样的&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;序列化资源&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一个工程中可能包含了多个名叫Resources的文件夹，所有这些文件夹下的对象和资材会在build的时候全部序列化到一个文件中，这个文件可以理解为一个特殊的AssetBundle。想来这就是为何不利于增量更新的原因了。
-    &lt;blockquote&gt;
-      &lt;p&gt;AssetBundle包中索引信息里面包括了处理对象名字到对应的文件 GUID 和本地ID 的查找树。它也用来定位对象在序列化文件中的偏移位置。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;用于查找的数据结构是平衡搜索树[1]（在大多数平台上），它的构建时间增长到了 O(nLog(N)), 其中 N 是在查找树内的对象的个数。这个增长也使 Resources 文件夹内的对象增加时，索引的加载时间会比线性增长时间长。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;说了这么多就是告诉大家，应用启动时初始化resources文件夹（按照上一章说的应该是建立实例ID的映射图）这个事是不可避免的，当resources文件夹中内容太多时会严重影响启动速度。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 23 Jul 2017 23:28:45 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/</guid>
-        
-        <category>AssetBundle学习笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>AssetBundle学习笔记：资产、对象和序列化</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;前言&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;这篇及后续的几篇笔记是我阅读&lt;a href=&quot;https://unity3d.com/cn/learn/tutoriazals/topics/best-practices/guide-assetbundles-and-resources&quot;&gt;A guide to AssetBundles and Resources&lt;/a&gt;的一些记录。官方的这个系列文章详细的阐述了unity是管理资源的。从一个asset的导入开始，unity就在背后开始了它的工作。它为每个资源创造了一个mate文件，给予了资源一个唯一的ID，从此这个资源的一切都与这个ID紧密结合到了一起。可能我们的一些操作会导致资源丢失它的mate文件，这会造成一些很不好的后果。&lt;/li&gt;
-  &lt;li&gt;与此同时，系列文章中还重点阐述了什么是AssetBundle，如何下载AssetBundle和如何从AssetBundle中加载asset。&lt;/li&gt;
-  &lt;li&gt;最关键的是最后一章，在这一章中详细的描写了AssetBundle的制作策略。AssetBundle可以说是unity中至关重要的一个概念，但是在日常的工作中按照怎么样的颗粒度来划分AssetBundle，如何平衡AssetBundle的精细度和方便性，这一直以来是一个让人头痛的问题，第四章中给出了一些答案。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;资产、对象和序列化&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这是系列文章的第一部分（前面还有一个类似介绍的章节），讲述了unity如何处理导入的资源，如何去标识它们，管理它们。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;资产的导入&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;首先asset这个词如果只是看翻译的话可以是&lt;strong&gt;资产&lt;/strong&gt;，其实在我看来它可以是资源，和resource这个词的含义几乎一样。但是因为Resource这个词在unity中有着特殊的含义，它代表了一个特别的文件夹，所以可能需要用一个别的词语来表示资源的概念。&lt;/li&gt;
-  &lt;li&gt;asset可以是一个脚本、一个音频文件或者是一个美术从3D建模工具中导出的FBX文件，它保存在unity工程的Assets文件夹下，它的格式可能unity能够直接使用的(比如一个material)，也可能是不能直接使用的（比如FBX）。&lt;/li&gt;
-  &lt;li&gt;每一个asset在导入到unity时都会进行一项工作，就是将asset序列化，因为只有只有unity引擎才能够使用它们。在这个导入的过程中可能会对纹理等进行压缩，所以这个过程会比较久。&lt;/li&gt;
-  &lt;li&gt;这些被序列化后的数据保存在工程的Library文件夹下，我们不需要修改这些数据，因为这个是unity自动做的，每次你导入新的数据的时候都会生成这些文件。而且如果你留意的话，会发现你切换unity的目标平台时（Android→ios）会重现生成一次序列化文件，因为每个平台能够识别的数据类型不同。同一个纹理文件可能对于了不同的序列化文件。（没事不要删除Library文件夹，因为这个序列化过程非常耗时。）&lt;/li&gt;
-  &lt;li&gt;通常我们在unity的IDE中看到的asset文件都是原始的文件，因为导入的过程中虽然做了序列化，但是其实是生成了新的文件，而原始的文件并没有被修改。&lt;a href=&quot;https://docs.unity3d.com/Manual/BehindtheScenes.html&quot;&gt;（给出一个参考文档）&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;资产导入的结果是什么&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;答案是序列化文件，那么我们通过什么使用这些序列化文件呢？答案是 UnityEngine.Object,或者是大写O的Object。&lt;/li&gt;
-  &lt;li&gt;Object是一套序列化数据用来描述一个具体的资源实例。它（object）的类型可以是任何引擎使用的类型，比如一个mesh、一个音频片段等。基本上所有的内置对象类型都是UnityEngine.Object的子类型，除了ScriptableObject和MonoScript。&lt;/li&gt;
-  &lt;li&gt;需要注意的是，一个外部文件的导入可能产生了多个asset，比如FBX文件的导入，可能产了mesh、material和texture。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;scriptableobjectmonoscript&quot;&gt;什么是ScriptableObject和MonoScript&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;ScriptableObject在我看来是一种内置的数据存储格式&lt;/li&gt;
-  &lt;li&gt;MonoScript代表了工程中的一个脚本文件，它是个editor类。用法&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#if UNITY_EDITOR
-
-                mediatorClass = RTEditorGUI.ObjectField&amp;lt;MonoScript&amp;gt;(mediatorClass, true);
-                if (mediatorClass != null)
-                {
-                    mediatorName = mediatorClass.GetClass().Name;
-                }
-#endif
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;unityasset&quot;&gt;unity如何区分这些导入的asset&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这是一个核心的问题。unity在生成（以FBX文件导入为例，可能一个FBX生成了unity中的多个asset）一个asset时，会同时生成一个mate文件。这个asset会分配一个File GUID，而这个asset中的多个UnityEngine.Object会生成多个Local ID。这个理解起来比较容易，一个asset就是一栋房子，有一个唯一的门牌号。而一栋房子的每个房间又有一个唯一的房间号。&lt;/li&gt;
-  &lt;li&gt;unity editor将这个File GUID与asset的路径关联了起来。这样一来，如果你移动了asset的位置，unity会更新这个File GUID对应的路径，这也是为何unity建议我们移动或者重命名或者删除文件已经要在IDE中做，因为unity会监控文件的变化。如果你在外面改了文件名字或者路径，回到unity后会发现unity会给这个asset重新生成一个mate文件，显然这样会分配一个新的GUID。&lt;/li&gt;
-  &lt;li&gt;后果是什么？如果你的这个asset中的内容已经被使用，那么会出现丢失的情况。总的来说，unity就是靠File GUID和Local ID来管理资源，一切变化它都会关注，而且也会帮我们处理好。但是外在的变化它无从得知，所以只能出现错误。有趣的一点是，如果你只是删除了mate文件，但是不改变asset的位置，那么unity在重新生成mate时会给asset一个原来的GUID。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;unity&quot;&gt;unity是如何在运行时管理资源的&lt;/h3&gt;
-
-&lt;h4 id=&quot;persistentmanager&quot;&gt;PersistentManager缓存的概念&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;由于GUID在运行时比较的时候效率较低，所以unity使用了一套其它的机制来管理运行时的资源。这就是PersistentManager缓存。unity将File GUID和Local ID翻译（个人认为应该是经过某种变换）成一个叫做Instance ID的整型数据，它在单独的会话（single session，难以理解）中是唯一的。我个人的理解是在一个进程中这个Instance ID是唯一的。&lt;/li&gt;
-  &lt;li&gt;缓存维护了一个InstanceID和内存中实例对象的映射图。UnityEngine.Objects通过这个做到了强引用。通过Instance ID可以快速的找到内存中的对象。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;persistentmanager-1&quot;&gt;PersistentManager缓存的初始化和更新&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个映射图在游戏启动的时候就会初始化。数据包含：游戏启动时初始场景中用到的对象的映射，Resources文件中所有的对象信息都会被映射到缓存中（这个缓存建立是需要时间的，所以如果Resources文件中内容太多启动会变慢）。&lt;/li&gt;
-  &lt;li&gt;在游戏运行的过程中这个缓存也会进行更新。比如在运行时新的asset被导入了（不能理解这是一个什么场景），或者一些对象从AssetBundle中加载的时候，会生成新的Instance ID，新的对象，也就有了新的映射。&lt;/li&gt;
-  &lt;li&gt;还有当AssetBundle被卸载的时候（这个卸载应该指的是所有已经实例化对象也被卸载），对应的映射数据会被删除。而当对象重新从AssetBundle中加载时，会产生一个新的Instance ID。这个也是后面会说到的AssetBundle管理的一个重要内容，如何保证无效的资源在卸载时也被删除掉。&lt;/li&gt;
-  &lt;li&gt;需要注意一点就是有时一些特别的事件会导致内存中的对象被删除了，比如ios的挂起，此时unity是没有办法重新加载这些数据的（比如材质数据），此时场景中看到的就是品红色的对象了。所以如果手机上出现这个问题了，就要考虑是不是内存中对象被删除了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;resource&quot;&gt;Resource的生命周期&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;加载&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;按照文中的说法有两种方式来加载UnityEngine.Objects，第一是被自动加载，这个需要一个实例ID映射到这个对象，同时这个对象没有加载进内存并被间接引用，而且对象的数据源存在。我对这个的理解是参考初始场景中的对象，前文说过它们会进入缓存中，而且在一开始肯定是内存中不存在的，而且如果这个实例ID对应的FILE ID和local ID是有效的，那么就会被自动的加载；至于说间接引用，讲真，没理解。&lt;/li&gt;
-  &lt;li&gt;第二种加载就是代码加载了，这个API就多了，resources的load或者AssetBundle的load都可以做到。&lt;/li&gt;
-  &lt;li&gt;当一个对象被加载，Unity 会尝试将所有引用从文件 GUID 和本地 ID 转换成实例 ID。（这个应该是为了把运行时的引用关系都保存在PersistentManager所管理的映射图中。）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;卸载&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果一个fileID和localID没有对应的实例ID，或者实例ID所对应的fileID和localID无效了，那么就会出现missing的情况，此时实例ID仍旧是存在的，在场景中它也被别的对象引用着，但是你可能看不到它或者它显示为品红色。&lt;/li&gt;
-  &lt;li&gt;这个情况其实挺常见的，由于操作问题导致asset的fileID发生了变化，但是原来的实例ID没有跟着更新，就容易出现。&lt;/li&gt;
-  &lt;li&gt;文中列举了三个被卸载的情况
-    &lt;ul&gt;
-      &lt;li&gt;在未使用的asset被清理时对象会被自动卸载。这个过程会在场景切换的时候发生。&lt;/li&gt;
-      &lt;li&gt;从Resources文件夹中加载的对象在调用Resources.UnloadAsset时会卸载。但是对象对应的实例ID保持有效，而且也对应着有效的fileID和localID。&lt;strong&gt;这些对象如果被其它的mono变了或者对象引用着，那么在调用Resources.UnloadAsset后这些对象会被重新加载。&lt;/strong&gt;（这个就有意思了，代表在Resources.UnloadAsset函数有时不会实现我们想要的效果。）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;当调用AssetBundle.Unload(false)时，unity不会将从这个AssetBundle中加载的还处于激活状态的对象销毁掉，但是会使这些对象对应的实例ID与fileID和localID断开引用。如果这些对象从内存中卸载并且对这些已卸载的对象的引用依然保持着，Unity将无法重新加载对象。&lt;/li&gt;
-  &lt;li&gt;上面这段讲的比较奇怪，因为在后面的最后一章中应该是描述了这样的情况，此时是可以重新加载asset的，只不过会造成内存泄漏。&lt;/li&gt;
-  &lt;li&gt;在注视中讲到了这个情况的一个例子就是APP被挂起后，GPU内存中的纹理、网格被删除了，那么在APP恢复后需要重新加载这些内容。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-6&quot;&gt;加载大的层次结构&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;几个点&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在序列化层级结构时会将所有对象和组件都单独的序列化到序列化文件中。这对于层级的加载产生阴影。&lt;/li&gt;
-  &lt;li&gt;层级加载时CPU时间消耗在以下内容上：
-    &lt;ul&gt;
-      &lt;li&gt;读取序列化数据&lt;/li&gt;
-      &lt;li&gt;在新创建出的transform中设置层级结构&lt;/li&gt;
-      &lt;li&gt;实例化对象和组件&lt;/li&gt;
-      &lt;li&gt;唤醒对象和组件（awake）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;后面三条基本上花费的时间是固定的，但是第一条不一样。层级越复杂加载的越慢。&lt;/li&gt;
-  &lt;li&gt;在所有平台上，内存读取速度快过磁盘，PC读取快过手机。因此当层级过于复杂时可能读取的时间都要长于实例化的时间。&lt;/li&gt;
-  &lt;li&gt;对于层级中数据相同的对象会多次进行序列化，比如UI上30个复制出来的相同的元素会序列化三十次，加载的时候也是加载30个不同的数据，因此很耗时。&lt;/li&gt;
-  &lt;li&gt;5.4之后unity修改了transform在内存中的呈现形式。每个根节点下的所有子层级都保存在一段紧密连续的内存中。当实例化一个会导致重新指定父级的新对象时，考虑使用GameObject.Instantiate方法的带父对象参数的重载。使用这个重载可以避免给新物体新分配根 tranform 层次。测试结果中，这个可以提高 5 - 10 % 的实例化时间。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-8&quot;&gt;总结&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;这个章节讲述了unity中对UnityEngine.Objects和asset的管理，从资材的导入到运行时的加载卸载。读完后应该明白一下几点：&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;UnityEngine.Objects与asset的关系&lt;/li&gt;
-  &lt;li&gt;asset导入后产生了mate文件，产生了fileID和localID的概念&lt;/li&gt;
-  &lt;li&gt;asset在运行时中产生了实例ID的概念，并且实例ID和fileID、localID是通过一个映射图结合到了一起，这个映射图也让内存中的object与磁盘上的asset产生了联系。&lt;/li&gt;
-  &lt;li&gt;asset可以被加载也可以被卸载，而它的卸载需要注意不要让资源出现内存泄漏的问题。&lt;/li&gt;
-  &lt;li&gt;最后在场景中的层级结构需要合理的规划。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 16 Jul 2017 00:13:52 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
-        
-        <category>AssetBundle学习笔记</category>
         
         
       </item>
