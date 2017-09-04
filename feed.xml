@@ -5,9 +5,396 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 27 Aug 2017 18:36:36 +0800</pubDate>
-    <lastBuildDate>Sun, 27 Aug 2017 18:36:36 +0800</lastBuildDate>
+    <pubDate>Mon, 04 Sep 2017 23:47:38 +0800</pubDate>
+    <lastBuildDate>Mon, 04 Sep 2017 23:47:38 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：第六周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;section&quot;&gt;这是一个很长的问题：&lt;/h4&gt;
+&lt;h4 id=&quot;assetbundle-aabbb&quot;&gt;字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。&lt;/h4&gt;
+
+&lt;h4 id=&quot;unityb&quot;&gt;请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时候找不到已经存在内存中的字体？这里需要手动去做些什么处理吗？&lt;/h4&gt;
+
+&lt;h4 id=&quot;bundlemassetbundleunloadfalseassetbundleunloadfalse&quot;&gt;同时我发现依赖包资源如果进行了bundle.m_AssetBundle.Unload(false)以后，其他依赖于这个包的资源就引用不到了。我们流程上对于每个读进来的AssetBundle，都会加载完后马上进行Unload(false)，请问如果是依赖包的话，是不是不能对其进行这步操作？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个问题其实是典型的一个AssetBundle使用的问题，其中牵扯的细节在unity的文档中都有。&lt;/li&gt;
+  &lt;li&gt;总结来说就是对于公共资源的字体，在A和B加载前要提前加载好，这样unity根据依赖关系会自动的找到字体asset。&lt;/li&gt;
+  &lt;li&gt;但是如果加载A完成后直接卸载了字体的AssetBundle，那么加载B时肯定会出错。此时字体asset虽然还在（因为用的是Unload(false)），但是unity已经无法依靠依赖关系来作用在B上了。同时如果测试再次加载字体AssetBundle，则原有的字体asset出现内存泄漏问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shaderbuildin&quot;&gt;自己下载了shader包，如何替换buildin资源？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;需要完全的替换，shader自己不会关联，而且很多时候用的是buildin的material，测试用的就是buildin的shader。&lt;/li&gt;
+  &lt;li&gt;还有一个情况是prefab中用的shader的GUID和自己导入的不同，可以用通过如下脚本进行替换。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;using UnityEngine;
+using System.Collections;
+using UnityEditor;
+using System.IO;
+
+public class BuildScript {
+
+    [MenuItem(&quot;Build/RefreshMat&quot;, false, 501)]
+    static void RefreshMat() {
+        var guids = AssetDatabase.FindAssets(&quot;t:Material&quot;);
+        foreach (var guid in guids) {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            if (path.ToLower().EndsWith(&quot;mat&quot;)) {
+                var mat = AssetDatabase.LoadAssetAtPath&amp;lt;Material&amp;gt;(path);
+                if (mat &amp;amp;&amp;amp; mat.shader) {
+                    Debugger.Log(&quot;{0}\n{1}\n{2}\n{3}\n&quot;, path, mat.shader.name,
+                        mat.shader.GetInstanceID(),
+                        Shader.Find(mat.shader.name).GetInstanceID());
+                    mat.shader = Shader.Find(mat.shader.name);
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
+&lt;h4 id=&quot;assetbundleprofiler&quot;&gt;一个字体打包到AssetBundle中，加载后在profiler中看到两份&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通常TTF文件会包含一个字体的多个字型，如可能包含正常字型、加粗字型、斜体字型等。而在Unity中会将其分为不同的Font资源，且他们之间会相互依赖。所以，如果项目中确实需要加粗字型的话，内存里出现两个Font是正常的，但如果实际上不需要加粗，那么可以尝试寻找一个不包含加粗字型的字体文件来替换该TTF文件。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;profileriphone-appuifontcachefontfortext2siphone52srendertexture&quot;&gt;在用Profiler真机查看iPhone App时，发现第一次打开某些UI时，Font.CacheFontForText占用时间超过2s，这块主要是由什么影响的?若iPhone5在这个接口消耗2s多，是不是问题很大？这个消耗和已经生成的RenderTexture的大小有关吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Font.CacheFontForText主要是指生成动态字体Font Texture的开销, 一次性打开UI界面中的文字越多，其开销越大。&lt;/li&gt;
+  &lt;li&gt;这个消耗也与已经生成的Font Texture有关系。简单来说，它主要是看目前Font Texture中是否有地方可以容下接下来的文字，如果容不下才会进行一步扩大Font Texture，从而造成了性能开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+&lt;h4 id=&quot;assetbundletexture&quot;&gt;游戏里重复的特效较多，有些只是图案相同但改变了颜色参数，如果都打成独立AssetBundle，则内存里面会有多份Texture。关于这样的打包一般有什么推荐的方法呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;只保留一份初始纹理资源，并通过Shader在运行时改变其整体配色，从而达到不同的效果。&lt;/li&gt;
+  &lt;li&gt;如果是局部配色不同，那么可以在原始纹理的基础上加一种或几种Mask纹理，用来负责颜色的自适应调配，然后再通过Shader来达到不同的展示效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;gameobjectdeactivate&quot;&gt;GameObject.Deactivate消耗大&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;GameObject.Activate/Deactivate本身通常不会产生很高的开销，产生高开销的是其OnEnable/OnDisable操作。&lt;/li&gt;
+  &lt;li&gt;如果是自定义脚本，可以考虑优化OnEnable/OnDisable函数中的操作。&lt;/li&gt;
+  &lt;li&gt;如果是UI可以考虑通过移出屏幕或者改摄像机的culling layer来实现隐藏。前面有讲过相关的内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;canvascanvas&quot;&gt;动静分离或者多Canvas带来性能提升的理论基础是什么呢？如果静态部分不变动，整个Canvas就不刷新了？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在UGUI中，网格的更新或重建（为了尽可能合并UI部分的DrawCall）是以Canvas为单位的，且只在其中的UI元素发生变动（位置、颜色等）时才会进行。因此，将动态UI元素与静态UI元素分离后，可以将动态UI元素的变化所引起的网格更新或重建所涉及到的范围变小，从而降低一定的开销。而静态UI元素所在的Canvas则不会出现网格更新和重建的开销。&lt;/li&gt;
+  &lt;li&gt;PS：位置和颜色变化应该会造成更新，如果出现血条那样的会造成mesh变化从而重建。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ui-1&quot;&gt;UI优化&lt;/h3&gt;
+&lt;h4 id=&quot;ugui&quot;&gt;UGUI参考的函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1、Canvas.SendWillRenderCanvases()
+该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2、Canvas.BuildBatch
+该API为UI元素合并的Mesh需要改变时所产生的调用。通常之前所提到的Canvas.SendWillRenderCanvases()的调用都会引起Canvas.BuildBatch的调用。另外，Canvas中的UI元素发生移动也会引起Canvas.BuildBatch的调用。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ngui&quot;&gt;NGUI参考的函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;UICamera.Update()
+该函数通常在点击时出现开销。因此，当该函数的CPU开销较高时，通常都是因为调用了其他的较为耗时的函数引起。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIRect.Update()
+该函数通常在需要更新锚点位置时出现开销。因此，当该函数的CPU开销持续较高时，通常是因为当前场景中有较多的UI元素绑定了OnUpdate模式的锚点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIPanel.LateUpdate()
+该函数为NGUI最主要的CPU开销，包含了对所有UI界面包括其下UI元素的状态更新、网格重建、DrawCall合并等操作。大量的UI变动或者不合理的UIPanel布局都有可能导致该函数出现较高的峰值。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIRect.Start()
+该函数主要涉及到UI元素的初始化操作，通常在UI界面被实例化时出现并产生一定的CPU开销。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;优化建议：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;动静分离，动的频率不同也分离，减少Mask组件的使用，使用Mask不仅会增加GPU端渲染的压力，同时也会造成CPU端DrawCall的明显上升。可尝试用RectMask2D来进行替换。&lt;/li&gt;
+  &lt;li&gt;减少OnEnable和OnDisable，通过移动位置、改变摄像机culling mask。&lt;strong&gt;后者可能会一定程度地提高内存的开销（UIDrawCall中存储的Mesh）&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ngui-1&quot;&gt;NGUI的图集在内存里存了多份，求问怎么清理？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_31%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;游戏运行中，UI Mesh出现多份不同内存的情况，是正常的，因为随着UI widget使用的增加或减少，创建的UI Mesh是会随着变化的。&lt;/li&gt;
+  &lt;li&gt;同时，如果不同UIPanel中存在相同Atlas的Widgets，则也会出现上图中的情况。因此，建议大家遇到这种情况时，查看单帧中NGUI UI Mesh重名的是否有多份重名资源。如果存在，则说明相同Atlas中的资源被多个不同的UIPanel所使用，这种情况是需要尽可能避免的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;profilerothersystemexecutableanddlls&quot;&gt;Profiler中Other下System.ExecutableAndDlls的内存很大&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;一般来说，在移动游戏中，该选项经常在iOS真机运行时会看到，System.ExecutableAndDlls该项显示的是执行文件和所调用的库（物理、渲染、IO等系统库）的总和。&lt;/li&gt;
+  &lt;li&gt;开发团队不用太担心该选项的数值，因为很多应用均在共用这些库，并且它对于真实项目的内存压力非常小，几乎没有影响，而且OS也不会因为该内存而杀掉游戏或应用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;loadingupdatepreloading&quot;&gt;Loading.UpdatePreloading&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这是Unity引擎最主要的加载函数。该项一般在切换场景时或主动动态加载资源时较大。 一般来说，加载资源越多、越复杂，则其反映的Loading.UpdatePreloading耗时则越大。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;profilernot-saved&quot;&gt;Profiler中Not Saved是指什么？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_31%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Profiler中的Not Saved指的是项目中通过代码生成的各种资源记录。如上图所示，其Mesh均为NGUI插件通过脚本生成的UI界面Mesh资源。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;脚本&lt;/h2&gt;
+&lt;h4 id=&quot;section-3&quot;&gt;判断怪物是否在相机视野范围有没有什么好方法？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以在脚本中添加 OnWillRenderObject 或者 OnBecameVisible/OnBecameInvisible 的回调函数，这些函数分别会在对应的Renderer可见或者变为可见/不可见时被调用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;amonobehaviourb-monobehaviourdestroybgameobjectabnullinspectormissinggcbagcnullgc&quot;&gt;我们测试了下发现，在名为A的MonoBehaviour中，有个数组来存放名为B的 MonoBehaviour对象的引用。当我们其他的逻辑去Destroy了B对象所在的GameObject后，在A对象中的数组里，遍历打印，它们（B的引用）都为Null，在Inspector面板上看是missing。而这时候进行GC，堆内存其实并未释放这些B对象。只有当A对象中的数组被清空后，再调用GC，才可释放这些对象所占内存。这种现象是否正常？为什么值为Null但却还是被引用着，无法通过GC释放呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先这种现象是正常的。这是Unity中对Null的检测做了特殊的处理所致，在Unity中MonoBehaviour对象除了存在于Managed Heap中（作为“壳”），在Native内存中还会有一个相对应的“实体”，在调用Destroy时，真正被释放的正是这个“实体”。而在判断一个MonoBehaviour对象是否为Null时，Unity会首先检测“实体”是否已经被销毁，如果是则返回为true，但此时Managed Heap中的“壳”实际上依然是被引用的，从而就会出现对象的Null判断为true，但实际上还是被引用着，无法被GC释放的问题。
+.&lt;/li&gt;
+  &lt;li&gt;相关的细节可见官方blog对Unity中Null判断的解释：
+http://blogs.unity3d.com/2014/05/16/custom-operator-should-we-keep-it/&lt;/li&gt;
+  &lt;li&gt;PS：本周最佳收获。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;粒子&lt;/h2&gt;
+&lt;h4 id=&quot;fbxreadwrite-enablecrasheditor&quot;&gt;真机下关闭粒子使用的FBX的Read/Write Enable属性后crash，Editor模式下没有。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;将FBX上的Read/Write Enabled关闭后，内存中便不再保存其Mesh的副本（只存在显存中），因此其属性就不可再被访问和修改。&lt;/li&gt;
+  &lt;li&gt;粒子系统通常需要动态地修改其粒子的顶点属性。因此，理论上来说，供粒子系统使用的Mesh是需要开启Read/Write Enabled的，而在Editor下Mesh和Texture都是强制开启的，所以在真机上就会出现问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;粒子的优化&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;减量。总的来说就是减少粒子的数量，减少粒子的范围，如果离摄像机远可以考虑不显示粒子。最后升级到5.3之后，因为粒子系统有优化。&lt;/li&gt;
+  &lt;li&gt;粒子系统拼合。是指引擎会将若干个材质相同且深度相同的粒子系统在渲染前进行合批（Batch），从而通过一个Draw Call来对其粒子系统进行渲染，进而降低粒子系统的渲染开销。至于合并机制之前也写到过。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;spritepacking-tag&quot;&gt;粒子系统所使用的纹理并不是Sprite类型的，因此不需要设置Packing Tag。&lt;/h4&gt;
+
+&lt;h2 id=&quot;section-6&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;skinnedmeshrendererbakemeshinstantiate&quot;&gt;SkinnedMeshRenderer.BakeMesh这个函数一般是什么时候调用呢?在Instantiate后调用么？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;SkinnedMeshRenderer.BakeMesh 的作用在于：将一个蒙皮动画的某个时间点上的动作，Bake成一个不带蒙皮的Mesh，从而可以通过自定义的采样间隔，将一段动画转成一组Mesh序列帧。而后在播放动画时只需选择最近的采样点（即一个Mesh）进行赋值即可，从而省去了骨骼更新与蒙皮计算的时间。&lt;/li&gt;
+  &lt;li&gt;该方法的优点是用内存换计算时间，在场景中大量出现同一个带动画的模型时，效果会非常明显。该方法的缺点是内存的占用极大地受到模型顶点数、动画总时长及采样间隔的限制。因此，该方法只适用于顶点数较少，且动画总时长较短的模型。同时，Bake的时间较长，因此需要在加载场景时完成。比较经典的适用场景为MOBA游戏中的小兵。&lt;/li&gt;
+  &lt;li&gt;PS：关于skinnedmesh转mesh这个问题比较大，可以参考网上的资源。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;mecanim&quot;&gt;为什么尽可能使用Mecanim&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Mecanim动画系统的多线程计算性能较之老版本的单线程计算性能要高；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Mecanim动画系统可以对GameObject开启 “Optimize Game Object” 选项。该选项为Unity引擎在4.3版本中加入的新功能，旨在优化Mecanim动画系统的底层计算开销。开启该选项，Animator.Update和MeshSkinning.Update的CPU占用均存在一定程度的降低；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Mecanim动画系统的Retargeting功能可以让多个不同的角色使用同一套的AnimationClip资源，比如主城中的NPC角色，其大部分共性动画可尝试使用一套Idle、Wave等动画片段，从而进一步降低动画资源的内存开销；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Unity引擎已经不再对老版本动画系统进行维护。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;动画的优化&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;动画模块的开销主要来自于MeshSkinning.Update（蒙皮网格每帧更新）和Animation.Update and Animator.Update（骨骼动画的更新开销）两个函数。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;研发团队在尽可能保证动画效果的同时，对模型的网格进行简化，建议尝试使用Unity Asset Store中的SimpleLOD插件来对骨骼蒙皮网格进行简化；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;关于MeshSkinning.Update， 一般来说该值的大小取决于蒙皮网格（Skinned Mesh）的面片数和骨骼数。所以如果该值过高，我们的建议是减面。同时我们建议开发团队勾选“GameObject.Optimize”，该方法是将fbx生成的GameObject的层级关系移除，使动画系统不用每帧再去更新这些骨骼节点（GameObject）的Transform，因此能一定程度上降低CPU开销，此优化选项默认是关闭的），该方法特别适合于在配置较低的手机上运用骨骼角色多的情况。&lt;/li&gt;
+  &lt;li&gt;开启Optimize GameObject默认情况下会将动画网格下的所有骨骼结点隐藏，但是，可以通过“Extra Transform to Expose”查看想通过脚本获取的骨骼结点，这样既可以提升该角色的动画模块性能，又可以达到获取某个关键结点的需求。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Optimize Game Objects对于老版本的Animation无效。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用SkinnedMeshRenderer.BakeMesh&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;控制场景中具有Animator Controller组件的GameObject。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;材质实例数量过多有何影响&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Material的内存占用一般很小，所以大量的Material资源对于内存的压力其实很小的。&lt;/li&gt;
+  &lt;li&gt;它本身对于场景的切换时间是有影响的，即资源冗余得越多，切换场景时，UnloadUnusedAssets的开销越大，进而增加了场景的切换时间。&lt;/li&gt;
+  &lt;li&gt;会影响DrawCall的拼合。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-9&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;profilerstatic-collidermoveexpensive-delay-cost&quot;&gt;Profiler中会碰到Static Collider.Move(Expensive delay cost)，有什么办法可以优化掉呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;建议给需要移动的静态Collider加上RigidBody并勾选is Kinematic复选框，从而将其变为动态碰撞体。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;physicssimulate-&quot;&gt;引起 Physics.Simulate 开销较大的几个因素&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rigidibody。
+    &lt;ul&gt;
+      &lt;li&gt;该组件可使得游戏对象在物理系统的控制下运动。&lt;/li&gt;
+      &lt;li&gt;对于移动设备而言，建议Rigidibody数量控制在50以下。同时需要注意的是，大家常常会用Rigidbody组件配合CapsuleCollider，通过RigidBody.velocity来移动。这些会造成物理计算，特别是网格有很多Mesh Colider的时候，物理计算相当高。&lt;/li&gt;
+      &lt;li&gt;因此，建议尽量用Transform.Position代替物理计算。如果大家的地形是凹凸不平又要有重力的表示，也可以用Navmesh去做，它所引起的工作量在于烘焙Navmesh，并且尽可能地贴合地表 ，但是可以完全不用物理计算。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Contacts &amp;amp; Colider
+    &lt;ul&gt;
+      &lt;li&gt;Contacts数量为碰撞对（Contact Pair）数量。任意两个发生碰撞的碰撞体都会产生一个“碰撞对”。&lt;/li&gt;
+      &lt;li&gt;一般来说，Contacts数量越大，则表明碰撞物体的数量越多，即物理系统的CPU开销越大。&lt;/li&gt;
+      &lt;li&gt;碰撞体数量（静态碰撞体和动态碰撞体两者）均控制在100以下，当然越低越好。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;PS：动态碰撞体是指带有RigidBody的Collider，而静态碰撞体指不带有RigidBody的Collider。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ngui-2&quot;&gt;NGUI减少物理计算&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在NGUI界面打开后，往往会有Physics一下涨高的情况。这是因为NGUI为了实现点击事件的检测，在每个UI上都设有Rigidbody，所以当UI Widgets摆在同一深度并存在相互叠加的情况时，会造成较多不必要的Contacts。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ontriggerxxxontriggerenter&quot;&gt;定位到OntriggerXXX（如OntriggerEnter）消耗高&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这种情况一般是在脚本中触发了其他的逻辑调用，例如在主角被碰撞从而受到伤害时，创建一个伤害数字的UI，这些均有些实例化的逻辑计算，当然这些也会算到Physics开销中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-10&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;shadershader1zwrite&quot;&gt;我用内建的Shader渲染场景，深度图里有内容。而用自己的Shader，取到的深度图什么都没有，都是1，什么原因导致的呢？我已经打开ZWrite了。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;4.x中是靠depth buffer直接获取或者通过shader replacement来实现。&lt;/li&gt;
+  &lt;li&gt;5.x后统一考ShadowCaster来实现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shaderparse--shadercreategpuprogram-&quot;&gt;Shader.Parse 和 Shader.CreateGpuProgram 到底是做什么的？他们什么时候执行？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Shader.Parse体现的是Shader的加载和解析， Shader.CreateGpuProgram 是将Shader传入GPU的一次提交，GPU驱动会对其进行编译，以适应于特定的设备或平台。在Unity 5.x版本中，Shader.Parse在Shader资源加载时进行执行，而 Shader.CreateGpuProgram在所在GameObject第一渲染时进行执行。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 04 Sep 2017 23:36:59 +0800</pubDate>
+        <link>https://caihua.tech/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>游戏设计模式读书笔记：组件模式</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;为什么是组件&lt;/h2&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;意图&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ecs&quot;&gt;实体-组件-系统(ECS)&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;组件模式在游戏中常见的体现就是&lt;a href=&quot;https://zh.wikipedia.org/wiki/User:Lijinyu25775/%E5%AE%9E%E4%BD%93-%E7%BB%84%E4%BB%B6-%E7%B3%BB%E7%BB%9F(ECS)&quot;&gt;ECS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;为什么是组件&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。&lt;/li&gt;
+  &lt;li&gt;将不同类型的功能切分成不同的组件，既是对结构的优化也是实现了功能的复用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;为什么不是类的继承&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;因为可能一个实体的在继承多个父类（C++，但是C#这样的语言在语法上就不行）时出现重复继承的问题。比如实体的父类的父类出现重复的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;模式&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;单一实体跨越了多个领域&lt;/strong&gt;。为了保持领域之间相互分离，将每部分代码放入&lt;strong&gt;各自的组件类&lt;/strong&gt;中。实体被简化为&lt;strong&gt;组件的容器。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;何时使用&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;组件通常在定义游戏实体的核心部分中使用。&lt;/li&gt;
+  &lt;li&gt;有一个涉及了多个领域的类，而你想保持这些领域互相隔离。&lt;/li&gt;
+  &lt;li&gt;一个类正在变大而且越来越难以使用。&lt;/li&gt;
+  &lt;li&gt;想要能定义一系列分享不同能力的类，但是使用继承无法让你精确选取要重用的部分。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;一些问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;组件之间的通信问题&lt;/li&gt;
+  &lt;li&gt;组件的获得需要先获取实体，才能获得组件对象。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;实现&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;建议直接看原书代码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;进化过程&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;1.先将不同的功能模块分为不同的组件，实体类本身只是调用组件中的方法（作为容器），参数为自身。&lt;/li&gt;
+  &lt;li&gt;2.对组件类进行接口化，最后变成实体类中只要使用继承自接口的类即可。对于接口的不同实现就可以实现不同的功能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-9&quot;&gt;设计决策&lt;/h2&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;对象如何获得组件&lt;/h4&gt;
+&lt;h5 id=&quot;section-11&quot;&gt;对象创建组件&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;自己创建所以一定能拿到需要的组件&lt;/li&gt;
+  &lt;li&gt;组件模式的优势在于自由的将不同的组件赋予一个对象，从而让对象获得不同的能力，或者说变成了某个特定的游戏对象。但是如果用硬编码的方式获得组件，那么这个对象就定型了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-12&quot;&gt;外部提供组件&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;对象更加灵活。&lt;/strong&gt;我们可以提供不同的组件，这样就能改变对象的行为。 通过共用组件，对象变成了组件容器，我们可以为不同目的一遍又一遍重用它。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;对象可以与具体的组件类型解耦。&lt;/strong&gt; 如果我们允许外部代码提供组件，好处是也可以传递派生的组件类型。 这样，对象只知道组件接口而不知道组件的具体类型。这是一个很好的封装结构。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PS：细细体会unity的组件实现。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-13&quot;&gt;组件之间如何通信&lt;/h4&gt;
+&lt;h5 id=&quot;section-14&quot;&gt;通过修改容器对象的状态：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个可以参考unity的实现。在unity中每个GameObject都必须有transform组件，以为位置、角度和缩放信息算是所有对象都必须有的，而且在物理组件、渲染组件中都需要用到。&lt;/li&gt;
+  &lt;li&gt;但是这个方案的问题就在于，如果一个GameObject使用了多个组件，而这些组件在修改数据时可能需要一定的顺序才行，比如计算移动的组件需要限制性，在执行物理相关和渲染相关的，因为可能一个对象在一帧中已经离开了摄像机范围而不需要渲染了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-15&quot;&gt;互相引用&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个没什么好多解释的，掌握了对象的引用自然可以获得其数据和方法。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;但是这个是一种倒退，因为耦合了。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-16&quot;&gt;消息机制&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;恩恩，尤其是使用订阅发布模式的消息系统。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-17&quot;&gt;参考&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://gpp.tkchu.me/component.html&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;一个不错的&lt;a href=&quot;https://github.com/EllanJiang/GameFramework&quot;&gt;框架&lt;/a&gt;，我是先学习了这个框架在看这个文章的，醍醐灌顶之感。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 28 Aug 2017 14:11:13 +0800</pubDate>
+        <link>https://caihua.tech/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/</guid>
+        
+        <category>游戏设计模式读书笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第五周</title>
@@ -1091,387 +1478,6 @@ ManagedHeap.UsedSize过大，一方面可能会影响一次GC的耗时；另一�
         <pubDate>Mon, 07 Aug 2017 22:17:31 +0800</pubDate>
         <link>https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Lua学习笔记：高级概念</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;高级概念&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这部分中会记录一些lua语言中的高级概念和技术。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;模块&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;概念&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。&lt;/li&gt;
-  &lt;li&gt;一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。&lt;/li&gt;
-  &lt;li&gt;具体实现看教程&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;使用&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- 创建一个叫Class的模块
-Class = {}
-
-Class.Name = &quot;name&quot;
-
-Class.Grades =
-{
-  &quot;Grade1&quot;,
-  &quot;Grade2&quot;,
-  &quot;Grade3&quot;
-}
-
-temp = &quot;a&quot;
-local temp2 = &quot;b&quot;
-Class.temp3 = &quot;c&quot;
-
-function Class.FindGrade(key)
-   return Class.Grades[key]
-end
-
-return Class
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- temp = &quot;local temp1&quot;
-
--- 导入模块
-require(&quot;Class&quot;)
-
--- temp = &quot;local temp1&quot;
-
-print(temp)
-print(Class.temp2)
-print(Class.temp3)
-
--- 调用模块函数
-print(Class.FindGrade(1))
-
--- 结果
-a
-nil
-c
-Grade1-abc
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;分析一下模块的变量，从例子中可以总结，模块中的以模块名+&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;形成的变量（Class.temp3）是全局变量，而且即使在模块内部调用用也要用模块名+&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;的形式使用。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;没有加模块名的变量其实也是全局变量，外部代码也可以直接访问。注意代码中在require的前后分别定义了一个和模块中名字相同的变量，这里有一个很有意思的事情，就是如果是之前定义的，那么在print时是模块中的值，如果在之后定义那么就是本地定义的值。这说明require这种过程实际上等于在本地定义了一些变量。所以最终输出的值可以按照后定义的输出。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;显示标记为local的变量是本地变量，在模块内部使用是没有问题的，但是外部代码无法访问。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;加载机制&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;基本上遵循C的加载机制，也就是先找同一目录下的文件，然后会找全局变量中path里面定义的文件。&lt;/li&gt;
-  &lt;li&gt;通常我们在编写代码的时候肯定是会有物理的文件夹结构的，此时如果我们不去改package.path的值，那么可以在引用时加速文件夹名字，比如我把class和student放到了Module文件夹下，那么代码中写&lt;code class=&quot;highlighter-rouge&quot;&gt;require(&quot;Module/Class&quot;)&lt;/code&gt;即可正常调用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-5&quot;&gt;协程&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;首先是真的多线程，并非unity的那种主线程内部的线程。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;require(&quot;MyCoroutine&quot;)
-cor1 = MyCoroutine.CreatCor()
-print(cor1)
-for i = 1,  10 do
-	MyCoroutine.RunCor(cor1)
-end
-
-
-cor2 = MyCoroutine.CreatCor()
-print(cor2)
-for i = 1,  10 do
-	MyCoroutine.RunCor(cor2)
-end
-
--- 结果
-thread: 0089D628
-1
-2
-3
-running
-thread: 0089D628
-4
-5
-6
-7
-8
-9
-10
-thread: 00897D60
-1
-2
-3
-running
-thread: 00897D60
-4
-5
-6
-7
-8
-9
-10
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;用法比较繁琐，但是可以明确的控制协程的执行步骤。有点类似python。&lt;/li&gt;
-  &lt;li&gt;建议直接看教程。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;metatable&quot;&gt;元表（MetaTable）&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;metatable更像是lua为table提供的依赖倒置的接口&lt;/strong&gt;，以&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;这个函数为例，本身如果lua提供了固定的函数，那么我们在取值时候只能遵从lua的规定。但是现在提供了一个&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;，你可以自定义这个&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的行为，而lua在运行期间遇到了需要用到&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的时候就会按照你所规定的准则行事了。这个思维是很好的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;下面是&lt;code class=&quot;highlighter-rouge&quot;&gt;__index&lt;/code&gt;的用法，metatable。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lua查找一个表元素时的规则，其实就是如下3个步骤:&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;1.在表中查找，如果找到，返回该元素，找不到则继续&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2.判断该表是否有元表，如果没有元表，返回nil，有元表则继续。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;3.判断元表有没有__index方法，如果__index方法为nil，则返回nil；如果__index方法是一个表，则重复1、2、3；如果__index方法是一个函数，则返回该函数的返回值。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;代码示例：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mt = {}
-
-mt.__index =
-function (t,key)
-	if key == &quot;key3&quot; then
-		return 5
-	elseif key == &quot;key4&quot;  then
-		return 6
-	else
-		return 0
-	end
-	
-end
-
-mt.__newindex =
-function (t,key,value)
-	t.key = value
-end
-
-mt.__tostring = function (t)
-	local tempTable = {}
-	local index = 0
-	for i,v in pairs(t) do
-		index = index + 1
-		tempTable[index] = v
-		print(i..&quot;/&quot;..v)
-	end
-	return '{' .. table.concat(tempTable, ', ') .. '}'
-end
-
--- 一旦定义了__metatable，就代表getmetatable只能得到这个函数的值，
--- 而不能再次赋值,否则会报错“cannot change a protected metatable”
-mt.__metatable = &quot;不能看啊不能看&quot;
-
-
-local t = {1, 2, 3, key1 = 3,key2 = 4}
-setmetatable(t, mt)
-print(t)
-
-print(getmetatable(t))
-
-print(t[&quot;key4&quot;])
-
-
-mt2 = {}
-
--- 下面的代码会报错
---setmetatable(t,mt2)
-
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;这个东西有个好处，如果我写的key不存在，那么我是可以自定义它的行为的。我可以返回一个数值，也可以执行一段代码。但是一般来说还是提前预置好数据比较好。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;PS：元表本身是一个table，如果按照table就是类这个概念来看的话，元表对应了类类型，而实际的使用中它也是起了这样的作用。元表中以&lt;code class=&quot;highlighter-rouge&quot;&gt;__&lt;/code&gt;开头的方法们算是它保留的方法，我们可以给一个元表定义这些方法实际是一个什么样的行为。比如&lt;code class=&quot;highlighter-rouge&quot;&gt;__tostring&lt;/code&gt;方法，我们可以在一个元表中重新定义它的实现，有点像C#中override ToString方法。&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-6&quot;&gt;面向对象&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;lua的oop是基于table的，table中可以设置全局或局部的变量、方法等。&lt;/li&gt;
-  &lt;li&gt;继承通过子类调用父类的构造函数（其实lua没有构造函数一说，只是我们人为的在代码中创造出来了一个创建对象的函数）来创建，然后在扩展，从而实现了继承。&lt;/li&gt;
-  &lt;li&gt;从本质上说，lua的继承和C的继承是一样的，依赖的是table嵌套table，而C中是结构体嵌套结构体。&lt;/li&gt;
-  &lt;li&gt;具体看下链接里教程的例子吧。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;一些体会&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;其实只要学过一个脚本语言，lua就不算陌生，还算是上手比较快。&lt;/li&gt;
-  &lt;li&gt;所有语言的核心在api的使用，所以熟悉标准库是关键。&lt;/li&gt;
-  &lt;li&gt;lua与C/C++的交互也是大头，不过目前暂时不用就先不学了，等后续学了再填坑。&lt;/li&gt;
-  &lt;li&gt;多写，多写，多写。&lt;/li&gt;
-  &lt;li&gt;一个学习lua编程的方法是看WOW的插件源码。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;调试&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;因为用的是LuaStudio，在调试的过程中也遇到了很多的问题。首先正常的自己写的代码都可以require成功，os\io\math这样的库也都没有问题，但是用到socket库的时候怎么都无法require。最后发现在LuaStudio中必须这样设置才行&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG45bFJFdFZwNEVuU216QnRPaEtaaHcwTFU3MW1PS2tuUWl2cWkwZE1EWC9RPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section-9&quot;&gt;参考&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://blog.csdn.net/booirror/article/details/7881820&quot;&gt;table参考&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.runoob.com/lua/lua-tutorial.html&quot;&gt;lua教程&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/klkucan/LuaStudy&quot;&gt;我在学习中写的所有代码&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.jb51.net/list/list_245_3.htm&quot;&gt;脚本之家-lua&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 07 Aug 2017 22:10:24 +0800</pubDate>
-        <link>https://caihua.tech/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/</guid>
-        
-        <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第一周</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;初衷&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先&lt;a href=&quot;https://www.uwa4d.com&quot;&gt;UWA&lt;/a&gt;一直以来都是一个我很喜欢的网站，因为他们在unity的优化方面是非常专业的，而且他们对于技术的分享也是毫不吝啬的。在他们的网站上有很多的技术文章，很久以来都想系统的阅读一遍，但是一直没有去做。这周开始下定决心要从第一篇开始，把UWA所有的技术分享文章读完，这个系列的文章会对每周读到的技术做一个总结，但是因为文章涉及的方向比较杂，因此会简单的用技术进行一个分类。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;cpu&quot;&gt;CPU方面的优化（很有用）&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;就目前的Unity移动游戏而言，CPU方面的性能开销主要可归结为两大类：引擎模块性能开销和自身代码性能开销。其中，引擎模块中又可细致划分为渲染模块、动画模块、物理模块、UI模块、粒子系统、加载模块和GC调用等等。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;渲染模块&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;减少draw call。减少dc的核心办法在unity里面就是减少材质球。因为如果多个物体共用一个材质球（共同的贴图和shader）那么对于一次draw call来说就是传递顶点数多少的问题。&lt;/li&gt;
-  &lt;li&gt;顶点数的多少引出了另一个问题，传输渲染数据的总线带宽。当大量GameObject满足批处理条件时（900个数据值），unity会合并mesh，但是一个超大的mesh数据传输起来也有瓶颈。因此关于draw call的优化不能是无脑的，需要平衡dc次数和总线带宽。&lt;/li&gt;
-  &lt;li&gt;简化资源&lt;/li&gt;
-  &lt;li&gt;渲染模块在CPU方面的优化方法还有很多，比如LOD、Occlusion Culling和Culling Distance等等&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;ui&quot;&gt;UI模块&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;文中以NGUI为例进行了函数的分析，但是UGUI应该也有借鉴的意义。&lt;/li&gt;
-  &lt;li&gt;在NGUI的优化方面，UIPanel.LateUpdate为性能优化的重中之重，它是NGUI中CPU开销最大的函数，没有之一。对于UIPanel.LateUpdate的优化，主要着眼于UIPanel的布局，其原则如下：
-    &lt;ul&gt;
-      &lt;li&gt;尽可能将动态UI元素和静态UI元素分离到不同的UIPanel中（UI的重建以UIPanel为单位），从而尽可能将因为变动的UI元素引起的重构控制在较小的范围内；&lt;/li&gt;
-      &lt;li&gt;尽可能让动态UI元素按照同步性进行划分，即运动频率不同的UI元素尽可能分离放在不同的UIPanel中；&lt;/li&gt;
-      &lt;li&gt;控制同一个UIPanel中动态UI元素的数量，数量越多，所创建的Mesh越大，从而使得重构的开销显著增加。比如，战斗过程中的HUD运动血条可能会出现较多，此时，建议研发团队将运动血条分离成不同的UIPanel，每组UIPanel下5~10个动态UI为宜。这种做法，其本质是从概率上尽可能降低单帧中UIPanel的重建开销。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;PS：结合之前关于UI优化的文章，UI优化的核心在于拆分UI元素。始终不变的归为一类，动态变化的归为一类。对于UGUI来说就是拆分Canvas。&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;PS2：关于UI重建的说明。UI其实是一些3D的quad，这一下就能够理解为什么存在UI的减少drawcall了，这个和模型的减dc完全一个原理。多个UI在一个Canvas下就存在多个UI的mesh合并问题（批处理），但是像血条这样的UI一般用的是progress，它的原理就是默认模式下改变quad的顶点数据来实现进度大小的改变，fxxx模式下是顶点和UV一起变，只要改变了顶点位置，那么mesh必要每次dc的时候都要重新计算。和它一起的那些不变的UI的计算是浪费的。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;加载模块&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前加载模块性能开销主要在场景切换，分为前一场景的场景卸载和下一场景的场景加载。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;场景卸载：主要是Destroy和Resources.UnloadUnusedAssets两个函数，前者的消耗多少主要取决于事件函数中代码的功能多少。后者耗时开销主要取决于场景中Asset和Object的数量，数量越多，则耗时越慢。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;场景加载：主要是资源加载和Instantiate实例化。
-    &lt;ul&gt;
-      &lt;li&gt;资源加载几乎占据了整个加载过程的90%时间以上，其加载效率主要取决于资源的加载方式（Resource.Load或AssetBundle加载）、加载量（纹理、网格、材质等资源数据的大小）和资源格式（纹理格式、音频格式等）等等。不同的加载方式、不同的资源格式，其加载效率可谓千差万别。&lt;/li&gt;
-      &lt;li&gt;在场景加载过程中，往往伴随着大量的Instantiate实例化操作，比如UI界面实例化、角色/怪物实例化、场景建筑实例化等等。在Instantiate实例化时，引擎底层会查看其相关的资源是否已经被加载，如果没有，则会先加载其相关资源，再进行实例化，这其实是大家遇到的大多数“Instantiate耗时问题”的根本原因，这也是为什么我们在之前的AssetBundle文章中所提倡的资源依赖关系打包并进行预加载，从而来缓解Instantiate实例化时的压力。&lt;/li&gt;
-      &lt;li&gt;另一方面，Instantiate实例化的性能开销还体现在脚本代码的序列化上，如果脚本中需要序列化的信息很多，则Instantiate实例化时的时间亦会很长。最直接的例子就是NGUI，其代码中存在很多SerializedField标识，从而在实例化时带来了较多的代码序列化开销。因此，在大家为代码增加序列化信息时，这一点是需要大家时刻关注的。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;以上是游戏项目中性能开销最大的三个模块，当然，游戏类型的不同、设计的不同，其他模块仍然会有较大的CPU占用。比如，ARPG游戏中的动画系统和物理系统，音乐休闲类游戏中的音频系统和粒子系统等。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;PS：关于场景加载在之前的文章中也有讲到，尤其是AssetBundle系列文章中。根据unity对资源的管理方式，Resources文件夹里面的asset会全部加载到PersistentManager，当然这个过程只是建立InstanceID的过程，但是仍旧消耗了时间。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;代码效率&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一图胜千言
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Foptimzation_cpu%2FDoc1_09.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;4.x的内容就不考虑写出来了。&lt;/li&gt;
-  &lt;li&gt;AssetBundle5.x怎么制作我在之前的一个blog中写过,可以说5.x极大的简化了AssetBundle的打包流程。&lt;/li&gt;
-  &lt;li&gt;不考虑5.3前的情况，之后的版本建议使用LZ4打包，因为是按需解压加载的。&lt;/li&gt;
-  &lt;li&gt;新增的AppendHashToAssetBundleName选项很不错，可以在生成AssetBundle时加入hash值，便于判定是否有更新，AssetBundleBrowser中支持。&lt;/li&gt;
-  &lt;li&gt;几个注意的点：
-    &lt;ul&gt;
-      &lt;li&gt;新机制打包无法指定Assetbundle.mainAsset，因此无法再通过mainAsset来直接获取资源。&lt;/li&gt;
-      &lt;li&gt;开启DisableWriteTypeTree可能造成AssetBundle对Unity版本的兼容问题，但会使Bundle更小，同时也会略微提高加载速度。&lt;/li&gt;
-      &lt;li&gt;abName可通过脚本进行设置和清除，也可以通过构造一个AssetBundleBuild数组来打包。&lt;/li&gt;
-      &lt;li&gt;Prefab之间不会建立依赖，即如果Prefab-A和Prefab-B引用了同一张纹理，而他们设置了不同的abName，而共享的纹理并未设置abName，那么Prefab-A和Prefab-B可视为分别打包，各自Bundle中都包含共享的纹理。因此在使用UGUI，开启Sprite Packer时，由于Atlas无法标记abName，在设置UI界面Prefab的abName时就需要注意这个问题。&lt;/li&gt;
-      &lt;li&gt;5.x中加入了Shader stripping功能,在打包时，默认情况下会根据当前场景的Lightmap及Fog设置对资源中的Shader进行代码剥离。这意味着，如果在一个空场景下进行打包，则Bundle中的Shader会失去对Lightmap和Fog的支持，从而出现运行时Lightmap和Fog丢失的情况.而通过将Edit-&amp;gt;Project Settings-&amp;gt;Graphics下shader Stripping中的modes改为Manual，并勾选相应的mode即可避免这一问题。&lt;/li&gt;
-      &lt;li&gt;Shader被打包到不同AssetBundle中了，WarmupAllShaders仅能对当前内存中的Shader进行warm up。后续如果又有Shader加载进来，则仍然会出现CreateGPUProgram操作。&lt;/li&gt;
-      &lt;li&gt;PS:这一条在2017中发现custom选项中是全选的。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-4&quot;&gt;纹理&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于图片如果可以的话，建议直接将其制作成POT（ power of two，即图片的size是2次幂，这个也是unity建议的）图片，而非进行二次转换。ToLarger确实可以将纹理拉伸成POT纹理，但如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。&lt;/li&gt;
-  &lt;li&gt;Texture占用内存总是双倍：出现这种情况的原因有两种：一种是在真机运行时开启了Read&amp;amp;Write。另一种可能是Unity的Bug，目前的Unity 5.2.3 release note如下 ：
-(735644) - OpenGL: Fixed texture memory usage reporting in profiler, was twice the actual size for most textures.&lt;/li&gt;
-  &lt;li&gt;纹理Atlas是合成一张2048（尺寸）的纹理还是四张1024的纹理在其他设置一致的情况下，这两种方式无论在加载还是渲染方面其实并没有实质上的差别。在我们接触到的大多数案例中，纹理资源方面的问题除了尺寸外，&lt;strong&gt;纹理格式、Mipmap设置和Read&amp;amp;Write功能&lt;/strong&gt;同样是需要研发团队时刻关注的。&lt;/li&gt;
-  &lt;li&gt;PS:看来纹理的Read&amp;amp;Write选项很重要&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;unity&quot;&gt;unity的工具&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Overhead：
-    &lt;ul&gt;
-      &lt;li&gt;Overhead的计算方法是：Profiler当前帧统计的总耗时时间减去所有已知选项的累加时间，即引擎当前还无法识别模块的耗时时间。&lt;/li&gt;
-      &lt;li&gt;Overhead数值理论上是趋向于0的，但是由于目前市面上的硬件设备、系统框架过于丰富，所以引擎可能无法识别所有模块的CPU开销。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;unity的分析工具中的Reserved Total 和 Used Total为Unity引擎在内存方面的总体分配量和总体使用量。 一般来说，引擎在分配内存时并不是向操作系统 “即拿即用”，而是首先获取一定量的连续内存，然后供自己内部使用，待空余内存不够时，引擎才会向系统再次申请一定量的连续内存进行使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Sat, 29 Jul 2017 23:18:54 +0800</pubDate>
-        <link>https://caihua.tech/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/</guid>
         
         <category>UWA</category>
         

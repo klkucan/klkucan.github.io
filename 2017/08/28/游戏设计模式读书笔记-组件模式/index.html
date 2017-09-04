@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>AssetBundle学习笔记：2、压缩 - 蔡华的博客</title>
+    <title>游戏设计模式读书笔记：组件模式 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/">
+    <link rel="canonical" href="https://caihua.tech/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记">AssetBundle学习笔记</a>
+                        <a class="tag" href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记">游戏设计模式读书笔记</a>
                         
                     </div>
-                    <h1>AssetBundle学习笔记：2、压缩</h1>
+                    <h1>游戏设计模式读书笔记：组件模式</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on March 20, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on August 28, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,33 +187,97 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="section">格式</h4>
+				<h2 id="section">为什么是组件</h2>
+<h4 id="section-1">意图</h4>
 <ul>
-  <li>
-    <p>谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。</p>
-  </li>
-  <li>LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。</li>
-  <li>LZ4：5.3以后才加入的一种压缩格式，被unity自己大量使用。这是一种基于块的压缩方式，当一个对象从LZ4压缩的AssetBundle中加载时，会按照需要解压部分的块。这样的好处在于快速的加载对象，后面会提到一个最佳实践。当然，按照这个原理，你也可以想象如果一个LZ4AssetBundle中只包含了一个GameObject，那么也不存在什么按需加载了。当使用AssetBundle.LoadFromFile加载LZ4格式的文件时，其实不会将问价加载到内容，而是加载AssetBundle的Header。</li>
-  <li>AssetBundle也可以选择不压缩，这样体积最大但是加载最快。</li>
+  <li>允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。</li>
 </ul>
 
-<h4 id="assetbundle">缓冲被压缩的AssetBundle</h4>
+<h4 id="ecs">实体-组件-系统(ECS)</h4>
 <ul>
-  <li>WWW.LoadFromCacheOrDownload方法下载并缓冲AssetBundle到磁盘，5.3以后缓冲的文件可以是LZ4格式的压缩文件了，这直接导致了一个很2的事情。就是当你下载了LZMA格式的AssetBundle后，每当你通过socket下载到足够的数据后，unity就在后台悄悄的解压然后重新压缩为LZ4格式的文件直到下载结束，这个压缩发生在下载流（download streaming）中。当用到缓冲中的数据时，就会按照解压LZ4的套路走了。也就是按需按块解压。</li>
-  <li>缓冲压缩是默认的，然后可以通过 Caching.compressionEnabled属性来控制。会影响到包缓冲到磁盘和保存在内存中。</li>
+  <li>组件模式在游戏中常见的体现就是<a href="https://zh.wikipedia.org/wiki/User:Lijinyu25775/%E5%AE%9E%E4%BD%93-%E7%BB%84%E4%BB%B6-%E7%B3%BB%E7%BB%9F(ECS)">ECS</a></li>
 </ul>
 
-<h4 id="section-1">指导方针，满满的干货</h4>
-
+<h4 id="section-2">为什么是组件</h4>
 <ul>
-  <li>如果是将AssetBundle打包到游戏中，也就是AssetBundle跟着安装包走的话，推荐LZ4+AssetBundle.LoadFromFileAsync，既有压缩省空间，又有最快的加载性能可能性，给你读取内存buff的快感。</li>
-  <li>如果是网络下载可下载内容（DLC），则使用LZMA+LoadFromCacheOrDownload/WebRequest，这样可以获得最好的压缩比。缓存到本地后使用AssetBundle.LoadFromFile加载。这里需要注意，如果是一些需要持久化的内容，是需要实实在在的保存到本地的，否则进程结束后内存中的cache会清除。</li>
-  <li>如果是加密的AssetBundle，则使用LZ4+LoadFromMemoryAsync。其实也可以理解，毕竟需要加载到内容后进行解密。而且这个差不多是LoadFromMemory[Async]唯一的使用场景。</li>
-  <li>当使用自定义压缩时，请使用不压缩来创建AssetBundle，然后自己解压后使用AssetBundle.LoadFromFileAsync来加载。</li>
-  <li>为了节约内存，如果是不含prefab的AssetBundle，比如是texture的。最好用LoadFromCacheOrDownload，前提是通过网络获取，因为只有少量的序列化文件在内存。如果是保护prefab比较多的，用new WWW可能占用的内存会比序列化文件的都少。</li>
-  <li>总之，AssetBundle的使用需要进行灵活的应用。</li>
+  <li>在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。</li>
+  <li>将不同类型的功能切分成不同的组件，既是对结构的优化也是实现了功能的复用。</li>
 </ul>
 
+<h4 id="section-3">为什么不是类的继承</h4>
+<ul>
+  <li>因为可能一个实体的在继承多个父类（C++，但是C#这样的语言在语法上就不行）时出现重复继承的问题。比如实体的父类的父类出现重复的问题。</li>
+</ul>
+
+<h2 id="section-4">模式</h2>
+<ul>
+  <li><strong>单一实体跨越了多个领域</strong>。为了保持领域之间相互分离，将每部分代码放入<strong>各自的组件类</strong>中。实体被简化为<strong>组件的容器。</strong></li>
+</ul>
+
+<h4 id="section-5">何时使用</h4>
+<ul>
+  <li>组件通常在定义游戏实体的核心部分中使用。</li>
+  <li>有一个涉及了多个领域的类，而你想保持这些领域互相隔离。</li>
+  <li>一个类正在变大而且越来越难以使用。</li>
+  <li>想要能定义一系列分享不同能力的类，但是使用继承无法让你精确选取要重用的部分。</li>
+</ul>
+
+<h4 id="section-6">一些问题</h4>
+<ul>
+  <li>组件之间的通信问题</li>
+  <li>组件的获得需要先获取实体，才能获得组件对象。</li>
+</ul>
+
+<h2 id="section-7">实现</h2>
+<ul>
+  <li>建议直接看原书代码。</li>
+</ul>
+
+<h4 id="section-8">进化过程</h4>
+<ul>
+  <li>1.先将不同的功能模块分为不同的组件，实体类本身只是调用组件中的方法（作为容器），参数为自身。</li>
+  <li>2.对组件类进行接口化，最后变成实体类中只要使用继承自接口的类即可。对于接口的不同实现就可以实现不同的功能。</li>
+</ul>
+
+<h2 id="section-9">设计决策</h2>
+
+<h4 id="section-10">对象如何获得组件</h4>
+<h5 id="section-11">对象创建组件</h5>
+<ul>
+  <li>自己创建所以一定能拿到需要的组件</li>
+  <li>组件模式的优势在于自由的将不同的组件赋予一个对象，从而让对象获得不同的能力，或者说变成了某个特定的游戏对象。但是如果用硬编码的方式获得组件，那么这个对象就定型了。</li>
+</ul>
+
+<h5 id="section-12">外部提供组件</h5>
+<ul>
+  <li><strong>对象更加灵活。</strong>我们可以提供不同的组件，这样就能改变对象的行为。 通过共用组件，对象变成了组件容器，我们可以为不同目的一遍又一遍重用它。</li>
+  <li><strong>对象可以与具体的组件类型解耦。</strong> 如果我们允许外部代码提供组件，好处是也可以传递派生的组件类型。 这样，对象只知道组件接口而不知道组件的具体类型。这是一个很好的封装结构。</li>
+  <li><strong>PS：细细体会unity的组件实现。</strong></li>
+</ul>
+
+<h4 id="section-13">组件之间如何通信</h4>
+<h5 id="section-14">通过修改容器对象的状态：</h5>
+<ul>
+  <li>这个可以参考unity的实现。在unity中每个GameObject都必须有transform组件，以为位置、角度和缩放信息算是所有对象都必须有的，而且在物理组件、渲染组件中都需要用到。</li>
+  <li>但是这个方案的问题就在于，如果一个GameObject使用了多个组件，而这些组件在修改数据时可能需要一定的顺序才行，比如计算移动的组件需要限制性，在执行物理相关和渲染相关的，因为可能一个对象在一帧中已经离开了摄像机范围而不需要渲染了。</li>
+</ul>
+
+<h5 id="section-15">互相引用</h5>
+<ul>
+  <li>这个没什么好多解释的，掌握了对象的引用自然可以获得其数据和方法。</li>
+  <li><strong>但是这个是一种倒退，因为耦合了。</strong></li>
+</ul>
+
+<h5 id="section-16">消息机制</h5>
+<ul>
+  <li>恩恩，尤其是使用订阅发布模式的消息系统。</li>
+</ul>
+
+<h2 id="section-17">参考</h2>
+<ul>
+  <li><a href="http://gpp.tkchu.me/component.html">原文</a></li>
+  <li>一个不错的<a href="https://github.com/EllanJiang/GameFramework">框架</a>，我是先学习了这个框架在看这个文章的，醍醐灌顶之感。</li>
+</ul>
 
 
                 <hr>
@@ -224,17 +288,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/" data-toggle="tooltip" data-placement="top" title="我所了解的法线贴图">
+                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第五周">
                         Previous<br>
-                        <span>我所了解的法线贴图</span>
+                        <span>每天一点UWA：第五周</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：3、AssetBundle内部结构">
+                        <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第六周">
                         Next<br>
-                        <span>AssetBundle学习笔记：3、AssetBundle内部结构</span>
+                        <span>每天一点UWA：第六周</span>
                         </a>
                     </li>
                     
