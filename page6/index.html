@@ -12,7 +12,7 @@
 
     <title>蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/page3/">
+    <link rel="canonical" href="https://caihua.tech/page6/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -173,245 +173,46 @@
             ">
     			
 <div class="post-preview">
-    <a href="/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/">
+    <a href="/2016/09/16/02%E9%9B%86%E5%90%88/">
         <h2 class="post-title">
-            写点东西，证明我还在更新
+            iOS学习笔记-02集合
         </h2>
         
         <div class="post-content-preview">
-            最近的一些情况
+            2.集合
 
-
-  很久没有更新博客了，从4月份开始为了项目赶进度开始了996模式，实在没有什么时间写东西。这个是公司也是我自己做的第一个VR旅游项目，可以说从零开始吧，毕竟与游戏开发不一样，期间学到了多东西，也走了不少的弯路。
-  在项目期间很神奇的看了一大半冯乐乐写的《Shader入门精要》，在这给这本书打打广告，这是一本很适合入门的Shader书籍，而且紧密的结合了Unity5。对...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on June 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：4、AssetBundle的下载与asset的加载
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle的下载
-下载AssetBundle
-
-
-  首先需要理解的是这个下载就是指的从网络下载。因此只有WWW和 WWW.LoadFromCacheOrDownload两个方法。
-  www是不带缓存的，而后者是带缓存的。
-  LoadFromCacheOrDownload的version参数，如果缓存中不存在，或者version低于指定的版本就会重新下载，否则直接从缓存拿数据...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：3、AssetBundle内部结构
-        </h2>
-        
-        <div class="post-content-preview">
-            本质
-
-  AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。
-
-
-Normal AssetBundle structure
-
-
-
-  对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：2、压缩
-        </h2>
-        
-        <div class="post-content-preview">
-            格式
 
   
-    谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。
+    集合分为可变与不可变。
   
-  LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。
-  LZ4：5.3以后才加入的一种压缩格式...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 20, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/">
-        <h2 class="post-title">
-            我所了解的法线贴图
-        </h2>
-        
-        <div class="post-content-preview">
-            两篇文章
-
   
-    本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。
-
-    凹凸映射
-
-    写给笨人的法线贴图原理
-  
-
-
-一些基本的概念
-
-1.法线贴图的定义
-
-顾名思义，法线贴图保存的是法线的信息贴图。
-
-2.用来干什么
-用来进行凹凸映射。
-
-
-  凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法不会真的改变模型的顶点...
+    泛型，写法 NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];和NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] i...
         </div>
     </a>
     <p class="post-meta">
-        Posted by 蔡华的博客 on March 16, 2017
+        Posted by 蔡华的博客 on September 16, 2016
     </p>
 </div>
 <hr>
 
 <div class="post-preview">
-    <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
+    <a href="/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
         <h2 class="post-title">
-            游戏设计模式读书笔记：原型模式
+            iOS学习笔记-01基本语法
         </h2>
         
         <div class="post-content-preview">
-            原型模式
-定义
+            1.基本语法
 
-  定义：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
-原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。
-  看图
+  与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger
 
 
-
-模式的理解
-
-  当需要快速并且尽可能少的占用内存的...
+#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+typ...
         </div>
     </a>
     <p class="post-meta">
-        Posted by 蔡华的博客 on March 16, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：1、概述和创建
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
-
-
-概述
-
-
-  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
-
-
-AB流程
-
-
-
-  Editor编辑，...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
-        <h2 class="post-title">
-            SendMessage测试
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.
-  obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。
-  如果Foo的参数不对，会提...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
-        <h2 class="post-title">
-            关于AssetBundle解压的讨论结果
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  一切的起源在于这篇文章，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
-    
-      在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 5, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：双缓冲
-        </h2>
-        
-        <div class="post-content-preview">
-            第三篇：序列模型
-
-  双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以下文来说明下序列模型部分的重要性。
-
-
-
-  电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 25, 2017
+        Posted by 蔡华的博客 on September 16, 2016
     </p>
 </div>
 <hr>
@@ -422,13 +223,9 @@ AB流程
 <ul class="pager">
     
     <li class="previous">
-        <a href="/page2">&larr; Newer Posts</a>
+        <a href="/page5">&larr; Newer Posts</a>
     </li>
     
-    
-    <li class="next">
-        <a href="/page4">Older Posts &rarr;</a>
-    </li>
     
 </ul>
 

@@ -5,9 +5,438 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 04 Sep 2017 23:47:38 +0800</pubDate>
-    <lastBuildDate>Mon, 04 Sep 2017 23:47:38 +0800</lastBuildDate>
+    <pubDate>Sun, 10 Sep 2017 01:10:09 +0800</pubDate>
+    <lastBuildDate>Sun, 10 Sep 2017 01:10:09 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：UI优化小结</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;说明&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;经过一个半月的学习，对UI的优化有了一些心得，同时也希望把零散的知识点总结到一起，因此有了这个专题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;那些需要关注的性能指标函数&lt;/h2&gt;
+&lt;h4 id=&quot;ugui&quot;&gt;UGUI参考的函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1、Canvas.SendWillRenderCanvases()
+该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2、Canvas.BuildBatch
+该API为UI元素合并的Mesh需要改变时所产生的调用。通常之前所提到的Canvas.SendWillRenderCanvases()的调用都会引起Canvas.BuildBatch的调用。另外，Canvas中的UI元素发生移动也会引起Canvas.BuildBatch的调用。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ngui&quot;&gt;NGUI参考的函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;UICamera.Update()
+该函数通常在点击时出现开销。因此，当该函数的CPU开销较高时，通常都是因为调用了其他的较为耗时的函数引起。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIRect.Update()
+该函数通常在需要更新锚点位置时出现开销。因此，当该函数的CPU开销持续较高时，通常是因为当前场景中有较多的UI元素绑定了OnUpdate模式的锚点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIPanel.LateUpdate()
+该函数为NGUI最主要的CPU开销，包含了对所有UI界面包括其下UI元素的状态更新、网格重建、DrawCall合并等操作。大量的UI变动或者不合理的UIPanel布局都有可能导致该函数出现较高的峰值。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;UIRect.Start()
+该函数主要涉及到UI元素的初始化操作，通常在UI界面被实例化时出现并产生一定的CPU开销。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;一些需要知道的UI原理&lt;/h2&gt;
+
+&lt;h4 id=&quot;mesh&quot;&gt;mesh合并&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;一个Canvas下的所有UI元素都是合在一个Mesh中的。&lt;/li&gt;
+  &lt;li&gt;而在Batch前，UGUI会根据这些UI元素的材质（通常就是Atlas）以及渲染顺序进行重排，在不改变渲染结果的前提下，尽可能将相同材质的UI元素合并在同一个SubMesh中。所以同一Canvas下不同的材质的UI可能会合并为多个SubMesh。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ui-1&quot;&gt;UI重建&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;关于UI重建的说明。UI其实是一些3D的quad，这一下就能够理解为什么存在UI的减少少drawcall了，这个和模型的减dc完全一个原理。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;在UGUI中，网格的更新或重建（为了尽可能合并UI部分的DrawCall）是以Canvas为单位的，且只在其中的UI元素发生变动（位置、颜色等）时才会进行。因此，将动态UI元素与静态UI元素分离后，可以将动态UI元素的变化所引起的网格更新或重建所涉及到的范围变小，从而降低一定的开销。而静态UI元素所在的Canvas则不会出现网格更新和重建的开销。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在这再次对更新和重建进行一些详细的说明：&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;更新指的是UI元素本身的某些属性发生变化，从而需要重新生成，或者更新顶点属性。比如颜色变了，在UGUI中颜色的变化是通过修改顶点色实现的，所以就需要更新UI元素对应的每个顶点的顶点色属性（可以认为就是修改下某个数组里的数值）。位置移动一般是不会造成顶点属性的变化的。所以总的来说，“网格更新”更新的是顶点属性。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;UI元素和别的网格不同点在于，UI的网格是需要进行合并的，并且在UGUI中是以Canvas为单位的，在提交GPU之前，同一Canvas下的所有UI元素都会被合入一个Mesh中（但包含多个SubMesh）。所以位置的移动，顶点属性的变化，都会导致这个Mesh要重新合并，也就是网格重建。这也是为什么说要“动静分离”的原因，完全静态的Canvas是不需要重建的，但只要里面有一个UI元素在动，就会引起Canvas的重建。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;在UGUI里更改了Image的Color属性，其原理是修改顶点色，因此是会引起网格的Rebuild的（即Canvas.BuildBatch操作，同时也会有Canvas.SendWillRenderCanvases的开销）。通过修改顶点色来实现UI元素变色的好处在于，修改顶点色可以保证其材质不变，因此不会产生额外的Draw Call。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;Unity自带的UI Shader处理颜色时，改 _Color属性不会触发顶点重建吗？&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;在UI的默认Shader中存在一个Tint Color的变量，正常情况下，该值为常数(1,1,1)，且并不会被修改。如果是用脚本访问Image的Material，并修改其上的Tint Color属性时，对UI元素产生的网格信息并没有影响，因此就不会引起网格的Rebuild。但这样做因为修改了材质，所以会增加一个Draw Call。&lt;/p&gt;
+    &lt;/blockquote&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;综上所述，移动不一定会更新，但是会重建。而颜色变化或者大小变化带来的都是重建。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;优化建议：&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;动静分离，动的频率不同也分离，减少Mask组件的使用，使用Mask不仅会增加GPU端渲染的压力，同时也会造成CPU端DrawCall的明显上升。可尝试用RectMask2D来进行替换。&lt;/li&gt;
+  &lt;li&gt;减少OnEnable和OnDisable，通过移动位置、改变摄像机culling mask。&lt;strong&gt;后者可能会一定程度地提高内存的开销（UIDrawCall中存储的Mesh）&lt;/strong&gt;。&lt;/li&gt;
+  &lt;li&gt;修改material改颜色和直接改color属性在性能消耗要权衡。一个加drawcall一个会重建，要根据测试结果来。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 10 Sep 2017 01:02:01 +0800</pubDate>
+        <link>https://caihua.tech/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第七周</title>
+        <description>&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;npot-tolarger-potuipixel-perfect&quot;&gt;NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。&lt;/h4&gt;
+
+&lt;h4 id=&quot;unity-5xugui&quot;&gt;在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。&lt;/li&gt;
+  &lt;li&gt;建议，可以把Packing Tag相同的源纹理文件，打到同一个AssetBundle中（设置一样的AssetBundle Name），从而避免Atlas的冗余。同时这样打包可以让依赖它的Canvas的打包更加自由，即不需要把依赖它的Canvas都打在一个AssetBundle中，在更新时直接更新Atlas所在的AssetBundle即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scrollrectcanvassendwillrendercanvases&quot;&gt;ScrollRect在滚动的时候，会产生Canvas.SendwillRenderCanvases，有办法消除吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;ScrollRect在滚动时，会产生OnTransformChanged的开销，这是UI元素在移动时触发的，但通常这不会触发Canvas.SendWillRenderCanvases。&lt;/li&gt;
+  &lt;li&gt;如果观察到Canvas.SendWillRenderCanvases耗时较高，可以检查下ScrollRect所在的Canvas是否开启了Pixel Perfect的选项，该选项的开启会导致UI元素在发生位移时，其长宽会被进行微调（为了对其像素），而ScrollRect中通常有较多的UI元素，从而产生较高的Canvas.SendWillRenderCanvases开销。因此可以尝试关闭Pixel Perfect看效果是否可以接受，或者尝试在滚动过程中暂时关闭Pixel Perfect等方式来消除其开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ngui&quot;&gt;对NGUI字体错乱有什么好的解决方案吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;有这么几种可能：
+    &lt;ul&gt;
+      &lt;li&gt;一次展开文字太多了。这种情况在部分高通机型和Unity早期版本上都经常出现，现在也偶尔有，究其原理是FontTexture的扩容操作做得不够快或者收到了硬件驱动的限制。&lt;/li&gt;
+      &lt;li&gt;一般来说有两种方法可以解决：（1）减少面板中的字体内容；（2）一开始就用超大量的字体去扩容，将动态字体的FontTexture扩大到足够大；文字渲染与开发团队编写的多线程渲染发生了冲突。这种情况也常有发生，特别是通过GL.IssuePluginEvent方式来开启多线程渲染的项目，就会容易出现问题。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;就我们的优化经验来看，第一种情况发生的可能性比较大。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;draw-callsetpass-callsetpass-calluwadraw-call&quot;&gt;Draw Call和Setpass Call，这两个指标主要是看哪一个？关于这点众说纷纭，很多地方都是说看SetPass Call，但是在UWA的性能测试中，还是把Draw Call当成唯一指标。&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在 Unity 5.x 中，SetPass Call与 Draw Call相比，SetPass Call的指标与性能相关性更大（比如Static Batching的开启不影响Draw Call数，而SetPass Call通常会明显下降）。但 SetPass Call在某些情况下也同样存在问题，比如往一个场景中添加任意个相邻且材质相同的大网格物体（使Dynamic Batching失效）时，SetPass Call并不会变化。因此在UWA中，我们所使用的是类似Profiler 中 Total Batches 这一项指标，通常该数值与 Frame Debugger 中的数值基本一致，因此可以通过该工具来查看每个Batch的内容，从而更有针对性地进行优化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;脚本&lt;/h2&gt;
+&lt;h4 id=&quot;editor-getcomponent--tgameobject-gc-alloc&quot;&gt;Editor 下，当调用GetComponent() 且 T组件并不在当前的GameObject 上时，确实会出现GC Alloc。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先在发布后是不会出现的。&lt;/li&gt;
+  &lt;li&gt;这是因为在Editor下，Unity的MissingComponentException实现所致，在出现以上情况时，Unity 并不是直接返回一个 NULL，而是返回一个代理 Object用来储存一些相关信息，在后续被访问时可以给出更详细的报错信息。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;eventsystemupdate&quot;&gt;EventSystem.Update()占用过高怎么优化？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;EventSystem.Update 的开销分为两个部分：
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;来自被触发的响应事件，这部分的开销实际上并不属于事件系统本身，比如：某次点击触发了一个开销很高的逻辑函数，尤其是涉及到资源的加载和实例化。对于这类开销，我们建议通过Profiler.Begin/EndSample或者UWA提供的UWA API，对这些逻辑函数进行进一步的分析。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;事件检测的开销，在默认情况下所有的UI元素都是事件检测的目标，因此当界面上UI元素数量很多，且长时间接触屏幕时，会有较高的持续开销。对于这类开销，我们建议通过以下几种方式来优化：&lt;/p&gt;
+        &lt;ul&gt;
+          &lt;li&gt;合理划分子Canvas，只有需要检测事件的界面才需要挂上GraphicRaycaster组件。&lt;/li&gt;
+          &lt;li&gt;在Unity5.2之后的版本中，尽可能将不需要参与事件检测的UI元素的 Raycast Target 属性的勾选去掉。而对于Unity 4.x的版本，则可以尝试对UI部分的源码来进行修改以达到类似的效果。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;animator-controlleranimator-controller&quot;&gt;动态替换Animator Controller后删除旧的Animator Controller，但是其中的动画片段资源没有被删除。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;销毁Animator Controller并不会释放其内所引用的AnimationClip资源的，所以内存没有明显下降是正常的。建议按照以下方式做个试验：&lt;/li&gt;
+  &lt;li&gt;销毁Animator Controller 后，通过Unity Profiler立刻真机Take Sample，查看Animation Clip的Ref count是否为0；&lt;/li&gt;
+  &lt;li&gt;如果不是，则需要进一步查看这些资源的索引出处；如果为0，则可以通过UnloadUnusedAssets或UnloadAsset来将其从内存中去除。&lt;/li&gt;
+  &lt;li&gt;PS:在unity中很多对象只是个包装器，或者只是包含了其它资源的引用，因此消耗这些包装器并不会真正的销毁资源对象。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;shaderwarmupallshaderscreategpuprogramshaderassetbundleshadervariantcollectionshader&quot;&gt;我使用Shader.WarmupAllShaders操作，在后续加载资源还是有CreateGPUProgram出现。(Shader都在一个AssetBundle文件中，都是常驻内存的，不会删掉)是必须使用ShaderVariantCollection来加载Shader吗？&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;WarmupAllShaders仅能对当前内存中的Shader进行warm up。后续如果又有Shader加载进来，则仍然会出现CreateGPUProgram操作。&lt;/li&gt;
+  &lt;li&gt;所以如果出现问题中的现象应该还是有shader打包到别的AssetBundle中了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;materialsetpassfast&quot;&gt;Material.SetPassFast占用很高，这是在第一次实例化一个特效，但是第二次实例化就不会出现高值了，请问能怎么优化吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;该过程是在处理Shader，Unity 5.3以后在第一次显示时才会将Shader进行Warmup，所以就会造成一次峰值卡顿。&lt;/li&gt;
+  &lt;li&gt;上面那个问题就很好的解决了这个问题，加载完shader后可以主动调用一次Shader.WarmupAllShaders函数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-3dshader&quot;&gt;在Unity 3D中，shader是何时编译的，在何时加载入显存中的（本条来自知乎）？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Editor中：修改shader并保存时立即编译。&lt;/li&gt;
+  &lt;li&gt;Runtime下，无论哪个平台，都是在进入场景时加载shader object内容到内存，但是首次实际调用渲染时才编译，编译完成之后会cache下来。&lt;/li&gt;
+  &lt;li&gt;有两种优化方法：
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;ol&gt;
+          &lt;li&gt;调用Shader.WarmupAllShaders()，自动编译该场景中用到的所有shader。该方法在Unity5中已经废弃。&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;ol&gt;
+          &lt;li&gt;在项目设置的GraphicsSettings中，可以导出ShaderVariantCollection，并在Preloaded Shader中导入，这样的话就可以在载入场景时一并编译需要预加载的shader，这样的优化在移动平台上用得比较多。&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;https://link.zhihu.com/?target=http%3A//docs.unity3d.com/Manual/OptimizingShaderLoadTime.html&quot;&gt;具体见&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sun, 10 Sep 2017 00:55:48 +0800</pubDate>
+        <link>https://caihua.tech/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>从零开始开发一款AR应用</title>
+        <description>&lt;h2 id=&quot;vuforia&quot;&gt;Vuforia&lt;/h2&gt;
+
+&lt;h3 id=&quot;vuforia-1&quot;&gt;什么是vuforia&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;怎么使用&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;进入&lt;a href=&quot;https://developer.vuforia.com/&quot;&gt;Vuforia&lt;/a&gt;，右上角注册。&lt;/li&gt;
+  &lt;li&gt;点击Develop进入下图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcHh6WnF5VExXYmU3dStWRlRPak9URkhDR1RnVjNzTmN3PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuforia的SDK的时候需要用到。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Target Manager：target就是你扫描的图片或者模型或者其它什么的东西，当你扫描完成后如果匹配上了，就会在手机上显示相关的内容。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;license&quot;&gt;生成License&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;点击add按钮→选择类型（我选的是Development，因为只是用来学习）→输入APP name→点击Confirm&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;完成上述内容后你会得到下图的内容
+&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraDRYN3lNcWlBbW0zTkowTnp6YVBuaGI0a0NPUmtJYmpRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;点击ddd这个license，会进入下图。这个license key在程序开发中需要用到。
+&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlra2I4dDJiZmpTWG9DSDQxdFk1b05BLy9GZS9ldVBSUGVnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;target&quot;&gt;生成Target&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;选择Target Manager tab&lt;/li&gt;
+  &lt;li&gt;点击add database。其实这里用database是很准确的，因为生成的target就像一个数据库，而我们摄像头扫描到的内容就是数据，通过查询如果在DB中找到了相同的数据就认为是匹配到了。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;选择类型（我用的是Device），输入名字，点击Create。结果如下：
+&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcVJJdDRQMERyam9NaXI0Ujd0TFUrZy9FWml1Y2xjeTNRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;点击target（ddd）进入
+&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcWtSdVlGMXFzY1pUd3E1dTl5bzRDYm9CWXhpTUlMN0Z3PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;点击add target。这个里面有多种target类型。我们选择最简单的single image。这个也是市面上很多AR应用使用的，也就是手机扫描一个图片，然后显示一个对应的模型。在这个页面中，file是选择你要上传的图片。width设置和场景中虚拟内容大小一致即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraXhkS2c3eGFqaWh4RUNTZURzYWg3R0lrREhnbjdJaWVnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;输入名字然后点击add，下图是我之前设置好的一些target。
+&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdnJueVZWd0Z3MlJaNVdpY0FjS2ZHSHp4cmdsR29NbkZnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;-这里如果点击一个target，会进入下图。注意两个红色框，点击下面那个【Show Features】按钮后图片上会出现黄色区域，这个有点像做了个卷积识别色块的边缘。黄色部分越多说明在摄像头识别时越容易。而Augmentable指数对于了这个数值，也是越高越好。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlra1FkWEV5T0lHUjRmTjViOVc1TDlFVWVFeDJvOUNoWUF3PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;add target页面有个download database按钮，可以选择要下载什么数据。注意对于target的理解完全可以用数据库的概念套入。你下载了什么数据，在应用中才能对下载数据进行使用和比对。点击download后出现
+&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdVUvSjRUWnVxbDkrYjdlYUwvSmNobTlobjc0VnpqanlBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;选unity editor，然后点击download按钮。会得到一个unitypackage文件，然后导入到工程中。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;unity&quot;&gt;Unity部分的开发&lt;/h2&gt;
+
+&lt;h4 id=&quot;vuforia-sdk&quot;&gt;导入vuforia sdk&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以在vuforia官网下载unity对应的sdk，也可以通过asset store下载Vuforia AR Starter Kit来直接使用，我两个都试过在设置上是一样的。后者有很多自带的demo很不错。&lt;/li&gt;
+  &lt;li&gt;导入刚才获得的target package。&lt;/li&gt;
+  &lt;li&gt;从asset store上随便下载个免费的模型。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;场景设置&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;创建新场景&lt;/li&gt;
+  &lt;li&gt;找到ARCamera和ImageTarget的prefab拖入场景。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;arcamera&quot;&gt;ARCamera设置&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcktNS08wRXdURko4YWZYTDByT1ZQWXFSOWtOT2I0Z0pRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;点击ARCamera，再点击图中按钮进行设置。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrb3BUNkIxc0JZQXhiMCtrR2sxMUoxRWdjUHZrbTFHY0R3PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上图中第一个框就是之前申请的APP key&lt;/li&gt;
+  &lt;li&gt;第二个框是它们导入的target，我在这个demo中导入的target的名字就是【target_images】,注意这两个复选框一定要都选。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;imagetarget-&quot;&gt;ImageTarget 设置&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraFhSQVBGbWwzU0xJa0pkYTBXUXAvRU05MnY2MDkzVlZBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;红框部分Type需要选择图中的&lt;/li&gt;
+  &lt;li&gt;db选择我们导入的target_images。如果是导入了Vuforia AR Starter Kit会有几个自带的target。&lt;/li&gt;
+  &lt;li&gt;image target选择你要用的图片。在一个场景中可以有多个ImageTarget对象，不同的对象选择不同的图片即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdkhac0hzOG11MDlKeVYyZ2JEZ3Z5SmR3NE9jSjMyQXNnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上图中的马就是要显示的模型，注意要作为ImageTarget的子对象。马下面的那个白色就是ImageTarget。&lt;/li&gt;
+  &lt;li&gt;对于要显示模型的位置和角度，只要记住手机摄像头面向的方向是白色方块的方向，只要要怎么显示模型就有了参考。我图中的设置是因为我要用摄像头扫描显示器上的图片，所以马是这样放置的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;测试&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果你用的笔记本电脑带摄像头的，可以直接运行测试了。没有的，找个webcam就行了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;有用的事件代码&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;DefaultTrackableEventHandler类的OnTrackingFound函数是match到了图片后调用的函数，在这个里面可以做一些逻辑功能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;apk&quot;&gt;打包apk&lt;/h2&gt;
+
+&lt;h4 id=&quot;keystore&quot;&gt;生成keystore&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;build里面选择Android&lt;/li&gt;
+  &lt;li&gt;在player setting里面的publishing setting中可以生成keystore，方法看最后的附录。&lt;/li&gt;
+  &lt;li&gt;至于jdk和SDK都可以在网上下载到。NDK比较尴尬，unity在Android上的IL2CPP需要r10e，这个版本已经有点难下到了。我最后没用这个。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;结束语&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;到此为止一个最简单的AR应用就做完了，整个过程浪费时间在注册和下载Android SDK。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;附录&lt;/h2&gt;
+&lt;h4 id=&quot;keystore-1&quot;&gt;keystore生成&lt;/h4&gt;
+&lt;p&gt;The keystore is a signature file that is used to sign your apk. When you create development builds Unity will not sign the apk.&lt;/p&gt;
+
+&lt;p&gt;You only need one Keystore file for your projects. The file is your signature. To create one do this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;In the publishing settings check the “Create New Keystore” box.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Click browse and choose a location where you want to store the file. It should be somewhere central since it’s not really related to your project.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Set a protection password for the file and confirm it.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Select “Create a new key” from the “Key Alias” dropdown.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;-PS:此处注意，选择了create a new key后最上面会自动勾选use existing keystore，无视即可。在弹出的窗口里面输入相关内容。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;A window should open which you have to fill with your personal data about your organisation / person. The alias at the top is just a name of the keystore. If you have multiple identities make sure you choose a meaningful name. You need to set a keystore password. Note this is not the same as the protection password above. As far as i know they can be the same, but for security you should use two different. If you haven’t write the passwords onto a sheet of paper ;)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Click “Create Key” to generate your keystore file.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;To use a keystore for signing you have to:&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Check the “Use Existing Keystore” box.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Click browse and select your keystore file.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;enter your protection key.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;select your desired identity from the alias dropdown.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;enter the alias password in the field below&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Make sure you have set your Android Market Licensing RSA Public Key at the bottom of the publishing settings. The public key has to be acquired from your Google market account.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now create your APK file and it will be signed with your identity.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Note: You can create multiple Keys / Identities in one Keystore file. The first protection password will protect the file itself. When you select an identity from the file in the alias dropdown you have to type in the password for the identity.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 09 Sep 2017 22:57:20 +0800</pubDate>
+        <link>https://caihua.tech/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/</guid>
+        
+        <category>杂</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第六周</title>
@@ -1002,484 +1431,6 @@ end
         <guid isPermaLink="true">https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/</guid>
         
         <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Lua学习笔记：函数深入</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;闭包&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;lua中的函数都可以认为是闭包，只不过为了便于理解还是用了函数的概念。&lt;/li&gt;
-  &lt;li&gt;lua中函数的返回值可以是匿名函数，也就是闭包。以下面的代码为例，提出一个概念：非局部的变量。在下面的代码中，匿名函数访问了一个变量i，它对于newCount来说是局部变量，对于匿名函数来说是既不是局部变量也不是全局变量，在lua中这个称谓&lt;em&gt;非局部的变量&lt;/em&gt;。&lt;/li&gt;
-  &lt;li&gt;在lua中一个闭包指的是一个函数和该函数所需要访问的非局部的变量。lua会把它们看做是一个整体，因此在下面的代码中多次允许c1和c2，会发现变量i是在递增的。这是因为&lt;code class=&quot;highlighter-rouge&quot;&gt;c1 = newCount()&lt;/code&gt;这句代码相当于给c1赋值了一个闭包，它包含了i这个变量。因此多次执行相当于就是在反复执行一个对象，这样i就一直是原来那个i。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;function newCount()
-	local i =0
-	return function ()
-		i=i+1
-		print(i)
-	end
-end
-
-c1 = newCount()
-print(c1())
-print(c1())
-
-c2 = newCount()
-print(c2())
-print(c2())
-print(c1())
-
--- 结果
-1
-2
-1
-2
-3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;利用闭包的沙盒&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;下面这段代码中，修改了math库的sin方法。类似的还可以用来处理一些不安全的代码，这样的方式类似沙盒，将不安全包装了起来。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;print(math.sin(45))
-
-oldSin = math.sin
-math.sin = function (x)
-	return oldSin(x*math.pi/180)
-end
-
-print(math.sin(45))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;直接使用非全局函数做递归会报错&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;当你尝试调用下面的代码时，会提示&lt;code class=&quot;highlighter-rouge&quot;&gt;attempt to call global 'foo' (a nil value)
-&lt;/code&gt;，很奇怪对吧，明明定义的foo是个local的，怎么会提示是global呢？这个是因为在调用foo(x-1)时，这个foo函数还没有定义完，因此表达式在尝试调用一个全局的函数foo，但是显然这个全局函数是不存在的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local foo = function (x)
-	if x == 1 then
-		return 1
-	else return x*foo(x-1)
-	end
-end
-
-print(foo(3))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;正确的递归函数姿势，第二种&lt;code class=&quot;highlighter-rouge&quot;&gt;local function foo(x)&lt;/code&gt;其实是第一个方法的语法糖。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local foo
-foo = function (x)
-	if x == 1 then
-		return 1
-	else return x*foo(x-1)
-	end
-end
-
-print(foo(3))
-
--- 相当于
-local function foo(x)
-...
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;正确的尾调用&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;本质是为了不记录函数的返回位置，这样在栈中就可以无限的调用函数。在lua中只有&lt;code class=&quot;highlighter-rouge&quot;&gt;return  &amp;lt;func&amp;gt;(&amp;lt;args&amp;gt;)&lt;/code&gt;这样的形式才是尾调用。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 14 Aug 2017 22:56:11 +0800</pubDate>
-        <link>https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/</guid>
-        
-        <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第三周</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;内存&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;资源复用&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时PersistentManager会认为是一个新的对象。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uiprofile&quot;&gt;UI在多次开关后出现profile中资源重复&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;刚进游戏时获取的图中出现的“重复”资源可能并不是冗余，因为 Atlas的一个 Group 中可能包含多张一样大小的Page（即纹理），而这几个Page在内存中的名字是一样的。&lt;/li&gt;
-  &lt;li&gt;但是，如果同一UI界面多次开启后，内存中出现了更多同样的资源，则说明UI的管理方式存在一定问题。对于频繁使用的UI，我们建议在加载之后通过缓冲池对其进行缓存，后续使用时，直接通过缓冲池获取即可。而不要每次均通过AssetBundle进行加载，这种做法既会造成更大的CPU占用，同样会很大几率造成资源的冗余。&lt;/li&gt;
-  &lt;li&gt;同时，如果多次开启的是不同UI界面，并且造成内存中同种资源的增加，则很有可能是UI在AssetBundle打包时形成了冗余（这种情况在目前的UGUI系统中较为常见）。对此，如果开发团队使用的是UGUI，那么我们的建议如下：
-    &lt;ul&gt;
-      &lt;li&gt;对于使用Unity 5.x的新AssetBundle打包系统，则打包时尽可能将同种Atlas的UI界面打成一个AssetBundle文件，否则将很有可能出现资源冗余的情况；&lt;/li&gt;
-      &lt;li&gt;对于使用Unity 4.x的老AssetBundle打包系统，则可以将一个含有Atlas的Prefab（或其他Object）先打包，其他UI元素对其进行依赖即可。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;rigidbody--capsulecollidercharactercontroller&quot;&gt;RigidBody + CapsuleCollider替换CharacterController&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;高效一些，因为 move 函数本身会进行较复杂的模拟运算。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;static-collidermove-expensive-delayed-cost&quot;&gt;Static Collider.Move (Expensive Delayed cost)警告&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Static Collider.Move (Expensive Delayed cost) 意味着场景中有静态碰撞体（不带有RigidBody的Collider）发生了移动，而该操作在Unity 4.x版本的PhysX 中会在后续的模拟中产生较高的开销，但在 5.x 中理论上开销并不明显。如果要消除该问题，只需定位到发生位移的Collider并挂上RigidBody 组件，打开其is kinematic 选项即可。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;lightmap&quot;&gt;什么在影响lightmap尺寸&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先确认下Lightmap的类型，Single类型只生成一张，而Dual和Directional会生成两张。&lt;/li&gt;
-  &lt;li&gt;其次，确认下当前的发布平台，Android下的Lightmap会比Standalone更小。因为不同平台采用的压缩格式不同。此外，Lightmapping中的Lock Atlas，Resolution，Padding等选项也会影响最后烘焙光照图的大小。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;lightmapmesh&quot;&gt;原先的Lightmap不再影响合并后的Mesh&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;总结一句就是不要讲使用了多个lightmap的mesh进行合并。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;bloom&quot;&gt;关于抗锯齿和BLOOM，有什么好的优化方案或者优秀插件推荐？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;通常在中低端的设备上，抗锯齿并没有比较高效的方案；而对于中高端的设备，可尝试直接使用 Unity 内置的 MSAA 功能，但也只推荐使用 2x。
-关于Bloom效果，以下是适用于移动端，且评价较好的一款插件：BloomPro&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;xassetbundle-name&quot;&gt;5.x后设置好AssetBundle Name就可以实现依赖资源的独立打包&lt;/h4&gt;
-
-&lt;h4 id=&quot;xassetbundle&quot;&gt;4.x时代不同版本之间的AssetBundle不能通用&lt;/h4&gt;
-
-&lt;h4 id=&quot;unload&quot;&gt;unload顺序&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在 Resources.UnloadUnusedAssets() 时，如果还没有进行AssetBunlde的Unload 操作，那么从AssetBunlde中加载的资源依然会因为被AssetBunlde引用而无法被卸载。&lt;/li&gt;
-  &lt;li&gt;开发团队可以尝试 Destory 后做 AssetBunlde的Unload，最后进行 Resources.UnloadUnusedAssets()。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundlemanifestassetbundle&quot;&gt;生成AssetBundle的时候每个文件会多生成一个Manifest文件，这个文件也需要一起随着AssetBundle上传吗，在资源加载的时候具体怎么用呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;每个文件多生成的Manifest 文件是不需要上传的，其作用就是供开发人员查看AssetBundle 中的依赖关系等信息。&lt;/li&gt;
-  &lt;li&gt;但除了每个文件多生成的 Manifest 以外，根目录下还会有一个与根目录同名的AssetBundle 以及 Manifest 文件，通过运行时加载这个AssetBundle，可以得到一个 AssetBundleManifest 对象，然后就可以通过这个对象得到AssetBundle直接的依赖关系。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;editorshader&quot;&gt;选择移动平台后，editor下shader显示错误&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;是Unity已知的一个问题，Android 和 iOS 的部分Shader在打包后，在Editor 下无法正常显示。 主要原因是在打包时，只会把对应平台的Shader预编译代码（如 gles ）打入包中，因此在 Editor 下会执行失败（通常 Editor 是 d3d 驱动）。 因此，目前只能尝试在Editor下重新指定Shader来绕过这个问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-&lt;h4 id=&quot;iosastc&quot;&gt;ios上的ASTC格式&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;ASTC在 iOS 的高端机上是被支持的，因此理论上在 Editor 下不会强制把 ASTC 转为 RGBA32，建议尝试设置为 ASTC 后打包，从 Editor.log 中或者直接从包体大小上可以看出是否确实使用了ASTC。&lt;/li&gt;
-  &lt;li&gt;一般来说，如果 RGBA16 的效果可以接受的话，建议使用 RGBA16，虽然打包时相对大一些，但是内存中相比 RGBA32 能够减半，但使用 ASTC 的话，虽然打包时比较小，但是在普通机型上会被处理成 RGBA32，导致过大的内存开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;shared-ui-mesh&quot;&gt;Shared UI Mesh&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Shared UI Mesh是在Unity 5.2 版本后UGUI系统维护的UI Mesh。在以前的版本中，UGUI会为每一个Canvas维护一个Mesh（名为BatchedMesh，其中再按材质分为不同的SubMesh）。而在Unity 5.2版本后，UGUI底层引入了多线程机制，而其Mesh的维护也发生了改变，目前Shared UI Mesh作为静态全局变量，由底层直接维护，其大小与当前场景中所有激活的UI元素所生成的网格数相关。&lt;/li&gt;
-  &lt;li&gt;一般来说当界面上UI元素较多，或者文字较多时该值都会较高，在使用UI/Effect/shadow和UI/Effect/Outline时需要注意该值，因为这两个Effect会明显增加文字所带来的网格数。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;build&quot;&gt;Build&lt;/h2&gt;
-&lt;h4 id=&quot;section-4&quot;&gt;打包注意&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;打包的时候Resources文件夹下所有的内容都会被打入resources.assets，要想包体小就删除不要的资源。而且Resources目录下所以资源启动时参与persistentmanager的初始化，内容多了会卡。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;static&quot;&gt;static选项&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果在Editor中进行勾选，则会在项目中生成一个较大的VBO，Runtime时通过该VBO来进行渲染，优点是有效减少了Draw Call，缺点是增大了发布游戏包的体积。&lt;/li&gt;
-  &lt;li&gt;如果在Runtime通过脚本来进行Batching，则相当于把拼合的时间由Editor中搬到了Runtime，所以加载时间（一般在场景加载时执行Batching）会稍有增加，但游戏包的体积将相应减少。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;动画&lt;/h2&gt;
-&lt;h4 id=&quot;optimize-gameobject&quot;&gt;Optimize GameObject&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在选择Optimize GameObjects后，可在Extra Transforms中加入你想挂载特效的骨骼结点，这样该骨骼结点将不会进行优化处理，即其Transfrom将不会消失。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-6&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;waitfortargetfps&quot;&gt;WaitForTargetFPS&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;该参数一般出现在CPU开销过低，且通过设定了目标帧率的情况下（Application.targetFrameRate）。当上一帧低于目标帧率时，将会在本帧产生一个WaitForTargetFPS的空闲等待耗时，以维持目标帧率。&lt;/li&gt;
-  &lt;li&gt;该项在Unity引擎的主循环中其实是最早执行的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;gfxwaitforpresent--graphicspresentandsync&quot;&gt;Gfx.WaitForPresent &amp;amp; Graphics.PresentAndSync&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这两个参数在Profiler中经常出现CPU占用较高的情况，其实是CPU和GPU之间的垂直同步（VSync）导致的，之所以会有两种参数，主要是与项目是否开启多线程渲染有关。当项目开启多线程渲染时，你看到的则是Gfx.WaitForPresent；当项目未开启多线程渲染时，看到的则是Graphics.PresentAndSync。&lt;/li&gt;
-  &lt;li&gt;Gfx.WaitForPresent其真实的意思应该是为了在渲染子线程（Rendering Thread）中进行Present，当前主线程（MainThread）需要等待的时间。&lt;/li&gt;
-  &lt;li&gt;最后，如何优化并降低这两个参数的CPU占用呢？ 那就是，忽略Gfx.WaitForPresent 和 Graphics.PresentAndSync这两个参数，优化其他你能优化的一切！WTF！&lt;/li&gt;
-  &lt;li&gt;PS：这篇内容相当不错，建议看&lt;a href=&quot;https://blog.uwa4d.com/archives/presentandsync.html&quot;&gt;原文&lt;/a&gt;。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;editorassetdatabase&quot;&gt;editor下出现AssetDatabase内存过高可以无视&lt;/h4&gt;
-
-&lt;h4 id=&quot;canvassendwillrendercanvases&quot;&gt;Canvas.SendWillRenderCanvases&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Canvas.SendWillRenderCanvases为UGUI中非常重要的接口，经常会出现较高的性能开销。当Canvas中的UI元素出现了长、宽或Alpha变化时，UGUI会更新其所在Canvas中所有UI元素的Transform、状态等等。Canvas中UI Mesh顶点较多的话，则该项将会出现较高的CPU开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadingupdatepreloading&quot;&gt;Loading.UpdatePreloading&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Loading.UpdatePreloading为Unity引擎的主要加载函数。场景中的资源加载（包括Texture、Mesh、Shader、AnimationClip等）和相关序列化操作均在其中体现。因此，如果该值开销较高，建议研发团队对资源进行进一步的优化和控制。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;脚本&lt;/h2&gt;
-&lt;h4 id=&quot;gameobjectgameobject&quot;&gt;如果脚本引用了GameObject，那转换场景的时候脚本和GameObject都没了，还会产生堆内存的吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果脚本是MonoBehaviour，而且在切换场景后所挂的Game Object被释放了，那么这个脚本对象所引用的堆内存就会在GC的时候被释放。 但有一种例外，如果是通过Static变量引用的堆内存，那么依然是释放不掉的，除非手动解开引用，比如变量置Null，数组Clear等等。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;粒子&lt;/h2&gt;
-&lt;h4 id=&quot;section-9&quot;&gt;粒子动态合并&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;del&gt;粒子系统的Draw Call动态拼合与半透明物体的动态拼合机制相当（粒子基本都是半透明材质）。而对半透明物体，由于其渲染顺序的限制（必须从后向前渲染，以保证渲染结果的正确性），动态拼合只能对渲染顺序相邻且材质相同的物体有效。而在决定半透明物体的渲染顺序时，Unity首先会按Shader中的RenderQueue进行排序；其次（相同RenderQueue时），会根据每个半透明物件到屏幕的距离，距离大的优先渲染。&lt;/del&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;del&gt;因此，需要尽可能地将相同材质的粒子系统放在比较接近的深度下，才能更多地使动态拼合生效。但通常由于相机的运动、粒子系统的分散分布等原因造成粒子系统之间的穿插，能够动态拼合的数量往往都是很少的。&lt;/del&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;目前粒子系统已经不再进行 Draw Call 的拼合，因为在新版本5.3 中已通过多线程进行更新，暂时无法支持拼合，但性能已经得到提升。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 14 Aug 2017 22:54:29 +0800</pubDate>
-        <link>https://caihua.tech/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第二周</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;内存&lt;/h2&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;概述&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;资源内存&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;大头在纹理，其次在网格、动画片段和音频。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;纹理&lt;/h4&gt;
-
-&lt;h5 id=&quot;section-4&quot;&gt;从格式解决内存占用问题&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;选择正确的格式，比如Android上是ETC，ios的PVRTC，PC上DXT。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-5&quot;&gt;不同格式可能出现的问题：&lt;/h5&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;因为ETC、PVRTC都是有损压缩因此可能出现色阶问题，如果用RGB32这样的格式虽然能解决问题但是内存占用太大。好的办法是在做纹理的时候减少色差范围，必要做出高对比度的阶梯式的图。&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;比如，同样一张1024x1024的纹理，如果不开启Mipmap，并且为PVRTC格式，则其内存占用为512KB，而如果转换为RGBA32位，则很可能占用达到4MB。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;OpenGL ES2的设备只支持ETC1，但是ETC1不支持alpha通道。解决办法是将透明图分成两张，一个RGB24的保存RGB通道，一个alpha8的保存A通道，然后在使用时使用定制的shader去分别读取两个纹理图。&lt;/li&gt;
-  &lt;li&gt;PS：OpenGL ES 3.0支持ETC2甚至ASTC，都是很好的支持透明通道的压缩格式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-6&quot;&gt;选择合适的纹理设置&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;能512解决的事情别用1024&lt;/li&gt;
-  &lt;li&gt;选择性的使用mipmap，对于UI这样的纹理使用完全没有必要用mipmap。&lt;/li&gt;
-  &lt;li&gt;Read &amp;amp; Write选项会使得纹理的内存使用量增加一倍。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;网格&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;mesh中顶点信息可以进行相关的优化，比如Normal、Color和Tangent这些数据要按照需要来做，不用的就不要做。而且顶点信息超多900还不能动态批处理。不需要就计算发现的时候就可以不用tangent数据了，有贴图的话color数据也不需要。&lt;/li&gt;
-  &lt;li&gt;Color数据和Normal数据主要为3DMax、Maya等建模软件导出时设置所生成，而Tangent一般为导入引擎时生成。&lt;/li&gt;
-  &lt;li&gt;如果项目对Mesh进行Draw Call Batching操作的话，那么将很有可能进一步增大总体内存的占用。比如，100个Mesh进行拼合，其中99个Mesh均没有Color、Tangent等属性，剩下一个则包含有Color、Normal和Tangent属性，那么Mesh拼合后，CombinedMesh中将为每个Mesh来添加上此三个顶点属性，进而造成很大的内存开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-8&quot;&gt;引擎模块自身占用内存&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;引擎自身中存在内存开销的部分纷繁复杂，可以说是由巨量的“微小”内存所累积起来的，比如GameObject及其各种Component（最大量的Component应该算是Transform了）、ParticleSystem、MonoScript以及各种各样的模块Manager（SceneManager、CanvasManager、PersistentManager等)…&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;一般情况下，上面所指出的引擎各组成部分的内存开销均比较小，真正占据较大内存开销的是这两处：WebStream 和 SerializedFile。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;PS：5.4以后没有webStream的概念了，不过还是要考虑WWW和LoadFromMemory中会保存AssetBundle原始数据的问题，参见&lt;a href=&quot;https://docs.unity3d.com/550/Documentation/Manual/AssetBundleCompression.html&quot;&gt;Asset Bundle Compression&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;AssetBundle所占的内存也需要考虑，尽可能做到按需加载，用完后及时的清理。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;mono&quot;&gt;托管堆内存占用/无效的Mono堆内存开销&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Mono的堆内存一旦分配，就不会返还给系统。这意味着Mono的堆内存是只升不降的。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-9&quot;&gt;不必要的堆内存分配主要来自于以下几个方面：&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;高频率地 New Class/Container/Array等。不要再update占用的函数中实例化对象。&lt;/li&gt;
-  &lt;li&gt;Log输出，需要适当的减少log，只保留最关键的。&lt;/li&gt;
-  &lt;li&gt;UIPanel.LateUpdate。这是NGUI中CPU和堆内存开销最大的函数,是由UI网格的重建造成。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-10&quot;&gt;一些推荐的办法&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;不要一次加载一个过大的资源，比如配置文件、纹理图等。这样会造成一次性申请过多的内存，但是还不回去了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-11&quot;&gt;内存泄漏&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先通过工具发现场景切换开始和结束时内存使用没有一致，这个现象不能说明内存就一定有泄漏。比如资源加载后常驻内存以备后续使用、Mono堆内存的只升不降等等，这些均可造成内存无法完全回落。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-12&quot;&gt;检查资源的使用情况，特别是纹理、网格等资源的使用&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;这段主要介绍了如何使用UWA的工具对纹理和网格进行检查，查看是否出现资源的内存泄漏。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;profilerwebstreamserializedfile&quot;&gt;通过Profiler来检测WebStream或SerializedFile的使用情况&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;直接通过Profiler Memory中的Take Sample来对其进行检测，通过直接查看WebStream或SerializedFile中的AssetBundle名称，即可判断是否存在“泄露”情况。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-13&quot;&gt;资源冗余&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;是指在某一时刻内存中存在两份甚至多份同样的资源。导致这种情况的出现主要有两种原因：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;assetbundle&quot;&gt;AssetBundle打包机制出现问题&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;显而易见，对于公用资源需要进行合理的划分打包。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-14&quot;&gt;资源的实例化所致&lt;/h5&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在Unity引擎中，当我们修改了一些特定GameObject的资源属性时，引擎会为该GameObject自动实例化一份资源供其使用，比如Material、Mesh等。以Material为例，我们在研发时经常会有这样的做法：在角色被攻击时，改变其Material中的属性来得到特定的受击效果。这种做法则会导致引擎为特定的GameObject重新实例化一个Material，后缀会加上（instance）字样。其本身没有特别大的问题，但是当有改变Material属性需求的GameObject越来越多时（比如ARPG、MMORPG、MOBA等游戏类型），其内存中的冗余数量则会大量增长。虽然Material的内存占用不大，但是过多的冗余资源却为Resources.UnloadUnusedAssets API的调用效率增加了相当大的压力。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;上面描述的material的问题是个常见的问题。如果是直接改变还好说，会产生一个material instance，但是如果是在一段时间内线性的改变某个属性，那么后果很难说。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;建议&lt;/p&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;一般情况下，资源属性的改变情况都是固定的，并非随机出现。比如，假设GameObject受到攻击时，其Material属性改变随攻击类型的不同而有三种不同的参数设置。那么，对于这种需求，我们建议你直接制作三种不同的Material，在Runtime情况下通过代码直接替换对应GameObject的Material，而非改变其Material的属性。这样，你会发现，成百上千的instance Material在内存中消失了，取而代之的，则是这三个不同的Material资源。其中的益处，对于能够阅读到这里的你来说，应该已经不需要我多说了。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-15&quot;&gt;粒子&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Navmesh是不支持动态加载的目前的，办法是将多个场景做成prefab，然后用LoadLevelAdditive的方式加载，去拼接。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;assetbundle-1&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;本周第一篇关于AssetBundle的文章可以说有点陈旧了，在5.3以后解决了一些功能，比如AssetBundle.LoadFromFile加载LZMA文件的失败的问题。&lt;/li&gt;
-  &lt;li&gt;还有就是在5.4以后已经没有webstream的概念了。&lt;/li&gt;
-  &lt;li&gt;最后开始使用UnityWebRequest&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;lightmapsnapshotassetlightmap&quot;&gt;热更新打包时LightmapSnapshot.asset无法导出，导致场景丢失lightmap&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;LightmapSnapshot.asset是editor模式下的无法打包。解决办法是整个scene打包，lightmap信息会打包进去。或者在运行时调用Lightmapsettings.Lightmaps来设置，但是5.x后lightmap信息不会保存在prefab中，因此需要重设Prefab的Lightmap信息（Lightmapindex和Lightmapscaleoffset）。&lt;/li&gt;
-  &lt;li&gt;还有一种可能是因为打包场景的时候shader会根据当前场景的使用情况来打包，如果打包是在一个空场景中那么bundle中的shader会失去lightmap和fog的支持。这个&lt;/li&gt;
-  &lt;li&gt;PS: 这个问题在5.5.2中也存在，而且打包的时候是按照场景打包的，但是是不是shader丢失确实需要测试。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;prefab&quot;&gt;prefab打包&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果有一个Prefab，它的Dependencies都在Resources文件夹中，那么，当我在AssetBundle打包时，只打包这个Prefab（不指定BuildAssetBundleOptions.CompleteAssets和BuildAssetBundleOptionsCollectDependencies）是不能正确实例化的，因为AssetBundle中的资源和Resource文件夹下资源是不会建立依赖关系的（脚本除外，因为开启BuildAssetBundleOptionsCollectDependencies 时，脚本依然不会打包到AssetBundle中）。所以会出现Mesh、Material等的丢失。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;assetbundle-2&quot;&gt;卸载依赖AssetBundle的问题&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;比如prefabA和prefabB依赖于AtlasC，那么分别打包的话首先肯定是要先加载AtlasC的AssetBundle的。&lt;/li&gt;
-  &lt;li&gt;但是如果先从AtlasC的AssetBundle中load了AtlasC，然后unload这个AssetBundle，此后加载或实例化A和B时，引擎将无法自动将C绑定给A和B进行使用。这个需要注意。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-16&quot;&gt;纹理格式&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前来讲，并不存在一个所有GPU平台都支持硬件解压的压缩格式。&lt;/li&gt;
-  &lt;li&gt;ETC1 和 PVRTC 分别是Android和iOS上我们最推荐的格式。 但对于透明纹理，ETC1不支持，而 PVRTC 则可能有较大失真，因此更推荐使用 RGBA 16。&lt;/li&gt;
-  &lt;li&gt;一般来说建议直接使用 Unity 默认的压缩格式（即选择 Compressed 即可，不需要做特殊设置），Unity 会做如下处理：
-    &lt;ul&gt;
-      &lt;li&gt;Android 上不带Alpha通道的图片采用 ETC1，带Alpha通道的图片采用True Color中的RGB16，TrueColor中的 RGBA16 会&amp;gt;比 RGBA32 更节省空间，但图像的显示质量会差一些；&lt;/li&gt;
-      &lt;li&gt;iOS 上使用 PVRTC，但PVRTC格式要求纹理的长宽相等，且都是2的幂次（即POT，在ImportSettings中可以将NPOT的纹理自动转换成POT）。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;同时，我们不建议直接使用 RGBA32 格式的纹理，因为它占用了很大的内存。一般建议使用 RGBA16 和 ETC 格式的纹理来进行加载。 如果转换到 RGBA16 格式时出现了类似“色阶”的颜色问题，则建议尽可能避免大量的过渡色使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-17&quot;&gt;工具&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;unity的分析工具中的Reserved Total 和 Used Total为Unity引擎在内存方面的总体分配量和总体使用量。 一般来说，引擎在分配内存时并不是向操作系统 “即拿即用”，而是首先获取一定量的连续内存，然后供自己内部使用，待空余内存不够时，引擎才会向系统再次申请一定量的连续内存进行使用。&lt;/li&gt;
-  &lt;li&gt;Overhead：
-    &lt;ul&gt;
-      &lt;li&gt;Overhead的计算方法是：Profiler当前帧统计的总耗时时间减去所有已知选项的累加时间，即引擎当前还无法识别模块的耗时时间。&lt;/li&gt;
-      &lt;li&gt;Overhead数值理论上是趋向于0的，但是由于目前市面上的硬件设备、系统框架过于丰富，所以引擎可能无法识别所有模块的CPU开销。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Unity Profiler反馈的则是引擎的真实物理使用内存，有时内存使用数值比原生的分析工具小是正常的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Profiler中ManagedHeap.UsedSize是项目逻辑代码在运行时申请的堆内存， 
-ManagedHeap.UsedSize过大，一方面可能会影响一次GC的耗时；另一方面也可能反映出脚本中不合理的GC Alloc。该选项只能通过优化代码来进行降低。 优化方法一般如下：
-    &lt;ul&gt;
-      &lt;li&gt;尽可能地复用变量，减少new的次数；&lt;/li&gt;
-      &lt;li&gt;使用StringBuilder代替String连接，使用for代替foreach；&lt;/li&gt;
-      &lt;li&gt;对于局部变量或非常驻变量，尽可能使用Struct来代替Class。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;本周读到的所有关于内存监控的部分都提到了一个概念就是Profiler所监控到的数据和Android上的PSS或者ios上检测到的会不一致，这                                                   个是因为Unity Profiler反馈的是引擎的真实分配的物理内存，而PSS中记录的则包括系统的部分缓存。一般情况下，Android或iOS并不会及时将所有App卸载数据进行清理，为了保证下次使用时的流畅性，OS会将部分数据放入到缓存，待自身内存不足时，OS Kernel会启动类似LowMemoryKiller的机制来查询缓存甚至杀死一些进程来释放内存。因此，并不能通过一两次的PSS内存没有完全回落来说明内存泄露问题。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Reserved GFX 中的内存，主要是纹理和网格资源。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-18&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;lightmappcandroid&quot;&gt;Lightmap在PC上显示正常，但是转到Android平台上存在色差，颜色普遍偏暗的问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity烘焙的Lightmap是32bit的HDR图，而移动设备通常不支持HDR图(32bit per channel)，会按照LDR图(8bit per channel)的形式进行处理，因此会出现色偏问题。因此需要如下的处理：
-    &lt;ul&gt;
-      &lt;li&gt;在移动平台下使用Mobile/Diffuse材质，可载入Standard Assets(Mobile) package获得。&lt;/li&gt;
-      &lt;li&gt;如果要获得更合适的效果，需要自行修改Lightmap的DecodeLightmap函数，该函数可在Unity\Editor\Data\CGIncludes\UnityCG.cginc文件中找到。需要说明的是，这种方法也不能达到与PC端完全一致的效果。&lt;/li&gt;
-      &lt;li&gt;如果需要PC和移动平台的显示效果一致，可以用图像编辑软体修改Lightmap為LDR格式，例如PNG(8bit per channel)。&lt;/li&gt;
-      &lt;li&gt;为了避免类似问题，请不要使用过于强烈的Light进行烘焙，因為Light的强度(Intensity)越高，色偏问题会越严重。若有阴影丢失时，可以尝试检查一下模型的Lightmapindex、Lightmapscaleoffset、UV2等影响Lightmap采样的一些参数。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;另一种可能是存在过曝现象，可以尝试将playersettings -&amp;gt; use direct3d 11关闭，看问题是否解决。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;lightmap&quot;&gt;lightmap动态加载&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Lightmap的动态加载，需要通过脚本将烘焙时每个物件的Lightmapindex和Lightmapscaleoffset记录下，并在运行时动态加载后设置回去的方式来实现。因为目前Lightmapindex和Lightmapscaleoffset信息是和场景绑定在一起，储存在Lightmapsnap.assets 中，发布时也是放在场景信息中，因此不会记录在Prefab 上。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 07 Aug 2017 22:17:31 +0800</pubDate>
-        <link>https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/</guid>
-        
-        <category>UWA</category>
         
         
       </item>

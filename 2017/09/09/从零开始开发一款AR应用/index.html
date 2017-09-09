@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>iOS学习笔记-08杂 - 蔡华的博客</title>
+    <title>从零开始开发一款AR应用 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/09/16/08%E6%9D%82/">
+    <link rel="canonical" href="https://caihua.tech/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS学习笔记" title="iOS学习笔记">iOS学习笔记</a>
+                        <a class="tag" href="/tags/#杂" title="杂">杂</a>
                         
                     </div>
-                    <h1>iOS学习笔记-08杂</h1>
+                    <h1>从零开始开发一款AR应用</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on September 16, 2016</span>
+                    <span class="meta">Posted by 蔡华的博客 on September 9, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,10 +187,207 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">8.杂</h2>
+				<h2 id="vuforia">Vuforia</h2>
 
-<h4 id="section-1">表达式</h4>
-<p>表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。</p>
+<h3 id="vuforia-1">什么是vuforia</h3>
+<ul>
+  <li>我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。</li>
+</ul>
+
+<h3 id="section">怎么使用</h3>
+<ul>
+  <li>进入<a href="https://developer.vuforia.com/">Vuforia</a>，右上角注册。</li>
+  <li>点击Develop进入下图</li>
+</ul>
+
+<p><img src="http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcHh6WnF5VExXYmU3dStWRlRPak9URkhDR1RnVjNzTmN3PT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>
+    <p>License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuforia的SDK的时候需要用到。</p>
+  </li>
+  <li>
+    <p>Target Manager：target就是你扫描的图片或者模型或者其它什么的东西，当你扫描完成后如果匹配上了，就会在手机上显示相关的内容。</p>
+  </li>
+</ul>
+
+<h4 id="license">生成License</h4>
+
+<ul>
+  <li>点击add按钮→选择类型（我选的是Development，因为只是用来学习）→输入APP name→点击Confirm</li>
+  <li>
+    <p>完成上述内容后你会得到下图的内容
+<img src="http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraDRYN3lNcWlBbW0zTkowTnp6YVBuaGI0a0NPUmtJYmpRPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+  </li>
+  <li>点击ddd这个license，会进入下图。这个license key在程序开发中需要用到。
+<img src="http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlra2I4dDJiZmpTWG9DSDQxdFk1b05BLy9GZS9ldVBSUGVnPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></li>
+</ul>
+
+<h4 id="target">生成Target</h4>
+<ul>
+  <li>选择Target Manager tab</li>
+  <li>点击add database。其实这里用database是很准确的，因为生成的target就像一个数据库，而我们摄像头扫描到的内容就是数据，通过查询如果在DB中找到了相同的数据就认为是匹配到了。</li>
+  <li>
+    <p>选择类型（我用的是Device），输入名字，点击Create。结果如下：
+<img src="http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcVJJdDRQMERyam9NaXI0Ujd0TFUrZy9FWml1Y2xjeTNRPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+  </li>
+  <li>
+    <p>点击target（ddd）进入
+<img src="http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcWtSdVlGMXFzY1pUd3E1dTl5bzRDYm9CWXhpTUlMN0Z3PT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+  </li>
+  <li>点击add target。这个里面有多种target类型。我们选择最简单的single image。这个也是市面上很多AR应用使用的，也就是手机扫描一个图片，然后显示一个对应的模型。在这个页面中，file是选择你要上传的图片。width设置和场景中虚拟内容大小一致即可。</li>
+</ul>
+
+<p><img src="http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraXhkS2c3eGFqaWh4RUNTZURzYWg3R0lrREhnbjdJaWVnPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>输入名字然后点击add，下图是我之前设置好的一些target。
+<img src="http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdnJueVZWd0Z3MlJaNVdpY0FjS2ZHSHp4cmdsR29NbkZnPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></li>
+</ul>
+
+<p>-这里如果点击一个target，会进入下图。注意两个红色框，点击下面那个【Show Features】按钮后图片上会出现黄色区域，这个有点像做了个卷积识别色块的边缘。黄色部分越多说明在摄像头识别时越容易。而Augmentable指数对于了这个数值，也是越高越好。</p>
+
+<p><img src="http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlra1FkWEV5T0lHUjRmTjViOVc1TDlFVWVFeDJvOUNoWUF3PT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>
+    <p>add target页面有个download database按钮，可以选择要下载什么数据。注意对于target的理解完全可以用数据库的概念套入。你下载了什么数据，在应用中才能对下载数据进行使用和比对。点击download后出现
+<img src="http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdVUvSjRUWnVxbDkrYjdlYUwvSmNobTlobjc0VnpqanlBPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+  </li>
+  <li>
+    <p>选unity editor，然后点击download按钮。会得到一个unitypackage文件，然后导入到工程中。</p>
+  </li>
+</ul>
+
+<h2 id="unity">Unity部分的开发</h2>
+
+<h4 id="vuforia-sdk">导入vuforia sdk</h4>
+<ul>
+  <li>可以在vuforia官网下载unity对应的sdk，也可以通过asset store下载Vuforia AR Starter Kit来直接使用，我两个都试过在设置上是一样的。后者有很多自带的demo很不错。</li>
+  <li>导入刚才获得的target package。</li>
+  <li>从asset store上随便下载个免费的模型。</li>
+</ul>
+
+<h4 id="section-1">场景设置</h4>
+<ul>
+  <li>创建新场景</li>
+  <li>找到ARCamera和ImageTarget的prefab拖入场景。</li>
+</ul>
+
+<h4 id="arcamera">ARCamera设置</h4>
+
+<p><img src="http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrcktNS08wRXdURko4YWZYTDByT1ZQWXFSOWtOT2I0Z0pRPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>点击ARCamera，再点击图中按钮进行设置。</li>
+</ul>
+
+<p><img src="http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrb3BUNkIxc0JZQXhiMCtrR2sxMUoxRWdjUHZrbTFHY0R3PT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>上图中第一个框就是之前申请的APP key</li>
+  <li>第二个框是它们导入的target，我在这个demo中导入的target的名字就是【target_images】,注意这两个复选框一定要都选。</li>
+</ul>
+
+<h4 id="imagetarget-">ImageTarget 设置</h4>
+
+<p><img src="http://imglf1.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlraFhSQVBGbWwzU0xJa0pkYTBXUXAvRU05MnY2MDkzVlZBPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>红框部分Type需要选择图中的</li>
+  <li>db选择我们导入的target_images。如果是导入了Vuforia AR Starter Kit会有几个自带的target。</li>
+  <li>image target选择你要用的图片。在一个场景中可以有多个ImageTarget对象，不同的对象选择不同的图片即可。</li>
+</ul>
+
+<p><img src="http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG5VNXRRdFoySzlrdkhac0hzOG11MDlKeVYyZ2JEZ3Z5SmR3NE9jSjMyQXNnPT0.png?imageView&amp;thumbnail=500x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
+
+<ul>
+  <li>上图中的马就是要显示的模型，注意要作为ImageTarget的子对象。马下面的那个白色就是ImageTarget。</li>
+  <li>对于要显示模型的位置和角度，只要记住手机摄像头面向的方向是白色方块的方向，只要要怎么显示模型就有了参考。我图中的设置是因为我要用摄像头扫描显示器上的图片，所以马是这样放置的。</li>
+</ul>
+
+<h4 id="section-2">测试</h4>
+<ul>
+  <li>如果你用的笔记本电脑带摄像头的，可以直接运行测试了。没有的，找个webcam就行了。</li>
+</ul>
+
+<h4 id="section-3">有用的事件代码</h4>
+<ul>
+  <li>DefaultTrackableEventHandler类的OnTrackingFound函数是match到了图片后调用的函数，在这个里面可以做一些逻辑功能。</li>
+</ul>
+
+<h2 id="apk">打包apk</h2>
+
+<h4 id="keystore">生成keystore</h4>
+<ul>
+  <li>build里面选择Android</li>
+  <li>在player setting里面的publishing setting中可以生成keystore，方法看最后的附录。</li>
+  <li>至于jdk和SDK都可以在网上下载到。NDK比较尴尬，unity在Android上的IL2CPP需要r10e，这个版本已经有点难下到了。我最后没用这个。</li>
+</ul>
+
+<h2 id="section-4">结束语</h2>
+<ul>
+  <li>到此为止一个最简单的AR应用就做完了，整个过程浪费时间在注册和下载Android SDK。</li>
+</ul>
+
+<h2 id="section-5">附录</h2>
+<h4 id="keystore-1">keystore生成</h4>
+<p>The keystore is a signature file that is used to sign your apk. When you create development builds Unity will not sign the apk.</p>
+
+<p>You only need one Keystore file for your projects. The file is your signature. To create one do this:</p>
+
+<ul>
+  <li>
+    <p>In the publishing settings check the “Create New Keystore” box.</p>
+  </li>
+  <li>
+    <p>Click browse and choose a location where you want to store the file. It should be somewhere central since it’s not really related to your project.</p>
+  </li>
+  <li>
+    <p>Set a protection password for the file and confirm it.</p>
+  </li>
+  <li>
+    <p>Select “Create a new key” from the “Key Alias” dropdown.</p>
+  </li>
+</ul>
+
+<p>-PS:此处注意，选择了create a new key后最上面会自动勾选use existing keystore，无视即可。在弹出的窗口里面输入相关内容。</p>
+
+<ul>
+  <li>
+    <p>A window should open which you have to fill with your personal data about your organisation / person. The alias at the top is just a name of the keystore. If you have multiple identities make sure you choose a meaningful name. You need to set a keystore password. Note this is not the same as the protection password above. As far as i know they can be the same, but for security you should use two different. If you haven’t write the passwords onto a sheet of paper ;)</p>
+  </li>
+  <li>
+    <p>Click “Create Key” to generate your keystore file.</p>
+  </li>
+  <li>
+    <p>To use a keystore for signing you have to:</p>
+  </li>
+  <li>
+    <p>Check the “Use Existing Keystore” box.</p>
+  </li>
+  <li>
+    <p>Click browse and select your keystore file.</p>
+  </li>
+  <li>
+    <p>enter your protection key.</p>
+  </li>
+  <li>
+    <p>select your desired identity from the alias dropdown.</p>
+  </li>
+  <li>
+    <p>enter the alias password in the field below</p>
+  </li>
+  <li>
+    <p>Make sure you have set your Android Market Licensing RSA Public Key at the bottom of the publishing settings. The public key has to be acquired from your Google market account.</p>
+  </li>
+  <li>
+    <p>Now create your APK file and it will be signed with your identity.</p>
+  </li>
+</ul>
+
+<p>Note: You can create multiple Keys / Identities in one Keystore file. The first protection password will protect the file itself. When you select an identity from the file in the alias dropdown you have to type in the password for the identity.</p>
+
 
 
                 <hr>
@@ -201,17 +398,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/16/07%E5%BF%85%E8%A6%81%E7%9F%A5%E8%AF%86/" data-toggle="tooltip" data-placement="top" title="iOS学习笔记-07必要知识">
+                        <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第六周">
                         Previous<br>
-                        <span>iOS学习笔记-07必要知识</span>
+                        <span>每天一点UWA：第六周</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/" data-toggle="tooltip" data-placement="top" title="解决JSONKit在macOS Sierra上crash的问题">
+                        <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第七周">
                         Next<br>
-                        <span>解决JSONKit在macOS Sierra上crash的问题</span>
+                        <span>每天一点UWA：第七周</span>
                         </a>
                     </li>
                     
