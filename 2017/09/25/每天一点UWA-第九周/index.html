@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>《Unity預計算即時GI》笔记：二、光照图 - 蔡华的博客</title>
+    <title>每天一点UWA：第九周 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%BA%8C-%E5%85%89%E7%85%A7%E5%9B%BE/">
+    <link rel="canonical" href="https://caihua.tech/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B9%9D%E5%91%A8/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记">Unity預計算即時GI笔记</a>
+                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>《Unity預計算即時GI》笔记：二、光照图</h1>
+                    <h1>每天一点UWA：第九周</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on February 22, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on September 25, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,246 +187,119 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">说明</h2>
-
+				<h2 id="assetbundle">AssetBundle</h2>
+<h4 id="assetbundle-1">关于AssetBundle依赖的问题</h4>
 <ul>
-  <li>这篇文章是对<a href="http://unitytaiwan.blogspot.tw/2016/12/unity-gi-1.html">《Unity預計算即時GI》</a>这个系列文章的笔记。</li>
+  <li>如果Panel A和Panel B，它们均依赖一个共享Atlas C。如果在加载完AtlasC后卸载它所在的AssetBundle，再创建A和B，此时会失败。因为他们的依赖关系在AssetBundle上。</li>
 </ul>
 
-<h2 id="section-1">光照图</h2>
-
-<h3 id="section-2">什么是光照图</h3>
+<h4 id="serializedfileassetbundle">请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？</h4>
 <ul>
-  <li>光照图在第三章中有如下的定义，读起来很是费解。</li>
+  <li>绝大部分的SerializedFile均由AssetBundle产生，当AssetBundle被卸载时，与其对应的SerializedFile也将销毁。</li>
+</ul>
+
+<h4 id="wwwloadfromcacheordownloadwwwassetbundle-assetbundleassetbundle">WWW.LoadFromCacheOrDownload只是在内存中有个引用，没有实际加载资源，调用WWW.assetbundle后也是么？ 那么依赖此AssetBundle的资源加载的时候，会自动触发此AssetBundle从磁盘加载对应的引用资源么？</h4>
+<ul>
+  <li>在调用WWW.assetBundle之后，内存中也只是存在较小的SerializedFile（不包含资源数据）。“那么依赖此AB的资源加载的时候”确实会触发该AssetBundle通过磁盘IO加载资源。</li>
+</ul>
+
+<h2 id="build">Build</h2>
+<h4 id="optimize-mesh-data">细谈Optimize Mesh Data选项</h4>
+<ul>
+  <li>第五周的时候说过Optimize Mesh Data选项的问题，但是只是说了和模型上的optimize的区别和一些问题，下面详细说说这个选项，以下内容来自<a href="http://www.cnblogs.com/yaukey/p/unity-build-setting-optimize-mesh-data.html">这里</a>。</li>
+  <li>Unity 在底层默认希望为你做尽可能多的优化，降低使用门槛，比如 BuildSetting 中的 Optimize Mesh Data 选项就是一个典型的例子。这个选项到底有什么用呢？文档描述为：</li>
 </ul>
 
 <blockquote>
-  <p>一個光照圖(Chart)是表示一個光照貼圖的區域，用來映射場景物件的光照貼圖UV。你可以想像是能影響物件的一張小磁磚圖，一張光照圖由兩部分組成:輻照度(照明)和方向性(主要光線方向編碼)。</p>
-</blockquote>
-
-<ul>
-  <li>到了第六章又有如下讲解，读完之后我更加费解了，所以暂时搁置吧。</li>
-</ul>
-
-<blockquote>
-  <p>產生光照圖(Charts)的目的主要是用來包住靜態網格著色器(Static Mesh Renderer)的UV貼圖座標。</p>
-</blockquote>
-
-<h3 id="section-3">如何生成</h3>
-
-<blockquote>
-  <p>一個物件所需要的光照圖數量主要是看物件有多少片UV shell需要拆解。所謂拆UV的學問就是保持幾何面上貼圖像素扭曲度和所需的Shell數量之間的平衡。</p>
-</blockquote>
-
-<blockquote>
-  <p>光照圖是在網格導入流程的一個拆解階段(Unwrapping stage)被產生出來的。對於PRGI來說，這些光照圖會在預計算裡的幾何階段(Geometry stage)被打包到不同的圖集(Atlas)裡，這是為了確保它們不會相互重疊。一旦預計算的幾何階段完成之後就會產生可視化數據，我們就能預覽光照圖。</p>
+  <p>Optimize Mesh Data	Remove any data from meshes that is not required by the material applied to them (tangents, normals, colors, UV).</p>
 </blockquote>
 
 <ul>
   <li>
-    <p>这个部分要结合<a href="http://unitytaiwan.blogspot.tw/2016/12/unitygi-6.html">原文</a>的图来看，从这个部分的文章中可以看到，在模型导入时决定了它需要几个光照图，而<code class="highlighter-rouge">場景裡面有大量的光照圖可能會是PRGI耗時的原因之一</code>。</p>
+    <p>即是说：如果开启了此选项，将会在 Build 过程中根据场景中 Mesh 所使用的材质（或者说 shader）进行静态分析，来去掉 Mesh 中“无用”的数据（材质不使用的数据），比如：切线，发现，定点色，多余的 uv 等，以此减少数据量和最终构建的游戏包的大小。</p>
   </li>
   <li>
-    <p><strong>从上下文的介绍来看，光照图是光照贴图的映射，记录了实时计算的结果，当计算光照时，需要从中提取信息。</strong></p>
+    <p>这是一个非常好的功能，如果 unity 不提供自己写插件恐怕还是比较麻烦的，但是在使用过程中有没有“坑”呢？有没有要注意的地方呢？答案当然是：有！</p>
   </li>
   <li>
-    <p>看看下列範例圖:</p>
-  </li>
-</ul>
-
-<p><img src="https://unity3d.com/sites/default/files/unwrap01.png" alt="image" /></p>
-
-<p>這樣的UV拆解不會變形，但需要多張UV shells</p>
-
-<p><img src="https://unity3d.com/sites/default/files/unwrap02.png" alt="image" /></p>
-
-<p>用單一UV shell所產生的結果，但貼圖變形很嚴重</p>
-
-<p><img src="https://unity3d.com/sites/default/files/unwrap03.png" alt="image" /></p>
-
-<p>比較理想的結果，單一UV shell且貼圖沒有變形</p>
-
-<blockquote>
-  <p>從上面我們可以看到三個拆UV不同的例子</p>
-</blockquote>
-
-<blockquote>
-  <p><strong>從第一張圖裡我們可以看到做為貼圖的棋盤格圖案像磁磚一樣保持比例的貼在方塊表面上並沒有變形。試想如果這個棋盤圖案是一個光照貼圖(一個打在物件上的光照圖像)，我們會得到一個視覺上看起來沒有問題的結果，只是會需要耗費六個UV shells。那就表示待會用Unity PRGI計算的時候也會產生六張光照圖，不管條件如何，每個光照圖最少都需要4x4個貼圖像素來表示，還沒考慮解析度之前最少就會耗掉96個像素。</strong></p>
-</blockquote>
-
-<blockquote>
-  <p><strong>在第二張圖裡我們會遇到不同的狀況，物件的UV貼圖座標只用一個UV shell就涵蓋所有範圍，雖然這樣所產生的光照圖最少，但視覺效果卻不是我們要的。我們會看到物件表面上的貼圖歪掉了，貼圖在UV空間裡也相互重疊，代表如果這是一張光照貼圖，物件一面的光照可能會錯投到相反面上。很明顯的這種拆法是有問題的。</strong></p>
-</blockquote>
-
-<blockquote>
-  <p>**第三張圖的結果比較理想，棋盤沒有扭曲，磁磚比例也保持正方形。而且還成功用一張UV shell覆蓋物體的所有面。屆時透過連接或縫合對應在模型上的邊緣來把位置合上。 
-如果用技術的邏輯來看，整個過程做了哪些事情呢? 首先，我們會將UV圖用正交投影(Orthogonal Projection)在物件上來產生獨立的Shell，然後我們就會分析哪些Shell和物件的邊緣有相連關係，一旦我們找到了這些邊緣，我們就會把UV shell的內容移進去並和相鄰的Shell縫合起來。 **</p>
-</blockquote>
-
-<h3 id="section-4">如何查看已经生成的光照图</h3>
-
-<ul>
-  <li>首先需要生成LightingData数据，将场景中的模型勾选static，然后在light window中点击build(也可以选择Auto) 。</li>
-  <li>场景窗口中选择，<code class="highlighter-rouge">UV Charts模式會把場景裡不同光照圖用不同顏色表示</code>
-<img src="https://unity3d.com/sites/default/files/charting.png" alt="image" /></li>
-</ul>
-
-<h3 id="section-5">如何减少光照图</h3>
-
-<ul>
-  <li>需要对以下几个参数进行设置</li>
-</ul>
-
-<p><img src="https://unity3d.com/sites/default/files/maxdistance.png" alt="image" /></p>
-
-<ul>
-  <li>先放一下原模型的图，后续会有大量的结果图。</li>
-</ul>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214120221660-1264214124.jpg" alt="image" /></p>
-
-<h4 id="auto-uv-max-distanceuv">Auto UV Max Distance(自動最大UV距離)</h4>
-
-<blockquote>
-  <p>Unity的拆解演算法會嘗試把不同Shell做調整將UV邊緣拼接在一起來簡化UV貼圖。當Shell放入後還能保持在Auto UV Max Distance規定的範圍內時才會被考慮進來。這個範圍是用Unity的世界空間座標來定義的，在我們的範例裡是1米。</p>
-</blockquote>
-
-<blockquote>
-  <p>在許多情況下，預設的0.5就能給出不錯的結果，但對於具有大面積的特大物件可能要提高這個值來防止本來應該被縫合的UV圖被演算法排除在外。</p>
-</blockquote>
-
-<blockquote>
-  <p>增加這個值通常會讓物件所需的光照圖數量減少，而降低這個值通常有助於解決貼圖像素被拉扯的問題，當然就會需要產生更多的光照圖來覆蓋。改變這個值後你可以透過檢視場景UV Charts繪製模式，從覆蓋的棋盤圖來評估並實驗出一個最好的平衡點。</p>
-</blockquote>
-
-<ul>
-  <li>这个属性应该是用于控制拼接UV图的，值越大就会使得原本一些间距比较大的shell能够进行合并，这样就可以减少光照图的数量。</li>
-  <li>做了一个简单的测试，分别设置为0.1、0.5、0.8。明显可以看出来，当数值很小的时候会分出更多的光照图，而且从浅蓝色线条可以看出是模型的边。</li>
-</ul>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125059160-379163503.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.1  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125105004-1204223525.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.8  /  Auto UV Max Angle:89</p>
-
-<h4 id="auto-uv-max-angleuv">Auto UV Max Angle(自動最大UV角度)</h4>
-<blockquote>
-  <p>提高這個值會讓Unity的演算法更容易組合UV圖，這也表示能透過這個功能來降低單一物件的光照圖數量，但是如果設的太寬鬆有時候會出現貼圖被拉扯的狀況。反之降低這個值會造成演算法不好把相鄰的UV排一起，雖然拉扯的情況會降低但是會產生更多光照圖。相同，檢視UV Charts繪製模式裡的棋盤圖並試出一個最適合的值。</p>
-</blockquote>
-
-<ul>
-  <li>
-    <p>基本原理和Auto UV Max Distance一直，更大的数值使得更多比较扭曲的UV Shell能够合并，弊端也说的比较明确。</p>
+    <p>如果你在场景中有动态切换材质（主要是 shader 的改变），比如原始模型中带有法线，默认的材质没有使用法线，但是动态切换的材质却需要使用法线，那么你得注意很可能在编辑器中运行正常，一旦发布到真机就会出现很怪异的现象，会让人以为是 shader 在不同平台的兼容性或者数据精度等问题。譬如描边效果就是一个很好的例子。</p>
   </li>
   <li>
-    <p>以下仍旧是一组对比图</p>
+    <p>结论：如果使用此选项，请务必注意自己动态切换材质的游戏对象是否在场景中以静态的形式存在，shader 使用了哪些模型的数据，并根据实际情况做相应的调整。</p>
   </li>
 </ul>
 
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214111950769-2033724574.jpg" alt="image" />
-Auto UV Max Distance:0.5  /  Auto UV Max Angle:50</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214112002129-1529342405.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:120</p>
-
-<h4 id="preserve-uvsuv">Preserve UVs(保留UV)</h4>
-
-<blockquote>
-  <p>在某些情況下，自動拆UV如果無法獲得理想結果，可能會產生過多的光照圖或是貼圖失真(GI Charts繪製模式可以做拉扯檢查)。在這種情況下可能需要在模型的UV01通道手動建立UV。這必須要在其他工具完成。</p>
-</blockquote>
-
-<blockquote>
-  <p>如果這種情況發生，我們可以在Preserve UVs選項讓Unity演算法強制採用模型UV01通道指定的UV Shell。</p>
-</blockquote>
-
-<blockquote>
-  <p>當需要手動保持UV圖時，Preserve UVs選項很有用</p>
-</blockquote>
-
-<blockquote>
-  <p>要注意的是這些Shell會被重新打包來節省光照貼圖空間，它們會被單獨解開保留，而不是只有把在光照貼圖內的座標記錄起來而已。</p>
-</blockquote>
-
-<blockquote>
-  <p>使用這個功能時必須小心，當指定的UV貼圖包含著大量的UV shells時，這個功能可能會讓預計算的時間拉長，因為Unity的拆解演算法被跳過，手動保留的UV Shells到時候會全餵給預計算流程。記住，最好的結果是儘可能的降低UV shells和光照圖並保持可以接受的貼圖拉扯範圍。</p>
-</blockquote>
-
+<h4 id="unity">有没有什么办法可以提升Unity编辑器中代码的编译速度？我们现在每修改一次代码，等待的编译时间都将近半分钟。</h4>
 <ul>
-  <li>
-    <p>感觉大多数时间是不需要这个东西的，即使unity自己UI展开的不好如果不伤大雅也可以不用。</p>
+  <li>对于大型项目来说，这确实是大家经常遇到的情况。一般来说，Unity Editor会按照脚本的依赖关系编译代码，其主要分为以下四个步骤：
+    <ul>
+      <li>编译Standard Assets、Pro Standard Assets和Plugins文件夹中的Runtime Script；</li>
+      <li>编译以上三个文件夹中Editor文件夹下的Script；</li>
+      <li>编译项目中所有剩余的Runtime Script（Editor文件夹以外Script；</li>
+      <li>编译剩余Script（即Editor文件夹中Script）。</li>
+    </ul>
   </li>
-  <li>
-    <p>生成的图放到下面进行对比</p>
+  <li>建议研发团队可以将一些长时间不需要改动的脚本代码（比如各种插件代码）放入到Standard Assets、Pro Standard Assets或Plugins文件夹中，这样这些代码只需要编译一次，后续的时间就都能节省下来。</li>
+</ul>
+
+<h2 id="section">纹理</h2>
+<h4 id="pvrtcios2">如果纹理尺寸长宽不相等，那么即便是2的幂次，也不会被压缩成PVRTC格式纹理。建议在iOS平台中，尽可能保证纹理尺寸为2的幂次且长宽相等。</h4>
+
+<h2 id="ui">UI</h2>
+<h4 id="nguipanelwidgetsatlasdcprofilemeshnguiwidgetsmeshatlas">NGUI中不同panel下的Widgets使用同一个Atlas，会导致DC比较多，而且从profile中会有多个同名的mesh，以为NGUI中这些widgets的mesh是动态生成的，名字采用的就是Atlas的名字。</h4>
+
+<h4 id="ngui">对于NGUI而言，如果界面元素的坐标是非整数的数值，会导致界面元素模糊么？还有哪些原因会造成界面元素模糊？</h4>
+<ul>
+  <li>导致界面元素模糊的原因主要分为两个，
+    <ul>
+      <li>一是像素未对齐（通常就是因为坐标非整数造成），在相邻像素色差较大的情况下容易出现模糊，特别是文字部分；</li>
+      <li>二是纹理分辨率相对于屏幕的分辨率被缩小或放大，纹理被缩小通常会表现出锯齿感，而纹理被放大则会表现出模糊。</li>
+    </ul>
   </li>
+  <li>而对于动态字体，通常只需要确保像素对齐即可使其不模糊，但需要注意的是，UGUI与NGUI都有全局缩放的功能(分别在Canvas Scaler和UIRoot组件上)，是为了确保不同分辨率下布局相同，也会使动态字体出现缩放，从而造成模糊的问题。</li>
 </ul>
 
-<h4 id="ignore-normals">Ignore Normals(忽略法線)</h4>
-
-<blockquote>
-  <p>在某些情況下，網格匯入器可能會拆開幾何圖形，這也會影響到光照圖的數量。例如，如果有個網格有非常多的三角面，Unity可以為了效能把它分割成幾個獨立的子網格。通常這麼做是為了符合特定硬體需求，例如為了減少每個Draw Call所需要呼叫的三角面數量。分割通常會發生在相鄰的網格面之間法向角度有大變化的區域，比如銳角邊(hard edges)。這樣的拆分網格方式會在模型導入流程時執行，在這個過程中，UV Shell也可能會被拆分開來放到不同的光照圖，造成額外的光照圖消耗。</p>
-</blockquote>
-
+<h2 id="section-1">工具</h2>
+<h4 id="draw-callsetpass-callsetpass-calluwadraw-call">Draw Call和Setpass Call，这两个指标主要是看哪一个？关于这点众说纷纭，很多地方都是说看SetPass Call，但是在UWA的性能测试中，还是把Draw Call当成唯一指标。</h4>
 <ul>
-  <li><strong>信息量略大，首先为了减少Draw Call时三角形面数过多，unity在导入网格是进行拆分，自然这就导致了产生一些多余的UV Shell。</strong></li>
+  <li>在 Unity 5.x 中，SetPass Call与 Draw Call相比，SetPass Call的指标与性能相关性更大（比如Static Batching的开启不影响Draw Call数，而SetPass Call通常会明显下降）。</li>
+  <li>但 SetPass Call在某些情况下也同样存在问题，比如往一个场景中添加任意个相邻且材质相同的大网格物体（使Dynamic Batching失效）时，SetPass Call并不会变化。因此在UWA中，我们所使用的是类似Profiler 中 Total Batches 这一项指标，通常该数值与 Frame Debugger 中的数值基本一致，因此可以通过该工具来查看每个Batch的内容，从而更有针对性地进行优化。</li>
 </ul>
 
-<blockquote>
-  <p>Ignore Normals選項可以防止模型在匯入時光照圖被拆開</p>
-</blockquote>
-
-<blockquote>
-  <p>有時候放著上述的問題不管不太值得，得到的結果讓光照圖數量增加拉長了預計算的時間，還有可能在照明的接縫造成不必要的視覺假象。在這樣的情況下，啟用Ignore Normals選項有助於防止光照圖在預計算的時候被分割開來。</p>
-</blockquote>
-
-<blockquote>
-  <p>請注意，這個選項只有對預計算即時光照(PRGI)有影響，物件被拆分的網格仍然會被保留以用在其他用途。</p>
-</blockquote>
-
+<h4 id="shaderparse--shadercreategpuprogram-">Shader.Parse 和 Shader.CreateGpuProgram 到底是做什么的？它们什么时候执行？</h4>
 <ul>
-  <li>
-    <p>挺好，只是为了PRGI，正常的网格还是会被拆分已做别的用途。</p>
+  <li>Shader.Parse体现的是Shader的加载和解析， Shader.CreateGpuProgram 是将Shader传入GPU的一次提交，GPU驱动会对其进行编译，以适应于特定的设备或平台。</li>
+  <li>在Unity 5.x版本中，Shader.Parse在Shader资源加载时进行执行，而 Shader.CreateGpuProgram在所在GameObject第一渲染时进行执行。</li>
+</ul>
+
+<p>模型&amp;动画</p>
+<h3 id="mesh">关于Mesh合并的问题</h3>
+<h4 id="static">勾选了static的对象</h4>
+<ul>
+  <li>只要是勾选的static的对象都会合并mesh，而不考虑材质使用问题。每个对象会变成submesh。</li>
+  <li>Unity 5.3之前，对于渲染顺序相邻且材质相同的SubMesh则会动态将其索引数组拼合，从而合成一个Draw Call。而Unity 5.3之后则不再拼合索引数组，因为在不切换材质时产生多个Draw Call的开销并不大，而这多个Draw Call会被统计为一个Batch。
+    <h4 id="section-2">对于动态合并的对象</h4>
   </li>
-  <li>
-    <p>最后放下结果对比</p>
+  <li>Unity对于任何Mesh的面片都有65536的个数限制，拼合后的面片数也是如此。</li>
+</ul>
+
+<h4 id="skinned-mesh-renderdraw-call">请教，角色分部件换装可行吗？比如衣服裤子分开，都是用Skinned Mesh Render，有没有办法合并降低Draw Call？</h4>
+<ul>
+  <li>可以通过合并网格的方式来达到降低Draw Call的效果，具体可查看Asset Store中的换装例子：Character Customization。但是，在角色换装时需要注意以下几点：
+    <ul>
+      <li>装备与角色必须是共用一套骨骼的；</li>
+      <li>各装备之间所用的材质必须相同。</li>
+    </ul>
   </li>
+  <li>开发者需要注意，只有同时满足以上两个条件时，才能达到只使用少量Draw Call来进行动态换装的效果。</li>
 </ul>
 
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214113959175-1239106089.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89 / 使用模型UV</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214114011285-1460825901.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89  / 忽略法线</p>
-
+<h2 id="section-3">渲染</h2>
+<h4 id="shader">要达到后续Shader都不出现加载开销，需要满足以下两个条件：</h4>
 <ul>
-  <li>目测这个模型按照默认设置效果就挺好的。</li>
-  <li>后续讲了一些实际的操作，还是自己读文章吧。</li>
+  <li>包含Shader的AssetBundle文件常驻内存；</li>
+  <li>Shader已经全Load加载好；</li>
 </ul>
-
-<h3 id="section-6">光照图总结</h3>
-
-<ul>
-  <li>目前来看整个PRGI的大头在于光照图，而如何减少光照图是重中之重。</li>
-  <li>参数虽然都已经很清楚，而且UV Charts中可以看到具体的效果。不过，在多个模型的场景中每个模型做优化也是个很费时间的事情。</li>
-</ul>
-
 
 
                 <hr>
@@ -437,17 +310,17 @@ Auto UV Max Distance:0.5  /  Auto UV Max Angle:50</p>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/" data-toggle="tooltip" data-placement="top" title="《Unity預計算即時GI》笔记：一、基本概念与一些设置">
+                        <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第八周">
                         Previous<br>
-                        <span>《Unity預計算即時GI》笔记：一、基本概念与一些设置</span>
+                        <span>每天一点UWA：第八周</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%89-Clusters%E5%92%8C%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="《Unity預計算即時GI》笔记：三、Clusters和总结">
+                        <a href="/2017/10/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十周">
                         Next<br>
-                        <span>《Unity預計算即時GI》笔记：三、Clusters和总结</span>
+                        <span>每天一点UWA：第十周</span>
                         </a>
                     </li>
                     

@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>《Unity預計算即時GI》笔记：二、光照图 - 蔡华的博客</title>
+    <title>每天一点UWA：第八周 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%BA%8C-%E5%85%89%E7%85%A7%E5%9B%BE/">
+    <link rel="canonical" href="https://caihua.tech/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记">Unity預計算即時GI笔记</a>
+                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>《Unity預計算即時GI》笔记：二、光照图</h1>
+                    <h1>每天一点UWA：第八周</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on February 22, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on September 25, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,246 +187,115 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">说明</h2>
+				<h2 id="assetbundle">AssetBundle</h2>
+<h4 id="assetbundleassetbundlehash">打包AssetBundle的时候，我发现切换场景时，即使打同一个场景的AssetBundle，它们的Hash值都是不一样的，可能是什么原因造成的呢？</h4>
 
 <ul>
-  <li>这篇文章是对<a href="http://unitytaiwan.blogspot.tw/2016/12/unity-gi-1.html">《Unity預計算即時GI》</a>这个系列文章的笔记。</li>
+  <li>目前很可能是Shader Stripping造成的，其原理可见<a href="https://docs.unity3d.com/Manual/class-GraphicsSettings.html">文档</a>。</li>
+  <li>简单来说就是根据当前场景对Shader进行简化，因此如果打包时包含的场景的Lightmap或Fog设置不同，打出来的AssetBundle包也有可能是不同的。可以尝试通过把Graphics Settings中的Shader Stripping设置进行修改来避免这个问题。</li>
 </ul>
 
-<h2 id="section-1">光照图</h2>
+<h4 id="prefabunloadtrueresourcesunloadunusedassets">Prefab目前，只能通过Unload(True)和Resources.UnloadUnusedAssets卸载。</h4>
 
-<h3 id="section-2">什么是光照图</h3>
+<h4 id="nguiatlasassetbudleresourcesunloadunusedassets1">请教一下，为什么NGUI的Atlas通过AssetBudle载入之后，使用Resources.UnloadUnusedAssets()不能够释放呢？分析器里面引用是1，但是又找不到哪里引用了。</h4>
 <ul>
-  <li>光照图在第三章中有如下的定义，读起来很是费解。</li>
-</ul>
-
-<blockquote>
-  <p>一個光照圖(Chart)是表示一個光照貼圖的區域，用來映射場景物件的光照貼圖UV。你可以想像是能影響物件的一張小磁磚圖，一張光照圖由兩部分組成:輻照度(照明)和方向性(主要光線方向編碼)。</p>
-</blockquote>
-
-<ul>
-  <li>到了第六章又有如下讲解，读完之后我更加费解了，所以暂时搁置吧。</li>
-</ul>
-
-<blockquote>
-  <p>產生光照圖(Charts)的目的主要是用來包住靜態網格著色器(Static Mesh Renderer)的UV貼圖座標。</p>
-</blockquote>
-
-<h3 id="section-3">如何生成</h3>
-
-<blockquote>
-  <p>一個物件所需要的光照圖數量主要是看物件有多少片UV shell需要拆解。所謂拆UV的學問就是保持幾何面上貼圖像素扭曲度和所需的Shell數量之間的平衡。</p>
-</blockquote>
-
-<blockquote>
-  <p>光照圖是在網格導入流程的一個拆解階段(Unwrapping stage)被產生出來的。對於PRGI來說，這些光照圖會在預計算裡的幾何階段(Geometry stage)被打包到不同的圖集(Atlas)裡，這是為了確保它們不會相互重疊。一旦預計算的幾何階段完成之後就會產生可視化數據，我們就能預覽光照圖。</p>
-</blockquote>
-
-<ul>
-  <li>
-    <p>这个部分要结合<a href="http://unitytaiwan.blogspot.tw/2016/12/unitygi-6.html">原文</a>的图来看，从这个部分的文章中可以看到，在模型导入时决定了它需要几个光照图，而<code class="highlighter-rouge">場景裡面有大量的光照圖可能會是PRGI耗時的原因之一</code>。</p>
-  </li>
-  <li>
-    <p><strong>从上下文的介绍来看，光照图是光照贴图的映射，记录了实时计算的结果，当计算光照时，需要从中提取信息。</strong></p>
-  </li>
-  <li>
-    <p>看看下列範例圖:</p>
+  <li>如果Unity Profiler中看到了资源的引用计数不为0，则说明该Atlas资源还在被索引，这样使用Resources.UnloadUnusedAssets()是无法进行卸载的。只有将其索引消除，该资源才会被认为是UnUsed资源，这样才能被Resources.UnloadUnusedAssets()卸载。该资源的引用计数不为0的原因可能有以下几种：
+    <ul>
+      <li>它被缓存在某些Container中，即它从AssetBundle或Resources中加载后，被直接缓存到某个容器中，从而产生了索引，只要它没有被清除出容器，那么索引将一直存在；</li>
+      <li>它被其他Material、Prefab等索引，而这些资源被缓存在某些容器中，即间接被容器缓存，只要索引它的资源不被清楚，那么它的索引页将一直存在。
+就目前我们遇到的泄露问题来看，上述两点为最为主要的原因。因此，如果你的项目中也存在类似情况，建议首先以此为基础对容器的使用进行排查。</li>
+    </ul>
   </li>
 </ul>
 
-<p><img src="https://unity3d.com/sites/default/files/unwrap01.png" alt="image" /></p>
-
-<p>這樣的UV拆解不會變形，但需要多張UV shells</p>
-
-<p><img src="https://unity3d.com/sites/default/files/unwrap02.png" alt="image" /></p>
-
-<p>用單一UV shell所產生的結果，但貼圖變形很嚴重</p>
-
-<p><img src="https://unity3d.com/sites/default/files/unwrap03.png" alt="image" /></p>
-
-<p>比較理想的結果，單一UV shell且貼圖沒有變形</p>
-
-<blockquote>
-  <p>從上面我們可以看到三個拆UV不同的例子</p>
-</blockquote>
-
-<blockquote>
-  <p><strong>從第一張圖裡我們可以看到做為貼圖的棋盤格圖案像磁磚一樣保持比例的貼在方塊表面上並沒有變形。試想如果這個棋盤圖案是一個光照貼圖(一個打在物件上的光照圖像)，我們會得到一個視覺上看起來沒有問題的結果，只是會需要耗費六個UV shells。那就表示待會用Unity PRGI計算的時候也會產生六張光照圖，不管條件如何，每個光照圖最少都需要4x4個貼圖像素來表示，還沒考慮解析度之前最少就會耗掉96個像素。</strong></p>
-</blockquote>
-
-<blockquote>
-  <p><strong>在第二張圖裡我們會遇到不同的狀況，物件的UV貼圖座標只用一個UV shell就涵蓋所有範圍，雖然這樣所產生的光照圖最少，但視覺效果卻不是我們要的。我們會看到物件表面上的貼圖歪掉了，貼圖在UV空間裡也相互重疊，代表如果這是一張光照貼圖，物件一面的光照可能會錯投到相反面上。很明顯的這種拆法是有問題的。</strong></p>
-</blockquote>
-
-<blockquote>
-  <p>**第三張圖的結果比較理想，棋盤沒有扭曲，磁磚比例也保持正方形。而且還成功用一張UV shell覆蓋物體的所有面。屆時透過連接或縫合對應在模型上的邊緣來把位置合上。 
-如果用技術的邏輯來看，整個過程做了哪些事情呢? 首先，我們會將UV圖用正交投影(Orthogonal Projection)在物件上來產生獨立的Shell，然後我們就會分析哪些Shell和物件的邊緣有相連關係，一旦我們找到了這些邊緣，我們就會把UV shell的內容移進去並和相鄰的Shell縫合起來。 **</p>
-</blockquote>
-
-<h3 id="section-4">如何查看已经生成的光照图</h3>
-
+<h2 id="ui">UI</h2>
+<h4 id="uguisrcollview-mask">UGUI的SrcollView Mask遮挡不住特效，这个有没有可行的解决方案？</h4>
 <ul>
-  <li>首先需要生成LightingData数据，将场景中的模型勾选static，然后在light window中点击build(也可以选择Auto) 。</li>
-  <li>场景窗口中选择，<code class="highlighter-rouge">UV Charts模式會把場景裡不同光照圖用不同顏色表示</code>
-<img src="https://unity3d.com/sites/default/files/charting.png" alt="image" /></li>
+  <li>UGUI的Scrollview Mask组件使用的是Stencil Buffer，需要严格确保渲染顺序的正确性，这对于粒子系统或是其他的模型较难控制，因此可以尝试通过其他的方式，如实现一个四边形Alpha 裁剪的Shader，将ScrollView的裁剪区域传入Shader，从而模拟一个特效被“遮罩”的效果。以下是宣雨松博客中提出的一种方式，可以作为参考：
+http://www.xuanyusong.com/archives/3518</li>
 </ul>
 
-<h3 id="section-5">如何减少光照图</h3>
-
+<h4 id="spinenguiscrollviewspinespineshader">Spine动画在NGUI的ScrollView滚动区域的层级也会出现问题，请问怎么裁剪Spine动画呢，Spine是骨骼，这不就等于给特效换Shader了吗？</h4>
 <ul>
-  <li>需要对以下几个参数进行设置</li>
+  <li>同上</li>
 </ul>
 
-<p><img src="https://unity3d.com/sites/default/files/maxdistance.png" alt="image" /></p>
-
+<h4 id="uitextureuwa">我们图标现在是制作成图集后再使用的，但是当图标数量很多的时候，图集的膨胀就很厉害了。对此我们的做法有两种：1）拆为多个图集；2）不再使用图集转而使用UITexture来使用。请问UWA有什么建议呢？</h4>
 <ul>
-  <li>先放一下原模型的图，后续会有大量的结果图。</li>
+  <li>使用图集的主要缺点在于内存较大，且管理不便；而使用UITexture的主要缺点在于产生的Draw Call较多（每个UITexture都会产生一个Draw Call且无法拼合），影响运行效率。</li>
+  <li>一切在于平衡，dc换内存或者内存换dc。</li>
 </ul>
 
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214120221660-1264214124.jpg" alt="image" /></p>
-
-<h4 id="auto-uv-max-distanceuv">Auto UV Max Distance(自動最大UV距離)</h4>
-
-<blockquote>
-  <p>Unity的拆解演算法會嘗試把不同Shell做調整將UV邊緣拼接在一起來簡化UV貼圖。當Shell放入後還能保持在Auto UV Max Distance規定的範圍內時才會被考慮進來。這個範圍是用Unity的世界空間座標來定義的，在我們的範例裡是1米。</p>
-</blockquote>
-
-<blockquote>
-  <p>在許多情況下，預設的0.5就能給出不錯的結果，但對於具有大面積的特大物件可能要提高這個值來防止本來應該被縫合的UV圖被演算法排除在外。</p>
-</blockquote>
-
-<blockquote>
-  <p>增加這個值通常會讓物件所需的光照圖數量減少，而降低這個值通常有助於解決貼圖像素被拉扯的問題，當然就會需要產生更多的光照圖來覆蓋。改變這個值後你可以透過檢視場景UV Charts繪製模式，從覆蓋的棋盤圖來評估並實驗出一個最好的平衡點。</p>
-</blockquote>
-
+<h4 id="uidraw-callenabledui-scrollrectenabled">我发现当把UI挪到屏幕外时，Draw Call不会减少，只有设置Enabled去掉才能减少。UI是没有遮罩剔除这类功能吗？ 那是否意味着ScrollRect只能自己做动态加载或者动态设置Enabled之类的优化了？</h4>
 <ul>
-  <li>这个属性应该是用于控制拼接UV图的，值越大就会使得原本一些间距比较大的shell能够进行合并，这样就可以减少光照图的数量。</li>
-  <li>做了一个简单的测试，分别设置为0.1、0.5、0.8。明显可以看出来，当数值很小的时候会分出更多的光照图，而且从浅蓝色线条可以看出是模型的边。</li>
-</ul>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125059160-379163503.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.1  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125105004-1204223525.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.8  /  Auto UV Max Angle:89</p>
-
-<h4 id="auto-uv-max-angleuv">Auto UV Max Angle(自動最大UV角度)</h4>
-<blockquote>
-  <p>提高這個值會讓Unity的演算法更容易組合UV圖，這也表示能透過這個功能來降低單一物件的光照圖數量，但是如果設的太寬鬆有時候會出現貼圖被拉扯的狀況。反之降低這個值會造成演算法不好把相鄰的UV排一起，雖然拉扯的情況會降低但是會產生更多光照圖。相同，檢視UV Charts繪製模式裡的棋盤圖並試出一個最適合的值。</p>
-</blockquote>
-
-<ul>
-  <li>
-    <p>基本原理和Auto UV Max Distance一直，更大的数值使得更多比较扭曲的UV Shell能够合并，弊端也说的比较明确。</p>
+  <li><del>因为UGUI合并网格时是以Canvas为单位的，所以只把一部分UI元素移除屏幕并不能降低Draw Call，在Unity 5.2版本以前需要满足两点：</del>
+    <ul>
+      <li><del>1． 使用Screen Space – Camera 的 Render Mode；</del></li>
+      <li><del>2． 需要将移出的UI元素放在独立的Canvas中，然后整体移出屏幕。</del></li>
+    </ul>
   </li>
-  <li>
-    <p>以下仍旧是一组对比图</p>
+  <li>但在Unity 5.2版本之后，上述方法也已经失效。</li>
+  <li>因此我们建议，在移出后，通过将Canvas的Layer修改为相机Culling Mask中未选中的Layer来去除这部分多余的Draw Call， <strong>但这种方法同样需要将移出的UI元素放在独立的Canvas中</strong>。这种方法，相比Enabled的设置，可以减少一定的CPU开销。而对于ScrollRect，如果包含的UI元素较多，确实需要自己做动态加载和动态设置Enabled来进行优化。</li>
+</ul>
+
+<h4 id="uimaskui-">UI展示动画时，使用Mask做和使用UI本身做 ，哪个效率会更高些?</h4>
+<ul>
+  <li>一般来说建议尽可能少用Mask组件，该组件的使用对于Draw Call会有较大的影响，也可尝试用 Rect2D Mask来代替。而如果直接通过改变UI元素本身来做动画，当涉及的UI元素数量较大时，容易引起较高的网格重建开销。</li>
+</ul>
+
+<h2 id="section">工具</h2>
+<h4 id="uwa-profilermanagedstaticreferencesstatic-classaclassbclassb">关于定位游戏中冗余资源引用的问题。UWA的报告中能定位到具体的引用代码么？ 在Profiler只能看到ManagedStaticReferences但是具体不到引用的位置。比如Static ClassA引用一个ClassB，ClassB上引用了一个资源，就定位不出这个引用的过程。请问这种情况下有没有比较好的方法找到引用关系呢？</h4>
+<ul>
+  <li>该问题在Unity 5.3 之前的版本中都没有方式来进行定位，只能由研发团队根据对代码的推测了进行定位；而在Unity 5.3之后的版本则可以借助Memory Profiler来尝试定位，而Memory Profiler尚未原生集成在Unity Editor中，需要在以下网址进行下载：
+https://bitbucket.org/Unity-Technologies/memoryprofiler</li>
+  <li>只是记一下有这么个工具。</li>
+</ul>
+
+<h2 id="section-1">粒子</h2>
+<h4 id="prewarm">粒子系统的Prewarm主要用来做什么的，这个怎么优化呢？</h4>
+<ul>
+  <li>ParticleSystem.Prewarm的出现表示当前加载、激活或者首次渲染的粒子系统开启了”Prewarm”选项，而开启该选项的粒子系统在加载后会立即执行一次完整的模拟。以“火焰”为例，Prewarm开启时，加载后第一帧即能看到“大火”，而不是从“火苗”开始逐渐变大。但Prewarm的操作通常都有一定的耗时，建议在可以不用的情况下，将其关闭。</li>
+</ul>
+
+<h2 id="section-2">模型&amp;动画</h2>
+<h4 id="profileranimatorinitializeanimatorinstance-animator">我在Profiler中看到Animator.Initialize这个耗时很大，这个有什么建议么?Animator.Instance 是因为Animator过多造成的吗？</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_40%2F1.jpg" alt="image" /></p>
+<ul>
+  <li>由图中可知，Animator.Initialize主要是在Instantiate实例化时引起（实际上，GameObject.Active操作也会引起Animator.Initialize），而其具体的耗时原因是相关资源（主要是AnimationClip资源）的加载所致。因此，我们的建议如下：
+    <ul>
+      <li>对GameObject的Instantiate实例化操作进行检测，对于频繁Instantiate的GameObject尝试进行缓存；</li>
+      <li>对Animator Controller中的AnimationClip资源进行精简，可尝试动态加载和替换Animator Controller中的AnimationClip；</li>
+      <li>由（1）引申出来，对于已经在缓存池中通过GameObject.Active操作造成的Animator.Initialize开销，建议通过Active/Deactive Animator组件来代替Active/Deactive GameObject，这种操作可以避免Animator.Initialize时内部组织结构创建的开销，进而降低Animator.Initialize时的CPU开销。</li>
+    </ul>
   </li>
 </ul>
 
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214111950769-2033724574.jpg" alt="image" />
-Auto UV Max Distance:0.5  /  Auto UV Max Angle:50</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214112002129-1529342405.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:120</p>
-
-<h4 id="preserve-uvsuv">Preserve UVs(保留UV)</h4>
-
-<blockquote>
-  <p>在某些情況下，自動拆UV如果無法獲得理想結果，可能會產生過多的光照圖或是貼圖失真(GI Charts繪製模式可以做拉扯檢查)。在這種情況下可能需要在模型的UV01通道手動建立UV。這必須要在其他工具完成。</p>
-</blockquote>
-
-<blockquote>
-  <p>如果這種情況發生，我們可以在Preserve UVs選項讓Unity演算法強制採用模型UV01通道指定的UV Shell。</p>
-</blockquote>
-
-<blockquote>
-  <p>當需要手動保持UV圖時，Preserve UVs選項很有用</p>
-</blockquote>
-
-<blockquote>
-  <p>要注意的是這些Shell會被重新打包來節省光照貼圖空間，它們會被單獨解開保留，而不是只有把在光照貼圖內的座標記錄起來而已。</p>
-</blockquote>
-
-<blockquote>
-  <p>使用這個功能時必須小心，當指定的UV貼圖包含著大量的UV shells時，這個功能可能會讓預計算的時間拉長，因為Unity的拆解演算法被跳過，手動保留的UV Shells到時候會全餵給預計算流程。記住，最好的結果是儘可能的降低UV shells和光照圖並保持可以接受的貼圖拉扯範圍。</p>
-</blockquote>
+<h2 id="section-3">性能综合</h2>
+<h4 id="gameobjectinstantiategameobject">GameObject.Instantiate()每实例化一个GameObject到场景中，会造成卡顿，有什么办法可以优化吗？就算我采用了异步加载，仍然会有稍许的卡顿感。除了缓存池，是否还有别的方法？</h4>
 
 <ul>
   <li>
-    <p>感觉大多数时间是不需要这个东西的，即使unity自己UI展开的不好如果不伤大雅也可以不用。</p>
-  </li>
-  <li>
-    <p>生成的图放到下面进行对比</p>
-  </li>
-</ul>
+    <p>建议研发团队先通过Unity Profiler来确定该性能卡顿的位置。如果只是一个空的GameObject，Instantiate实例化是很快的。一般来说，Instantiate实例化时间较长，主要由以下三个原因：</p>
 
-<h4 id="ignore-normals">Ignore Normals(忽略法線)</h4>
-
-<blockquote>
-  <p>在某些情況下，網格匯入器可能會拆開幾何圖形，這也會影響到光照圖的數量。例如，如果有個網格有非常多的三角面，Unity可以為了效能把它分割成幾個獨立的子網格。通常這麼做是為了符合特定硬體需求，例如為了減少每個Draw Call所需要呼叫的三角面數量。分割通常會發生在相鄰的網格面之間法向角度有大變化的區域，比如銳角邊(hard edges)。這樣的拆分網格方式會在模型導入流程時執行，在這個過程中，UV Shell也可能會被拆分開來放到不同的光照圖，造成額外的光照圖消耗。</p>
-</blockquote>
-
-<ul>
-  <li><strong>信息量略大，首先为了减少Draw Call时三角形面数过多，unity在导入网格是进行拆分，自然这就导致了产生一些多余的UV Shell。</strong></li>
-</ul>
-
-<blockquote>
-  <p>Ignore Normals選項可以防止模型在匯入時光照圖被拆開</p>
-</blockquote>
-
-<blockquote>
-  <p>有時候放著上述的問題不管不太值得，得到的結果讓光照圖數量增加拉長了預計算的時間，還有可能在照明的接縫造成不必要的視覺假象。在這樣的情況下，啟用Ignore Normals選項有助於防止光照圖在預計算的時候被分割開來。</p>
-</blockquote>
-
-<blockquote>
-  <p>請注意，這個選項只有對預計算即時光照(PRGI)有影響，物件被拆分的網格仍然會被保留以用在其他用途。</p>
-</blockquote>
-
-<ul>
-  <li>
-    <p>挺好，只是为了PRGI，正常的网格还是会被拆分已做别的用途。</p>
-  </li>
-  <li>
-    <p>最后放下结果对比</p>
+    <ul>
+      <li>与资源的加载有关：对于这种情况，研发团度需要精简资源，或者预加载资源来降低实例化的开销；</li>
+      <li>序列化信息比较多：当GameObject上的Component比较多时，其Instantiate实例化性能会受到影响，比如说粒子系统，这种情况就只能通过分帧实例化，或者通过缓存池来避免；</li>
+      <li>自定义组件的Awake：在Instantiate实例化时，其GameObject上挂载脚本的Awake函数也会被触发，其中产生的CPU占用，也会被计算在Instantiate实例化内。</li>
+    </ul>
   </li>
 </ul>
 
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214113959175-1239106089.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89 / 使用模型UV</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170213125103254-453985663.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89</p>
-
-<p><img src="http://images2015.cnblogs.com/blog/23250/201702/23250-20170214114011285-1460825901.jpg" alt="image" /></p>
-
-<p>Auto UV Max Distance:0.5  /  Auto UV Max Angle:89  / 忽略法线</p>
+<h4 id="inspectortransformfind">预设中的变量，拖拽到Inspector面板和Transform.find这两种方法对加载影响是一样的吗？</h4>
 
 <ul>
-  <li>目测这个模型按照默认设置效果就挺好的。</li>
-  <li>后续讲了一些实际的操作，还是自己读文章吧。</li>
+  <li>对加载性能有微小的不同。Transform.Find 是可以灵活控制调用时机的，可以真正要用的时候再进行Transform.Find，这样GameObject被实例化时效率会更高一些 。但如果拖上去，GameObject被实例化时，该变量就需要进行序列化。因此，加载和实例化时两者的性能会存在一些微小的变化。</li>
 </ul>
 
-<h3 id="section-6">光照图总结</h3>
-
+<h4 id="assetbundlecreatefrommemory">我有一个关于AssetBundle资源加密问题。CreateFromMemory这里不推荐大规模使用，那是不是我们要放弃对一部分资源的加密？还是说有其它的解决办法？</h4>
 <ul>
-  <li>目前来看整个PRGI的大头在于光照图，而如何减少光照图是重中之重。</li>
-  <li>参数虽然都已经很清楚，而且UV Charts中可以看到具体的效果。不过，在多个模型的场景中每个模型做优化也是个很费时间的事情。</li>
+  <li>由于CreateFromMemory的加载速度相较其他的接口而言，耗时明显增大，因此我们确实不建议大规模使用。</li>
+  <li>就目前而言，除了使用CreateFromMemory，并没有其他高效直接的方法进行资源加密，因此，确实需要放弃对一部分资源的加密。同时，目前存在一些工具可以从更底层的方式来获取和导出渲染相关的资源，如纹理、网格等，因此，对于这部分的资源加密并没有十分的必要性。</li>
 </ul>
-
 
 
                 <hr>
@@ -437,17 +306,17 @@ Auto UV Max Distance:0.5  /  Auto UV Max Angle:50</p>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/" data-toggle="tooltip" data-placement="top" title="《Unity預計算即時GI》笔记：一、基本概念与一些设置">
+                        <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：UI优化小结">
                         Previous<br>
-                        <span>《Unity預計算即時GI》笔记：一、基本概念与一些设置</span>
+                        <span>每天一点UWA：UI优化小结</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%89-Clusters%E5%92%8C%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="《Unity預計算即時GI》笔记：三、Clusters和总结">
+                        <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B9%9D%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第九周">
                         Next<br>
-                        <span>《Unity預計算即時GI》笔记：三、Clusters和总结</span>
+                        <span>每天一点UWA：第九周</span>
                         </a>
                     </li>
                     
