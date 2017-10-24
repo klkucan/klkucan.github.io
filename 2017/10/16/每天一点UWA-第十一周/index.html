@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 互联网, Unity3D, iOS">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>bat学习 - 蔡华的博客</title>
+    <title>每天一点UWA：第十一周 - 蔡华的博客</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/">
+    <link rel="canonical" href="https://caihua.tech/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#杂记" title="杂记">杂记</a>
+                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>bat学习</h1>
+                    <h1>每天一点UWA：第十一周</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on August 27, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on October 16, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,183 +187,128 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h3 id="section">概念</h3>
+				<h2 id="section">字体</h2>
+<h3 id="section-1">优化字体资源</h3>
+
+<h4 id="section-2">方向：内存和数量峰值</h4>
 <ul>
-  <li>批处理的本质，是一堆DOS和cmd命令按一定顺序排列而形成的集合。</li>
-  <li>熟悉DOS语法，然后按照正确的顺序来进行指令的运行。</li>
+  <li>主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数量会不止一个。</li>
+  <li>内存:很多情况下我们对于一个字体库中的字体只是用了个别的，但是却加载了整个字体库。</li>
 </ul>
 
-<h3 id="section-1">系统教程</h3>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F1.png" alt="image" /></p>
+
+<h4 id="section-3">优化方案</h4>
 <ul>
-  <li>使用/?查看if的功能，使用与很多指令，<code class="highlighter-rouge">%</code>似乎不行。</li>
+  <li>字库裁切
+    <ul>
+      <li>针对不同字体的应用场景，设计有效精简的裁切字库。</li>
+      <li>需要注意同一个字体资源在AssetBundle内外可能都会有依赖，如果依赖不能避免，那么就要各自设计裁切字库。</li>
+    </ul>
+  </li>
+  <li>工具：FontSubsetGUI
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F3.png" alt="image" /></li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>if /?
-pause
+<h4 id="section-4">结果</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F4.png" alt="image" /></p>
 
---------------------------------------------
+<h2 id="ui">UI</h2>
+<h4 id="maskablegraphicenable-imagegcsetactivegc">什么情况下会触发MaskableGraphic.Enable() ？现在我得到的结论是只要用到了Image组件，然后禁用启用带有这个组件的物体，都会触发进而产生GC。大家都怎么显示隐藏图片这种需求的，SetActive这种方式容易产生GC。</h4>
+<ul>
+  <li>在UGUI中，Image组件并没有重写其父类的OnEnable函数，所以在激活时会出现MaskableGraphic.OnEnable。其中出现堆内存开销的话，通常是因为其父类函数Graphic.OnEnable中，UGUI在进行全局容器的Add等类似的操作时，遇到了扩容等产生堆内存的操作。</li>
+  <li>总之，在UGUI中，UI元素的激活和禁用所导致的堆内存分配，通常是不会持续出现的，其实不需要特别地处理。但对于其CPU开销，在UI元素数量较大时，依然是可观的，所以我们依然建议，对于激活禁用操作较为频繁的UI元素，可以尝试通过移出屏幕，缩放为0等方式来避免SetActive的调用。</li>
+</ul>
 
-C:\Users\Administrator\Desktop&gt;
-执行批处理程序中的条件处理。
+<h4 id="uwauiui-panelscrollviewitemitempanel">UWA建议“将较多的动态UI元素分组放在不同的UI Panel中”，那么请问如果是ScrollView里面多个item的话，是否意味着每个Item都加一个Panel会更好一些？</h4>
+<ul>
+  <li>“动态元素”其实是相对的。在 ScrollView 中，一般情况下，如背包，其中的Item在滑动过程中是相对静止的，因此这种情况下只需要将这些Item放在一个UIPanel中即可。</li>
+  <li>但在类似于聊天界面中，存在一些UI元素是有持续的动画的，那么就需要考虑对这类元素进行特殊处理，可以尝试将这部分有动画的UI放在独立的UIPanel中，或者在个数不多的情况下，各自变为一个UIPanel等。</li>
+</ul>
 
-IF [NOT] ERRORLEVEL number command
-IF [NOT] string1==string2 command
-IF [NOT] EXIST filename command
+<h4 id="uipanelsprite-renderernguispriteuipanel">如果我在UIPanel下面放的是Sprite Renderer而不是NGUI的Sprite，是否会引起整个UIPanel的重绘？</h4>
+<ul>
+  <li>在NGUI中使用Unity2D的Sprite有两种情况，一种是直接使用Unity2D的SpriteRenderer组件，这种情况下，NGUI和Unity2D之间是互不影响的，只是在深度的设置上相对会比较麻烦一些。</li>
+  <li>另一种是使用NGUI的UI2DSprite组件，而该组件是NGUI对Unity2D的SpriteRenderer组件上进行封装的，方便使其深度与其他UI元素进行穿插，因此其行为和其他的UI元素一致，在某些情况下是有可能引起UIPanel的重绘。</li>
+</ul>
 
-  NOT               指定只有条件为 false 的情况下，Windows 才
-                    应该执行该命令。
+<h2 id="section-5">模型&amp;动画</h2>
+<h4 id="abab">有一个带位移动画A，有位置有旋转的变化，需要播完这个动画后切换到一个原地的动画B。现在我发现动画A没播放就会切换到B了，导致一些位移数据并没有作用到模型上，这种情况怎么处理？</h4>
+<ul>
+  <li>Mecanim动画系统提供了“Apply Root Motion”功能来满足两个动画文件顶点位移不一致的切换的需求。<strong>当开启“Apply Root Motion”功能后，角色的GameObject位置会随着动画的更新而更新</strong>。</li>
+  <li>因此，问题中的A切到B后，GameObject的位移将不会改变。建议该研发团队检测GameObject Animator组件的“Apply Root Motion”功能是否开启。</li>
+</ul>
 
-  ERRORLEVEL number 如果最后运行的程序返回一个等于或大于
-                    指定数字的退出代码，指定条件为 true。
+<h4 id="section-6">删除模型上动画的缩放</h4>
 
-  string1==string2  如果指定的文字字符串匹配，指定条件为 true。
+<p><a href="http://answers.unity3d.com/questions/668672/removing-scale-curves-from-animation.html">link</a></p>
 
-  EXIST filename    如果指定的文件名存在，指定条件为 true。
+<ul>
+  <li>防止将来翻不出去了</li>
+</ul>
 
-  command           如果符合条件，指定要执行的命令。如果指定的
-                    条件为 FALSE，命令后可跟 ELSE 命令，该命令将
-                    在 ELSE 关键字之后执行该命令。
-
-ELSE 子句必须出现在同一行上的 IF 之后。例如:
-
-    IF EXIST filename. (
-请按任意键继续. . .
+<div class="highlighter-rouge"><pre class="highlight"><code>void Apply(GameObject g)
+     {
+         List&lt;AnimationClip&gt; animationClipList = new List&lt;AnimationClip&gt;(AnimationUtility.GetAnimationClips(g));
+         if (animationClipList.Count == 0) {
+             AnimationClip[] objectList = UnityEngine.Object.FindObjectsOfType (typeof(AnimationClip)) as AnimationClip[];
+             animationClipList.AddRange(objectList);
+         }
+ 
+         int count = 0;
+ 
+         foreach (AnimationClip theAnimation in animationClipList)
+         {
+             foreach (AnimationClipCurveData theCurve in AnimationUtility.GetAllCurves(theAnimation))
+             {
+                 string name = theCurve.propertyName.ToLower();
+                 if (name.Contains("scale"))
+                 {
+                     for (int i = theCurve.curve.keys.Length - 1; i &gt;= 0; i--) {
+                         theCurve.curve.RemoveKey(i);
+                     }
+                     string propertyName = theCurve.propertyName;
+                     // we can't delete "*.x", e.g. m_LocalScale.x - but only "*", e.g. m_LocalScale
+                     if (propertyName.IndexOf(".") &gt; 0) {
+                         propertyName = propertyName.Substring(0, propertyName.IndexOf("."));
+                     }
+                     Debug.Log(string.Format("Fixing: {0} - {1}", theCurve.path, propertyName));
+                     theAnimation.SetCurve(theCurve.path, theCurve.type, propertyName, null);
+                     count++;
+                 }
+             } 
+         }
+ 
+         int checkCount = 0;
+         foreach (AnimationClip theAnimation in animationClipList)
+         {
+             foreach (AnimationClipCurveData theCurve in AnimationUtility.GetAllCurves(theAnimation))
+             {
+                 string name = theCurve.propertyName.ToLower();
+                 if (name.Contains("scale"))
+                 {
+                     checkCount++;
+                 }
+             } 
+         }
+ 
+         if (count &gt; 0)
+         {
+             Debug.Log("Total number of removed curves is " + count + ". GO name: " + g.name);
+             Debug.Log("Number of remaining scale curves is " + checkCount);
+         }
+     }
 </code></pre>
 </div>
 
-<h3 id="demo">从一个demo中学习</h3>
-
+<h2 id="section-7">渲染</h2>
+<h4 id="section-8">物体的动态合批条件和是否是透明物体没什么关系吧？比如粒子系统的物体一般都是透明的，是不是也可以合批？</h4>
 <ul>
-  <li>这个demo的作用是用来更新游戏客户端的。一般来说我们的端游客户端会有一个launcher来启动真正的游戏，它还要负责来更新游戏。同时，它还要更新自己，以前WOW中的做法是有个专门的update.exe来做更新（不过现在是靠battle.net来更新了），我觉得bat文件一样可以做，因此写了这个demo。下面代码中TL代表launcher，TC代码client。</li>
+  <li>动态合批并不限制物体是否为半透明或不透明物体。</li>
+  <li>合批的首要要求是Material一致，其本身是半透明Material还是不透明Material均没有限制。</li>
+  <li>粒子系统同样是可以合批的，只要其材质一致，深度较为接近且中间没有其他材质的物体阻隔，那么Unity引擎将会将其进行合批。</li>
+  <li>查看Unity引擎的官方文档：https://docs.unity3d.com/Manual/DrawCallBatching.html</li>
 </ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>@echo on
-cls
-
-:: 当前程序所在目录
-set LocalPath=%~dp0
-:: TL更新包完全路径名,不带后缀，同时也是解压缩后的文件夹名称
-set  TLZipFile=%~dp0TLUpgradeData\TL_%1
-:: TL更新包解压路径
-set  TLDecompressPath=%~dp0TLUpgradeData\
-
-echo 执行更新，请稍后...
-
-echo ----1.关闭客户端进程----
-tasklist /nh|find /i "TL.exe"
-if ERRORLEVEL 1 (echo TL客户端进程已经结束) else (taskkill /f /im TL.exe)
-tasklist /nh|find /i "TC.exe"
-if ERRORLEVEL 1 (echo TC客户端进程已经结束) else (taskkill /f /im TC.exe)
-
-echo ----2.开始解压缩安装包----
-if exist %TLZipFile%.zip   %LocalPath%7z x %TLZipFile%.zip -o%TLDecompressPath% -aoa
-
-echo ----3.开始复制文件----
-xcopy %TLZipFile%  %LocalPath% /e /f /k /y
-:: xcopy switch说明：
-:: /E           复制目录和子目录，包括空目录。
-:: /F           复制时显示完整的源文件名和目标文件名。
-:: /K           复制属性。一般的 Xcopy 会重置只读属性。
-:: /Y           取消提示以确认要覆盖
-
-echo ----4.删除临时文件----
-del %TLZipFile%.zip
-rmdir %TLZipFile% /s /q
-:: 删除当文件夹和里面的所有文件，/s 表示包含子文件夹，/q 表示不需要确实提示 
-pause
-
-</code></pre>
-</div>
-
-<h4 id="section-2"><code class="highlighter-rouge">@</code></h4>
-<ul>
-  <li>它的作用是让执行窗口中不显示它后面这一行的命令本身。行首有了它的话，这一行的命令就不显示了。首行的@echo off中，@的作用就是让脚本在执行时不显示后面的echo off部分。</li>
-</ul>
-
-<h4 id="section-3"><code class="highlighter-rouge">::</code> -双冒号</h4>
-<ul>
-  <li>类似注释符号</li>
-</ul>
-
-<h4 id="section-4"><code class="highlighter-rouge">&gt;</code>和<code class="highlighter-rouge">&gt;&gt;</code></h4>
-
-<ul>
-  <li><code class="highlighter-rouge">&gt;</code>指示将内容写入某个文件</li>
-  <li><code class="highlighter-rouge">&gt;&gt;</code>的作用，和&gt;的相同，区别是把结果追加到前一行得出的结果的后面，类似写文件时的append。</li>
-</ul>
-
-<h4 id="echo"><code class="highlighter-rouge">echo</code>的三个用法</h4>
-<ul>
-  <li>命令显示与否的开关，有off和on两个选项。设置为off后，后续所有的命令都不会显示命令本身，只显示命令的结果。</li>
-  <li>类似于print，用于输出信息。</li>
-  <li>可以直接编辑文本文件。</li>
-</ul>
-
-<h4 id="pause-"><code class="highlighter-rouge">pause </code></h4>
-<ul>
-  <li>就是字面意思</li>
-</ul>
-
-<h4 id="goto"><code class="highlighter-rouge">:</code>和<code class="highlighter-rouge">goto</code></h4>
-<ul>
-  <li>goto用于与其它语言是一样的，就是跳转到一个指定的标签</li>
-  <li><code class="highlighter-rouge">:</code>是定义一个标签</li>
-</ul>
-
-<h4 id="if"><code class="highlighter-rouge">if</code></h4>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>@echo off
-
-if "%1" == "1" goto goto1
-if "%1" == "2" goto goto2
-
-:goto1
-echo 参数是goto1
-
-:goto2
-echo 参数是goto2
-pause
-exit
-</code></pre>
-</div>
-
-<ul>
-  <li>就是条件判断，只不过跟着不同的命令产生不同的功能</li>
-  <li>if exist判定存在</li>
-  <li>结果判断</li>
-  <li>if not 否定判定</li>
-</ul>
-
-<h4 id="section-5">变量</h4>
-<ul>
-  <li>使用set来进行变量设置，set还有几个switch。当变量的来源是输入内容时用<code class="highlighter-rouge">set /p</code>。</li>
-  <li><code class="highlighter-rouge">set variable=value</code>注意这个语句中等号前后没有空格，我发现有空格的话变量赋值有问题。</li>
-  <li>使用变量时用<code class="highlighter-rouge">%variable%</code>的形式，即两个百分号夹住变量名。</li>
-  <li>与传统的编程语言不同，bat中变量不能连接使用，比如下面这样是不行的。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>set a=1
-set b=%a%2
-</code></pre>
-</div>
-
-<h4 id="section-6">外部参数</h4>
-<ul>
-  <li>%（0-9）来表示参数，其中%0代表自己，demo中只有一个参数是当前最新的版本号，用的是%1。</li>
-  <li>bat中参数有很多用法，具体不描述了。</li>
-</ul>
-
-<h4 id="cmd">其它的cmd命令</h4>
-<ul>
-  <li>demo中还是有tasklist、taskkill、del、rmdir这样的命令，这些就不一一解释了。其实这些全部都是cmd的命令，这样验证了开始时说的，其实bat就是顺序执行一些dos和cmd命令。</li>
-</ul>
-
-<h3 id="section-7">资源</h3>
-<ul>
-  <li>这个demo的完整资源在GitHub的<a href="https://github.com/klkucan/UpgradeByBat">这个</a>位置。</li>
-  <li>另外推荐一篇<a href="http://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html">bat学习的文章</a>，写的很不错。</li>
-</ul>
-
 
 
                 <hr>
@@ -374,17 +319,17 @@ set b=%a%2
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：加载模块深度解析">
+                        <a href="/2017/10/05/Xlua%E6%91%98%E8%A6%81/" data-toggle="tooltip" data-placement="top" title="Xlua摘要">
                         Previous<br>
-                        <span>每天一点UWA：加载模块深度解析</span>
+                        <span>Xlua摘要</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第五周">
+                        <a href="/2017/10/16/LuaFramework&PureMVC/" data-toggle="tooltip" data-placement="top" title="LuaFramework&PureMVC">
                         Next<br>
-                        <span>每天一点UWA：第五周</span>
+                        <span>LuaFramework&PureMVC</span>
                         </a>
                     </li>
                     

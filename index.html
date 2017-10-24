@@ -173,6 +173,101 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
+        <h2 class="post-title">
+            Shader合并与Variant
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
+
+
+Sahder Variant的概念
+
+
+ ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十二周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+对于UGUI文字花屏问题，有什么推荐的解决方法吗？
+
+  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
+  关于UGUI字体花屏和乱码
+  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
+
+
+工具
+最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/16/LuaFramework&PureMVC/">
+        <h2 class="post-title">
+            LuaFramework&PureMVC
+        </h2>
+        
+        <div class="post-content-preview">
+            LuaFramework是GitHub上一个基于tolua的人更新案例，里面除了tolua的功能外还使用了PureMVC的部分功能。这个文章是对代码中PureMVC部分的一些理解。
+
+PureMVC
+Structure
+Model&amp;Proxy
+
+  Model保存对Proxy对象的引用，Proxy负责操作数据模型，与远程服务通信存取数据。这样保证了Model层的可移植性。
+
+
+Vie...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十一周
+        </h2>
+        
+        <div class="post-content-preview">
+            字体
+优化字体资源
+
+方向：内存和数量峰值
+
+  主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/10/05/Xlua%E6%91%98%E8%A6%81/">
         <h2 class="post-title">
             Xlua摘要
@@ -311,109 +406,6 @@ NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
-        <h2 class="post-title">
-            从零开始开发一款AR应用
-        </h2>
-        
-        <div class="post-content-preview">
-            Vuforia
-
-什么是vuforia
-
-  我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。
-
-
-怎么使用
-
-  进入Vuforia，右上角注册。
-  点击Develop进入下图
-
-
-
-
-
-  
-    License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuf...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 9, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第六周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-这是一个很长的问题：
-字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。
-
-请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：组件模式
-        </h2>
-        
-        <div class="post-content-preview">
-            为什么是组件
-意图
-
-  允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。
-
-
-实体-组件-系统(ECS)
-
-  组件模式在游戏中常见的体现就是ECS
-
-
-为什么是组件
-
-  在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。
-  将不同类型的功能切分成不同的组件，既是对结构的优化...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 28, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第五周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-shader加载
-
-  首先 Shader. WarmupAllShaders 并不影响 Shader 的加载，因为该函数的作用是将所有已加载的 Shader 都做一次快速渲染(渲染单个像素，GPU 在首次使用某一个 Shader 时会有额外开销，Warm 相当于是将这部分开销提前)。
-  可以通过AssetBundle.LoadAll等接口预加载 AssetBund...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -498,13 +490,13 @@ shader加载
                             
                         
                             
-                                <a href="/tags/#Lua" title="Lua" rel="5">
+                                <a href="/tags/#Lua" title="Lua" rel="6">
                                     Lua
                                 </a>
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="12">
+                                <a href="/tags/#UWA" title="UWA" rel="15">
                                     UWA
                                 </a>
                             
