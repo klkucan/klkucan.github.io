@@ -173,6 +173,103 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B9%9D%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第九周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+关于AssetBundle依赖的问题
+
+  如果Panel A和Panel B，它们均依赖一个共享Atlas C。如果在加载完AtlasC后卸载它所在的AssetBundle，再创建A和B，此时会失败。因为他们的依赖关系在AssetBundle上。
+
+
+请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？
+
+  绝大部分...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第八周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+打包AssetBundle的时候，我发现切换场景时，即使打同一个场景的AssetBundle，它们的Hash值都是不一样的，可能是什么原因造成的呢？
+
+
+  目前很可能是Shader Stripping造成的，其原理可见文档。
+  简单来说就是根据当前场景对Shader进行简化，因此如果打包时包含的场景的Lightmap或Fog设置不同，打出来的AssetBundle...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/">
+        <h2 class="post-title">
+            每天一点UWA：UI优化小结
+        </h2>
+        
+        <div class="post-content-preview">
+            说明
+
+  经过一个半月的学习，对UI的优化有了一些心得，同时也希望把零散的知识点总结到一起，因此有了这个专题。
+
+
+那些需要关注的性能指标函数
+UGUI参考的函数
+
+  
+    1、Canvas.SendWillRenderCanvases()
+该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。
+  
+  
+    2...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 10, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第七周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
+
+在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
+
+
+  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
+  建议，可以把Packi...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 10, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
         <h2 class="post-title">
             从零开始开发一款AR应用
@@ -331,84 +428,6 @@ C:\Users\Administrator\Desktop...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%9B%9B%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第四周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Texture、Mesh等真正的资源。对于由Prefab加载出来的Object或Component，则不能通过该函数来进行释放。
-
-用的是Resource的加载方式，并且已经预加载好了材质所在的Prefab ，但是为什么在第一次显示材质的时候还要Load这个材质？
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/">
-        <h2 class="post-title">
-            Lua学习笔记：迭代和闭包
-        </h2>
-        
-        <div class="post-content-preview">
-            关系
-
-  迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由闭包函数本身和一个创建该闭包函数的工厂函数组成。
-  以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/">
-        <h2 class="post-title">
-            Lua学习笔记：函数深入
-        </h2>
-        
-        <div class="post-content-preview">
-            闭包
-
-  lua中的函数都可以认为是闭包，只不过为了便于理解还是用了函数的概念。
-  lua中函数的返回值可以是匿名函数，也就是闭包。以下面的代码为例，提出一个概念：非局部的变量。在下面的代码中，匿名函数访问了一个变量i，它对于newCount来说是局部变量，对于匿名函数来说是既不是局部变量也不是全局变量，在lua中这个称谓非局部的变量。
-  在lua中一个闭包指的是一个函数和该函数所需要...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第三周
-        </h2>
-        
-        <div class="post-content-preview">
-            内存
-资源复用
-
-  如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时Persistent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -461,13 +480,13 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
                             
                         
                             
-                                <a href="/tags/#VR" title="VR" rel="2">
-                                    VR
+                                <a href="/tags/#VR/AR" title="VR/AR" rel="3">
+                                    VR/AR
                                 </a>
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="9">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="11">
                                     Unity3D
                                 </a>
                             
@@ -503,14 +522,8 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="15">
+                                <a href="/tags/#UWA" title="UWA" rel="18">
                                     UWA
-                                </a>
-                            
-                        
-                            
-                                <a href="/tags/#杂" title="杂" rel="1">
-                                    杂
                                 </a>
                             
                         
