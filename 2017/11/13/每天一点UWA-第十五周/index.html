@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>每天一点UWA：第十三周 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>每天一点UWA：第十五周 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+    <link rel="canonical" href="https://caihua.tech/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -164,12 +164,12 @@
                         <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>每天一点UWA：第十三周</h1>
+                    <h1>每天一点UWA：第十五周</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on October 30, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on November 13, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,125 +187,132 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="gameplay">Gameplay</h2>
-<h4 id="layer">求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？</h4>
+				<h2 id="assetbundle">AssetBundle</h2>
+<h4 id="unityprefabassetbundleassetbundleassetbundleobjectobjectobjectdestroyinstantiateobjectobjectdestroyloadassetbundle">我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）</h4>
 <ul>
-  <li>可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影。</li>
+  <li>一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。</li>
+  <li>PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。</li>
 </ul>
 
-<h2 id="texture">Texture</h2>
-<h4 id="uguiresource-resourcedrawcall">UGUI用Resource来动态加载图片，有什么好的方法? 我的理解是：Resource目录下的图片都不能被打包成图集，而且会增加DrawCall和包大小。</h4>
+<h4 id="materialassetbundleassetbundleassetbundle">美术做粒子的时候，粒子与粒子之间共用资源的情况很多，例如某几个粒子共用一个Material，某几个粒子共用一个贴图等，应该如何组织AssetBundle？要是对应到最细的那个程度，凡是共用过的资源都单独打一个AssetBundle，好像又会很琐碎，假如不那么做，粒子与粒子之间的AssetBundle又会有冗余。这方面有什么好的建议？</h4>
+
 <ul>
-  <li>需要打图集的Sprite确实不建议放置在Resources下，如果需要动态加载，并且不希望使用AssetBundle，则可以尝试把需要动态加载的Sprite统一引用到Prefab上进行管理（类似于NGUI的管理方式，一个图集对应一个Prefab），然后动态加载Prefab并查找其管理的Sprite即可。</li>
-  <li>另一种方式是，可以直接关闭Unity的Sprite Packer功能，通过第三方的工具来进行图集的打包，导入Unity时转为Multiple类型的Sprite资源，那么即使放在Resources文件夹下，也不会造成DrawCall无法合并的问题。</li>
+  <li>AssetBundle打包没有标准的方式，单就粒子系统而言，因为其个体本身比较小，并且在项目中经常大量出现，所以并不建议将粒子系统逐个打包，而是建议根据其出现频率进行打包，比如将同一段时间、同一出现场景等的粒子系统打包在一起。同时，由于粒子系统的Shader基本上都是Unity内置Shader，因此，尽可能将Shader进行依赖打包。</li>
 </ul>
 
-<h4 id="resourcesunloadunusedassetsresourcesunloadassetmasset">纹理图片通过文件流形式加载到内存，这样的资源还可以使用Resources.UnloadUnusedAssets()和Resources.UnloadAsset(m_Asset)进行资源卸载吗？</h4>
+<h2 id="gameplay">Gameplay</h2>
+<h4 id="optimize-game-objectsavatar">我把骨骼文件的Optimize Game Objects”开启了，然后骨骼信息就没有了，那Avatar换装时候需要处理的骨骼信息怎么办？</h4>
 <ul>
-  <li>如果是自己载入内存并初始化为Unity的Texture2D，则还是要重点查看Texture2D对象的创建方式。一般来说，会用new Texture2D的方式创建，并用LoadImage的接口将一块内存载入，那么这样就要用DestroyImmediate来销毁这个纹理对象了。</li>
+  <li>在开启“Optimize GameObject”选项后，因为Avatar信息消失，所以并不能通过原始的合并骨骼、合并Mesh的方法再来实现换装功能。对于开启“Optimize GameObject”选项的模型，Unity本身有另外一套更为方便的换装方式，即只要所换装模型的骨骼结点信息与Avatar自身骨骼信息可以匹配，那么直接将换装模型挂在Avatar模型下做为子节点即可，而不必再通过骨骼合并的方式来进行换装。</li>
+  <li>PS:mark一下，没看懂。</li>
 </ul>
 
 <h2 id="ui">UI</h2>
-<h4 id="uguicanvascanvascanvasrendererpanel">请问UGUI的重绘是针对于拥有Canvas组件的Canvas物件，还是针对于拥有CanvasRenderer组件的Panel物件？</h4>
+<h4 id="mipmap">关于Mipmap的设置</h4>
 <ul>
-  <li>UGUI中，Canvas组件可以认为是容器，Image，Text等组件（都需要CanvasRenderer组件）可以认为是元素。在Unity5.2版本之前，在网格重建时，会以Canvas为单位，即一个Canvas中所有的元素最终都是合并到一个Mesh中的，而其中可以被合并渲染的元素则被合在同一个SubMesh中。</li>
-  <li>在Unity5.2版本之后由于引入了多线程的网格合并方式，据我们所知，目前并没有官方的原理解释。</li>
+  <li>通过修改Texture的mipMapbias这个值可以改变使用的mipmap的层级。但是这个值目没有办法在全局设置，在导入图片的时候要用代码设置。</li>
+  <li>unit官方建议<code class="highlighter-rouge">Note that using large negative bias can reduce performance, so it’s not recommended to use more than -0.5 negative bias.</code>，但是Mipmap的层级数的确是一个整数。mipMapbias是由Unity引擎定义的一个参数，按照Unity官网解释来看整数代表了比当前层级更低（级数更大，更模糊）的Mipmap，负数代表了比当前层级更高的Mipmap。“-0.5”具体是偏移多少层级目前也不是很清楚。</li>
+  <li>Trilinear应该是会比Bilinear效果好一些，但是也差强人意。原因是这样：传统的Mipmap（不采用Anisotropic Filtering）都是每层将u，v两个方向缩减一半，即：512x512的下一层是256x256。这就导致在两层交界处在不同层采样出来的纹理在u，v两个方向都被拉伸（或者叫变模糊）。Anisotropic Filtering的方式可以简单理解为在交界处只在某一个方向上被拉伸，另一个方向保持原有采样率（或者叫纹理分辨率），这样才能明显降低突变的模糊感。</li>
+  <li>使用Anisotropic Filtering不仅纹理内存占用会增高，而且采样率也增高（因为有一个方向的保持不变），因此它比传统的mipmap更耗时，耗时在于GPU端对纹理进行采样时增加了访存，在CPU端没有影响。虽然Anisotropic Filtering 耗时增加，但是相比于直接增加mipmap level（也就是设置-0.5的偏移），要达到相同的效果，Anisotropic Filtering的时间耗时还是相对更低的。</li>
 </ul>
 
-<h2 id="section">工具</h2>
-<h4 id="animatorsdirtysceneobjects">对于Animators.DirtySceneObjects这个参数，它是和哪些因素有关，以及如何优化？</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing%2052%2F5.jpg" alt="image" /></p>
+<h4 id="canvascanvasuguispriterenderer">我在改血条，我原来是一个Canvas里放了所有血条，后来改成每个血条一个Canvas，再改成每个血条完全不用UGUI，直接用SpriteRenderer绘制，感觉性能越来越差了，怎么办呢？</h4>
 <ul>
-  <li>该参数是更新场景中受Mecanim动画系统影响的每个GameObject的Transform，所以当这类的GameObject数量越多时，其CPU占用也会越高。对于它的优化方式，主要有如下两种：
+  <li>对于“所有血条放一个Canvas”和“一个血条放一个Canvas”做一个比较：
     <ul>
-      <li>如果是蒙皮网格物体，则可以开启“Optimize GameObject”选项来对其进行优化；</li>
-      <li>如果是非蒙皮网格（比如具有动画的UI界面、2D Sprite等），则只能建议研发团队尽可能减少同一时刻运动的GameObject数量（一般都不会太多），如果是被缓存的屏幕外的物体，则切记要在移出时关闭其Animator组件。</li>
+      <li>前者的开销主要在于网格的更新，在Unity5.2之后主要是在子线程中通过Timeline来查看。因此只看主线程的话，这种方法肯定是更高效的；</li>
+      <li>后者的开销主要在于DrawCall的数量（前者理论上能做到只用1个DrawCall，后者一个Canvas即一个DrawCall），开销被包含在了Camera.Render或者Canvas.RenderOverlays中。</li>
     </ul>
   </li>
+  <li>因此，在选择时，需要考虑的就是“网格更新”和“DrawCall”的权衡。</li>
+  <li>还是建议尽可能降低血条的顶点数，然后选择前者。</li>
 </ul>
 
-<h4 id="prefabselect-dependenciesshader">编辑器模式下，Prefab用Select Dependencies选项找依赖资源的时候，会把以前旧Shader引用的贴图也给关联上，怎么刷新这种引用关系？</h4>
+<h2 id="section">模型&amp;动画</h2>
+<h4 id="generichumanoid">优化动画精度时发现针对Generic效果明显，而Humanoid变化不大。</h4>
 <ul>
-  <li>在切换Material所使用的Shader时，其上的纹理引用确实是不会自动清除的（除非被覆盖）。因此，我们的建议是，在编辑Material时，如果要切换Shader，那么在切换好之后，进行一次Reset的操作（如下图所示，该操作会重置所有使用中的属性，同时去掉未使用的属性），然后再开始编辑其属性。</li>
+  <li>精度优化降内存（并非通过减少位数降低文本体积降内存），其实质是将曲线上过于接近0的数值（例如有效数字出现在小数点6位以后）直接归零，使部分曲线变为constant曲线来降低内存消耗。</li>
+  <li>在Generic中，大量曲线存在这样的数值，因而降低精度后，constant曲线增加，内存降低。</li>
+  <li>但在Humanoid中，动画信息被转化到Muscle空间后，muscle曲线上的数值很少约等于零，很难因为精度降低变为constant曲线，因此内存占用受精度降低的影响不大。</li>
+  <li>但归一化的Muscle空间本身就对动画信息进行了精简，自身内存占用相比Generic已经降低了不少，如果需要继续降低，可以尝试提高压缩选项下的Error值。</li>
 </ul>
 
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F2.png" alt="请输入图片描述" /></p>
-
+<h4 id="animatoranimationclip">Animator会把所有状态的AnimationClip加载到内存，有什么好的办法可以动态加载？</h4>
 <ul>
-  <li>如果希望在不改变当前使用属性的前提下，去掉未使用的属性，那么据我们所知，只能启用Editor的Force Text模式，打开对应的.mat文件进行手动去除。</li>
+  <li>Animator Controller结构不需要改变，但动画需要变化。比如随着人物等级或技能升级，同种的攻击动作随着变化等。该种需求可以通过AnimatorOverrideController来进行完成，即按需加载新的AnimationClip，然后替换AnimatorOverrideController中相应的AnimationClip即可。目前，Unity的AnimatorOverriderController不仅可以进行单个替换，同时也可以ApplyOverrides成组替换；</li>
+  <li>Animator Controller结构需要改变，类似于Animation老版本动画的AddClip功能。这种需求需要替换AnimatorController，研发团队可以在动态加载AnimationClip的同时，动态加载相应的Animator Controller，然后进行替换即可。</li>
 </ul>
 
-<h4 id="gc-allocaddcomponent-">请问怎么优化下图这两者的GC Alloc？每次AddComponent 都会有这么多的开销。</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F1.jpg" alt="image" /></p>
-
+<h4 id="transformparentanimatorparentnull">为什么Transform.设置Parent会触发Animator的初始化吗？Parent是等于null的。</h4>
 <ul>
-  <li>不可避免，只有减少AddComponent。</li>
+  <li>把 Parent 设为null，相当于把这个 GameObject 变为根节点。如果在设置之前这个 GameObject 本身是激活状态，但其的父节点是未激活状态，那么设置之后，相当于把这个GameObject 激活。而激活GameObject 时就会触发 Animator.Initialize 等操作了。</li>
 </ul>
 
 <h2 id="section-1">物理</h2>
-<h4 id="physicsprocessing">请问Physics.Processing的占用过大一般是因为什么原因导致的？</h4>
+<h4 id="unity--profilerwarning">在Unity 的 Profiler里，有些记录右边会有Warning的个数信息，请问这个是否影响性能，或者是否有必要修改呢？</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_62%2F1.png" alt="image" /></p>
 <ul>
-  <li>影响物理系统耗时的因素主要为Contacts数量（碰撞对数量）、Rigidbody API的使用情况和每帧的调用次数。
+  <li>这种字符的出现很可能会导致后续的物理更新出现较大的性能开销，包含在Physics.Simulate/Processing中。</li>
+  <li>针对这个图是受限于Unity版本中的PhysX在移动静态碰撞体是开销较高的问题（虽然文档中说5.x下已经解决，但我们确实发现在5.x的项目中该项仍然存在）。</li>
+  <li>建议给需要移动的Collider加上RigidBody并勾选Is Kinematic复选框，从而将其变为动态碰撞体。对于不移动的物体，则直接将模型的Apply Root Motion选项进行关闭，从而直接省去Static Collider.Move的性能开销。</li>
+</ul>
+
+<h2 id="section-2">性能综合</h2>
+<h4 id="targetframerate30">我们设置了TargetFrameRate为30，想避免过高的耗电和发热，请问这样做是合理的么？</h4>
+<ul>
+  <li>这种设置仅在帧率本身很好的情况下，才会起到减少耗电和发热的作用。但如果本身游戏已经较为卡顿，那么该设置方法意义不大。对于耗电和发热，研发团队需从CPU、GPU和IO入手，尽可能降低这三方面的负载压力。</li>
+</ul>
+
+<h4 id="materialsetpassfast">项目渲染中Material.SetPassFast的开销高</h4>
+<ul>
+  <li>Material.SetPassFast是Unity引擎在渲染过程中Material的轮循切换开销，一般在Unity5.0~Unity5.3版本中出现。它的开销主要分为两种：
     <ul>
-      <li>第一种情况是最为常见的引发物理模块耗时较大的原因，因此，我们在UWA性能报告中对其进行了详细的分析，如果你的报告中Contacts数量较高，切记要验证其合理性。</li>
-      <li>第二情况造成较大CPU开销的情况不多，不过如果你的项目是多角色游戏（比如MMO、MOBA、ARPG割草游戏等），那么你需要注意了。在我们优化过的一些项目中，通过Rigidbody API来移动GameObject位置（设置velocity、改变center等）确实会存在较高的性能开销。如果你的项目也有类似的做法，那么要时刻关注物理模块的开销了。</li>
-      <li>第三种情况同样也是目前引发物理模块耗时较高的原因。因为Unity引擎默认情况下，物理的更新频率是0.02s，即每20ms更新一次，所以，当你的项目比较卡时（开发过程中的项目在中低端设备上恐怕没几个是不卡的），物理模块会让你的项目更卡。举个例子，如果上一帧CPU耗时为100ms的话，那么物理模块会执行5次，从而进一步加大物理系统的耗时。这种情况下，物理模块的耗时是很有欺骗性的，你花了好长时间去研究物理的耗时，最后发现原来这个“锅”不是它的…所以，如果你的项目也遇到了这种情况，切记不要再上当了。</li>
+      <li>Shader.CreateGPUProgram峰值开销：这种情况主要出现在Shader第一次渲染时。在Unity5.0以后，引擎为了避免Shader加载时过高的CPU峰值出现，已经将Shader.Parse和Shader.CreateGPUProgram两种操作分开执行，前者在Shader加载时，后者在Shader第一次渲染时。</li>
+      <li>渲染状态切换开销：这种情况是几乎每一帧都发生的，有渲染的地方就会有Material的切换。从问题图中可以看出，在运行的16000帧中，Material.SetPassFast一共被调用137万次。这里可以认为几乎全部是渲染时Material的切换操作。因此，该项较高的主要原因还是材质切换操作过多所致。所以，建议研发团队在报告中的详细材质页面查看是否有过多“冗余”的材质出现，如有则尽可能降低材质的使用冗余度。</li>
     </ul>
   </li>
 </ul>
 
-<h2 id="section-2">性能综合</h2>
-<h4 id="section-3">5.0后批处理修改</h4>
+<h2 id="section-3">渲染</h2>
+<h4 id="shaderassetbundleshadershader-variantsshaderwarmupallshadersshadervariantcollectionwarmup">将需要的Shader打到一个AssetBundle包中（包含一个关联了所有Shader的Shader Variants），分别用Shader.WarmupAllShaders和ShaderVariantCollection.WarmUp两种方式进行预加载，后者耗时更少。</h4>
 <ul>
-  <li>从Unity 5.0开始，Static Batching的合批机制就已经出现了变化，不再进行索引数组的合批，因此并不会使得Draw Call降低，而是会降低Batches和SetPassCall，因此从图中来看，Static Batching 开启后的统计数据是没有问题的。也因此，UWA在统计时，使用的就是Batches的数值。具体的原因可见Unity官方在论坛中的回复：
-https://forum.unity3d.com/threads/regression-feature-not-bug-static-dynamic-batching-combining-v-buffers-but-not-draw-calls.360143/</li>
+  <li>根据官方的文档的描述，确实是ShaderVariantCollection的效率更高，详见：
+https://docs.unity3d.com/Manual/OptimizingShaderLoadTime.html</li>
+  <li>因为在ShaderVariantCollection中，是可以给每个Shader添加指定的Keyword的，ShaderVariantCollection.WarmUp的调用只会对ShaderVariantCollection中指定的Keyword进行Warmup操作；而Shader.WarmupAllShaders则是对所有的Keyword全部进行Warmup操作（其中大多数很可能都不会用到）。</li>
+  <li>因此在Shader.WarmupAllShaders的文档中也提到，建议使用ShaderVariantCollection.Warmup来进行细粒度的Warmup操作，避免大量多余的Keyword被Warmup，造成严重的卡顿，大家可以参考下文：
+https://docs.unity3d.com/ScriptReference/Shader.WarmupAllShaders.html</li>
 </ul>
 
-<h4 id="dynamic-batching">尽量开启“Dynamic Batching”这个选项</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_53/1.jpg" alt="image" /></p>
+<h4 id="unity-56directional-modedirectional-specular">在Unity 5.6版本中如何解决预渲染缺少高光的问题？该版本中光照预渲染Directional Mode选项中少了Directional Specular选项，渲染出来的效果场景缺少高光。</h4>
 <ul>
-  <li>详见<a href="https://blog.uwa4d.com/archives/TechSharing_53.html">此处</a></li>
+  <li>如果需要在使用Lightmap时渲染高光，替代方案是采用Mix Lights模式下的Shadow Mask以及Distance Shadow Mask选项。即将场景中的Directional Light改成Mix Lighting类型，并且在Lighting Mode选Shadow Mask或者Distance Shadow Mask。</li>
+  <li>其原理是：LIghtmap中仅仅存储indirect的光照，而direct光照是实时计算的，所以包括高光、阴影等都可以是实时的（阴影也可以是预计算好的）。这样做的好处是给Lightmap光照一定的灵活度，原来的Lightmap是完全静态的，现在是部分静态（direct的实时，indirect静态）。</li>
 </ul>
 
-<h4 id="gcalloc">匿名函数造成GCAlloc</h4>
+<h4 id="unity-5--shader-variant-collection-">Unity 5 的 Shader Variant Collection 功能</h4>
 <ul>
-  <li>结论：当不使用外部变量的匿名函数时，编译器会把这个函数变成静态函数，在首次调用时初始化，之后就再也不会new新的对象。 当使用外部变量时，每次调用都会生成一个临时action变量，这个就是alloc的原因。</li>
-  <li>解决方案:</li>
+  <li>经过测试，在较新的版本中（如Unity 5.5.3），将ShaderVariantCollection与Shader打包在相同的AssetBundle中后，其中会包含该Shader在ShaderVariantCollection中指定的Variant。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>public Action&lt;int, int&gt; pCall;
-void Start()
-{
-  pCall = CallVariable;
-  ... // 其他初始化代码
-}
-void FixedCall()
-{
-  table.Forecah(pCall);
-}
-void CallVariable(int k, int v)
-{
-  count = k + v;
-}
-</code></pre>
-</div>
-
+<h5 id="shader-shader--shader-">使用 Shader 变体之后，Shader 是否还能走资源更新？抑或 Shader 不推荐走资源更新？</h5>
 <ul>
-  <li><a href="https://blog.uwa4d.com/archives/Anonymous_heapmemory.html">原文</a></li>
+  <li>使用 ShaderVariantCollection后依然可以进行资源更新（通过更新AssetBundle，来更新Shader的实现或者ShaderVariantCollection中包含的Variant）。</li>
 </ul>
 
-<h2 id="section-4">渲染</h2>
-<h4 id="lightmapngameobjectprefablightmapnlightmaplightmap">请教Lightmap相关的优化问题。我现在的场景中有N个GameObject共用一个Prefab，烘培Lightmap时，会生成出N个Lightmap贴图。有没有办法把这些生成的Lightmap合成一张？</h4>
+<h5 id="shader--shader-always-include-">Shader 变体和 Shader Always Include 的主要区别是什么？二者对内存和帧率影响如何？</h5>
+
 <ul>
-  <li>如果场景中某些物件在Lightmap纹理中占据的空间较大，但实际上并不需要较高的精度，那么可以选中该物体，并在Lighting面板的Object子面板中将其Scale in lightmap数值调低，从而可以降低其在Lightmap纹理中的空间，甚至减少Lightmap纹理的数量。</li>
-  <li>PS:为何会有N个lightmap？并没有回答能不能合并的问题。</li>
+  <li>ShaderVariantCollection与Always Included Shaders的区别主要在于打包时所包含的Variant。Always Included Shaders中的Shader，其所有的Variant都会被包含，好处是，理论上不会出现Variant丢失的情况；坏处是，会导致更大的发布包以及额外的内存占用，而影响最大的是手动进行Warmup时的耗时以及ShaderLab的内存占用。因此一般来说，对于Variant特别多的Shader（如Standard Shader），并不推荐放入Always Included Shaders中。</li>
 </ul>
 
-<h4 id="unityshaderifdef-endifpass">Unity里的Shader能不能用关键字#ifdef #endif把整个pass包起来？</h4>
-
+<h5 id="unity-5-shader-bug">在 Unity 5 较早的版本中，Shader 变体功能似乎有一些Bug，现在是否可靠？</h5>
 <ul>
-  <li><code class="highlighter-rouge">#ifdef</code> 和 <code class="highlighter-rouge">#endif</code> 并不能写在Pass之外，如果有动态开关Pass的需求，可以通过Shader Lod来实现，即设置两个Level不同的SubShader分别包含1个和2个Pass，直接通过改变该Shader的局部Lod值，即可实现SubShader的切换。关于Shader Lod的细节，可见官方文档：
-http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
+  <li>
+    <p>目前即使是较新的版本，其可靠性我们也并不能确保，依然建议在使用前进行一些测试来验证。</p>
+  </li>
+  <li>
+    <p>==PS: 需要关注的问题==</p>
+  </li>
 </ul>
 
 
@@ -317,17 +324,17 @@ http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/" data-toggle="tooltip" data-placement="top" title="Shader合并与Variant">
+                        <a href="/2017/11/08/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A8%E7%94%BB%E9%87%8D%E5%AE%9A%E5%90%91%E7%AC%94%E8%AE%B0/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：动画重定向笔记">
                         Previous<br>
-                        <span>Shader合并与Variant</span>
+                        <span>每天一点UWA：动画重定向笔记</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="浅析Timeline结构">
+                        <a href="/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：卡通渲染笔记">
                         Next<br>
-                        <span>浅析Timeline结构</span>
+                        <span>每天一点UWA：卡通渲染笔记</span>
                         </a>
                     </li>
                     

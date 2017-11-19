@@ -5,9 +5,517 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 10 Nov 2017 00:01:44 +0800</pubDate>
-    <lastBuildDate>Fri, 10 Nov 2017 00:01:44 +0800</lastBuildDate>
+    <pubDate>Sun, 19 Nov 2017 22:11:30 +0800</pubDate>
+    <lastBuildDate>Sun, 19 Nov 2017 22:11:30 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>PHP的OOP</title>
+        <description>&lt;ul&gt;
+  &lt;li&gt;在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。&lt;/li&gt;
+  &lt;li&gt;类中用var定义变量，&lt;code class=&quot;highlighter-rouge&quot;&gt;var $name&lt;/code&gt;，使用方式&lt;code class=&quot;highlighter-rouge&quot;&gt;$this-&amp;gt;name&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;构造函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function __construct()&lt;/code&gt;，析构函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function __destruct()&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;继承&lt;code class=&quot;highlighter-rouge&quot;&gt;class Child_Site extends Site&lt;/code&gt;，使用extends关键字&lt;/li&gt;
+  &lt;li&gt;实例化类&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Login
+{
+    var $m_user;
+    var $m_pw;
+
+    function __construct($user, $pw)
+    {
+        $this-&amp;gt;m_user = $user;
+        $this-&amp;gt;m_pw = $pw;
+    }
+
+    function Login()
+    {
+        echo $this-&amp;gt;m_user .'-'. $this-&amp;gt;m_user;
+    }
+}
+
+$user = $_POST['user'];
+$pw = $_POST['pw'];
+
+$login = new Login($user, $pw);
+$login-&amp;gt;Login();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以使用interface&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+
+// 声明一个'iTemplate'接口
+interface iTemplate
+{
+    public function setVariable($name, $var);
+    public function getHtml($template);
+}
+
+
+// 实现接口
+class Template implements iTemplate
+{
+    private $vars = array();
+  
+    public function setVariable($name, $var)
+    {
+        $this-&amp;gt;vars[$name] = $var;
+    }
+  
+    public function getHtml($template)
+    {
+        foreach($this-&amp;gt;vars as $name =&amp;gt; $value) {
+            $template = str_replace('{' . $name . '}', $value, $template);
+        }
+ 
+        return $template;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;常量&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
+class MyClass
+{
+    const constant = '常量值';
+
+    function showConstant() {
+        echo  self::constant . PHP_EOL;
+    }
+}
+
+echo MyClass::constant . PHP_EOL;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;静态属性不能通过一个类已实例化的对象来访问（但静态方法可以）。&lt;/li&gt;
+  &lt;li&gt;静态属性不可以由对象通过 -&amp;gt; 操作符来访问。调用方法是&lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;抽象类与C#一样&lt;/li&gt;
+  &lt;li&gt;Final 关键字，作用与C#的sealed一样。&lt;/li&gt;
+  &lt;li&gt;子类中调用父类的方法&lt;code class=&quot;highlighter-rouge&quot;&gt;parent::Login();&lt;/code&gt;，与C#的&lt;code class=&quot;highlighter-rouge&quot;&gt;base.Login&lt;/code&gt;结构上一样。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 19 Nov 2017 22:00:09 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/19/PHP%E7%9A%84OOP/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/19/PHP%E7%9A%84OOP/</guid>
+        
+        <category>PHP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第十六周</title>
+        <description>&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+
+&lt;h4 id=&quot;etcargb32&quot;&gt;如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；&lt;/li&gt;
+  &lt;li&gt;当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；&lt;/li&gt;
+  &lt;li&gt;在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资源，以保证内存峰值在可控范围内。&lt;/li&gt;
+  &lt;li&gt;果ETC压&amp;gt; 缩效果不好的，会使用RGBA32并降一个尺寸规格来压缩，这样虽然图片会模糊点，但是过渡还是平滑的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;astcandroidmalirgba32astc&quot;&gt;ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。&lt;/h4&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
+
+&lt;h4 id=&quot;putgeometryjobfence&quot;&gt;PutGeometryJobFence开销较高&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;就目前我们所优化过的项目而言，推测PutGeometryJobFence是Unity项目的主线程在等子线程的一些网格计算操作完成，其在不同的模块中均有出现（UGUI模块、渲染模块、Mesh.Skin操作、Animator动画模块等等），出现的地方不同，其本身含义也并不相同，不能一概而论。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;transformsetposition&quot;&gt;Transform.set_position的开销很大&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Deep Profiler本身对于耗时的统计影响很大，通常在Deep Profiler下调用次数越多的函数，其耗时的统计就会越明显地偏高，因此，我们首先建议关闭Deep Profiler，同时用Profiler.BeginSample/EndSample将修改Position的代码包进来，再查看其耗时，相对会更加准确。&lt;/li&gt;
+  &lt;li&gt;CanvasRenderer.OnTransformChanged过多，移动UI元素相比于移动其他的元素确实会有额外的开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-profilercanvasrendersubbatchui&quot;&gt;Unity Profiler中的Canvas.RenderSubBatch是否属于UI上渲染的开销？和重建有关系吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;是UI模块（UGUI）的渲染开销，但是跟UI的重建并无太大关系，主要还是跟UI界面的渲染Draw Call相关。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;clear&quot;&gt;Clear的耗时过大&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_65%2F7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Clear操作一般是用来清除Camera的各种Render Buffer，当图像后处理使用的越多，则同一帧中开辟更多的Buffer的概率也越大，从而造成Clear的开销也较高。&lt;/li&gt;
+  &lt;li&gt;项目中Clear耗时较高，且高耗时较为频繁，则建议先关闭图像后处理操作，来查看该情况是否有所好转。然后再逐步开启各个图像后处理操作，逐步定位造成Clear较高的耗时根源&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;uwa&quot;&gt;如何降低动画文件的浮点数精度？之前UWA给过思路，但具体怎么个执行方法？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;动画文件后处理可以做两件事，1）精度压缩，2）scale曲线剔除。比起用工具修改原始fbx文件，这样比较灵活。
+实际测试，在开启Optimal压缩的情况下，加上这个后处理，能再节省40%左右。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 19 Nov 2017 01:04:30 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：卡通渲染笔记</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;描边的方法&lt;/h2&gt;
+&lt;h4 id=&quot;section-1&quot;&gt;基于视角的勾边&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;PS：这个是最简单的绘制边界的做法。计算方式就是dot(viewDir, normal)。根据 三角函数的定义值越小说明视角与模型某个点的表面法线的夹角越大，夹角为90°时说明这个triangle是视角看不到的，也就是边界了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;基于几何生成方法的描边&lt;/h4&gt;
+&lt;h5 id=&quot;shell-method&quot;&gt;shell method&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先在绘制结束正常的模型后，将需要描边的物体改用正面剔除再绘制一遍，在VS中将顶点沿着法线方向膨胀一定距离，然后在FS中将模型用纯色输出。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;z-bias&quot;&gt;z-bias&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;也是绘制背面，但不膨胀，而是把背面顶点的Z值稍微向前偏移一点点，使得背面的些许部分显示出来形成描边效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;基于图像处理的描边&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;什么是“边缘”呢？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;边缘就是在深度或者法线上不连续的位置。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;做法：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;需要将深度信息和法线信息以贴图的形式传入，运用边缘检测算法去寻找这些像素。&lt;/li&gt;
+  &lt;li&gt;这类方法的优点是描边的线宽一致，缺点是需要额外的法线和深度信息，当然，由于近年来流行的延迟渲染框架，法线和深度本来就是G-Buffer的一部分，因此往往不需要额外绘制法线和深度的信息。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;美式卡通中的做法&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;美式卡通中往往倾向于使用基于图像处理的描边方法来生成均匀一致的描边效果。在《英雄联盟》中小兵和英雄的勾边效果就是用Sobel算子对深度信息进行边缘检测来获得的。&lt;/li&gt;
+  &lt;li&gt;当物体较多时在进行正常绘制的阶段用stencil buffer标记出需要描边的物体，然后用一个全屏的后处理，对stencil buffer标记的像素进行边缘检测，当然这样的话，就很难给每个物体单独指定描边颜色了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;日式卡通中的做法&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;日式卡通中往往倾向于使用基于几何体生成的方法去描边，这类描边方法相较于另两类方法的好处在于线宽更容易为美术所控制。&lt;/li&gt;
+  &lt;li&gt;在《GUILTY GEAR Xrd》中，角色的描边就是通过几何体生成的方法，结合了shell method和z-bias method，并引入了逐物体的顶点色来控制描边细节，同时也是为了保证描边粗细不会随着摄像机视距发生变化，具体来说，顶点色存储的信息包括：
+    &lt;ul&gt;
+      &lt;li&gt;R通道：控制toon shading的阈值，和描边无关，和着色有关，这个我们后面描述&lt;/li&gt;
+      &lt;li&gt;G通道：控制顶点根据视距膨胀的强度（这个部分具体操作我也没有完全弄清楚，希望了解的朋友来补充）&lt;/li&gt;
+      &lt;li&gt;B通道：控制描边的z-bias，越大则描边越不可见&lt;/li&gt;
+      &lt;li&gt;A通道：控制描边的粗细&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-8&quot;&gt;着色&lt;/h2&gt;
+
+&lt;h4 id=&quot;cel-shading&quot;&gt;Cel Shading&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;只考虑光线&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS1.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS2.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F10.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;同时考虑光线和视角&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS3.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F11.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;tone-based-shading&quot;&gt;Tone Based Shading&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Tone Based Shading的风格化是基于美术指定的色调插值，并且插值得到的色阶是连续的。首先需要由美术指定冷色调和暖色调，而最终模型的着色将根据法线和光照方向的夹角，在这两个色调的基础上进行插值，具体算法如下：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS5.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS25.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;其中，Kd仍是模型自身色彩贴图，Kblue，Kyellow和alpha，beta则均是自定义的参数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F12.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;基于tone based shading绘制的球体&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;日式卡通中的着色&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;以《GUILTY GEAR Xrd》为例，它也一定程度上包含了Cel Shading和Tone Based Shading的部分思想，将色阶离散成为“明暗”两个色调，并由美术指定冷暖色调的颜色：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS7.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS8.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;上述公式表示了这个卡通渲染的漫反射部分&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;threshold表示明暗交界的阈值，在游戏中通过顶点色的R通道来实现逐顶点的控制。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Kcool和Kwarm由美术逐物体地指定，Ksss是对模型次表面散射效果的模拟，对皮肤而言一般呈粉红色，通过美术绘制的SSS贴图来实现逐像素控制，并且只有暗部的像素才会受SSS贴图的影响。Kd是模型自身的颜色贴图。darkness表示了某个像素的明暗程度，用于确定色调的冷暖。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;美术绘制的AO贴图，来实现一些边角缝隙的暗部效果。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;高光的计算更简单一些：基本上与blinn-phong一样&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS10.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS11.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;美式卡通中的着色&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Valve在其游戏《军团要塞2》将卡通渲染着色分为了view dependent term和view independent term。两部分的计算分别如下：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS12.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS13.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS14.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PS：从公式中可以看到不依赖view的版本是l也就是光照向量，而依赖view的中是r，也就是反射计算。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://wikimedia.org/api/rest_v1/media/math/render/svg/d5acd56487631512ad0fc984bf3c11ce700589c4&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-11&quot;&gt;风格化高光和阴影&lt;/h2&gt;
+&lt;h4 id=&quot;section-12&quot;&gt;可变形状的高光&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;从日式着色的高光公式看，改变形状的关键在于H向量。这个H就是半角向量，参考Blinn-Phong公式。具体做法有：
+    &lt;ul&gt;
+      &lt;li&gt;平移，改变高光的位置： &lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS17.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+      &lt;li&gt;有方向的缩放，沿着切线空间的某个轴缩放高光形状：&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS18.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+      &lt;li&gt;分割，将一块连续的高光切分成两块：&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS19.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;方块化，将趋于圆形的高光变成方形：&lt;/p&gt;
+
+        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS20.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS21.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS22.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F16.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-13&quot;&gt;风格化阴影&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;类似于风格化的高光，风格化的阴影也是在标准的阴影计算流程之后，定义了一系列针对标准阴影的操作，通过这些操作，配合用户自定义的参数，便可以达到风格化阴影的效果，总的来说，共有四类操作：
+    &lt;ul&gt;
+      &lt;li&gt;膨胀/腐蚀（Inflation）：扩大或者缩小阴影范围，用参数i来控制&lt;/li&gt;
+      &lt;li&gt;亮度（Brightness）：阴影区域的亮度，可以用于模拟半影区的效果，用参数b控制&lt;/li&gt;
+      &lt;li&gt;柔度（Softness）：阴影边界处的柔和程度，用参数s控制&lt;/li&gt;
+      &lt;li&gt;抽象度（Abstraction）：阴影形状的抽象程度，用参数alpha控制&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F17.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-14&quot;&gt;几种操作和相应的效果&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;整个风格化阴影的生成是基于图像空间的，从一个已经生成的精确阴影图开始。可以分成五个阶段：&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;精确阴影的生成，由于是基于图像空间的，因此对精确阴影图的生成方法没有特别要求，可以是shadow volume，shadow map，ray tracing或者其他阴影生成技术，但必须要注意的是这里的阴影值一定是二值化的。&lt;/li&gt;
+      &lt;li&gt;有向距离场的生成，基于图像空间的精确阴影，计算每个像素距离最近阴影边界的有向距离，这是文中算法的核心，也是后面风格化的基础，在文中给出了一种有向距离场的计算方法，当然也可以采用其他方案。&lt;/li&gt;
+      &lt;li&gt;有向距离场的高斯模糊，这一步是抽象阴影生成的关键。&lt;/li&gt;
+      &lt;li&gt;过滤，通过一个转移函数，将模糊后的有向距离场重新映射为阴影图。&lt;/li&gt;
+      &lt;li&gt;使用过滤后的阴影进行光照计算。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F18.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PS：如果是unity的话可能要做屏幕后处理，如果是延迟渲染的的话G-buffer不确定有没有阴影信息。而且移动平台也不推荐。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-15&quot;&gt;结束语&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;除了好好学习还能有啥好说的呢╮(╯▽╰)╭&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 14 Nov 2017 14:24:54 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第十五周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;unityprefabassetbundleassetbundleassetbundleobjectobjectobjectdestroyinstantiateobjectobjectdestroyloadassetbundle&quot;&gt;我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。&lt;/li&gt;
+  &lt;li&gt;PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;materialassetbundleassetbundleassetbundle&quot;&gt;美术做粒子的时候，粒子与粒子之间共用资源的情况很多，例如某几个粒子共用一个Material，某几个粒子共用一个贴图等，应该如何组织AssetBundle？要是对应到最细的那个程度，凡是共用过的资源都单独打一个AssetBundle，好像又会很琐碎，假如不那么做，粒子与粒子之间的AssetBundle又会有冗余。这方面有什么好的建议？&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AssetBundle打包没有标准的方式，单就粒子系统而言，因为其个体本身比较小，并且在项目中经常大量出现，所以并不建议将粒子系统逐个打包，而是建议根据其出现频率进行打包，比如将同一段时间、同一出现场景等的粒子系统打包在一起。同时，由于粒子系统的Shader基本上都是Unity内置Shader，因此，尽可能将Shader进行依赖打包。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
+&lt;h4 id=&quot;optimize-game-objectsavatar&quot;&gt;我把骨骼文件的Optimize Game Objects”开启了，然后骨骼信息就没有了，那Avatar换装时候需要处理的骨骼信息怎么办？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在开启“Optimize GameObject”选项后，因为Avatar信息消失，所以并不能通过原始的合并骨骼、合并Mesh的方法再来实现换装功能。对于开启“Optimize GameObject”选项的模型，Unity本身有另外一套更为方便的换装方式，即只要所换装模型的骨骼结点信息与Avatar自身骨骼信息可以匹配，那么直接将换装模型挂在Avatar模型下做为子节点即可，而不必再通过骨骼合并的方式来进行换装。&lt;/li&gt;
+  &lt;li&gt;PS:mark一下，没看懂。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;mipmap&quot;&gt;关于Mipmap的设置&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过修改Texture的mipMapbias这个值可以改变使用的mipmap的层级。但是这个值目没有办法在全局设置，在导入图片的时候要用代码设置。&lt;/li&gt;
+  &lt;li&gt;unit官方建议&lt;code class=&quot;highlighter-rouge&quot;&gt;Note that using large negative bias can reduce performance, so it’s not recommended to use more than -0.5 negative bias.&lt;/code&gt;，但是Mipmap的层级数的确是一个整数。mipMapbias是由Unity引擎定义的一个参数，按照Unity官网解释来看整数代表了比当前层级更低（级数更大，更模糊）的Mipmap，负数代表了比当前层级更高的Mipmap。“-0.5”具体是偏移多少层级目前也不是很清楚。&lt;/li&gt;
+  &lt;li&gt;Trilinear应该是会比Bilinear效果好一些，但是也差强人意。原因是这样：传统的Mipmap（不采用Anisotropic Filtering）都是每层将u，v两个方向缩减一半，即：512x512的下一层是256x256。这就导致在两层交界处在不同层采样出来的纹理在u，v两个方向都被拉伸（或者叫变模糊）。Anisotropic Filtering的方式可以简单理解为在交界处只在某一个方向上被拉伸，另一个方向保持原有采样率（或者叫纹理分辨率），这样才能明显降低突变的模糊感。&lt;/li&gt;
+  &lt;li&gt;使用Anisotropic Filtering不仅纹理内存占用会增高，而且采样率也增高（因为有一个方向的保持不变），因此它比传统的mipmap更耗时，耗时在于GPU端对纹理进行采样时增加了访存，在CPU端没有影响。虽然Anisotropic Filtering 耗时增加，但是相比于直接增加mipmap level（也就是设置-0.5的偏移），要达到相同的效果，Anisotropic Filtering的时间耗时还是相对更低的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;canvascanvasuguispriterenderer&quot;&gt;我在改血条，我原来是一个Canvas里放了所有血条，后来改成每个血条一个Canvas，再改成每个血条完全不用UGUI，直接用SpriteRenderer绘制，感觉性能越来越差了，怎么办呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于“所有血条放一个Canvas”和“一个血条放一个Canvas”做一个比较：
+    &lt;ul&gt;
+      &lt;li&gt;前者的开销主要在于网格的更新，在Unity5.2之后主要是在子线程中通过Timeline来查看。因此只看主线程的话，这种方法肯定是更高效的；&lt;/li&gt;
+      &lt;li&gt;后者的开销主要在于DrawCall的数量（前者理论上能做到只用1个DrawCall，后者一个Canvas即一个DrawCall），开销被包含在了Camera.Render或者Canvas.RenderOverlays中。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;因此，在选择时，需要考虑的就是“网格更新”和“DrawCall”的权衡。&lt;/li&gt;
+  &lt;li&gt;还是建议尽可能降低血条的顶点数，然后选择前者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;generichumanoid&quot;&gt;优化动画精度时发现针对Generic效果明显，而Humanoid变化不大。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;精度优化降内存（并非通过减少位数降低文本体积降内存），其实质是将曲线上过于接近0的数值（例如有效数字出现在小数点6位以后）直接归零，使部分曲线变为constant曲线来降低内存消耗。&lt;/li&gt;
+  &lt;li&gt;在Generic中，大量曲线存在这样的数值，因而降低精度后，constant曲线增加，内存降低。&lt;/li&gt;
+  &lt;li&gt;但在Humanoid中，动画信息被转化到Muscle空间后，muscle曲线上的数值很少约等于零，很难因为精度降低变为constant曲线，因此内存占用受精度降低的影响不大。&lt;/li&gt;
+  &lt;li&gt;但归一化的Muscle空间本身就对动画信息进行了精简，自身内存占用相比Generic已经降低了不少，如果需要继续降低，可以尝试提高压缩选项下的Error值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;animatoranimationclip&quot;&gt;Animator会把所有状态的AnimationClip加载到内存，有什么好的办法可以动态加载？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Animator Controller结构不需要改变，但动画需要变化。比如随着人物等级或技能升级，同种的攻击动作随着变化等。该种需求可以通过AnimatorOverrideController来进行完成，即按需加载新的AnimationClip，然后替换AnimatorOverrideController中相应的AnimationClip即可。目前，Unity的AnimatorOverriderController不仅可以进行单个替换，同时也可以ApplyOverrides成组替换；&lt;/li&gt;
+  &lt;li&gt;Animator Controller结构需要改变，类似于Animation老版本动画的AddClip功能。这种需求需要替换AnimatorController，研发团队可以在动态加载AnimationClip的同时，动态加载相应的Animator Controller，然后进行替换即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;transformparentanimatorparentnull&quot;&gt;为什么Transform.设置Parent会触发Animator的初始化吗？Parent是等于null的。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;把 Parent 设为null，相当于把这个 GameObject 变为根节点。如果在设置之前这个 GameObject 本身是激活状态，但其的父节点是未激活状态，那么设置之后，相当于把这个GameObject 激活。而激活GameObject 时就会触发 Animator.Initialize 等操作了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;unity--profilerwarning&quot;&gt;在Unity 的 Profiler里，有些记录右边会有Warning的个数信息，请问这个是否影响性能，或者是否有必要修改呢？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_62%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;这种字符的出现很可能会导致后续的物理更新出现较大的性能开销，包含在Physics.Simulate/Processing中。&lt;/li&gt;
+  &lt;li&gt;针对这个图是受限于Unity版本中的PhysX在移动静态碰撞体是开销较高的问题（虽然文档中说5.x下已经解决，但我们确实发现在5.x的项目中该项仍然存在）。&lt;/li&gt;
+  &lt;li&gt;建议给需要移动的Collider加上RigidBody并勾选Is Kinematic复选框，从而将其变为动态碰撞体。对于不移动的物体，则直接将模型的Apply Root Motion选项进行关闭，从而直接省去Static Collider.Move的性能开销。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;性能综合&lt;/h2&gt;
+&lt;h4 id=&quot;targetframerate30&quot;&gt;我们设置了TargetFrameRate为30，想避免过高的耗电和发热，请问这样做是合理的么？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这种设置仅在帧率本身很好的情况下，才会起到减少耗电和发热的作用。但如果本身游戏已经较为卡顿，那么该设置方法意义不大。对于耗电和发热，研发团队需从CPU、GPU和IO入手，尽可能降低这三方面的负载压力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;materialsetpassfast&quot;&gt;项目渲染中Material.SetPassFast的开销高&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Material.SetPassFast是Unity引擎在渲染过程中Material的轮循切换开销，一般在Unity5.0~Unity5.3版本中出现。它的开销主要分为两种：
+    &lt;ul&gt;
+      &lt;li&gt;Shader.CreateGPUProgram峰值开销：这种情况主要出现在Shader第一次渲染时。在Unity5.0以后，引擎为了避免Shader加载时过高的CPU峰值出现，已经将Shader.Parse和Shader.CreateGPUProgram两种操作分开执行，前者在Shader加载时，后者在Shader第一次渲染时。&lt;/li&gt;
+      &lt;li&gt;渲染状态切换开销：这种情况是几乎每一帧都发生的，有渲染的地方就会有Material的切换。从问题图中可以看出，在运行的16000帧中，Material.SetPassFast一共被调用137万次。这里可以认为几乎全部是渲染时Material的切换操作。因此，该项较高的主要原因还是材质切换操作过多所致。所以，建议研发团队在报告中的详细材质页面查看是否有过多“冗余”的材质出现，如有则尽可能降低材质的使用冗余度。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;shaderassetbundleshadershader-variantsshaderwarmupallshadersshadervariantcollectionwarmup&quot;&gt;将需要的Shader打到一个AssetBundle包中（包含一个关联了所有Shader的Shader Variants），分别用Shader.WarmupAllShaders和ShaderVariantCollection.WarmUp两种方式进行预加载，后者耗时更少。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;根据官方的文档的描述，确实是ShaderVariantCollection的效率更高，详见：
+https://docs.unity3d.com/Manual/OptimizingShaderLoadTime.html&lt;/li&gt;
+  &lt;li&gt;因为在ShaderVariantCollection中，是可以给每个Shader添加指定的Keyword的，ShaderVariantCollection.WarmUp的调用只会对ShaderVariantCollection中指定的Keyword进行Warmup操作；而Shader.WarmupAllShaders则是对所有的Keyword全部进行Warmup操作（其中大多数很可能都不会用到）。&lt;/li&gt;
+  &lt;li&gt;因此在Shader.WarmupAllShaders的文档中也提到，建议使用ShaderVariantCollection.Warmup来进行细粒度的Warmup操作，避免大量多余的Keyword被Warmup，造成严重的卡顿，大家可以参考下文：
+https://docs.unity3d.com/ScriptReference/Shader.WarmupAllShaders.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-56directional-modedirectional-specular&quot;&gt;在Unity 5.6版本中如何解决预渲染缺少高光的问题？该版本中光照预渲染Directional Mode选项中少了Directional Specular选项，渲染出来的效果场景缺少高光。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果需要在使用Lightmap时渲染高光，替代方案是采用Mix Lights模式下的Shadow Mask以及Distance Shadow Mask选项。即将场景中的Directional Light改成Mix Lighting类型，并且在Lighting Mode选Shadow Mask或者Distance Shadow Mask。&lt;/li&gt;
+  &lt;li&gt;其原理是：LIghtmap中仅仅存储indirect的光照，而direct光照是实时计算的，所以包括高光、阴影等都可以是实时的（阴影也可以是预计算好的）。这样做的好处是给Lightmap光照一定的灵活度，原来的Lightmap是完全静态的，现在是部分静态（direct的实时，indirect静态）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-5--shader-variant-collection-&quot;&gt;Unity 5 的 Shader Variant Collection 功能&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;经过测试，在较新的版本中（如Unity 5.5.3），将ShaderVariantCollection与Shader打包在相同的AssetBundle中后，其中会包含该Shader在ShaderVariantCollection中指定的Variant。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;shader-shader--shader-&quot;&gt;使用 Shader 变体之后，Shader 是否还能走资源更新？抑或 Shader 不推荐走资源更新？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用 ShaderVariantCollection后依然可以进行资源更新（通过更新AssetBundle，来更新Shader的实现或者ShaderVariantCollection中包含的Variant）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;shader--shader-always-include-&quot;&gt;Shader 变体和 Shader Always Include 的主要区别是什么？二者对内存和帧率影响如何？&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ShaderVariantCollection与Always Included Shaders的区别主要在于打包时所包含的Variant。Always Included Shaders中的Shader，其所有的Variant都会被包含，好处是，理论上不会出现Variant丢失的情况；坏处是，会导致更大的发布包以及额外的内存占用，而影响最大的是手动进行Warmup时的耗时以及ShaderLab的内存占用。因此一般来说，对于Variant特别多的Shader（如Standard Shader），并不推荐放入Always Included Shaders中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;unity-5-shader-bug&quot;&gt;在 Unity 5 较早的版本中，Shader 变体功能似乎有一些Bug，现在是否可靠？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;目前即使是较新的版本，其可靠性我们也并不能确保，依然建议在使用前进行一些测试来验证。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;==PS: 需要关注的问题==&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 13 Nov 2017 09:22:09 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：动画重定向笔记</title>
@@ -821,424 +1329,6 @@ http://docs.unity3d.com/Manual/SL-ShaderLOD.html&lt;/li&gt;
         <pubDate>Mon, 23 Oct 2017 09:02:00 +0800</pubDate>
         <link>https://caihua.tech/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>LuaFramework&amp;PureMVC</title>
-        <description>&lt;h4 id=&quot;luaframeworkhttpsgithubcomjarjinluaframeworkuguigithubtoluatoluapuremvcpuremvc&quot;&gt;&lt;a href=&quot;https://github.com/jarjin/LuaFramework_UGUI&quot;&gt;LuaFramework&lt;/a&gt;是GitHub上一个基于tolua的人更新案例，里面除了tolua的功能外还使用了PureMVC的部分功能。这个文章是对代码中PureMVC部分的一些理解。&lt;/h4&gt;
-
-&lt;h2 id=&quot;puremvc&quot;&gt;PureMVC&lt;/h2&gt;
-&lt;h3 id=&quot;structure&quot;&gt;Structure&lt;/h3&gt;
-&lt;h4 id=&quot;modelproxy&quot;&gt;Model&amp;amp;Proxy&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Model保存对Proxy对象的引用，Proxy负责操作数据模型，与远程服务通信存取数据。这样保证了Model层的可移植性。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;viewmediator&quot;&gt;View&amp;amp;Mediator&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;View保存对Mediator对象的引用。&lt;/li&gt;
-  &lt;li&gt;由Mediator对象来操作具体的视图组件（View Component，例如Flex的DataGrid组件），包括：添加事件监听器，发送或接收Notification ，直接改变视图组件的状态。&lt;/li&gt;
-  &lt;li&gt;这样做实现了把视图和控制它的逻辑分离开来。&lt;/li&gt;
-  &lt;li&gt;在LuaFramework的初始代码中只有个APPView，在其中的&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;controllercommand&quot;&gt;Controller&amp;amp;Command&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Controller保存所有Command的映射。Command类是无状态的，只在需要时才被创建。&lt;/li&gt;
-  &lt;li&gt;Command可以获取Proxy对象并与之交互，发送Notification，执行其他的Command。经常用于复杂的或系统范围的操作，如应用程序的“启动”和“关闭”。应用程序的业务逻辑应该在这里实现。&lt;/li&gt;
-  &lt;li&gt;Controller会注册侦听每一个Notification，当被通知到时，Controller会实例化一个该Notification对应的Command类的对象。最后，将Notification作为参数传递给execute方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;facade&quot;&gt;Facade&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Façade类应用单例模式，它负责初始化核心层（Model，View和Controller），并能访问它们的Public方法。&lt;/li&gt;
-  &lt;li&gt;在实际的应用中，只需继承Façade类创建一个具体的Façade类就可以实现整个MVC模式，并不需要在代码中导入编写Model，View和Controller类。&lt;/li&gt;
-  &lt;li&gt;Proxy、Mediator和Command就可以通过创建的Façade类来相互访问通信。&lt;/li&gt;
-  &lt;li&gt;Facade保存了Command与Notification之间的映射。当Notification（通知）被发出时，对应的Command（命令）就会自动地由Controller执行。Command实现复杂的交互，降低View和Model之间的耦合性。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;observernotification&quot;&gt;Observer&amp;amp;Notification&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用一个简单的观察者模式实现。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;puremvc-in-luaframework&quot;&gt;PureMVC in LuaFramework&lt;/h2&gt;
-&lt;h5 id=&quot;noteluaframeworkmodelproxymediator&quot;&gt;NOTE：在LuaFramework的初始代码中是没有model、proxy、mediator这些内容的。&lt;/h5&gt;
-&lt;h4 id=&quot;view&quot;&gt;View&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;view部分也只存在一个AppView对象，它监听了一个MessageList，如果需要监听自己的事件可以在messagelist继续添加。从目前情况看，一个AppView基本可以满足所有UI事件的需要。&lt;/li&gt;
-  &lt;li&gt;如果需要多个view的时候，在每个view中可以通过RegisterMessage方法来注册多个事件。&lt;/li&gt;
-  &lt;li&gt;view的父类Base负责view的notification和command的映射。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;controller&quot;&gt;Controller&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LuaFramework中Controller是一个singleton的，在一次性command的基础上加入了一个m_viewCmdMap用于处理由view负责处理的事件。&lt;/li&gt;
-  &lt;li&gt;上面提到PureMvc中Command类是无状态的，只在需要时才被创建。所以在command的注册上LuaFramework采用的是名字+类型，因为有了类型就可以动态生成对象。&lt;/li&gt;
-  &lt;li&gt;具体来说在LuaFramework的初始代码中注册了socketcommand，当facade send某个message时会调用这个command，采用的就是生成一个socketcommand对象，然后执行它的execute方法。这个方法调用了lua的network对象的OnSocket方法。&lt;/li&gt;
-  &lt;li&gt;在command的注册上分为一次性的和view的&lt;/li&gt;
-  &lt;li&gt;在command的执行上，在Controller的ExecuteCommand方法中可以看到，先从m_commandMap中查询是否有类型，如果有就实例化并执行execute方法。如果没有就在m_viewCmdMa中找，所有订阅了特定消息的view都会被执行OnMessage方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;facade-1&quot;&gt;Facade&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;AppFacade是其子对象。&lt;/li&gt;
-  &lt;li&gt;在LuaFramework中facade不但负责将notification和command关联，而且负责管理Manager实例。本质一个字典，如果add的时候没有动静就是&lt;/li&gt;
-  &lt;li&gt;facade父类负责将一次性的notification和command关联起来。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;observernotification-1&quot;&gt;Observer&amp;amp;Notification&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;m_viewCmdMap是多播，而m_commandMap是单播。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;基本上在LuaFramework中的PureMvc只是使用了一部分功能，主要功能在于消息的注册发布和manager的管理。&lt;/li&gt;
-  &lt;li&gt;在使用过程中，因为这个框架本身是要使用lua的，所以在源码中lua的部分在解耦上主要依赖event库来实现订阅发布。在C#部分反而不是很能体现MVC架构的优势。&lt;/li&gt;
-  &lt;li&gt;在我自己的项目中为了最大化的使用热更新，所以很多逻辑都是写在lua中的，其实可以考虑在lua中实现一套PureMVC，但是这个语言在实现上应该不简单。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 16 Oct 2017 09:54:07 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/16/LuaFramework&PureMVC/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/16/LuaFramework&PureMVC/</guid>
-        
-        <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十一周</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;字体&lt;/h2&gt;
-&lt;h3 id=&quot;section-1&quot;&gt;优化字体资源&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;方向：内存和数量峰值&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数量会不止一个。&lt;/li&gt;
-  &lt;li&gt;内存:很多情况下我们对于一个字体库中的字体只是用了个别的，但是却加载了整个字体库。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;优化方案&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;字库裁切
-    &lt;ul&gt;
-      &lt;li&gt;针对不同字体的应用场景，设计有效精简的裁切字库。&lt;/li&gt;
-      &lt;li&gt;需要注意同一个字体资源在AssetBundle内外可能都会有依赖，如果依赖不能避免，那么就要各自设计裁切字库。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;工具：FontSubsetGUI
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;结果&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FSparkle_Font%2F4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;maskablegraphicenable-imagegcsetactivegc&quot;&gt;什么情况下会触发MaskableGraphic.Enable() ？现在我得到的结论是只要用到了Image组件，然后禁用启用带有这个组件的物体，都会触发进而产生GC。大家都怎么显示隐藏图片这种需求的，SetActive这种方式容易产生GC。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在UGUI中，Image组件并没有重写其父类的OnEnable函数，所以在激活时会出现MaskableGraphic.OnEnable。其中出现堆内存开销的话，通常是因为其父类函数Graphic.OnEnable中，UGUI在进行全局容器的Add等类似的操作时，遇到了扩容等产生堆内存的操作。&lt;/li&gt;
-  &lt;li&gt;总之，在UGUI中，UI元素的激活和禁用所导致的堆内存分配，通常是不会持续出现的，其实不需要特别地处理。但对于其CPU开销，在UI元素数量较大时，依然是可观的，所以我们依然建议，对于激活禁用操作较为频繁的UI元素，可以尝试通过移出屏幕，缩放为0等方式来避免SetActive的调用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uwauiui-panelscrollviewitemitempanel&quot;&gt;UWA建议“将较多的动态UI元素分组放在不同的UI Panel中”，那么请问如果是ScrollView里面多个item的话，是否意味着每个Item都加一个Panel会更好一些？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;“动态元素”其实是相对的。在 ScrollView 中，一般情况下，如背包，其中的Item在滑动过程中是相对静止的，因此这种情况下只需要将这些Item放在一个UIPanel中即可。&lt;/li&gt;
-  &lt;li&gt;但在类似于聊天界面中，存在一些UI元素是有持续的动画的，那么就需要考虑对这类元素进行特殊处理，可以尝试将这部分有动画的UI放在独立的UIPanel中，或者在个数不多的情况下，各自变为一个UIPanel等。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uipanelsprite-renderernguispriteuipanel&quot;&gt;如果我在UIPanel下面放的是Sprite Renderer而不是NGUI的Sprite，是否会引起整个UIPanel的重绘？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在NGUI中使用Unity2D的Sprite有两种情况，一种是直接使用Unity2D的SpriteRenderer组件，这种情况下，NGUI和Unity2D之间是互不影响的，只是在深度的设置上相对会比较麻烦一些。&lt;/li&gt;
-  &lt;li&gt;另一种是使用NGUI的UI2DSprite组件，而该组件是NGUI对Unity2D的SpriteRenderer组件上进行封装的，方便使其深度与其他UI元素进行穿插，因此其行为和其他的UI元素一致，在某些情况下是有可能引起UIPanel的重绘。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;abab&quot;&gt;有一个带位移动画A，有位置有旋转的变化，需要播完这个动画后切换到一个原地的动画B。现在我发现动画A没播放就会切换到B了，导致一些位移数据并没有作用到模型上，这种情况怎么处理？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Mecanim动画系统提供了“Apply Root Motion”功能来满足两个动画文件顶点位移不一致的切换的需求。&lt;strong&gt;当开启“Apply Root Motion”功能后，角色的GameObject位置会随着动画的更新而更新&lt;/strong&gt;。&lt;/li&gt;
-  &lt;li&gt;因此，问题中的A切到B后，GameObject的位移将不会改变。建议该研发团队检测GameObject Animator组件的“Apply Root Motion”功能是否开启。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;删除模型上动画的缩放&lt;/h4&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://answers.unity3d.com/questions/668672/removing-scale-curves-from-animation.html&quot;&gt;link&lt;/a&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;防止将来翻不出去了&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void Apply(GameObject g)
-     {
-         List&amp;lt;AnimationClip&amp;gt; animationClipList = new List&amp;lt;AnimationClip&amp;gt;(AnimationUtility.GetAnimationClips(g));
-         if (animationClipList.Count == 0) {
-             AnimationClip[] objectList = UnityEngine.Object.FindObjectsOfType (typeof(AnimationClip)) as AnimationClip[];
-             animationClipList.AddRange(objectList);
-         }
- 
-         int count = 0;
- 
-         foreach (AnimationClip theAnimation in animationClipList)
-         {
-             foreach (AnimationClipCurveData theCurve in AnimationUtility.GetAllCurves(theAnimation))
-             {
-                 string name = theCurve.propertyName.ToLower();
-                 if (name.Contains(&quot;scale&quot;))
-                 {
-                     for (int i = theCurve.curve.keys.Length - 1; i &amp;gt;= 0; i--) {
-                         theCurve.curve.RemoveKey(i);
-                     }
-                     string propertyName = theCurve.propertyName;
-                     // we can't delete &quot;*.x&quot;, e.g. m_LocalScale.x - but only &quot;*&quot;, e.g. m_LocalScale
-                     if (propertyName.IndexOf(&quot;.&quot;) &amp;gt; 0) {
-                         propertyName = propertyName.Substring(0, propertyName.IndexOf(&quot;.&quot;));
-                     }
-                     Debug.Log(string.Format(&quot;Fixing: {0} - {1}&quot;, theCurve.path, propertyName));
-                     theAnimation.SetCurve(theCurve.path, theCurve.type, propertyName, null);
-                     count++;
-                 }
-             } 
-         }
- 
-         int checkCount = 0;
-         foreach (AnimationClip theAnimation in animationClipList)
-         {
-             foreach (AnimationClipCurveData theCurve in AnimationUtility.GetAllCurves(theAnimation))
-             {
-                 string name = theCurve.propertyName.ToLower();
-                 if (name.Contains(&quot;scale&quot;))
-                 {
-                     checkCount++;
-                 }
-             } 
-         }
- 
-         if (count &amp;gt; 0)
-         {
-             Debug.Log(&quot;Total number of removed curves is &quot; + count + &quot;. GO name: &quot; + g.name);
-             Debug.Log(&quot;Number of remaining scale curves is &quot; + checkCount);
-         }
-     }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;section-8&quot;&gt;物体的动态合批条件和是否是透明物体没什么关系吧？比如粒子系统的物体一般都是透明的，是不是也可以合批？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;动态合批并不限制物体是否为半透明或不透明物体。&lt;/li&gt;
-  &lt;li&gt;合批的首要要求是Material一致，其本身是半透明Material还是不透明Material均没有限制。&lt;/li&gt;
-  &lt;li&gt;粒子系统同样是可以合批的，只要其材质一致，深度较为接近且中间没有其他材质的物体阻隔，那么Unity引擎将会将其进行合批。&lt;/li&gt;
-  &lt;li&gt;查看Unity引擎的官方文档：https://docs.unity3d.com/Manual/DrawCallBatching.html&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 16 Oct 2017 09:47:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Xlua摘要</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;加载机制&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;xlua在加载lua文件时会使用多个loader，LuaEnv的构造函数中有这么一段代码:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;AddSearcher(StaticLuaCallbacks.LoadBuiltinLib, 2); // just after the preload searcher
-AddSearcher(StaticLuaCallbacks.LoadFromCustomLoaders, 3);
-#if !XLUA_GENERAL
-AddSearcher(StaticLuaCallbacks.LoadFromResource, 4);
-AddSearcher(StaticLuaCallbacks.LoadFromStreamingAssetsPath, -1);
-#endif
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从这段代码可以看出xlua主要的4个加载器分别是内置的lua的&lt;code class=&quot;highlighter-rouge&quot;&gt;LoadBuiltinLib&lt;/code&gt;，已经lua可能存在的两个目录，一个是Resources、另一个是StreamingAssets，通常来说我们也很有可能会把lua代码放到这两个里面。尤其是当用lua做热更新的时候，StreamingAssets是一个很好的选择。&lt;/li&gt;
-  &lt;li&gt;当LuaEnv遇到一个&lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt;的时候，就开始从这四个文件夹找&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;luac&quot;&gt;lua调用C#代码&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;unity中C#类分为两种，一种是继承了MonoBehaviour的，一种是一般的C#类。这两种都可以在lua中调用，但是调用方式不同。但是都需要给&lt;code class=&quot;highlighter-rouge&quot;&gt;LuaCallCSharp&lt;/code&gt;这个attribute。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;对于一般的C#类型，可以使用这样的方式&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local testClass = CS.Test
-local test = testClass()
-test.foo()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;对于继承MonoBehaviour的类是不能用上述方法的，因为在实例化的时候会报错。xlua在生wrap的时候没有考虑是否继承自mono，继承自mono的类不能用new，所以会报错。只能用下面的方法，注意第一个是已经在某个游戏对象上挂了脚本的情况，第二个是用lua动态添加脚本。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;self:GetComponent(&quot;MainUI&quot;):LoadScene(&quot;class1/class1&quot;)	
-
--- 或者
-
-local mainui = self.gameObject:AddComponent(typeof(CS.MainUI))
-mainui:LoadScene(&quot;class1/class1&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;需要注意一下对于静态方法是用&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;，非静态是用&lt;code class=&quot;highlighter-rouge&quot;&gt;:&lt;/code&gt;，其实也可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;.&lt;/code&gt;但是需要在函数定义的时候带自己self参数。对于unity中的一些函数这里尤为重要，比如&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-- 因为Find是静态方法所以用.
-local cubes = GameObject.Find(&quot;Cubes&quot;)
--- 而Transform.Find其实是依赖于一个具体的GameObject的所以要用:
-cube1 = cubes.transform:Find(&quot;Cube1&quot;).gameObject
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;luac-1&quot;&gt;lua与C#代码结合&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果想使用xlua的LuaBehaviour这个脚本，需要注意的是不能用加载器加载lua代码，而是dostring，否则不能使用self、注入的对象。但是awake方法是可以用的。需要注意要使用GetInPath，get方法我没成功过。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; // 用对象名字作为加载脚本的查询名字
- string luaname = GameRoot.Instance.GlobleUtil.NameDeleteClone(gameObject.name);
-
- // 直接用byte[] dostring
- AssetBundle bundle = AssetBundle.LoadFromFile(&quot;Assets/StreamingAssets/main/lua&quot;);
- TextAsset lua = bundle.LoadAsset(&quot;MainUI.lua&quot;, typeof(TextAsset)) as TextAsset;
- luaEnv.DoString(lua.bytes, luaname, scriptEnv);
-
- // 用 custom loader加载 但是无法使用self，也无法获取luaAwake这类的方法
- //luaEnv.DoString(&quot;require  '&quot; + luaname + &quot;'&quot;, luaname, scriptEnv);
-
- Action luaAwake = scriptEnv.GetInPath&amp;lt;Action&amp;gt;(&quot;MainUI.awake&quot;);
- luaStart = scriptEnv.GetInPath&amp;lt;Action&amp;gt;(&quot;MainUI.start&quot;);
- luaUpdate = scriptEnv.GetInPath&amp;lt;Action&amp;gt;(&quot;MainUI.update&quot;);
- luaOnDestroy = scriptEnv.GetInPath&amp;lt;Action&amp;gt;(&quot;MainUI.ondestroy&quot;);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;refout&quot;&gt;关于ref和out修饰符&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;一开始我测试的时候是本以为lua调用ref传入的参数，也会返回出修改的结果，但出乎我的意料，并没能修改，经过作者提示，lua是通过返回值返回的ref参数，如果函数本身就有返回值，那么最后一个参数是返回的ref或者out参数，如果是一个没有返回值的函数（C#中），在lua中同样可以让它给变量赋值，赋的值就是ref的结果。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 05 Oct 2017 14:28:20 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/05/Xlua%E6%91%98%E8%A6%81/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/05/Xlua%E6%91%98%E8%A6%81/</guid>
-        
-        <category>Lua</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;assetbundle-1&quot;&gt;AssetBundle中的脚本&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先，需要说明的是，脚本本身的内容是不会被打包到AssetBundle文件中的，AssetBundle文件储存的仅是脚本的索引信息。因此，即便有多个AssetBundle中都存在UIAtlas这一脚本索引，对堆内存也几乎是不产生影响的，且不会产生冗余问题。&lt;/li&gt;
-  &lt;li&gt;其次，脚本被当做资源且会产生依赖这一现象，仅在Unity 4.x版本中出现，而在Unity 5.0以后，脚本之间将不会产生依赖关系。因此，如果你目前还在使用Unity 4.x版本进行开发，那么依赖关系打包时确实需要注意这个问题，即依次Push A和B进行打包时，如果AssetBundle之间存在相同脚本，那么B会对A的脚本产生依赖。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;wwwassetbundlewebstreamassetbundlewwwdisposewebstream&quot;&gt;如果我用WWW加载了一个AssetBundle，创建了一块WebStream内存。这时候我用另一个东西保存这个AssetBundle的引用，然后用WWW给Dispose了，那么这块WebStream内存会释放掉么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果仅是www.dispose，但是AssetBundle引用依然保留的话，那么WebStream是不会释放的。WebStream存在两个引用，一个是www对象，一个是加载出来的AssetBundle。仅这两个引用全部消除时，WebStream才会被Unity引擎回收，具体说明可见之前的技术文章：Unity AssetBundle内存管理机制详解。&lt;/li&gt;
-  &lt;li&gt;5.4之后似乎没有webstream的概念了。因为很多方法现在都是直接从disk读取，或者先保存在读取。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unloadunusedassetsinstantiateresoucesunloadassetgameobject-&quot;&gt;我发现如果不调用UnloadUnUsedAssets这个函数，则无法销毁通过Instantiate实例化出来的材质（包括纹理）。如果我尝试用Resouces.UnloadAsset来卸载挂在GameObject上的实例化材质, 则会闪退，请问这种情况该如何解决呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果想要直接销毁通过Instantiate实例化出来的材质、纹理等资源，则只能使用DestroyImmediate来进行销毁。研发团队可以参考NGUI中UI Draw Call组件里对动态材质的处理，来加深对动态创建以及销毁的理解。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;脚本&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;关于字符串驻留导致的内存占用&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/USparkle_String-interning.html&lt;/li&gt;
-  &lt;li&gt;https://gist.github.com/klkucan/6c51468ca6f92933356477745f0a50e0&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;androidassetbundleloadfromfileapplicationstreamingassetspathassetbundle&quot;&gt;Android用AssetBundle.LoadFromFile读取Application.streamingAssetsPath目录下的AssetBundle文件，用什么样的地址？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity 5.3之前，直接使用 Application.streamingAssetsPath 作为目录路径。&lt;/li&gt;
-  &lt;li&gt;Unity 5.3之后，通过新增的LoadFromFile接口加载AssetBundle时，则需要改为 Application.dataPath+”!assets。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;nguiuieventlisteneronpressuibuttonpressuibuttonpressbuttonuibuttonnormaluieventlisteneronpresspress&quot;&gt;准确说这个不是一个优化的问题：NGUI的UIEventListener中的OnPress与UIButton的Press状态不能对应上。具体情况是我点击某个按钮并且按住不放，UIButton处于Press状态，然后移出了Button的范围，UIButton的状态变回了Normal，而UIEventListener中的OnPress并没有监听到，必须松开点击才能监听到。它们的Press状态切换有什么不一样呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;理论上UIButton的OnPress和UIEventListener的OnPress是在相同时间点触发的，即手指按下和手指抬起这两个时间点上。&lt;/li&gt;
-  &lt;li&gt;而手指在按住状态下移开按钮时， UIButton的状态会变为Normal，这是因为其响应了OnHover的消息。因此如果要模拟UIButton的行为，至少要配合使用OnPress和OnHover两个消息。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;meshuv3uv4uvuv2&quot;&gt;求教Mesh导入后这里的uv3和uv4是怎么回事？有的模型只有uv和uv2，有的有四套。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果在模型导入时就存在 uv2，uv3，uv4，那么这是因为在建模软件中添加了这些顶点属性。一般来说uv3和uv4的使用较为少见，通常是用来配合特殊的Shader实现特殊的效果。而uv2通常被用于Lightmap，uv2可以在建模软件中添加，也可以在Unity中通过Generate Lightmap UVs的选项来生成。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;section-4&quot;&gt;伤害检测、还有靠近采集物品时触发可以采集的提示箭头等，我们都使用了碰撞，请问如果不使用碰撞，可以用什么方法代替呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用Trigger也是较为合理的做法，如果想替代，可尝试根据距离、动画运行的时间点来进行判断。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;prefab&quot;&gt;prefab加载时依赖图片何时加载&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先说明一下，如果AssetBundle B和AssetBundle A产生依赖，那么在仅仅加载AssetBunde B中的Prefab B_prefab时，其本身开销仅为B_prefab的加载开销，对于AssetBundle A中的依赖资源并无影响。&lt;/li&gt;
-  &lt;li&gt;但是在实例化B_prefab时，Unity引擎会去检查AssetBundle A中的依赖资源是否已经被加载好，如果没有加载好，则先加载AssetBundle A中相关资源，然后再实例化B_prefab。这其实就是大家经常遇到的初次实例化一个技能、角色时出现卡顿的主要原因。&lt;/li&gt;
-  &lt;li&gt;因此，如果大家想加快B_prefab的实例化效率，那么对于其依赖关系AssetBundle A中的相关资源，可提前进行预加载，从而减少B_prefab实例化时的相关资源加载时间。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unloadunusedassetsgc&quot;&gt;手动调用UnloadUnusedAssets+GC的问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过LoadLevel等API来切换场景时，Unity会自动触发Resources.UnloadUnusedAssets的操作，但在切换完成后再次调用Resources.UnloadUnusedAssets来确保卸载完全的做法也是较为常见的。但是在其它时间点不要调用。&lt;/li&gt;
-  &lt;li&gt;对于大场景的MMO类型的游戏，因为切换场景的频率较低，也可以考虑每隔几分钟来手动触发一次Resources.UnloadUnusedAssets来降低内存。而GC的话，则不建议手动调用，即使是在切换场景时。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;resources&quot;&gt;Resources目录下的所有内容都会加载到内存里吗？如果里面东西多，是不是会导致占用内存过高？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;不会，Resources.Load也是即用即加载，但就目前我们统计的结果来看，Resources文件下的资源越多，其生成的ResourceManager内存占用也越大。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;font-texture-&quot;&gt;Font Texture 资源是如何生成的，因为我发现好像有重复的出现，如何优化呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这是Unity为动态字体自动产生的纹理，一般来说不用特别关注。即使重复出现，里面的内容一般也是不一样的（内容即屏幕上显示的文字）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;meshunitygpumeshcreatevbomeshdrawvbo&quot;&gt;重建的Mesh，Unity引擎会将其重新传入GPU端进行渲染，这部分开销主要体现在Mesh.CreateVBO和Mesh.DrawVBO中。&lt;/h4&gt;
-
-&lt;h4 id=&quot;fk--statemachine-&quot;&gt;FK &amp;amp; Statemachine 状态机占用时间比较高，是否有优化的方法呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;影响该项的因素较多，一般为：
-    &lt;ul&gt;
-      &lt;li&gt;是否开启Optimize GameObjects选项，如果没有，建议开启；&lt;/li&gt;
-      &lt;li&gt;场景中Active的GameObject（使用并开启了Animator组件的）是否较多，数量越多，则该项目开销越高；&lt;/li&gt;
-      &lt;li&gt;GameObject的骨骼数越多、AnimationClip的采样次数越多，则该项开销也越高。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;因此，建议研发团队可从以上三种情况入手来优化FK &amp;amp; Statemachine的开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;prefabresourcesunloadassetxxxprefabprefab--destroy--resoucesunloadunused&quot;&gt;对Prefab资源的卸载、预览英雄模块、需要卸载英雄角色的资源、动画和材质都可以通过Resources.UnloadAsset(xxx)来顶点清除，而Prefab不行，Prefab 只能用 Destroy + Resouces.UnloadUnused()卸载吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Prefab如果想要单独卸载，只能使用DestroyImmediate来实现。同时，考虑到Prefab本身已经是很小的一个壳了，对内存的影响非常小，一般情况下是在切换场景的时候一起释放的。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 05 Oct 2017 14:25:20 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%91%A8/</guid>
         
         <category>UWA</category>
         

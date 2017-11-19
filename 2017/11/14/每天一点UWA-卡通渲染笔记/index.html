@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>每天一点UWA：第十三周 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>每天一点UWA：卡通渲染笔记 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+    <link rel="canonical" href="https://caihua.tech/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -164,12 +164,12 @@
                         <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
                         
                     </div>
-                    <h1>每天一点UWA：第十三周</h1>
+                    <h1>每天一点UWA：卡通渲染笔记</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on October 30, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on November 14, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,125 +187,201 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="gameplay">Gameplay</h2>
-<h4 id="layer">求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？</h4>
+				<h2 id="section">描边的方法</h2>
+<h4 id="section-1">基于视角的勾边</h4>
 <ul>
-  <li>可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影。</li>
+  <li>PS：这个是最简单的绘制边界的做法。计算方式就是dot(viewDir, normal)。根据 三角函数的定义值越小说明视角与模型某个点的表面法线的夹角越大，夹角为90°时说明这个triangle是视角看不到的，也就是边界了。</li>
 </ul>
 
-<h2 id="texture">Texture</h2>
-<h4 id="uguiresource-resourcedrawcall">UGUI用Resource来动态加载图片，有什么好的方法? 我的理解是：Resource目录下的图片都不能被打包成图集，而且会增加DrawCall和包大小。</h4>
+<h4 id="section-2">基于几何生成方法的描边</h4>
+<h5 id="shell-method">shell method</h5>
 <ul>
-  <li>需要打图集的Sprite确实不建议放置在Resources下，如果需要动态加载，并且不希望使用AssetBundle，则可以尝试把需要动态加载的Sprite统一引用到Prefab上进行管理（类似于NGUI的管理方式，一个图集对应一个Prefab），然后动态加载Prefab并查找其管理的Sprite即可。</li>
-  <li>另一种方式是，可以直接关闭Unity的Sprite Packer功能，通过第三方的工具来进行图集的打包，导入Unity时转为Multiple类型的Sprite资源，那么即使放在Resources文件夹下，也不会造成DrawCall无法合并的问题。</li>
+  <li>首先在绘制结束正常的模型后，将需要描边的物体改用正面剔除再绘制一遍，在VS中将顶点沿着法线方向膨胀一定距离，然后在FS中将模型用纯色输出。</li>
 </ul>
 
-<h4 id="resourcesunloadunusedassetsresourcesunloadassetmasset">纹理图片通过文件流形式加载到内存，这样的资源还可以使用Resources.UnloadUnusedAssets()和Resources.UnloadAsset(m_Asset)进行资源卸载吗？</h4>
+<h5 id="z-bias">z-bias</h5>
 <ul>
-  <li>如果是自己载入内存并初始化为Unity的Texture2D，则还是要重点查看Texture2D对象的创建方式。一般来说，会用new Texture2D的方式创建，并用LoadImage的接口将一块内存载入，那么这样就要用DestroyImmediate来销毁这个纹理对象了。</li>
+  <li>也是绘制背面，但不膨胀，而是把背面顶点的Z值稍微向前偏移一点点，使得背面的些许部分显示出来形成描边效果。</li>
 </ul>
 
-<h2 id="ui">UI</h2>
-<h4 id="uguicanvascanvascanvasrendererpanel">请问UGUI的重绘是针对于拥有Canvas组件的Canvas物件，还是针对于拥有CanvasRenderer组件的Panel物件？</h4>
+<h4 id="section-3">基于图像处理的描边</h4>
+
+<h5 id="section-4">什么是“边缘”呢？</h5>
 <ul>
-  <li>UGUI中，Canvas组件可以认为是容器，Image，Text等组件（都需要CanvasRenderer组件）可以认为是元素。在Unity5.2版本之前，在网格重建时，会以Canvas为单位，即一个Canvas中所有的元素最终都是合并到一个Mesh中的，而其中可以被合并渲染的元素则被合在同一个SubMesh中。</li>
-  <li>在Unity5.2版本之后由于引入了多线程的网格合并方式，据我们所知，目前并没有官方的原理解释。</li>
+  <li>边缘就是在深度或者法线上不连续的位置。</li>
 </ul>
 
-<h2 id="section">工具</h2>
-<h4 id="animatorsdirtysceneobjects">对于Animators.DirtySceneObjects这个参数，它是和哪些因素有关，以及如何优化？</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing%2052%2F5.jpg" alt="image" /></p>
+<h5 id="section-5">做法：</h5>
 <ul>
-  <li>该参数是更新场景中受Mecanim动画系统影响的每个GameObject的Transform，所以当这类的GameObject数量越多时，其CPU占用也会越高。对于它的优化方式，主要有如下两种：
+  <li>需要将深度信息和法线信息以贴图的形式传入，运用边缘检测算法去寻找这些像素。</li>
+  <li>这类方法的优点是描边的线宽一致，缺点是需要额外的法线和深度信息，当然，由于近年来流行的延迟渲染框架，法线和深度本来就是G-Buffer的一部分，因此往往不需要额外绘制法线和深度的信息。</li>
+</ul>
+
+<h4 id="section-6">美式卡通中的做法</h4>
+<ul>
+  <li>美式卡通中往往倾向于使用基于图像处理的描边方法来生成均匀一致的描边效果。在《英雄联盟》中小兵和英雄的勾边效果就是用Sobel算子对深度信息进行边缘检测来获得的。</li>
+  <li>当物体较多时在进行正常绘制的阶段用stencil buffer标记出需要描边的物体，然后用一个全屏的后处理，对stencil buffer标记的像素进行边缘检测，当然这样的话，就很难给每个物体单独指定描边颜色了。</li>
+</ul>
+
+<h4 id="section-7">日式卡通中的做法</h4>
+<ul>
+  <li>日式卡通中往往倾向于使用基于几何体生成的方法去描边，这类描边方法相较于另两类方法的好处在于线宽更容易为美术所控制。</li>
+  <li>在《GUILTY GEAR Xrd》中，角色的描边就是通过几何体生成的方法，结合了shell method和z-bias method，并引入了逐物体的顶点色来控制描边细节，同时也是为了保证描边粗细不会随着摄像机视距发生变化，具体来说，顶点色存储的信息包括：
     <ul>
-      <li>如果是蒙皮网格物体，则可以开启“Optimize GameObject”选项来对其进行优化；</li>
-      <li>如果是非蒙皮网格（比如具有动画的UI界面、2D Sprite等），则只能建议研发团队尽可能减少同一时刻运动的GameObject数量（一般都不会太多），如果是被缓存的屏幕外的物体，则切记要在移出时关闭其Animator组件。</li>
+      <li>R通道：控制toon shading的阈值，和描边无关，和着色有关，这个我们后面描述</li>
+      <li>G通道：控制顶点根据视距膨胀的强度（这个部分具体操作我也没有完全弄清楚，希望了解的朋友来补充）</li>
+      <li>B通道：控制描边的z-bias，越大则描边越不可见</li>
+      <li>A通道：控制描边的粗细</li>
     </ul>
   </li>
 </ul>
 
-<h4 id="prefabselect-dependenciesshader">编辑器模式下，Prefab用Select Dependencies选项找依赖资源的时候，会把以前旧Shader引用的贴图也给关联上，怎么刷新这种引用关系？</h4>
+<h2 id="section-8">着色</h2>
+
+<h4 id="cel-shading">Cel Shading</h4>
 <ul>
-  <li>在切换Material所使用的Shader时，其上的纹理引用确实是不会自动清除的（除非被覆盖）。因此，我们的建议是，在编辑Material时，如果要切换Shader，那么在切换好之后，进行一次Reset的操作（如下图所示，该操作会重置所有使用中的属性，同时去掉未使用的属性），然后再开始编辑其属性。</li>
+  <li>只考虑光线</li>
 </ul>
 
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F2.png" alt="请输入图片描述" /></p>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS1.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS2.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F10.jpg" alt="image" /></p>
 
 <ul>
-  <li>如果希望在不改变当前使用属性的前提下，去掉未使用的属性，那么据我们所知，只能启用Editor的Force Text模式，打开对应的.mat文件进行手动去除。</li>
+  <li>同时考虑光线和视角</li>
 </ul>
 
-<h4 id="gc-allocaddcomponent-">请问怎么优化下图这两者的GC Alloc？每次AddComponent 都会有这么多的开销。</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F1.jpg" alt="image" /></p>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS3.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS4.png" alt="image" /></p>
 
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F11.jpg" alt="image" /></p>
+
+<h4 id="tone-based-shading">Tone Based Shading</h4>
 <ul>
-  <li>不可避免，只有减少AddComponent。</li>
+  <li>Tone Based Shading的风格化是基于美术指定的色调插值，并且插值得到的色阶是连续的。首先需要由美术指定冷色调和暖色调，而最终模型的着色将根据法线和光照方向的夹角，在这两个色调的基础上进行插值，具体算法如下：</li>
 </ul>
 
-<h2 id="section-1">物理</h2>
-<h4 id="physicsprocessing">请问Physics.Processing的占用过大一般是因为什么原因导致的？</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS5.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS25.png" alt="image" /></p>
+
 <ul>
-  <li>影响物理系统耗时的因素主要为Contacts数量（碰撞对数量）、Rigidbody API的使用情况和每帧的调用次数。
+  <li>其中，Kd仍是模型自身色彩贴图，Kblue，Kyellow和alpha，beta则均是自定义的参数。</li>
+</ul>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F12.jpg" alt="image" /></p>
+<blockquote>
+  <p>基于tone based shading绘制的球体</p>
+</blockquote>
+
+<h4 id="section-9">日式卡通中的着色</h4>
+<ul>
+  <li>以《GUILTY GEAR Xrd》为例，它也一定程度上包含了Cel Shading和Tone Based Shading的部分思想，将色阶离散成为“明暗”两个色调，并由美术指定冷暖色调的颜色：</li>
+</ul>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS7.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS8.png" alt="image" /></p>
+
+<blockquote>
+  <p>上述公式表示了这个卡通渲染的漫反射部分</p>
+</blockquote>
+
+<blockquote>
+  <p>threshold表示明暗交界的阈值，在游戏中通过顶点色的R通道来实现逐顶点的控制。</p>
+</blockquote>
+
+<blockquote>
+  <p>Kcool和Kwarm由美术逐物体地指定，Ksss是对模型次表面散射效果的模拟，对皮肤而言一般呈粉红色，通过美术绘制的SSS贴图来实现逐像素控制，并且只有暗部的像素才会受SSS贴图的影响。Kd是模型自身的颜色贴图。darkness表示了某个像素的明暗程度，用于确定色调的冷暖。</p>
+</blockquote>
+
+<blockquote>
+  <p>美术绘制的AO贴图，来实现一些边角缝隙的暗部效果。</p>
+</blockquote>
+
+<ul>
+  <li>高光的计算更简单一些：基本上与blinn-phong一样</li>
+</ul>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS10.png" alt="image" />
+<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS11.png" alt="image" /></p>
+
+<h4 id="section-10">美式卡通中的着色</h4>
+<ul>
+  <li>Valve在其游戏《军团要塞2》将卡通渲染着色分为了view dependent term和view independent term。两部分的计算分别如下：</li>
+</ul>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS12.png" alt="image" /></p>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS13.png" alt="image" /></p>
+
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS14.png" alt="image" /></p>
+
+<ul>
+  <li>PS：从公式中可以看到不依赖view的版本是l也就是光照向量，而依赖view的中是r，也就是反射计算。</li>
+</ul>
+
+<p><img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/d5acd56487631512ad0fc984bf3c11ce700589c4" alt="image" /></p>
+
+<h2 id="section-11">风格化高光和阴影</h2>
+<h4 id="section-12">可变形状的高光</h4>
+<ul>
+  <li>从日式着色的高光公式看，改变形状的关键在于H向量。这个H就是半角向量，参考Blinn-Phong公式。具体做法有：
     <ul>
-      <li>第一种情况是最为常见的引发物理模块耗时较大的原因，因此，我们在UWA性能报告中对其进行了详细的分析，如果你的报告中Contacts数量较高，切记要验证其合理性。</li>
-      <li>第二情况造成较大CPU开销的情况不多，不过如果你的项目是多角色游戏（比如MMO、MOBA、ARPG割草游戏等），那么你需要注意了。在我们优化过的一些项目中，通过Rigidbody API来移动GameObject位置（设置velocity、改变center等）确实会存在较高的性能开销。如果你的项目也有类似的做法，那么要时刻关注物理模块的开销了。</li>
-      <li>第三种情况同样也是目前引发物理模块耗时较高的原因。因为Unity引擎默认情况下，物理的更新频率是0.02s，即每20ms更新一次，所以，当你的项目比较卡时（开发过程中的项目在中低端设备上恐怕没几个是不卡的），物理模块会让你的项目更卡。举个例子，如果上一帧CPU耗时为100ms的话，那么物理模块会执行5次，从而进一步加大物理系统的耗时。这种情况下，物理模块的耗时是很有欺骗性的，你花了好长时间去研究物理的耗时，最后发现原来这个“锅”不是它的…所以，如果你的项目也遇到了这种情况，切记不要再上当了。</li>
+      <li>平移，改变高光的位置： <img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS17.png" alt="image" /></li>
+      <li>有方向的缩放，沿着切线空间的某个轴缩放高光形状：<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS18.png" alt="image" /></li>
+      <li>分割，将一块连续的高光切分成两块：<img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS19.png" alt="image" /></li>
+      <li>
+        <p>方块化，将趋于圆形的高光变成方形：</p>
+
+        <p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS20.png" alt="image" /></p>
+
+        <p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS21.png" alt="image" /></p>
+
+        <p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS22.png" alt="image" /></p>
+      </li>
+    </ul>
+
+    <p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F16.jpg" alt="image" /></p>
+  </li>
+</ul>
+
+<h4 id="section-13">风格化阴影</h4>
+<ul>
+  <li>类似于风格化的高光，风格化的阴影也是在标准的阴影计算流程之后，定义了一系列针对标准阴影的操作，通过这些操作，配合用户自定义的参数，便可以达到风格化阴影的效果，总的来说，共有四类操作：
+    <ul>
+      <li>膨胀/腐蚀（Inflation）：扩大或者缩小阴影范围，用参数i来控制</li>
+      <li>亮度（Brightness）：阴影区域的亮度，可以用于模拟半影区的效果，用参数b控制</li>
+      <li>柔度（Softness）：阴影边界处的柔和程度，用参数s控制</li>
+      <li>抽象度（Abstraction）：阴影形状的抽象程度，用参数alpha控制</li>
     </ul>
   </li>
 </ul>
 
-<h2 id="section-2">性能综合</h2>
-<h4 id="section-3">5.0后批处理修改</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F17.jpg" alt="image" /></p>
+
+<h4 id="section-14">几种操作和相应的效果</h4>
 <ul>
-  <li>从Unity 5.0开始，Static Batching的合批机制就已经出现了变化，不再进行索引数组的合批，因此并不会使得Draw Call降低，而是会降低Batches和SetPassCall，因此从图中来看，Static Batching 开启后的统计数据是没有问题的。也因此，UWA在统计时，使用的就是Batches的数值。具体的原因可见Unity官方在论坛中的回复：
-https://forum.unity3d.com/threads/regression-feature-not-bug-static-dynamic-batching-combining-v-buffers-but-not-draw-calls.360143/</li>
+  <li>
+    <p>整个风格化阴影的生成是基于图像空间的，从一个已经生成的精确阴影图开始。可以分成五个阶段：</p>
+
+    <ul>
+      <li>精确阴影的生成，由于是基于图像空间的，因此对精确阴影图的生成方法没有特别要求，可以是shadow volume，shadow map，ray tracing或者其他阴影生成技术，但必须要注意的是这里的阴影值一定是二值化的。</li>
+      <li>有向距离场的生成，基于图像空间的精确阴影，计算每个像素距离最近阴影边界的有向距离，这是文中算法的核心，也是后面风格化的基础，在文中给出了一种有向距离场的计算方法，当然也可以采用其他方案。</li>
+      <li>有向距离场的高斯模糊，这一步是抽象阴影生成的关键。</li>
+      <li>过滤，通过一个转移函数，将模糊后的有向距离场重新映射为阴影图。</li>
+      <li>使用过滤后的阴影进行光照计算。</li>
+    </ul>
+  </li>
 </ul>
 
-<h4 id="dynamic-batching">尽量开启“Dynamic Batching”这个选项</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_53/1.jpg" alt="image" /></p>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F18.jpg" alt="image" /></p>
+
 <ul>
-  <li>详见<a href="https://blog.uwa4d.com/archives/TechSharing_53.html">此处</a></li>
+  <li>PS：如果是unity的话可能要做屏幕后处理，如果是延迟渲染的的话G-buffer不确定有没有阴影信息。而且移动平台也不推荐。</li>
 </ul>
 
-<h4 id="gcalloc">匿名函数造成GCAlloc</h4>
+<h2 id="section-15">结束语</h2>
 <ul>
-  <li>结论：当不使用外部变量的匿名函数时，编译器会把这个函数变成静态函数，在首次调用时初始化，之后就再也不会new新的对象。 当使用外部变量时，每次调用都会生成一个临时action变量，这个就是alloc的原因。</li>
-  <li>解决方案:</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>public Action&lt;int, int&gt; pCall;
-void Start()
-{
-  pCall = CallVariable;
-  ... // 其他初始化代码
-}
-void FixedCall()
-{
-  table.Forecah(pCall);
-}
-void CallVariable(int k, int v)
-{
-  count = k + v;
-}
-</code></pre>
-</div>
-
-<ul>
-  <li><a href="https://blog.uwa4d.com/archives/Anonymous_heapmemory.html">原文</a></li>
-</ul>
-
-<h2 id="section-4">渲染</h2>
-<h4 id="lightmapngameobjectprefablightmapnlightmaplightmap">请教Lightmap相关的优化问题。我现在的场景中有N个GameObject共用一个Prefab，烘培Lightmap时，会生成出N个Lightmap贴图。有没有办法把这些生成的Lightmap合成一张？</h4>
-<ul>
-  <li>如果场景中某些物件在Lightmap纹理中占据的空间较大，但实际上并不需要较高的精度，那么可以选中该物体，并在Lighting面板的Object子面板中将其Scale in lightmap数值调低，从而可以降低其在Lightmap纹理中的空间，甚至减少Lightmap纹理的数量。</li>
-  <li>PS:为何会有N个lightmap？并没有回答能不能合并的问题。</li>
-</ul>
-
-<h4 id="unityshaderifdef-endifpass">Unity里的Shader能不能用关键字#ifdef #endif把整个pass包起来？</h4>
-
-<ul>
-  <li><code class="highlighter-rouge">#ifdef</code> 和 <code class="highlighter-rouge">#endif</code> 并不能写在Pass之外，如果有动态开关Pass的需求，可以通过Shader Lod来实现，即设置两个Level不同的SubShader分别包含1个和2个Pass，直接通过改变该Shader的局部Lod值，即可实现SubShader的切换。关于Shader Lod的细节，可见官方文档：
-http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
+  <li>除了好好学习还能有啥好说的呢╮(╯▽╰)╭</li>
 </ul>
 
 
@@ -317,17 +393,17 @@ http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/" data-toggle="tooltip" data-placement="top" title="Shader合并与Variant">
+                        <a href="/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十五周">
                         Previous<br>
-                        <span>Shader合并与Variant</span>
+                        <span>每天一点UWA：第十五周</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="浅析Timeline结构">
+                        <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十六周">
                         Next<br>
-                        <span>浅析Timeline结构</span>
+                        <span>每天一点UWA：第十六周</span>
                         </a>
                     </li>
                     

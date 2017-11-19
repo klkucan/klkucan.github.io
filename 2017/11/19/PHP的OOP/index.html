@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>每天一点UWA：第十三周 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>PHP的OOP - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+    <link rel="canonical" href="https://caihua.tech/2017/11/19/PHP%E7%9A%84OOP/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
+                        <a class="tag" href="/tags/#PHP" title="PHP">PHP</a>
                         
                     </div>
-                    <h1>每天一点UWA：第十三周</h1>
+                    <h1>PHP的OOP</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on October 30, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on November 19, 2017</span>
                 </div>
             </div>
         </div>
@@ -187,125 +187,99 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="gameplay">Gameplay</h2>
-<h4 id="layer">求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？</h4>
-<ul>
-  <li>可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影。</li>
+				<ul>
+  <li>在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。</li>
+  <li>类中用var定义变量，<code class="highlighter-rouge">var $name</code>，使用方式<code class="highlighter-rouge">$this-&gt;name</code></li>
+  <li>构造函数<code class="highlighter-rouge">function __construct()</code>，析构函数<code class="highlighter-rouge">function __destruct()</code></li>
+  <li>继承<code class="highlighter-rouge">class Child_Site extends Site</code>，使用extends关键字</li>
+  <li>实例化类</li>
 </ul>
 
-<h2 id="texture">Texture</h2>
-<h4 id="uguiresource-resourcedrawcall">UGUI用Resource来动态加载图片，有什么好的方法? 我的理解是：Resource目录下的图片都不能被打包成图集，而且会增加DrawCall和包大小。</h4>
-<ul>
-  <li>需要打图集的Sprite确实不建议放置在Resources下，如果需要动态加载，并且不希望使用AssetBundle，则可以尝试把需要动态加载的Sprite统一引用到Prefab上进行管理（类似于NGUI的管理方式，一个图集对应一个Prefab），然后动态加载Prefab并查找其管理的Sprite即可。</li>
-  <li>另一种方式是，可以直接关闭Unity的Sprite Packer功能，通过第三方的工具来进行图集的打包，导入Unity时转为Multiple类型的Sprite资源，那么即使放在Resources文件夹下，也不会造成DrawCall无法合并的问题。</li>
-</ul>
-
-<h4 id="resourcesunloadunusedassetsresourcesunloadassetmasset">纹理图片通过文件流形式加载到内存，这样的资源还可以使用Resources.UnloadUnusedAssets()和Resources.UnloadAsset(m_Asset)进行资源卸载吗？</h4>
-<ul>
-  <li>如果是自己载入内存并初始化为Unity的Texture2D，则还是要重点查看Texture2D对象的创建方式。一般来说，会用new Texture2D的方式创建，并用LoadImage的接口将一块内存载入，那么这样就要用DestroyImmediate来销毁这个纹理对象了。</li>
-</ul>
-
-<h2 id="ui">UI</h2>
-<h4 id="uguicanvascanvascanvasrendererpanel">请问UGUI的重绘是针对于拥有Canvas组件的Canvas物件，还是针对于拥有CanvasRenderer组件的Panel物件？</h4>
-<ul>
-  <li>UGUI中，Canvas组件可以认为是容器，Image，Text等组件（都需要CanvasRenderer组件）可以认为是元素。在Unity5.2版本之前，在网格重建时，会以Canvas为单位，即一个Canvas中所有的元素最终都是合并到一个Mesh中的，而其中可以被合并渲染的元素则被合在同一个SubMesh中。</li>
-  <li>在Unity5.2版本之后由于引入了多线程的网格合并方式，据我们所知，目前并没有官方的原理解释。</li>
-</ul>
-
-<h2 id="section">工具</h2>
-<h4 id="animatorsdirtysceneobjects">对于Animators.DirtySceneObjects这个参数，它是和哪些因素有关，以及如何优化？</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing%2052%2F5.jpg" alt="image" /></p>
-<ul>
-  <li>该参数是更新场景中受Mecanim动画系统影响的每个GameObject的Transform，所以当这类的GameObject数量越多时，其CPU占用也会越高。对于它的优化方式，主要有如下两种：
-    <ul>
-      <li>如果是蒙皮网格物体，则可以开启“Optimize GameObject”选项来对其进行优化；</li>
-      <li>如果是非蒙皮网格（比如具有动画的UI界面、2D Sprite等），则只能建议研发团队尽可能减少同一时刻运动的GameObject数量（一般都不会太多），如果是被缓存的屏幕外的物体，则切记要在移出时关闭其Animator组件。</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="prefabselect-dependenciesshader">编辑器模式下，Prefab用Select Dependencies选项找依赖资源的时候，会把以前旧Shader引用的贴图也给关联上，怎么刷新这种引用关系？</h4>
-<ul>
-  <li>在切换Material所使用的Shader时，其上的纹理引用确实是不会自动清除的（除非被覆盖）。因此，我们的建议是，在编辑Material时，如果要切换Shader，那么在切换好之后，进行一次Reset的操作（如下图所示，该操作会重置所有使用中的属性，同时去掉未使用的属性），然后再开始编辑其属性。</li>
-</ul>
-
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F2.png" alt="请输入图片描述" /></p>
-
-<ul>
-  <li>如果希望在不改变当前使用属性的前提下，去掉未使用的属性，那么据我们所知，只能启用Editor的Force Text模式，打开对应的.mat文件进行手动去除。</li>
-</ul>
-
-<h4 id="gc-allocaddcomponent-">请问怎么优化下图这两者的GC Alloc？每次AddComponent 都会有这么多的开销。</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F1.jpg" alt="image" /></p>
-
-<ul>
-  <li>不可避免，只有减少AddComponent。</li>
-</ul>
-
-<h2 id="section-1">物理</h2>
-<h4 id="physicsprocessing">请问Physics.Processing的占用过大一般是因为什么原因导致的？</h4>
-<ul>
-  <li>影响物理系统耗时的因素主要为Contacts数量（碰撞对数量）、Rigidbody API的使用情况和每帧的调用次数。
-    <ul>
-      <li>第一种情况是最为常见的引发物理模块耗时较大的原因，因此，我们在UWA性能报告中对其进行了详细的分析，如果你的报告中Contacts数量较高，切记要验证其合理性。</li>
-      <li>第二情况造成较大CPU开销的情况不多，不过如果你的项目是多角色游戏（比如MMO、MOBA、ARPG割草游戏等），那么你需要注意了。在我们优化过的一些项目中，通过Rigidbody API来移动GameObject位置（设置velocity、改变center等）确实会存在较高的性能开销。如果你的项目也有类似的做法，那么要时刻关注物理模块的开销了。</li>
-      <li>第三种情况同样也是目前引发物理模块耗时较高的原因。因为Unity引擎默认情况下，物理的更新频率是0.02s，即每20ms更新一次，所以，当你的项目比较卡时（开发过程中的项目在中低端设备上恐怕没几个是不卡的），物理模块会让你的项目更卡。举个例子，如果上一帧CPU耗时为100ms的话，那么物理模块会执行5次，从而进一步加大物理系统的耗时。这种情况下，物理模块的耗时是很有欺骗性的，你花了好长时间去研究物理的耗时，最后发现原来这个“锅”不是它的…所以，如果你的项目也遇到了这种情况，切记不要再上当了。</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="section-2">性能综合</h2>
-<h4 id="section-3">5.0后批处理修改</h4>
-<ul>
-  <li>从Unity 5.0开始，Static Batching的合批机制就已经出现了变化，不再进行索引数组的合批，因此并不会使得Draw Call降低，而是会降低Batches和SetPassCall，因此从图中来看，Static Batching 开启后的统计数据是没有问题的。也因此，UWA在统计时，使用的就是Batches的数值。具体的原因可见Unity官方在论坛中的回复：
-https://forum.unity3d.com/threads/regression-feature-not-bug-static-dynamic-batching-combining-v-buffers-but-not-draw-calls.360143/</li>
-</ul>
-
-<h4 id="dynamic-batching">尽量开启“Dynamic Batching”这个选项</h4>
-<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_53/1.jpg" alt="image" /></p>
-<ul>
-  <li>详见<a href="https://blog.uwa4d.com/archives/TechSharing_53.html">此处</a></li>
-</ul>
-
-<h4 id="gcalloc">匿名函数造成GCAlloc</h4>
-<ul>
-  <li>结论：当不使用外部变量的匿名函数时，编译器会把这个函数变成静态函数，在首次调用时初始化，之后就再也不会new新的对象。 当使用外部变量时，每次调用都会生成一个临时action变量，这个就是alloc的原因。</li>
-  <li>解决方案:</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>public Action&lt;int, int&gt; pCall;
-void Start()
+<div class="highlighter-rouge"><pre class="highlight"><code>class Login
 {
-  pCall = CallVariable;
-  ... // 其他初始化代码
+    var $m_user;
+    var $m_pw;
+
+    function __construct($user, $pw)
+    {
+        $this-&gt;m_user = $user;
+        $this-&gt;m_pw = $pw;
+    }
+
+    function Login()
+    {
+        echo $this-&gt;m_user .'-'. $this-&gt;m_user;
+    }
 }
-void FixedCall()
+
+$user = $_POST['user'];
+$pw = $_POST['pw'];
+
+$login = new Login($user, $pw);
+$login-&gt;Login();
+</code></pre>
+</div>
+<ul>
+  <li>可以使用interface</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+
+// 声明一个'iTemplate'接口
+interface iTemplate
 {
-  table.Forecah(pCall);
+    public function setVariable($name, $var);
+    public function getHtml($template);
 }
-void CallVariable(int k, int v)
+
+
+// 实现接口
+class Template implements iTemplate
 {
-  count = k + v;
+    private $vars = array();
+  
+    public function setVariable($name, $var)
+    {
+        $this-&gt;vars[$name] = $var;
+    }
+  
+    public function getHtml($template)
+    {
+        foreach($this-&gt;vars as $name =&gt; $value) {
+            $template = str_replace('{' . $name . '}', $value, $template);
+        }
+ 
+        return $template;
+    }
 }
 </code></pre>
 </div>
 
 <ul>
-  <li><a href="https://blog.uwa4d.com/archives/Anonymous_heapmemory.html">原文</a></li>
+  <li>常量</li>
 </ul>
 
-<h2 id="section-4">渲染</h2>
-<h4 id="lightmapngameobjectprefablightmapnlightmaplightmap">请教Lightmap相关的优化问题。我现在的场景中有N个GameObject共用一个Prefab，烘培Lightmap时，会生成出N个Lightmap贴图。有没有办法把这些生成的Lightmap合成一张？</h4>
-<ul>
-  <li>如果场景中某些物件在Lightmap纹理中占据的空间较大，但实际上并不需要较高的精度，那么可以选中该物体，并在Lighting面板的Object子面板中将其Scale in lightmap数值调低，从而可以降低其在Lightmap纹理中的空间，甚至减少Lightmap纹理的数量。</li>
-  <li>PS:为何会有N个lightmap？并没有回答能不能合并的问题。</li>
-</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;?php
+class MyClass
+{
+    const constant = '常量值';
 
-<h4 id="unityshaderifdef-endifpass">Unity里的Shader能不能用关键字#ifdef #endif把整个pass包起来？</h4>
+    function showConstant() {
+        echo  self::constant . PHP_EOL;
+    }
+}
+
+echo MyClass::constant . PHP_EOL;
+
+</code></pre>
+</div>
 
 <ul>
-  <li><code class="highlighter-rouge">#ifdef</code> 和 <code class="highlighter-rouge">#endif</code> 并不能写在Pass之外，如果有动态开关Pass的需求，可以通过Shader Lod来实现，即设置两个Level不同的SubShader分别包含1个和2个Pass，直接通过改变该Shader的局部Lod值，即可实现SubShader的切换。关于Shader Lod的细节，可见官方文档：
-http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
+  <li>静态属性不能通过一个类已实例化的对象来访问（但静态方法可以）。</li>
+  <li>静态属性不可以由对象通过 -&gt; 操作符来访问。调用方法是<code class="highlighter-rouge">::</code></li>
+  <li>抽象类与C#一样</li>
+  <li>Final 关键字，作用与C#的sealed一样。</li>
+  <li>子类中调用父类的方法<code class="highlighter-rouge">parent::Login();</code>，与C#的<code class="highlighter-rouge">base.Login</code>结构上一样。</li>
 </ul>
 
 
@@ -317,19 +291,12 @@ http://docs.unity3d.com/Manual/SL-ShaderLOD.html</li>
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/" data-toggle="tooltip" data-placement="top" title="Shader合并与Variant">
+                        <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十六周">
                         Previous<br>
-                        <span>Shader合并与Variant</span>
+                        <span>每天一点UWA：第十六周</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/" data-toggle="tooltip" data-placement="top" title="浅析Timeline结构">
-                        Next<br>
-                        <span>浅析Timeline结构</span>
-                        </a>
-                    </li>
                     
                 </ul>
 
