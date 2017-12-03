@@ -344,26 +344,8 @@ defaultConfig {
       <li>提示这个错误：<code class="highlighter-rouge">adb server version (31) doesn't match this client (39); killing...
 error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037: 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (1
 0048)</code></li>
-      <li>
-        <table>
-          <tbody>
-            <tr>
-              <td>CMD:netstat -ano</td>
-              <td>findstr “5037” //查看占用这个端口的APP，发现是进程15128</td>
-            </tr>
-          </tbody>
-        </table>
-      </li>
-      <li>
-        <table>
-          <tbody>
-            <tr>
-              <td>CMD:tasklist</td>
-              <td>findstr “14152”    //查看这个进程对应的应用</td>
-            </tr>
-          </tbody>
-        </table>
-      </li>
+      <li><code class="highlighter-rouge">CMD:netstat -ano | findstr "5037"</code> //查看占用这个端口的APP，发现是进程15128</li>
+      <li><code class="highlighter-rouge">CMD:tasklist | findstr "14152"</code>    //查看这个进程对应的应用</li>
       <li>下图中的14152进程是adb.exe，此时adb就允许正常了。</li>
     </ul>
   </li>

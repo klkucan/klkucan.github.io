@@ -5,8 +5,8 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 03 Dec 2017 23:12:59 +0800</pubDate>
-    <lastBuildDate>Sun, 03 Dec 2017 23:12:59 +0800</lastBuildDate>
+    <pubDate>Sun, 03 Dec 2017 23:19:33 +0800</pubDate>
+    <lastBuildDate>Sun, 03 Dec 2017 23:19:33 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -478,26 +478,8 @@ defaultConfig {
       &lt;li&gt;提示这个错误：&lt;code class=&quot;highlighter-rouge&quot;&gt;adb server version (31) doesn't match this client (39); killing...
 error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037: 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (1
 0048)&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;
-        &lt;table&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;
-              &lt;td&gt;CMD:netstat -ano&lt;/td&gt;
-              &lt;td&gt;findstr “5037” //查看占用这个端口的APP，发现是进程15128&lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;table&gt;
-          &lt;tbody&gt;
-            &lt;tr&gt;
-              &lt;td&gt;CMD:tasklist&lt;/td&gt;
-              &lt;td&gt;findstr “14152”    //查看这个进程对应的应用&lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CMD:netstat -ano | findstr &quot;5037&quot;&lt;/code&gt; //查看占用这个端口的APP，发现是进程15128&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CMD:tasklist | findstr &quot;14152&quot;&lt;/code&gt;    //查看这个进程对应的应用&lt;/li&gt;
       &lt;li&gt;下图中的14152进程是adb.exe，此时adb就允许正常了。&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
