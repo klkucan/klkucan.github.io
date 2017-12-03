@@ -173,6 +173,87 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十八周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Uni...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 3, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十七周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。
+
+  原文较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个As...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 2, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
+        <h2 class="post-title">
+            Gamma校正与线性空间
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  近期看了一篇文章，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。
+
+
+Gamma校正的由来和计算方式
+
+  所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为Lout = pow(Lin, 0.45)  ，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.73...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/">
+        <h2 class="post-title">
+            Unity Android二次开发经(血)验(泪)谈(史)
+        </h2>
+        
+        <div class="post-content-preview">
+            主要参考的是这篇文章，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。
+
+准备工作
+
+  安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。
+  AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。
+  从AS上可以下载到的build-tool是27，但是最新的tools是un...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 20, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/11/19/PHP%E7%9A%84OOP/">
         <h2 class="post-title">
             PHP的OOP
@@ -305,109 +386,6 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/">
-        <h2 class="post-title">
-            浅析Timeline结构
-        </h2>
-        
-        <div class="post-content-preview">
-            结构
-
-
-   
-      PlayableDirector
-      Timeline
-   
-   
-      PlayableGraph
-      Graph
-   
-   
-      …
-      TrackGroup
-      TrackGroup
-   
-   
-      TrackAsset
-      AnimationTrack
-      Playable...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 2, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十三周
-        </h2>
-        
-        <div class="post-content-preview">
-            Gameplay
-求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
-
-  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 30, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
-        <h2 class="post-title">
-            Shader合并与Variant
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
-
-
-Sahder Variant的概念
-
-
- ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十二周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-对于UGUI文字花屏问题，有什么推荐的解决方法吗？
-
-  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
-  关于UGUI字体花屏和乱码
-  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
-
-
-工具
-最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 23, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -462,7 +440,7 @@ Sahder Variant的概念
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="11">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="13">
                                     Unity3D
                                 </a>
                             
@@ -498,7 +476,7 @@ Sahder Variant的概念
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="21">
+                                <a href="/tags/#UWA" title="UWA" rel="23">
                                     UWA
                                 </a>
                             

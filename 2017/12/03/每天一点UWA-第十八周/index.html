@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Be publicly useful and privately happy.">
+    <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>每天一点UWA：第十八周 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+
+    <link rel="canonical" href="https://caihua.tech/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">蔡华的博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About Me</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/home-bg-o.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#UWA" title="UWA">UWA</a>
+                        
+                    </div>
+                    <h1>每天一点UWA：第十八周</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by 蔡华的博客 on December 3, 2017</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h2 id="assetbundle">AssetBundle</h2>
+<h4 id="assetbundleshaderalways-includeshadershaderbundleshadershaderbundleunity534f1">最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。</h4>
+<ul>
+  <li>首先，只要资源在工程里并且需要用到它，就会被打包进AssetBundle。</li>
+  <li>然后Always include里built-in Shader不会被打包进AssetBundle，这是一个特例。这个特例仅限于没有放到工程里的部分，有些项目会自己下载built-in Shader放到工程里，这样的Shader和自己写的没有区别，也会被打包。</li>
+  <li>最后，你遇到的问题是正常现象，需要你们通过资源管理的策略避免掉。</li>
+</ul>
+
+<h4 id="shaderalways-includebundle-shader-shader-feature-enableclipshaderbundleshader-feature-shader-variant">自定义Shader放入Always include里面，造成Bundle 资源冗余。项目中的某一个自定义的Shader 使用了Shader feature ENABLE_CLIP，Shader被打进最终的Bundle包的时候，这个Shader feature 不起作用了，是因为这个Shader Variant没有被打入最终包吗，官方文档里的说明是：</h4>
+<blockquote>
+  <p>the only difference is that unused variants of shader_feature shaders will not be included into game build. So shader_feature makes most sense for keywords that will be set on the materials, while multi_compile for keywords that will be set from code globally.</p>
+</blockquote>
+
+<h4 id="shader-featureshader-variant-bundle">但是我确实有个材质是使用了这个Shader Feature的，为什么这个Shader Variant 没有进入最终的Bundle包呢？</h4>
+
+<ul>
+  <li>据了解，Unity官方有在英文论坛里提到Asset Bundle team正在解决这个问题。如果不将Shader对应的Material与Shader一同打包，当前另外的解决方案包括：
+    <ul>
+      <li>使用dummy materials / ShaderVariantCollection 与shader打在同一ab内。</li>
+      <li>使用multi_compile替换shader_feature。</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="fbxfbxmeshuvreadwrite-able">我把FBX和粒子系统分开打包了。加载的时候先加载FBX文件，然后再加载粒子系统，结果那些粒子系统是Mesh模式的时候，它们的UV会消失。怎么办呢？开了Read/Write able就不会消失。不分开打包也不会消失，这种情况如何破？</h4>
+<ul>
+  <li>建议考虑在 FBX 的 AssetBundle 里再放一个带粒子系统，并且引用这个 Mesh 的 Prefab（但不去加载，也不去使用它），只是为了让 UV 可以被正确获得。 理论上这样做的话，基本不需要修改原来的加载方式，也不用开Read/Write。</li>
+</ul>
+
+<h2 id="gameplay">Gameplay</h2>
+<h4 id="shadershadercullcull-off">我写了一个顶点动画的Shader，对物体顶点位置进行了修改，使其能够跟随相机移动，并总是出现在相机前面。当游戏运行后，开始时物体能够正常显示。相机在场景中移动一段距离后，物体便不再显示，但相机换一下朝向，物体又能显示。目前排除了面剔除的原因，在Shader中已经关闭了Cull（Cull Off），请问还可能是什么其他原因呢？</h4>
+<ul>
+  <li>消失的原因应当是Unity的Frustum Culling引起。因为顶点动画是在shader中修改的顶点位置，而Frustum Culling是根据顶点修改之前的Mesh的bounds进行的，因此随着相机移动，Mesh实际已经出了Frustum的范围。最简单的解决方法是直接将Mesh的bounds设置足够大，让Unity始终不对其进行Culling：</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>mesh.bounds = new UnityEngine.Bounds(transform.position, new Vector3(float.MaxValue, float.MaxValue,
+float.MaxValue));
+</code></pre>
+</div>
+
+<h4 id="systeminfographicsdevicenamegpuarmmalit880-mp2t880-mp12t880mp">使用SystemInfo.graphicsDeviceName获取的GPU信息不太详细。比如ARM系列的Mali，T880 MP2与T880 MP12相差甚远，但是只能获取到T880，无法获取MP的信息。各位是否有办法？</h4>
+<ul>
+  <li>对于获取GPU名称信息，在Android的Java层中可以利用API：GLES20.glGetString(GLES20.GLRENDERER)获取显示设备名。可以尝试在Unity中利用AndroidJavaClass(https://docs.unity3d.com/ScriptReference/AndroidJavaClass.html)来调用该API，尝试获取更详细的型号。</li>
+  <li>如果获取GPU名称的目的是判断GPU性能，可以看下SystemInfo中其他graphicsDevice相关的GPU性能信息是否够用。</li>
+</ul>
+
+<h2 id="section">物理</h2>
+<h4 id="colliderrigidbodyoncollisionenteroncollsionenter">两个挂了Collider的物体，一个物体挂了Rigidbody，去碰撞另一物体，为什么每次OnCollisionEnter这个函数在实际还没有碰撞的时候就调用了呢？如下图，这时OnCollsionEnter已经被调用，但从图上可以看到两物体实际还没有接触，这个函数调用之后才会真正碰撞在一起。</h4>
+<ul>
+  <li>物理系统在FixedUpdate中触发，包括OnCollisionEnter。而FixedUpdate早于Frame Rendering，因此碰撞实际已经发生，只是画面还没更新。其实在运行时这点时间差几乎应该可以忽略。</li>
+</ul>
+
+<h2 id="section-1">性能综合</h2>
+<h4 id="unityocclusion-cullingunityocclusion-cullingdrawcalltriangleocclusion-cullingnavmeshdata">想对场景中的静态物件做一个遮挡剔除，不知道Unity自带的Occlusion Culling对性能优化的提升有多少呢？我们用Unity官方例子测试，启用Occlusion Culling后发现DrawCall、Triangle几乎没有变化。另外也想获知，Occlusion Culling的数据能否像NavMeshData那样可以动态加载呢？</h4>
+<ul>
+  <li>Occlusion Culling在使用后具体能提升多少，这个其实是没有明确数值的，甚至可能不升反降！这个只能题主在自己的项目中进行尝试。</li>
+  <li>一般来说，Occlusion Culling功能特别适合第一人称或第三人称跟随的平视角相机（比如传统意义上的MMO等类似游戏），且适用于在场景中存在大量的遮挡情况。因此，在城市街道漫游、峡谷漫游等特定场景中，比较推荐开启Occlusion Culling功能。</li>
+  <li>但是Occlusion Culling功能本身存在一定的性能开销，因为需要每帧均遍历烘焙的Cell来明确哪些物体需要或不需要渲染，所以场景中Cell越细，那么其查询开销也就越大。因此，如果场景中本身没有大量的遮挡关系，那么开启Occlusion Culling功能后，其节省下来的渲染耗时可能抵不上其Cell查询耗时来的大，这样就得不偿失了。</li>
+  <li>最后，Occlusion Culling的Data目前并不能动态加载，只能随场景来进行加载。因此，可以尝试创造一个拥有Occlusion Culling Data的“空场景”，然后通过LoadLevelAdditive方式来进行加载，从而来达到“动态”加载的效果。</li>
+</ul>
+
+<h4 id="profilergetmonoheapsizeuiui68mbprofiler">通过Profiler.GetMonoHeapSize()获取到的堆内存，在操作UI的时候，打开某个节点比较多的UI界面，根据上面接口取到的堆内存会突然涨6~8MB，但是Profiler取不到这个数据，该怎么办呢？我不是固定打开某个界面，而是随机出现在某个界面上，这样的问题该如何入手呢？</h4>
+<ul>
+  <li>Mono总体堆内存一次性涨6-8MB是比较正常的。Mono内存并不是随用随分配的，而是当其发现不够用时，一次性从系统中获取一段连续的内存。在游戏运行一段时间后，这个值一般是8MB。所以，题主遇到的情况很有可能是在连续操作UI界面时，Mono发现堆内存不够用了，于是就有了题主观察到的内存分配。</li>
+</ul>
+
+<h2 id="section-2">渲染</h2>
+<h4 id="drawcallgpu20msxcode-profilercpu78ms">下图这一项是指渲染透明物体的渲染消耗么，主要是提交DrawCall是么，现在游戏的GPU消耗在20ms以内Xcode Profiler结果。但是有些粒子系统比较耗CPU，就是这个涨得比较厉害，峰值有7~8ms，请问有没有什么优化建议?</h4>
+<p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_71%2F1.png" alt="image" /></p>
+<ul>
+  <li>首先，需要说明的是，Draw Call是CPU端的耗时开销，XCode上GPU上的开销统计与其关系不大。</li>
+  <li>其次，图中红框所示确实表示的是半透明物体渲染在CPU端的耗时，其不仅与Draw Call数量相关，也和渲染State的切换相关（从图中可以看出，项目使用的是Unity 4.x版本，对应的需要关注Shader.SetPass的开销）。</li>
+  <li>再次，粒子系统的耗时开销很高，如果还是持续在7~8ms左右，那么研发团队关注较高耗时处的游戏场景，并控制粒子系统的使用数量，粒子系统的优化并没有“神奇”的方案，目前研发团队需尽可能控制粒子系统的使用数量。</li>
+</ul>
+
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十七周">
+                        Previous<br>
+                        <span>每天一点UWA：第十七周</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
+                                    iOS学习笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="1">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#杂记" title="杂记" rel="3">
+                                    杂记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#VR/AR" title="VR/AR" rel="3">
+                                    VR/AR
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Unity3D" title="Unity3D" rel="13">
+                                    Unity3D
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#3D数学" title="3D数学" rel="1">
+                                    3D数学
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                    游戏设计模式读书笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
+                                    Unity預計算即時GI笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="6">
+                                    AssetBundle学习笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Lua" title="Lua" rel="6">
+                                    Lua
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#UWA" title="UWA" rel="23">
+                                    UWA
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#PHP" title="PHP" rel="1">
+                                    PHP
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: ''
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/klkucan">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 蔡华的博客 2017
+                    <!-- <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe> -->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86194707-1';
+    var _gaDomain = 'caihua.tech';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+</body>
+
+</html>

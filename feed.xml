@@ -5,9 +5,521 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 19 Nov 2017 22:11:30 +0800</pubDate>
-    <lastBuildDate>Sun, 19 Nov 2017 22:11:30 +0800</lastBuildDate>
+    <pubDate>Sun, 03 Dec 2017 23:12:59 +0800</pubDate>
+    <lastBuildDate>Sun, 03 Dec 2017 23:12:59 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：第十八周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;assetbundleshaderalways-includeshadershaderbundleshadershaderbundleunity534f1&quot;&gt;最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先，只要资源在工程里并且需要用到它，就会被打包进AssetBundle。&lt;/li&gt;
+  &lt;li&gt;然后Always include里built-in Shader不会被打包进AssetBundle，这是一个特例。这个特例仅限于没有放到工程里的部分，有些项目会自己下载built-in Shader放到工程里，这样的Shader和自己写的没有区别，也会被打包。&lt;/li&gt;
+  &lt;li&gt;最后，你遇到的问题是正常现象，需要你们通过资源管理的策略避免掉。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;shaderalways-includebundle-shader-shader-feature-enableclipshaderbundleshader-feature-shader-variant&quot;&gt;自定义Shader放入Always include里面，造成Bundle 资源冗余。项目中的某一个自定义的Shader 使用了Shader feature ENABLE_CLIP，Shader被打进最终的Bundle包的时候，这个Shader feature 不起作用了，是因为这个Shader Variant没有被打入最终包吗，官方文档里的说明是：&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;the only difference is that unused variants of shader_feature shaders will not be included into game build. So shader_feature makes most sense for keywords that will be set on the materials, while multi_compile for keywords that will be set from code globally.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;shader-featureshader-variant-bundle&quot;&gt;但是我确实有个材质是使用了这个Shader Feature的，为什么这个Shader Variant 没有进入最终的Bundle包呢？&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;据了解，Unity官方有在英文论坛里提到Asset Bundle team正在解决这个问题。如果不将Shader对应的Material与Shader一同打包，当前另外的解决方案包括：
+    &lt;ul&gt;
+      &lt;li&gt;使用dummy materials / ShaderVariantCollection 与shader打在同一ab内。&lt;/li&gt;
+      &lt;li&gt;使用multi_compile替换shader_feature。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;fbxfbxmeshuvreadwrite-able&quot;&gt;我把FBX和粒子系统分开打包了。加载的时候先加载FBX文件，然后再加载粒子系统，结果那些粒子系统是Mesh模式的时候，它们的UV会消失。怎么办呢？开了Read/Write able就不会消失。不分开打包也不会消失，这种情况如何破？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;建议考虑在 FBX 的 AssetBundle 里再放一个带粒子系统，并且引用这个 Mesh 的 Prefab（但不去加载，也不去使用它），只是为了让 UV 可以被正确获得。 理论上这样做的话，基本不需要修改原来的加载方式，也不用开Read/Write。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
+&lt;h4 id=&quot;shadershadercullcull-off&quot;&gt;我写了一个顶点动画的Shader，对物体顶点位置进行了修改，使其能够跟随相机移动，并总是出现在相机前面。当游戏运行后，开始时物体能够正常显示。相机在场景中移动一段距离后，物体便不再显示，但相机换一下朝向，物体又能显示。目前排除了面剔除的原因，在Shader中已经关闭了Cull（Cull Off），请问还可能是什么其他原因呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;消失的原因应当是Unity的Frustum Culling引起。因为顶点动画是在shader中修改的顶点位置，而Frustum Culling是根据顶点修改之前的Mesh的bounds进行的，因此随着相机移动，Mesh实际已经出了Frustum的范围。最简单的解决方法是直接将Mesh的bounds设置足够大，让Unity始终不对其进行Culling：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mesh.bounds = new UnityEngine.Bounds(transform.position, new Vector3(float.MaxValue, float.MaxValue,
+float.MaxValue));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;systeminfographicsdevicenamegpuarmmalit880-mp2t880-mp12t880mp&quot;&gt;使用SystemInfo.graphicsDeviceName获取的GPU信息不太详细。比如ARM系列的Mali，T880 MP2与T880 MP12相差甚远，但是只能获取到T880，无法获取MP的信息。各位是否有办法？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于获取GPU名称信息，在Android的Java层中可以利用API：GLES20.glGetString(GLES20.GLRENDERER)获取显示设备名。可以尝试在Unity中利用AndroidJavaClass(https://docs.unity3d.com/ScriptReference/AndroidJavaClass.html)来调用该API，尝试获取更详细的型号。&lt;/li&gt;
+  &lt;li&gt;如果获取GPU名称的目的是判断GPU性能，可以看下SystemInfo中其他graphicsDevice相关的GPU性能信息是否够用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;colliderrigidbodyoncollisionenteroncollsionenter&quot;&gt;两个挂了Collider的物体，一个物体挂了Rigidbody，去碰撞另一物体，为什么每次OnCollisionEnter这个函数在实际还没有碰撞的时候就调用了呢？如下图，这时OnCollsionEnter已经被调用，但从图上可以看到两物体实际还没有接触，这个函数调用之后才会真正碰撞在一起。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;物理系统在FixedUpdate中触发，包括OnCollisionEnter。而FixedUpdate早于Frame Rendering，因此碰撞实际已经发生，只是画面还没更新。其实在运行时这点时间差几乎应该可以忽略。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;性能综合&lt;/h2&gt;
+&lt;h4 id=&quot;unityocclusion-cullingunityocclusion-cullingdrawcalltriangleocclusion-cullingnavmeshdata&quot;&gt;想对场景中的静态物件做一个遮挡剔除，不知道Unity自带的Occlusion Culling对性能优化的提升有多少呢？我们用Unity官方例子测试，启用Occlusion Culling后发现DrawCall、Triangle几乎没有变化。另外也想获知，Occlusion Culling的数据能否像NavMeshData那样可以动态加载呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Occlusion Culling在使用后具体能提升多少，这个其实是没有明确数值的，甚至可能不升反降！这个只能题主在自己的项目中进行尝试。&lt;/li&gt;
+  &lt;li&gt;一般来说，Occlusion Culling功能特别适合第一人称或第三人称跟随的平视角相机（比如传统意义上的MMO等类似游戏），且适用于在场景中存在大量的遮挡情况。因此，在城市街道漫游、峡谷漫游等特定场景中，比较推荐开启Occlusion Culling功能。&lt;/li&gt;
+  &lt;li&gt;但是Occlusion Culling功能本身存在一定的性能开销，因为需要每帧均遍历烘焙的Cell来明确哪些物体需要或不需要渲染，所以场景中Cell越细，那么其查询开销也就越大。因此，如果场景中本身没有大量的遮挡关系，那么开启Occlusion Culling功能后，其节省下来的渲染耗时可能抵不上其Cell查询耗时来的大，这样就得不偿失了。&lt;/li&gt;
+  &lt;li&gt;最后，Occlusion Culling的Data目前并不能动态加载，只能随场景来进行加载。因此，可以尝试创造一个拥有Occlusion Culling Data的“空场景”，然后通过LoadLevelAdditive方式来进行加载，从而来达到“动态”加载的效果。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;profilergetmonoheapsizeuiui68mbprofiler&quot;&gt;通过Profiler.GetMonoHeapSize()获取到的堆内存，在操作UI的时候，打开某个节点比较多的UI界面，根据上面接口取到的堆内存会突然涨6~8MB，但是Profiler取不到这个数据，该怎么办呢？我不是固定打开某个界面，而是随机出现在某个界面上，这样的问题该如何入手呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Mono总体堆内存一次性涨6-8MB是比较正常的。Mono内存并不是随用随分配的，而是当其发现不够用时，一次性从系统中获取一段连续的内存。在游戏运行一段时间后，这个值一般是8MB。所以，题主遇到的情况很有可能是在连续操作UI界面时，Mono发现堆内存不够用了，于是就有了题主观察到的内存分配。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;drawcallgpu20msxcode-profilercpu78ms&quot;&gt;下图这一项是指渲染透明物体的渲染消耗么，主要是提交DrawCall是么，现在游戏的GPU消耗在20ms以内Xcode Profiler结果。但是有些粒子系统比较耗CPU，就是这个涨得比较厉害，峰值有7~8ms，请问有没有什么优化建议?&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_71%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先，需要说明的是，Draw Call是CPU端的耗时开销，XCode上GPU上的开销统计与其关系不大。&lt;/li&gt;
+  &lt;li&gt;其次，图中红框所示确实表示的是半透明物体渲染在CPU端的耗时，其不仅与Draw Call数量相关，也和渲染State的切换相关（从图中可以看出，项目使用的是Unity 4.x版本，对应的需要关注Shader.SetPass的开销）。&lt;/li&gt;
+  &lt;li&gt;再次，粒子系统的耗时开销很高，如果还是持续在7~8ms左右，那么研发团队关注较高耗时处的游戏场景，并控制粒子系统的使用数量，粒子系统的优化并没有“神奇”的方案，目前研发团队需尽可能控制粒子系统的使用数量。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 03 Dec 2017 22:59:12 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第十七周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;texturematerialspritetexture&quot;&gt;当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.uwa4d.com/archives/TechSharing_66.html&quot;&gt;原文&lt;/a&gt;较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个AssetBundle。&lt;/li&gt;
+  &lt;li&gt;这是一个重要的问题，而且这个问题也是看unity版本的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundleunloadtrueanimationclip--animationclipprofiler&quot;&gt;使用AssetBundle.Unload(true)释放AnimationClip , 但发现AnimationClip在Profiler看到还存在，请问要怎样才释放干净呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果这个AnimaitonClip是从AssetBundle中加载过来的，那么当这个AssetBundle调用unload(true)时，该AnimationClip理论上是会被强行卸载的。如果Profiler中查看还有，那么只有两种情况：
+    &lt;ul&gt;
+      &lt;li&gt;仍然存在的AnimationClip是从其他地方加载来的，而不是来自于该卸载的AssetBundle；&lt;/li&gt;
+      &lt;li&gt;Unity引擎的Bug，这种概率不是没有，但很小。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundlenameassetbundleunityassetbundlenamegetallassetnamesloadallassets&quot;&gt;在打包的时候，有一部分资源是没有设置AssetBundleName的，打包的时候会和依赖它们的资源打到同一个AssetBundle包里（Unity自动完成）。在资源加载的时候，无法主动获取到这些没有设置AssetBundleName的资源。GetAllAssetNames、LoadAllAssets这些接口的返回值中都没有这部分资源。&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;请问，在你们看来，这种情况是Unity的设计还是Bug？如果是如此设计的话，有什么特别的意义吗？ 提供一个简单的情景，如下：
+１）有A、B两个Prefab，其中A上挂个脚本引用了B
+２）打包的时候，设置A的AssetBundleName＝”prefab.unity3d”，B的AssetBundleName=None
+３）打包，只产生prefab.unity3d这一个AB包，其中包含了A、B两个资源
+４）加载代码使用AssetBundle.LoadAllAssets()，返回的数组里只有一个资源（A）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;我们刚刚在Unity 5.5.2版本上进行了一个测试，得到与题主一样的结论。
+我们更加倾向于它是一种设计，而非Bug。&lt;/li&gt;
+  &lt;li&gt;因为Prefab B是作为一种参数被引用在A的脚本中，所以在AssetBundle中，它将以GameObject B的形式存在，但是不会存在于AssetBundle的映射表中。&lt;/li&gt;
+  &lt;li&gt;而对于题主的这种打包方式而言，AssetBundle的映射表中只会有一个，就是Prefab A。而AssetBundle.LoadAllAssets虽然会把GameObject A、B及其关联的资源全部加载，但其返回的Object[]内容应该就只有一个，也就是Prefab A。&lt;/li&gt;
+  &lt;li&gt;所以，UWA推测，AssetBundle中在打包时是自己维护了一个map的，只有明确被设置ABName的资源才会被放入map中，也只有map中的资源才可以通过特定名称进行Load，而其关联的资源则会被打包到AssetBundle中的其他container中，是无法通过LoadAsset或LoadAllAssets API来获取到的。&lt;/li&gt;
+  &lt;li&gt;PS：==这是一个需要注意的问题==&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundlebitmap-aassetbundlealtas-bb&quot;&gt;AssetBundle包字体bitmap A的使用到AssetBundle包Altas B时B冗余&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;出现冗余是因为vip和betaCommon两个Prefab实际上并没有建立其依赖关系（虽然mainfest上注明了存在dependencies）。&lt;/li&gt;
+  &lt;li&gt;问题解决方式，只需要将BetaCommon Material设置为一个“显式”的AssetBundleName，那么冗余问题就不会存在了。&lt;/li&gt;
+  &lt;li&gt;PS:让bitmap A的material被显示打包。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
+&lt;h4 id=&quot;unity-55uguitestmesh-prongui&quot;&gt;Unity 5.5版本下的UGUI，我将字体设置为粗体，发现字体只是变宽不加粗，不像正常的粗体，如下图所示。另外，TestMesh Pro需要预渲染，不能用动态字体，只能用于特定范围，有像NGUI(效果还不错)那种对动态字体加粗的方法么？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;动态字体加粗显示的外观是和字体本身有关系的，如果字体中没有包含“粗体”的字形，那么Unity会通过拉伸来“模拟”加粗，因此得到的效果是有问题的。&lt;/li&gt;
+  &lt;li&gt;而这个行为在UGUI和NGUI中是一样的。因此，如果要确保加粗显示正确，则需要使用包含了“粗体”字形的字体，甚至需要考虑是否将其include到发布包中（因为某些设备中的内置字体也有可能被精简过）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+&lt;h4 id=&quot;uguitaggroupdrawcallgroup&quot;&gt;UGUI自动打包图集时，有时候同一个Tag会自己打出多个Group图集，导致DrawCall增加，有什么解决方法吗？这个分Group的原理是什么？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;产生Group的原因主要有两种：
+    &lt;ul&gt;
+      &lt;li&gt;纹理的格式不同 。举例来说，有这样四张纹理格式分别为：RGB24，ETC1，RGBA32和ETC2，那么设置一样的Tag后，对应的图集就会有四个Group。&lt;/li&gt;
+      &lt;li&gt;纹理量太大。一个Group放不进，这个原因是容易理解的，就不解释了。&lt;/li&gt;
+      &lt;li&gt;其中特别容易忽略的一点是，某些小纹理可能没有Alpha通道，导致了图集被分成两个Group，引起DrawCall的增高，这种情况下可以直接修改纹理，也可以强制设定为Aalpha通道的格式。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;ugui-image-sprite-profilerspritemeshgeneratortraceshape-&quot;&gt;请问UGUI Image 在切换Sprite（网络图片） 的时候有卡顿，从Profiler中看到具体卡在SpriteMeshGenerator.TraceShape 这个方法上，如下图所示，有没有什么优化的方法呢？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_66%2F9.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;图中的==SpriteMeshGenerator.TraceShape/Decompose/Simplify==的函数，通常出现在加载或者创建（Sprite.Create）SpriteMeshType为==Tight类型==的Sprite时，==Tight类型的Sprite在加载或创建时，需要检测图片的alpha区域从而生成多边形==。计算量较大，建议将其改为FullRect模式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;unity-profiler&quot;&gt;Unity Profiler中如下函数的耗时异常高，请问是什么原因导致呢？这些函数分别是什么意思，有什么具体优化方法呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Profiler.FinalizeAndSendFrame: 这个是Unity Profiler在记录和传输性能数据的开销，研发团队可忽略，因为在release版本中，该项并不存在；&lt;/li&gt;
+  &lt;li&gt;WaitForJobGroup:是主线程在等待子线程完成的耗时开销，如果该项较高，那么说明该帧中某子线程的开销很大。就目前我们优化过的项目而言，绝大部分均为UGUI在子线程的开销所致。更多的参考资料建议研发团队参考UWA问答之前的记录：
+https://answer.uwa4d.com/question/search?q=waitingforjob&lt;/li&gt;
+  &lt;li&gt;Camera.Render:是Unity引擎的主要渲染函数，其中负责了绝大部分场景的渲染工作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;gfxprocesscommands&quot;&gt;Gfx.ProcessCommands包含哪些行为操作？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;该行为是在RenderThread中，导致该行为耗时的主要原因是DrawCall。&lt;/li&gt;
+  &lt;li&gt;另外过程耗时统计还包括顶点、材质贴图以及Shader等从内存到GPU的IO时间。&lt;/li&gt;
+  &lt;li&gt;即使是多线程渲染，图形API的调用也需要在同一个线程中。其一，是Android系统的EGLContext一般不是线程独共享的，也就是只有一个线程能向同一个EGLContext里面发送GL指令。其二，如果使用共享的EGLContext，多个线程都能提交图形API，渲染的结果很难保证正确性。比如：如何保证线程A绑定了VBO或者Texture之后，线程B提交DrawCall时一定是它需要的呢。综上所述，我们认为这些行为应该都在一个线程里面执行的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;模型和动画&lt;/h2&gt;
+&lt;h4 id=&quot;newmeshmesh&quot;&gt;New出来的Mesh好像都是可读写的，在我填充完数据以后，有什么办法能把这个Mesh改为只读么？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;public void UploadMeshData(bool markNoLogerReadable);&lt;/code&gt;来设置。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;meshrendercanvasuimeshrendersortingorderimagerendersortingorder-&quot;&gt;请问我一个MeshRender的显示层级能不能夹在一个Canvas下的两个UI节点下？我通过设置MeshRender.sortingOrder数值在两个Image的Render的sortingOrder数值之间 ，是否能做到呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Image的sortingorder设置通常是无效的，因为UGUI会对DrawCall进行合并，调整其渲染顺序。因此，需要将Mesh前后的UI元素拆分到不同的Canvas中，从而直接设置Canvas的sortingorder。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;physicsgameobjectboxcolliderprofilephysicsprocessingprofilerphysicsunity536f1&quot;&gt;在游戏里没有使用物理（Physics)相关功能时，怎么把物理相关的性能消耗降到最低？我们游戏里完全没用到物理相关的功能，只是因为需要做点击碰撞检测，所以GameObject上需要加上BoxCollider组件，但是Profile时会时不时看到Physics.Processing的消耗有点高，也不算非常高，但是理论上如果完全没用物理相关功能的话，总感觉这部分消耗是可以完全干掉的，对于Profiler中Physics模块中给的几个统计不太清楚是怎么计算的，目前使用的Unity版本是5.3.6f1版本。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;就我们目前的分析来看，在Unity5.4版本之前，物理模块是会每帧都运行的。而在Unity5.4版本之后，如果没有使用任何物理相关的功能时（Rigidbody、CharacterController、Rogdoll、Cloth模拟等等），物理模块会被关闭。所以，就你的问题而言，物理模块的开销只能降低，而不能完全消除。&lt;/li&gt;
+  &lt;li&gt;对于物理模块的开销，我们建议从宏观上进行了解，当你的项目完全没有使用物理模块时，那就需要从它的调用次数入手了。&lt;/li&gt;
+  &lt;li&gt;Physics.Processing调用次数高：可以看到，很多时候，该函数的CPU耗时其实并不是物理开销过高，而是调用次数过多。这主要是因为Unity 5.x默认设置的Fixed Timestep为0.02，Maximum Allowed TimeStep为0.333。也就是说，物理模块每20ms更新一次，所以如果某一帧很卡（200ms），那么物理模块会被调用10次，这样耗时就直接上去了。而0.333表示如果该帧CPU开销超过333ms了，那么就不会再调用物理模块，所以上图中调用次数中最大是17次。&lt;/li&gt;
+  &lt;li&gt;所以，如果想进一步降低物理模块的开销，在完全没有使用物理的情况下，可以将Fixed Timestep设置为0.05或0.1均可，降低它被调用的频率。同时，尽可能优化其他模块耗时，让每帧的总体耗时尽可能降低。&lt;/li&gt;
+  &lt;li&gt;另外，需要注意的是，修改Fixed Timestep也会影响FixedUpdate的调用，在修改之前一定要检测项目中是否有使用FixedUpdate。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;性能综合&lt;/h2&gt;
+&lt;h4 id=&quot;monobehaviourprefabloadprefab&quot;&gt;MonoBehaviour中包含了被加载出来的Prefab上的组件（通过Load接口加载出来的），而这部分组件只能在Prefab被销毁的时候才会释放。&lt;/h4&gt;
+
+&lt;h4 id=&quot;opengl-es-20ios--metal&quot;&gt;工程里还是选择只使用 OpenGL ES 2.0吗？iOS 是否该加上 Metal？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;目前都是用的Auto，主要有两个原因：
+    &lt;ul&gt;
+      &lt;li&gt;Metal测试下来CPU Overhead会比GLES低很多&lt;/li&gt;
+      &lt;li&gt;GLES3能够有tex2Dlod支持 兼容性上来说只有实在老的机器和模拟器会fallback到GLES2，可能效果上会略差一些不过我们测试下来都可以接受。&lt;/li&gt;
+      &lt;li&gt;选ES3.0还有一个原因，就是发现AssetBundle打出来的资源会比选Auto小很多。&lt;/li&gt;
+      &lt;li&gt;PS:如果游戏面对的是高端机玩家可以放弃ES2&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uiassetbundle&quot;&gt;切换UI场景使用AssetBundle加载慢，怎么优化界面进入速度，是应该预加载吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;界面加载慢主要的原因有，图集纹理的加载以及大量UI元素的实例化操作。&lt;/li&gt;
+  &lt;li&gt;针对图集的加载，可以尝试合理的规划图集，尽量控制界面所引用的图集数量（即使用到了某个图集中的一个Sprite，也会加载整个图集）；&lt;/li&gt;
+  &lt;li&gt;可以尝试对公共图集进行预加载，通常公共图集较大，且被使用的概率很大。&lt;/li&gt;
+  &lt;li&gt;针对大量UI元素的实例化，这项开销大通常只发生在背包等复杂的界面中，而对于这类复杂界面可以考虑进行分步实例化，即首先实例化如外框、容器等部分的UI元素，然后分帧实例化背包中的UI元素，从而提高界面打开的速度以及流畅性。&lt;/li&gt;
+  &lt;li&gt;PS： ==分帧是关键。在FPS60的情况下，只要100ms内响应即可。一帧是16.7，也就是说5~6帧做完就可以了。==&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;渲染&lt;/h2&gt;
+&lt;h4 id=&quot;unityshaderios&quot;&gt;Unity官方半透明Shader代码在iOS上运行出现问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;PS:遇到了看https://blog.uwa4d.com/archives/TechSharing_70.html&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 02 Dec 2017 22:53:34 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Gamma校正与线性空间</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;前言&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;近期看了&lt;a href=&quot;https://blog.uwa4d.com/archives/1882.html&quot;&gt;一篇文章&lt;/a&gt;，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;gamma&quot;&gt;Gamma校正的由来和计算方式&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为&lt;code class=&quot;highlighter-rouge&quot;&gt;Lout = pow(Lin, 0.45)  &lt;/code&gt;，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.732。从下图可以看到绿色的线就是经过校正后的亮度曲线。在这个坐标系中，x轴为原始亮度，y轴是校正后的数值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f41b427d4bdc48f225b5d/1465860589637/A+graph+of+pow%28x%2C+gamma%29?format=750w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果以原始亮度0.5作为一个分界线，很明显的看出来0.5之前的亮度在校正后占据了70%（0.732)以上的数据空间。这也是为何会有gamma校正的根本原因，即：肉眼对较暗区域的变化更为敏感，而0.5为灰度的界限，原始亮度小于0.5的部分可以认为是较暗的区域。因此将0.5之前的亮度经过校正，使得其结果的范围变大到0-0.732，这就可以进一步的放大黑暗区域的范围，从而使得照片更加真实。&lt;/li&gt;
+  &lt;li&gt;但是从这个曲线我们看到，除了0和1以外的像素的亮度整体的变大了，因此就出现了下图的中左边图中的现象，即经过0.45的gamma校正后图片变亮。但是为何我们最后在电视或者电脑屏幕上看到的图像基本和肉眼看到的真实亮度一样呢， 是因为显示器的硬件也会做一次gamma校正，而这个指数是2.2，即&lt;code class=&quot;highlighter-rouge&quot;&gt;pow(0.732，2.2） ≈ 0.5035&lt;/code&gt; ，和0.5有数值上的差异但是基本接近。这只是个巧合。&lt;/li&gt;
+  &lt;li&gt;同理，如果是原始像素的图片不经过gamma校正而直接输出到显示器，其结果就是下图中右边图的结果，也就是亮度整体变暗。这个和上图中蓝色曲线的结果也相同。计算方法也是幂计算。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f4222e321408871d71230/1465860711911/Images+representing+various+gamma+values?format=1000w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;unity&quot;&gt;导入unity中的图片&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;基本上所有的绘图软件在输出的结果上都是做过gamma校正的，否则在电脑屏幕上看到的就是偏暗。&lt;/li&gt;
+  &lt;li&gt;因此在导入到unity后，在作用到shader时也是gamma校正后的图片。&lt;/li&gt;
+  &lt;li&gt;当然我们也可以在绘图软件中就输出不经过gamma校正的图，这个后面说。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity-1&quot;&gt;unity中的颜色空间&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;unity的颜色空间就是gamma或者liner space&lt;/li&gt;
+  &lt;li&gt;gamma选项下默认unity在shader中直接用gamma校正后的图片进行光照计算，然后输出到现实设备时硬件会做一次gamma校正，最终输出结果。&lt;/li&gt;
+  &lt;li&gt;线性空间选项中，unity shader会对输入的图片进行一次gamma校正（2.2），得到真正的亮度值后进行光照计算。最后在进入颜色缓存区之前做一次gamma校正（0.45），然后图像进入显示设备，再次进行gamma校正（2.2）。&lt;/li&gt;
+  &lt;li&gt;两者在最终结果的比对可以参考下图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f42e327d4bdc48f2261e4/1465860851928/An+image+comparing+gamma+and+linear+pipelines?format=1000w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;可以看出来线性空间下产生的最终渲染效果比较接近于真实。&lt;/li&gt;
+  &lt;li&gt;我们以一个亮度为1的点为例进行两种模式的计算，对比下结果，假设这个点的法线与点到光源的向量的夹角为60°。根据Lambert公式，此时该点的亮度（用亮度代替像素值）为Clight * Cdiffuse * max(0, dot(n,I))，为了简化计算我们认为Clight也就是光照颜色也是1， n和I都是1。
+    &lt;ul&gt;
+      &lt;li&gt;gamma下原始亮度是1的点，Cdeffuse为1，60°的点积是0.5，计算出来的颜色是0.5，输出到屏幕经过gamma校正（2.2）后值为0.218。&lt;/li&gt;
+      &lt;li&gt;线性空间下线移除gamma校正，亮度1的移除后结果也是1，60°的光照结果也是0.5，输出到颜色缓冲区线做一次校正（0.45），到屏幕做一次校正（2.2），期结果应该是0.5035。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;可以看出来两者在最后的结果上，线性空间的结果比较接近真实的60°情况下的亮度，这个真实值就是0.5。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;线性空间工作流&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;现在unity中移动平台已经支持线性空间，只是需要OpenGL ES3。那么如果使用线性空间就需要一套类似PBR的流程。&lt;/li&gt;
+  &lt;li&gt;首先就是纹理图是移除了gamma校正的。&lt;/li&gt;
+  &lt;li&gt;在烘焙光照贴图的时候也要移除gamma校正。&lt;/li&gt;
+  &lt;li&gt;后期处理的时候倒是不用额外做什么，因为unity已经对颜色值做了处理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;引用&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.kinematicsoup.com/news/2016/6/15/gamma-and-linear-space-what-they-are-how-they-differ&quot;&gt;GAMMA AND LINEAR SPACE - WHAT THEY ARE AND HOW THEY DIFFER&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ps&quot;&gt;PS&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;开头提到的lightmap偏暗的问题，在2017.2.0p1中移动平台lightmap处理LDR时已经加入了是否是gamma的判定，然后根据结果会对LDR的亮度进行不同的补偿。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 30 Nov 2017 00:54:00 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity Android二次开发经(血)验(泪)谈(史)</title>
+        <description>&lt;h4 id=&quot;httpwwwcnblogscomxtqqkssp6387271html&quot;&gt;主要参考的是&lt;a href=&quot;http://www.cnblogs.com/xtqqkss/p/6387271.html&quot;&gt;这篇文章&lt;/a&gt;，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。&lt;/h4&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;准备工作&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。&lt;/li&gt;
+  &lt;li&gt;AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。&lt;/li&gt;
+  &lt;li&gt;从AS上可以下载到的build-tool是27，但是最新的tools是unity不支持，会在输出工程的时候报错，目前我使用的是26。&lt;/li&gt;
+  &lt;li&gt;PS:实际上在这几天的尝试过程中使用27在unity端会有一个&lt;code class=&quot;highlighter-rouge&quot;&gt;can not get xx list&lt;/code&gt;的错误，通过网上查询说是build tools版本的问题。而AS端似乎也有问题，不过没有记清楚。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;as&quot;&gt;AS中做的事情&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;按照文中的说法做即可。&lt;/li&gt;
+  &lt;li&gt;其实作者本人也提到了几个点：
+    &lt;ul&gt;
+      &lt;li&gt;在建立module后要删除原来的app内存。&lt;/li&gt;
+      &lt;li&gt;module名字和unity工程名字相同。&lt;/li&gt;
+      &lt;li&gt;这是一个很坑的地方，在最开始的时候，我不断的遇到一个提示错误：library和project使用了同样的package name，而且unity的文档也说了不能同名。但是实际上是完全可以同名的。而且不管是直接用module还是把APP改成module，这两种方式都需要包名相同。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;build-aar&quot;&gt;build AAR&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实在AS中只要把工程设置成了module，那么选择build apk出来的也是AAR。&lt;/li&gt;
+  &lt;li&gt;AAR文件放到&lt;code class=&quot;highlighter-rouge&quot;&gt;Assets\Plugins\Android\libs&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;或者通过gradle直接生成，这个方式是目前用这最方便的。看下图，双击即可build。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGtyd2tYaDIzbUF2MEYyMUkyRlJuZlExM3VTUUJCUkpVeWdBc3JxQ3JkcDJ3PT0.jpg?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;图中的classes.jar就是我们自己的代码，libs文件夹下的是我们拷贝unity的，要删除掉。
+&lt;img src=&quot;http://imglf4.nosdn.127.net/img/Nld0N0tacnNuUGx4UzhpR2QzUzFkejc3S3V3eGVEL3hUVWRtczVhU3NGMnFieGJkcjFJdXhBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;unitybuild-apk&quot;&gt;unity中build apk&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这块分开说下，因为我在整个尝试的过程中尝试了直接使用module方法（以下用方法1替代），这个方法不需要用到AS中的manifest。还有就是将app改造成module（以下用方法2替代），这个需要提供manifest。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;manifest&quot;&gt;方法1因为不需要提供manifest，所以省了很多事。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先按照文中的方法先在AS中改造下manifest文件。&lt;/li&gt;
+  &lt;li&gt;拷贝到Plugins/Android文件夹下。&lt;/li&gt;
+  &lt;li&gt;在unity的PlayerSetting中进行设置。保证包名一致，保证minimum api level和AS中设置的一样。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在AS中我设置了&lt;code class=&quot;highlighter-rouge&quot;&gt;compileSdkVersion&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;targetSdkVersion&lt;/code&gt;为25，开始按照文中和其他人的说法，在unity中target api level也设置的是25，==但是导出project时遇到android:configChanges错误：==&lt;/p&gt;
+
+    &lt;blockquote&gt;
+      &lt;p&gt;unity  CommandInvokationFailure: Gradle build failed. ‘configChanges’ with value…&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;真正的解决这个问题应该是在unity中Player Setting中将target API level设置为auto，这个要比minimum高才行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;方法2会遇到的问题：&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;因为开始没有把AndroidManifest.xml放到Plugin下，导致每次unity编译的时候都生成一个新的build-id，与AS中的不一致。这个问题其实只要把AS中的manifest文件放到unityPlugin中，就保证了不会每次编译都ID变的问题。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;==合并manifest==：AS的Gradle插件默认会启用Manifest Merger Tool，若Library项目中也定义了与主项目相同的属性（例如默认生成的android:icon和android:theme），则此时会合并失败。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;解决方法有以下2种：1有效，2没试：&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;方法1：在Manifest.xml的application标签下添加tools:replace=”android:icon, android:theme”（多个属性用,隔开，并且记住在manifest根标签上加入xmlns:tools=”http://schemas.android.com/tools”，否则会找不到namespace哦）&lt;/li&gt;
+      &lt;li&gt;PS：其实是这样写&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;category tools:replace=&quot; android:name&quot; android:name=&quot;com.google.intent.category.CARDBOARD&quot; /&amp;gt;&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;方法2：在build.gradle根标签上加上useOldManifestMerger true （懒人方法）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;各种错误的处理&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;https://kotlintc.com/articles/3938&quot;&gt;Failed to resolve:com.android.support:appcompat-v7:27+:报错处理&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;这个问题本质在于AS或者说本地的工具版本低，从下图中可以找到本地的版本。可以看到时26，所以需要在build.gradle中设置&lt;code class=&quot;highlighter-rouge&quot;&gt;compile 'com.android.support:appcompat-v7:26.+'&lt;/code&gt;，将27改为26即可。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG5EUnpPWTVFTzMrZzJGdm5VMHhqWmUveENURXZnajJPUTRPcWpvY010eldBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;在project structure中可以设置java语言的版本，1.7的时候是不支持lambda的。需要注意。如果仍旧抽风般的提示lambda的问题就重启AS.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;AS2.3使用java8，本来3.0直接用的，2.3需要做如下处理。设置成功后也解决了&lt;code class=&quot;highlighter-rouge&quot;&gt;unity Can't read classes.jar&lt;/code&gt;这个问题，&lt;code class=&quot;highlighter-rouge&quot;&gt;是因为项目使用的Java（JDK）版本比较高，而ProGuard, version 4.4支持的版本（最高到1.6），所以产生该问题。&lt;/code&gt;，看了AS是一样的问题。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;android {
+  ...
+  defaultConfig {
+    ...
+    jackOptions {
+      enabled true
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;下面这个错误印象中是改AS中工程的target版本，或者删除了对应的代码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Error:(4) Error retrieving parent for item: No resource found that matches the given name ‘android:TextAppearance.Material.Widget.Button.Inverse’.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;AS3版本好像不能支持gradle4.1，找到dependencies改成如下。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dependencies {
+		classpath 'com.android.tools.build:gradle:3.0.0'
+	}
+	
+...	
+
+apply plugin: 'com.android.library'
+
+....
+
+defaultConfig {
+		targetSdkVersion 27
+		//applicationId 'xxxx'
+	}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个错误的情况是用unity生成并导出Android的代码，在2017.2p1的情况下输出的代码中gradle是4.1的。&lt;/li&gt;
+  &lt;li&gt;如果是用AS自己生成APP或者module就没这样的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;adbexe-&quot;&gt;adb.exe 已停止工作&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个问题最终发现是360手机助手占用了5037端口造成的&lt;/li&gt;
+  &lt;li&gt;排查过程记录一下：
+    &lt;ul&gt;
+      &lt;li&gt;在\platform-tools目录下调用adb devices命令&lt;/li&gt;
+      &lt;li&gt;提示这个错误：&lt;code class=&quot;highlighter-rouge&quot;&gt;adb server version (31) doesn't match this client (39); killing...
+error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037: 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (1
+0048)&lt;/code&gt;&lt;/li&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;CMD:netstat -ano&lt;/td&gt;
+              &lt;td&gt;findstr “5037” //查看占用这个端口的APP，发现是进程15128&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;CMD:tasklist&lt;/td&gt;
+              &lt;td&gt;findstr “14152”    //查看这个进程对应的应用&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
+      &lt;li&gt;下图中的14152进程是adb.exe，此时adb就允许正常了。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG16ZHdGdmd1MEpFMkxkdWJUTEdTTURSc1NYYnhuSkUzZkY3MURnYnhRZ0JRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;后记&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;其实在整个的使用过程中还遇到了非常多的问题，都是遇到一个搜索一个。所以也不可能完全的记录下来。&lt;/li&gt;
+  &lt;li&gt;另外遗留了一个问题就是目前还不能调用Android中的类方法。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 20 Nov 2017 00:47:54 +0800</pubDate>
+        <link>https://caihua.tech/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
     
       <item>
         <title>PHP的OOP</title>
@@ -823,512 +1335,6 @@ https://docs.unity3d.com/ScriptReference/Shader.WarmupAllShaders.html&lt;/li&gt;
         <pubDate>Sun, 05 Nov 2017 10:07:00 +0800</pubDate>
         <link>https://caihua.tech/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>浅析Timeline结构</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;结构&lt;/h2&gt;
-
-&lt;table&gt;
-   &lt;tr&gt;
-      &lt;td&gt;PlayableDirector&lt;/td&gt;
-      &lt;td colspan=&quot;6&quot; align=&quot;center&quot;&gt;Timeline&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;PlayableGraph&lt;/td&gt;
-      &lt;td colspan=&quot;6&quot; align=&quot;center&quot;&gt;Graph&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;…&lt;/td&gt;
-      &lt;td colspan=&quot;4&quot; align=&quot;center&quot;&gt;TrackGroup&lt;/td&gt;
-      &lt;td&gt;TrackGroup&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;TrackAsset&lt;/td&gt;
-      &lt;td&gt;AnimationTrack&lt;/td&gt;
-      &lt;td&gt;PlayableTrack&lt;/td&gt;
-      &lt;td&gt;CinemachineTrack&lt;/td&gt;
-      &lt;td&gt;CustomTrack&lt;/td&gt;
-      &lt;td&gt;…&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;…&lt;/td&gt;
-      &lt;td&gt;TimelineClips&lt;/td&gt;
-      &lt;td&gt;TimelineClips&lt;/td&gt;
-      &lt;td&gt;TimelineClips&lt;/td&gt;
-      &lt;td&gt;TimelineClips&lt;/td&gt;
-      &lt;td&gt;…&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;PlayableAsset&lt;/td&gt;
-      &lt;td&gt;AnimationClip (Motion)&lt;/td&gt;
-      &lt;td&gt;CustomPlayableAsset&lt;/td&gt;
-      &lt;td&gt;CinemachineShot&lt;/td&gt;
-      &lt;td&gt;CustomClip&lt;/td&gt;
-      &lt;td&gt;…&lt;/td&gt;
-   &lt;/tr&gt;
-   &lt;tr&gt;
-      &lt;td&gt;PlayableBehaviour&lt;/td&gt;
-      &lt;td&gt;PlayableBehaviour&lt;/td&gt;
-      &lt;td&gt;PlayableBehaviour&lt;/td&gt;
-      &lt;td&gt;CinemachineShotPlayable&lt;/td&gt;
-      &lt;td&gt;PlayableBehaviour&lt;/td&gt;
-      &lt;td&gt;…&lt;/td&gt;
-   &lt;/tr&gt;
-&lt;/table&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从表中可以看出是一个树结构，在Timeline Editor中也是一目了然。核心的类就是最左边一列中列出的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;组件&lt;/h2&gt;
-&lt;h3 id=&quot;timeline&quot;&gt;Timeline&lt;/h3&gt;
-&lt;h5 id=&quot;timeline--playabledirector&quot;&gt;Timeline &amp;amp; PlayableDirector的关系&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;本质是个PlayableDirector，作用顾名思义。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;playablegraph--playabledirector&quot;&gt;PlayableGraph &amp;amp; PlayableDirector的关系&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;从测试情况看，一个PlayableDirector对应一个PlayableGraph&lt;/li&gt;
-  &lt;li&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;PlayableDirector pd = graph.GetResolver() as PlayableDirector;&lt;/code&gt;可以反向得到PlayableDirector，在PlayableAsset中可能会比较有用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;trackasset&quot;&gt;TrackAsset&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;TrackAsset从视觉上看就是Timeline Editor中左边preview中的一项，每个track可以约束它所影响的 GameObject的类型，也可以设置它上面clip的类型。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;从实际的操作上来看，PlayableTrack上可以放置任何继承自PlayableAsset的clip，但是其它的track上就必须放置约定类型的clip了。&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;track&quot;&gt;如何自定义一个Track&lt;/h5&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[TrackColor(1f, 1f, 0f)]
-[TrackClipType(typeof(LightControlClip))]
-[TrackBindingType(typeof(Light))]
-public class LightControlTrack : TrackAsset {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从上面的代码看TrackBindingType定义了绑定的类型，TrackClipType定义了clip的类型。而TrackColor是定义了在Timeline Editor中最左边的那条很细的彩色线条。&lt;/li&gt;
-  &lt;li&gt;经过测试，在自定义的TrackAsset中可以不实现CreateTrackMixer方法，但是如果要去override它，代码中不能用&lt;code class=&quot;highlighter-rouge&quot;&gt;return Playable.Create(graph);&lt;/code&gt;,而是用&lt;code class=&quot;highlighter-rouge&quot;&gt;return ScriptPlayable&amp;lt;CustomMixer&amp;gt;.Create(graph, inputCount);&lt;/code&gt;哪怕这个CustomMixer是个空类都可以，很坑爹。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;playableassetclip&quot;&gt;PlayableAsset（Clip）&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;要说PlayableAsset就离不开PlayableBehaviour。在旧版本的Timeline中BasePlayableBehaviour实现了PlayableAsset和PlayableBehaviour的功能。但是因为已经被舍弃了，因此想实现既可以放到track上，又能监控状态的对象需要用PlayableAsset配合PlayableBehaviour。做法为在自定义的PlayableAsset中写：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public override Playable CreatePlayable(PlayableGraph graph, GameObject go)
-{
-    return ScriptPlayable&amp;lt;CustomBehaviour&amp;gt;.Create(graph, template);
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;playablebehaviour&quot;&gt;PlayableBehaviour&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;核心类，其定义了事件函数涵盖了自身的状态变化、graph的状态变化和PlayableDirector创建销毁时触发的事件。&lt;/li&gt;
-  &lt;li&gt;PrepareFrame函数可以在每一帧对timeline中的元素进行访问和设置。可以说是在做自定义blend中不可缺失的功能。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;执行顺序&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前来看应该是：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;CreateTrackMixer-&amp;gt;CreatePlayable-&amp;gt;OnPlayableCreate-&amp;gt;OnGraphStart-&amp;gt;OnBehaviourPause-&amp;gt;OnBehaviourPlay-&amp;gt;OnGraphStop-&amp;gt;OnPlayableDestroy&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个顺序是一个clip的。当一个track上有多个clip时OnPlayableCreate、OnGraphStart、OnBehaviourPause会无序的出现，但是一定是在OnBehaviourPlay之前。&lt;/li&gt;
-  &lt;li&gt;在真正的clip的执行期间，OnBehaviourPlay和OnBehaviourPause是按顺序执行的。&lt;/li&gt;
-  &lt;li&gt;基本上可以判断当一个PlayableBehaviour准备好后，会先被pause。然后按照设计好的顺序执行，当开始执行时触发play，结束后再次触发pause。所以如果是要在一个clip结束后处理什么事情需要做一个判断，是否是第一次触发pause。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;组件之间互相获取的方法&lt;/h2&gt;
-&lt;h5 id=&quot;timelineplayabledirector&quot;&gt;Timeline(PlayableDirector)的获取方式&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过脚本中设置PlayableDirector类型变量获得。&lt;/li&gt;
-  &lt;li&gt;如果是自定义的TrackAsset，则通过CreateTrackMixer方法的go参数获得。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
-{
-    PlayableDirector playableDirector = go.GetComponent&amp;lt;PlayableDirector&amp;gt;();
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果是自定义的PlayableAsset，则通过&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public override Playable CreatePlayable(PlayableGraph graph, GameObject go)
-{
-    var pd = graph.GetResolver() as PlayableDirector;
-}        
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PlayableBehaviour脚本中函数都是有playable参数，通过这个参数也可以获得&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public override void OnBehaviourPlay(Playable playable, FrameData info)
-{
-    PlayableDirector pd = playable.GetGraph&amp;lt;Playable&amp;gt;().GetResolver() as PlayableDirector;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;h5 id=&quot;timelinetrackclipplayerbehaviour&quot;&gt;Timeline中获取track、clip和PlayerBehaviour&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;从上面的代码可以看到，获取director的过程比较符合最上面的那个表里的层级关系。但是从timeline获取其它的元素会比较困难。或者说比较不符合这个层级关系。我个人认为在API的设计上是有问题的。&lt;/li&gt;
-  &lt;li&gt;那么要如何通过timeline获取这些元素呢？&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public PlayableDirector pd;
-// Use this for initialization
-void Start()
-{
-    var binding = pd.playableAsset.outputs;
-    foreach (var item in binding)
-    {
-        switch (item.sourceObject.GetType().Name)
-        {
-            case &quot;AnimationTrack&quot;:
-                {
-                    var at = item.sourceObject as AnimationTrack;
-                    foreach (TimelineClip clip in at.GetClips())
-                    {
-                        Debug.Log(clip.animationClip.name + &quot;\n&quot;);
-                    }
-                }
-                break;
-            case &quot;CinemachineTrack&quot;:
-                var item2 = item.sourceObject as CinemachineTrack;
-                foreach (TimelineClip clip in item2.GetClips())
-                {
-                    CinemachineShot cs = clip.asset as CinemachineShot;
-                    Debug.Log(cs.VirtualCamera.Resolve(pd) + &quot;\n&quot;);
-                }
-                break;
-            case &quot;PlayableTrack&quot;:
-                var pt = item.sourceObject as PlayableTrack;
-                foreach (TimelineClip clip in pt.GetClips())
-                {
-                    NewPlayableAsset cs = clip.asset as NewPlayableAsset;
-                }
-                break;
-            case &quot;CustomTrack&quot;:
-                var ct = item.sourceObject as CustomTrack;
-                foreach (TimelineClip clip in ct.GetClips())
-                {
-                    CustomClip cs = clip.asset as CustomClip;
-                    CustomBehaviour cb = cs.template;
-                    cb.Foo();
-                }
-                break;
-            default:
-                break;
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;从代码上看&lt;code class=&quot;highlighter-rouge&quot;&gt;pd.playableAsset.outputs&lt;/code&gt;获得了一个&lt;code class=&quot;highlighter-rouge&quot;&gt;IEnumerable&amp;lt;PlayableBinding&amp;gt;&lt;/code&gt;类型的集合。这个设计让人非常费解。然后遍历集合，得到&lt;code class=&quot;highlighter-rouge&quot;&gt;item.sourceObject&lt;/code&gt;，这个对象就是track了。然后可以根据不同的类型转换成不同的Track。然后就和表中的结构一致了，获得clip-&amp;gt;playableasset-&amp;gt;playablebehaviour。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-4&quot;&gt;获得场景对象&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;Timeline中获取对象在API设计上也不合理，在unity的通用做法是在代码中定义一个Public变量或者使用[SerializeField]标记一个private的变量，然后拖拽。又或者用过GameObject.Find来获取。但是对于策划和美术来说最多的还是拖拽。&lt;/li&gt;
-  &lt;li&gt;Timeline相关的脚本中可以继续使用GameObject.Find。但是如果你想用拖拽的形式需要这样定义对象：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public ExposedReference&amp;lt;T&amp;gt; object;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;而当你想真正使用这个变量的值的时候需要用&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object.Resolve (graph.GetResolver());
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;需要说明的是在Timeline的那些脚本类里面是可以用public定义变量的，在inspector面板上也可以显示出来，但是退拽无效。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;track-1&quot;&gt;获取Track绑定的对象&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前来看似乎只有用GameObject.Fine或者直接用属性值了。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 02 Nov 2017 19:59:13 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十三周</title>
-        <description>&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
-&lt;h4 id=&quot;layer&quot;&gt;求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-&lt;h4 id=&quot;uguiresource-resourcedrawcall&quot;&gt;UGUI用Resource来动态加载图片，有什么好的方法? 我的理解是：Resource目录下的图片都不能被打包成图集，而且会增加DrawCall和包大小。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;需要打图集的Sprite确实不建议放置在Resources下，如果需要动态加载，并且不希望使用AssetBundle，则可以尝试把需要动态加载的Sprite统一引用到Prefab上进行管理（类似于NGUI的管理方式，一个图集对应一个Prefab），然后动态加载Prefab并查找其管理的Sprite即可。&lt;/li&gt;
-  &lt;li&gt;另一种方式是，可以直接关闭Unity的Sprite Packer功能，通过第三方的工具来进行图集的打包，导入Unity时转为Multiple类型的Sprite资源，那么即使放在Resources文件夹下，也不会造成DrawCall无法合并的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;resourcesunloadunusedassetsresourcesunloadassetmasset&quot;&gt;纹理图片通过文件流形式加载到内存，这样的资源还可以使用Resources.UnloadUnusedAssets()和Resources.UnloadAsset(m_Asset)进行资源卸载吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果是自己载入内存并初始化为Unity的Texture2D，则还是要重点查看Texture2D对象的创建方式。一般来说，会用new Texture2D的方式创建，并用LoadImage的接口将一块内存载入，那么这样就要用DestroyImmediate来销毁这个纹理对象了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;uguicanvascanvascanvasrendererpanel&quot;&gt;请问UGUI的重绘是针对于拥有Canvas组件的Canvas物件，还是针对于拥有CanvasRenderer组件的Panel物件？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;UGUI中，Canvas组件可以认为是容器，Image，Text等组件（都需要CanvasRenderer组件）可以认为是元素。在Unity5.2版本之前，在网格重建时，会以Canvas为单位，即一个Canvas中所有的元素最终都是合并到一个Mesh中的，而其中可以被合并渲染的元素则被合在同一个SubMesh中。&lt;/li&gt;
-  &lt;li&gt;在Unity5.2版本之后由于引入了多线程的网格合并方式，据我们所知，目前并没有官方的原理解释。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;animatorsdirtysceneobjects&quot;&gt;对于Animators.DirtySceneObjects这个参数，它是和哪些因素有关，以及如何优化？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing%2052%2F5.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;该参数是更新场景中受Mecanim动画系统影响的每个GameObject的Transform，所以当这类的GameObject数量越多时，其CPU占用也会越高。对于它的优化方式，主要有如下两种：
-    &lt;ul&gt;
-      &lt;li&gt;如果是蒙皮网格物体，则可以开启“Optimize GameObject”选项来对其进行优化；&lt;/li&gt;
-      &lt;li&gt;如果是非蒙皮网格（比如具有动画的UI界面、2D Sprite等），则只能建议研发团队尽可能减少同一时刻运动的GameObject数量（一般都不会太多），如果是被缓存的屏幕外的物体，则切记要在移出时关闭其Animator组件。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;prefabselect-dependenciesshader&quot;&gt;编辑器模式下，Prefab用Select Dependencies选项找依赖资源的时候，会把以前旧Shader引用的贴图也给关联上，怎么刷新这种引用关系？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在切换Material所使用的Shader时，其上的纹理引用确实是不会自动清除的（除非被覆盖）。因此，我们的建议是，在编辑Material时，如果要切换Shader，那么在切换好之后，进行一次Reset的操作（如下图所示，该操作会重置所有使用中的属性，同时去掉未使用的属性），然后再开始编辑其属性。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F2.png&quot; alt=&quot;请输入图片描述&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果希望在不改变当前使用属性的前提下，去掉未使用的属性，那么据我们所知，只能启用Editor的Force Text模式，打开对应的.mat文件进行手动去除。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;gc-allocaddcomponent-&quot;&gt;请问怎么优化下图这两者的GC Alloc？每次AddComponent 都会有这么多的开销。&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_54%2F1.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;不可避免，只有减少AddComponent。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;physicsprocessing&quot;&gt;请问Physics.Processing的占用过大一般是因为什么原因导致的？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;影响物理系统耗时的因素主要为Contacts数量（碰撞对数量）、Rigidbody API的使用情况和每帧的调用次数。
-    &lt;ul&gt;
-      &lt;li&gt;第一种情况是最为常见的引发物理模块耗时较大的原因，因此，我们在UWA性能报告中对其进行了详细的分析，如果你的报告中Contacts数量较高，切记要验证其合理性。&lt;/li&gt;
-      &lt;li&gt;第二情况造成较大CPU开销的情况不多，不过如果你的项目是多角色游戏（比如MMO、MOBA、ARPG割草游戏等），那么你需要注意了。在我们优化过的一些项目中，通过Rigidbody API来移动GameObject位置（设置velocity、改变center等）确实会存在较高的性能开销。如果你的项目也有类似的做法，那么要时刻关注物理模块的开销了。&lt;/li&gt;
-      &lt;li&gt;第三种情况同样也是目前引发物理模块耗时较高的原因。因为Unity引擎默认情况下，物理的更新频率是0.02s，即每20ms更新一次，所以，当你的项目比较卡时（开发过程中的项目在中低端设备上恐怕没几个是不卡的），物理模块会让你的项目更卡。举个例子，如果上一帧CPU耗时为100ms的话，那么物理模块会执行5次，从而进一步加大物理系统的耗时。这种情况下，物理模块的耗时是很有欺骗性的，你花了好长时间去研究物理的耗时，最后发现原来这个“锅”不是它的…所以，如果你的项目也遇到了这种情况，切记不要再上当了。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;section-3&quot;&gt;5.0后批处理修改&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;从Unity 5.0开始，Static Batching的合批机制就已经出现了变化，不再进行索引数组的合批，因此并不会使得Draw Call降低，而是会降低Batches和SetPassCall，因此从图中来看，Static Batching 开启后的统计数据是没有问题的。也因此，UWA在统计时，使用的就是Batches的数值。具体的原因可见Unity官方在论坛中的回复：
-https://forum.unity3d.com/threads/regression-feature-not-bug-static-dynamic-batching-combining-v-buffers-but-not-draw-calls.360143/&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;dynamic-batching&quot;&gt;尽量开启“Dynamic Batching”这个选项&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_53/1.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;详见&lt;a href=&quot;https://blog.uwa4d.com/archives/TechSharing_53.html&quot;&gt;此处&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;gcalloc&quot;&gt;匿名函数造成GCAlloc&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;结论：当不使用外部变量的匿名函数时，编译器会把这个函数变成静态函数，在首次调用时初始化，之后就再也不会new新的对象。 当使用外部变量时，每次调用都会生成一个临时action变量，这个就是alloc的原因。&lt;/li&gt;
-  &lt;li&gt;解决方案:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public Action&amp;lt;int, int&amp;gt; pCall;
-void Start()
-{
-  pCall = CallVariable;
-  ... // 其他初始化代码
-}
-void FixedCall()
-{
-  table.Forecah(pCall);
-}
-void CallVariable(int k, int v)
-{
-  count = k + v;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://blog.uwa4d.com/archives/Anonymous_heapmemory.html&quot;&gt;原文&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;lightmapngameobjectprefablightmapnlightmaplightmap&quot;&gt;请教Lightmap相关的优化问题。我现在的场景中有N个GameObject共用一个Prefab，烘培Lightmap时，会生成出N个Lightmap贴图。有没有办法把这些生成的Lightmap合成一张？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果场景中某些物件在Lightmap纹理中占据的空间较大，但实际上并不需要较高的精度，那么可以选中该物体，并在Lighting面板的Object子面板中将其Scale in lightmap数值调低，从而可以降低其在Lightmap纹理中的空间，甚至减少Lightmap纹理的数量。&lt;/li&gt;
-  &lt;li&gt;PS:为何会有N个lightmap？并没有回答能不能合并的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unityshaderifdef-endifpass&quot;&gt;Unity里的Shader能不能用关键字#ifdef #endif把整个pass包起来？&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#ifdef&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;#endif&lt;/code&gt; 并不能写在Pass之外，如果有动态开关Pass的需求，可以通过Shader Lod来实现，即设置两个Level不同的SubShader分别包含1个和2个Pass，直接通过改变该Shader的局部Lod值，即可实现SubShader的切换。关于Shader Lod的细节，可见官方文档：
-http://docs.unity3d.com/Manual/SL-ShaderLOD.html&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 30 Oct 2017 10:07:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Shader合并与Variant</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;前言&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;写这个的起因是因为看了唐建伟大佬在UWA上发表的文章&lt;a href=&quot;https://blog.uwa4d.com/archives/USparkle_Shader.html&quot;&gt;合并Shader系列_如何合并渲染状态&lt;/a&gt;。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了&lt;a href=&quot;https://answer.uwa4d.com/question/59dd6f350461bc6f45206ad5/%E3%80%8A%E5%90%88%E5%B9%B6Shader%E7%B3%BB%E5%88%97-%7C-%E5%A6%82%E4%BD%95%E5%90%88%E5%B9%B6%E6%B8%B2%E6%9F%93%E7%8A%B6%E6%80%81%E3%80%8B%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E5%BC%95%E5%8F%91%E7%9A%84shader-variant%E9%97%AE%E9%A2%98&quot;&gt;回答&lt;/a&gt;，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;sahder-variant&quot;&gt;Sahder Variant的概念&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;其实一个variant可以理解为一个具体的在GPU上执行的小程序，而一个Shader通常会编译出非常多的variant来应对不同的情况，比如单说雾效就有如下：没有雾效、有线性雾、有指数雾1、有指数雾2这样的4个variant(ps:这里只考虑雾效，其他条件一致)。至于原因嘛，有很多，粗略归纳一下是因为GPU需要更多的并行处理、逻辑单元少，因此Shader里面要尽可能规避各种判断、循环语句等等，最后本来可以通过逻辑判断来处理的雾效就需要编译成不同的执行程序来对应不同的情况(ps：这是一种高级优化，背后的原理很多很多，建议自行查询相关资料，查明前因后果，我懂的也不多)。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;shader-variant&quot;&gt;问题1:这样通过多参数来设置渲染状态不会造成shader variant吗？&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在这篇文章中，我们只合并了渲染状态，渲染状态的合并不会导致Unity编译出更多的shader variant。
-口说无凭，那么我们就先拿一个示例Shader来做测试，我选用了文章中的“ShaderCombine/01.ShaderCombineSimpleZTest”来做测试，Unity版本为 5.5.4p3，使用Unity的Shader Variant Collection来算取Variant数量，不管是否加入合并的代码，Variant的数量都是259，如下图所示：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://uwa-public.oss-cn-beijing.aliyuncs.com/answer/image/public/101228/1507705049102.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;即便是使用“ShaderCombine/02.ShaderCombineCommonState”来测试，Variant的数量也是是259，如下图所示&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://uwa-public.oss-cn-beijing.aliyuncs.com/answer/image/public/101228/1507705061601.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;从上面的图片可以看出，不管是否有渲染状态的参数在里面，Variant的数量都不会改变。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;shader-variant-1&quot;&gt;问题2：什么情况下在才会造成shader variant呢？&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;宏定义(Keyword)，“#pragma multi_compile XXX YYY ZZZ”，“#pragma multi_compile_xxx”，SubShader，Pass，Fallback及一些特殊不常用命令等的增减会造成variant的数量变化。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;至于一个Shader到底会生成多少variant呢？精确的计算方法，Unity并没有给出，但是我的归纳总结一下就是几组不同的编译宏的组合了，比如雾效、光照图、光源、阴影等等。另外还可以通过Unity的工具Shader Variant Collection来查看一个Shader到底有多少个variant，也可以在里面来自己组合和预编译自己想要的variant。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;variant&quot;&gt;福利：为什么修改渲染状态不会产生variant？&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;刚刚我们说了造成variant数量增加主要是需要生成不同的variant来应对不同的情况，那么不同的渲染状态是不是不同的情况呢？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;其实不是。生成不同的variant主要是为了消灭Shader内部的逻辑判断（ps：Shader的真正逻辑是CGPROGRAM…ENDCG中间的东西）。&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;继续用雾效举例，先只考虑有雾效和没雾效，按一般的游戏逻辑写法，我们通常会在逻辑里用一个if判断来搞定，但是由于GPU的特殊性，这样的做法非常低效、不可取，那么就会使用Keyword这样的编译宏在编译的时候就分别编译为有雾效和没雾效的2个执行程序，也就是2个variant。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;现在说会渲染状态，看任何的Shader，我们都不会在CGPROGRAM…ENDCG里面有关于渲染状态的处理代码，当然不需要为不同的渲染状态编译不同的variant，也就不会造成variant的增加。（这部分可以参看Unity的渲染流水线，渲染一个物体需要非常多的步骤，我们写的Shader编译成的variant只在流水线中的两个可编程部分执行，而渲染状态是设置其他步骤的，与variant是完全隔离开、互不干扰。也可以说CGPROGRAM…ENDCG内的逻辑决定了variant的数量，CGPROGRAM…ENDCG外的是给Unity配置状态用的，不会引起Shader的逻辑变化，因此没变化）。
-另附上一张简化版渲染流程图：
-&lt;img src=&quot;https://uwa-public.oss-cn-beijing.aliyuncs.com/answer/image/public/101228/1507705163873.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-</description>
-        <pubDate>Wed, 25 Oct 2017 00:02:11 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十二周</title>
-        <description>&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;ugui&quot;&gt;对于UGUI文字花屏问题，有什么推荐的解决方法吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/yaukey/p/unity_ugui_font_texture_uv_wrong.html&quot;&gt;关于UGUI字体花屏和乱码&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;deep-profilercolor--colorselftotalprofilerbeginsample0deep-profiler&quot;&gt;最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很高，而且百分比也很高（不管是Self还是Total）。但是如果用Profiler.BeginSample显示时，其耗时又很低，百分比也很低几乎等于0。这样的情况下是Deep Profiler出问题了吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;针对上图具体例子来看，Deep Profiler中RoleRender_ChangeColor.get_running的CPU开销虽然较高，但其参考意义不大。因为不开Deep Profiler模式，此处开销是不会这么高的。&lt;/li&gt;
-  &lt;li&gt;这是因为，图中的开销实际上是操作了200次循环且获取时间戳的开销，也就是说，当循环或者操作大量次数时，Deep Profiler模式中本身统计耗时操作的时间占比很大，所以此处反馈的时间其实并不是研发团队想看到的真正代码耗时。这也是为何很多团队反馈Deep Profiler统计不算准确的原因。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;粒子&lt;/h2&gt;
-&lt;h4 id=&quot;section-2&quot;&gt;粒子系统里面使用到的模型，是不是读写开关必须要打开，否则会崩溃？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个问题在第六周的内容中有提到原因。在较新的版本上（例如4.7.2，5.3.5 等版本）进行了各种情况的测试后，尚未复现出这一现象。因此，我们建议研发团队可以尝试关闭 Readable选项。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;skinnedmeshrenderermeshsharedmesh&quot;&gt;SkinnedMeshRenderer的Mesh是不是不能动态修改？属性里只开放了SharedMesh。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/TechSharing_51.html  mark一下。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;unitymaterialobjectmaterialbatching&quot;&gt;Unity中修改了Material的一个属性后，该Object就会单独实例化出一个Material，所以它就不能被动态Batching了，是这样吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;是的，所以我们在Material使用详情中对内存中驻留的Material进行了详细的检测和分析，如下图所示。
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_51/3.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;图中后缀为（Instance）的材质均为修改材质属性而生成的临时材质，对于这种情况，我们建议研发团队应严格将Instance材质数量控制在尽可能小（&amp;lt;10）的范围内，而对于过高数量的Instance材质，建议研发团队考虑是否可以通过动态更换Material的方式来代替修改材质属性的方式，从而来减少不必要的Instance材质，进而提升物体动态合批的几率。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;a2bsetactivefalse&quot;&gt;游戏中有一些静止的建筑，会和整个场景一起烘焙（包括了每个建筑在地表的阴影）。现在希望这些建筑是逐步开放的，比如玩家1级的时候只有建筑A开放，2级的时候建筑B开放，现在的问题是当建筑未开放时（SetActive(false)）地表的相关阴影还在。这种问题一般是怎么处理的？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这种问题是因为研发团队将整个场景烘焙成一张Lightmap所致。如果地图中的建筑是固定的，且游戏中并没有动态改变方向光的需求（比如Time Of Day模拟），那么可以尝试以下方法来实现需求：&lt;/li&gt;
-  &lt;li&gt;（1）如果建筑物是根据等级而批量出现的，那么可以尝试根据等级不同而烘焙相应建筑群的Lightmap，然后在游戏中根据需求动态替换Lightmap；&lt;/li&gt;
-  &lt;li&gt;（2）如果是逐个出现且建筑之间相距较为紧密的话，那么建议尝试通过Dynamic Projector（Asset Store插件）或Shadow Map（Unity自带阴影）来进行处理，因为Lightmap方法已无法支持这种需求。同时，可配合Fast Shadow Receiver（Asset Store 插件）来尽可能降低上述实时阴影带来的性能开销。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 23 Oct 2017 09:02:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/</guid>
         
         <category>UWA</category>
         

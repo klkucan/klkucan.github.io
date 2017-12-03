@@ -173,6 +173,109 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/">
+        <h2 class="post-title">
+            浅析Timeline结构
+        </h2>
+        
+        <div class="post-content-preview">
+            结构
+
+
+   
+      PlayableDirector
+      Timeline
+   
+   
+      PlayableGraph
+      Graph
+   
+   
+      …
+      TrackGroup
+      TrackGroup
+   
+   
+      TrackAsset
+      AnimationTrack
+      Playable...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 2, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十三周
+        </h2>
+        
+        <div class="post-content-preview">
+            Gameplay
+求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
+
+  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
+        <h2 class="post-title">
+            Shader合并与Variant
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
+
+
+Sahder Variant的概念
+
+
+ ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十二周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+对于UGUI文字花屏问题，有什么推荐的解决方法吗？
+
+  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
+  关于UGUI字体花屏和乱码
+  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
+
+
+工具
+最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/10/16/LuaFramework&PureMVC/">
         <h2 class="post-title">
             LuaFramework&PureMVC
@@ -305,111 +408,6 @@ AssetBundle中的脚本
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/">
-        <h2 class="post-title">
-            每天一点UWA：UI优化小结
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-  经过一个半月的学习，对UI的优化有了一些心得，同时也希望把零散的知识点总结到一起，因此有了这个专题。
-
-
-那些需要关注的性能指标函数
-UGUI参考的函数
-
-  
-    1、Canvas.SendWillRenderCanvases()
-该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。
-  
-  
-    2...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 10, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第七周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
-
-在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
-
-
-  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
-  建议，可以把Packi...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 10, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
-        <h2 class="post-title">
-            从零开始开发一款AR应用
-        </h2>
-        
-        <div class="post-content-preview">
-            Vuforia
-
-什么是vuforia
-
-  我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。
-
-
-怎么使用
-
-  进入Vuforia，右上角注册。
-  点击Develop进入下图
-
-
-
-
-
-  
-    License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuf...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 9, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第六周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-这是一个很长的问题：
-字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。
-
-请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 4, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -468,7 +466,7 @@ NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="11">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="13">
                                     Unity3D
                                 </a>
                             
@@ -504,7 +502,7 @@ NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="21">
+                                <a href="/tags/#UWA" title="UWA" rel="23">
                                     UWA
                                 </a>
                             
