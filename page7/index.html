@@ -173,6 +173,96 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
+        <h2 class="post-title">
+            由一个美术需求引发的Custom Inspector
+        </h2>
+        
+        <div class="post-content-preview">
+            需求
+
+  Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。
+
+
+需求分析
+
+
+  
+    如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，transform.GetComponent...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 19, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/">
+        <h2 class="post-title">
+            代码生成AnimatorController
+        </h2>
+        
+        <div class="post-content-preview">
+            0.出发点
+
+  
+    现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 12, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/">
+        <h2 class="post-title">
+            向量夹角计算
+        </h2>
+        
+        <div class="post-content-preview">
+            向量夹角
+// 基于点积计算，
+// a.b = ||a|| * ||b|| * sin(θ) 
+// =&gt; θ = arccos(a·b / (||a|| * ||b||))
+// =&gt; θ = arccos(a·b) //当a和b按照单位向量算时
+float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized))...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 12, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/">
+        <h2 class="post-title">
+            Deepoon的相关设置以及如何玩steam游戏
+        </h2>
+        
+        <div class="post-content-preview">
+            基本
+
+  保证Deepoon助手、显卡驱动是最新的。
+  安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。
+
+
+DpnnGetLastError的处理
+
+  目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。
+  ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 12, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/10/09/LOD%E5%88%9D%E6%8E%A2/">
         <h2 class="post-title">
             LOD初探
@@ -322,114 +412,6 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(reg...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">
-        <h2 class="post-title">
-            iOS学习笔记-06数据处理
-        </h2>
-        
-        <div class="post-content-preview">
-            6.数据处理
-
-6.1 plsit
-
-
-  
-    创建plist文件及添加数值
-
-    
-  
-  
-    数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。
-  
-
-
-    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data" ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 16, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/">
-        <h2 class="post-title">
-            iOS学习笔记-05线程
-        </h2>
-        
-        <div class="post-content-preview">
-            5.线程
-
-5.1 GCD
-
-  GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是dispatch_async(queue, block);参数中的queue可以通过dispatch_queue_create或者系统提供的标准dispatch queue。
-
-
-    // 生成一个serial dispatch queue
-    dispat...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 16, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
-        <h2 class="post-title">
-            iOS学习笔记-04内存管理
-        </h2>
-        
-        <div class="post-content-preview">
-            4.内存管理
-4.1 手动管理
-
-
-  自己生成的对象自己持有，可以调用release方法减少retain数量。
-  非自己生成的对象也可以持有，通过调用retain方法可以持有对象，引用数+1。
-  不再需要自己持有的对象要及时释放，注意类中的property要在- (void)dealloc
-方法中赋值nil，这样写相当于release了。
-
-
-- (void)dealloc
-{
-   ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 16, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/09/16/03UI/">
-        <h2 class="post-title">
-            iOS学习笔记-03UI
-        </h2>
-        
-        <div class="post-content-preview">
-            3.UI
-
-
-  iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。
-
-
-3.1 手动编写UI
-
-
-  ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 16, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -524,7 +506,7 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(reg...
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="23">
+                                <a href="/tags/#UWA" title="UWA" rel="25">
                                     UWA
                                 </a>
                             
@@ -532,6 +514,12 @@ if ([[UIApplication sharedApplication] respondsToSelector:@selector(reg...
                             
                                 <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Unity" title="Unity" rel="2">
+                                    Unity
                                 </a>
                             
                         

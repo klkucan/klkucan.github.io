@@ -5,9 +5,623 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 03 Dec 2017 23:24:57 +0800</pubDate>
-    <lastBuildDate>Sun, 03 Dec 2017 23:24:57 +0800</lastBuildDate>
+    <pubDate>Mon, 25 Dec 2017 22:53:36 +0800</pubDate>
+    <lastBuildDate>Mon, 25 Dec 2017 22:53:36 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>每天一点UWA：第二十周</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;小结&amp;amp;新的开始&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;从今年的7月29号发布第一周的笔记算起不知不觉已经二十周了，当时的想法也很简单就是下定决心读完当时算下来是168篇文章。5个月过去了，在写这篇的文章的时候基本上已经通读完了所有厚积薄发版块的关于unity的文章，真的感觉这是我这些年来做的最有毅力的一件事情。可以说在这二十周里面对于unity的理解尤其是图形学上学到了很多东西，而且也学会了很多优化的理论和别人实践的方法。&lt;/li&gt;
+  &lt;li&gt;理论已经学习完了，在后面的工作中就是一个实践的过程了。现在的项目会开始使用GOT工具进行优化的工作，真正的把优化这条路走下去。&lt;/li&gt;
+  &lt;li&gt;由于UWA出文章的速度不可能太快，而且自己的工作也很忙，所以每周的笔记可能会改成每月一篇了，继续加油。&lt;/li&gt;
+  &lt;li&gt;还有就是UWA都开始搞UE了，还有什么理由不开始学UE。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;gameplay&quot;&gt;GamePlay&lt;/h2&gt;
+&lt;h4 id=&quot;uwameshuwa-got200mbunloadunusedassets&quot;&gt;在UWA的测评结果中，我们的Mesh文件内存过高（使用UWA GOT测试最大的场景会达到200MB），大部分是由于场景的物件导致的。我们的场景物件是这样加载的：场景有一个基础的框架（地面、天空盒和个别大的物件等），在进入场景后，会根据位置来加载其他的物件，加载的物件在离开视野后，为了防止下次再加载，只将其隐藏了，并没有销毁，这样的话，人物如果在场景里跑了一圈，就相当于整个场景的物件，都会进入内存。请问，是不是将离开视野的场景物件销毁比较好呢，销毁后是不是要调用UnloadUnusedAssets才能彻底从内存中去除呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果题主做的是移动游戏，那么200MB确实太大了。&lt;/li&gt;
+  &lt;li&gt;建议题主建立一个Memory Pool来缓存场景中的物体，至少有以下两个规则：
+    &lt;ul&gt;
+      &lt;li&gt;Pool必须有一个上限，一般为容器的数量，超过最大阈值后即开始进行清理；&lt;/li&gt;
+      &lt;li&gt;为Pool中每个Object记录一个存储时间，当时间超过一定阈值后进行清理，或者当Pool满了后，将时间最长的进行Deactive Object进行清理。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;通过缓存池来进行销毁较长时间不再显示的的物体，同时，可以通过UnloadAsset API来卸载相关的资源，Resources.UnloadUnusedAssets API一般只建议在场景切换处进行使用。&lt;/li&gt;
+  &lt;li&gt;PS:说两句，如果一个最长时间的物体正好在视线内就不好办了。所以这个答案有点太粗暴，个人感觉还是要根据摄像机位置进行动态的删除对象。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;navmeshasset&quot;&gt;解析NavMesh.asset数据，用于服务器寻路。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://blog.uwa4d.com/archives/2110.html&lt;/li&gt;
+  &lt;li&gt;Q3&lt;/li&gt;
+  &lt;li&gt;给大佬跪了&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;reflectionprobe&quot;&gt;ReflectionProbe在移动平台丢失部分高光数据&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://blog.uwa4d.com/archives/2110.html&lt;/li&gt;
+  &lt;li&gt;Q4&lt;/li&gt;
+  &lt;li&gt;仅记录，没仔细看过后续版本的bugfix，遇到了在处理吧。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;animator-controller&quot;&gt;大批量地合入美术资源时，经常会出现构建出来的版本出现材质引用丢失、Animator Controller引用错误、贴图引用错误等资源引用错误的问题。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;出现这个问题可能是如下原因：&lt;/li&gt;
+  &lt;li&gt;是否使用代码混淆。在Prefab 上挂的脚本忘记添加到排除混淆的列表，导致序列化的字段被混淆，打完Bundle后的Prefab资源加载时候，挂接的脚本出现引用错误；&lt;/li&gt;
+  &lt;li&gt;资源导入都重载过OnPostProcess并处理了资源设置，这一步是否修改了什么不合理的地方，比如破坏了引用关系；&lt;/li&gt;
+  &lt;li&gt;打包AssetBundle时，在构建Bundle 之前有没有使用文件操作API（不是 Unity 的AssetDatabase的API）来直接修改了某个文件夹或者其他会破坏引用关系的行为，然后构建Bundle，完成后恢复文件夹名字（或者恢复资源原始状态），这样丢失引用关系的几率很大；&lt;/li&gt;
+  &lt;li&gt;有没有可能发布机器上，看着正常，但是Perforce里面已经存在一堆已修改的Meta文件；这种问题常出现于美术本地有两个A1，A2个相同资源在不同文件夹，A1受版本控制，但是由于某种操作，本地临时资源A2使用了原本A1的Guid，原本正确的 A1 被迫使用了不正确的新生成Guid（相当于两人交换），然后上传了A1的Meta，结果发布机器的下来的A1 Meta就会跟别人丢失引用，或者更新下来本地重新分配了新的Guid；美术策划最容易犯这个错误；&lt;/li&gt;
+  &lt;li&gt;我们是Unity 5.3.8p2，上周遇到一个疑似bug，美术多上传了一组相同的资源，我们更新下来都会重新生成Guid，但是很多挂起的Meta在Unity里重新导入后，在版本控制里神奇地消失了，但修改还在；&lt;/li&gt;
+  &lt;li&gt;如果都不是，只能尝试最小排除法了，删除项目绝大部分资源，一点点增加，然后打包，重现，排除原因；不行的话然后删除代码，一点点添加，打包，重现…有时候笨办法也是最容易接近真相的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;animatoroverridenameclip3-6cpu50-180mslisthttpsdocsunity3dcomscriptreferenceanimatoroverridecontrollerapplyoverrideshtml-lateupdateapplyoverrides400msoverridescount73clip&quot;&gt;游戏对战时因为会频繁更换武器或释放技能（主要是网络玩家），会替换不同的动作，但是发现每次设置animatorOverride[name]=clip（每次设置3-6个），CPU占用50-180ms，请问这是什么原因？我按照官方的指导存了一个list（https://docs.unity3d.com/ScriptReference/AnimatorOverrideController.ApplyOverrides.html） ，然后每次LateUpdate的时候调用ApplyOverrides，发现占用更高了，每次400ms，请问这个要怎么解决？目前每个网络玩家玩家OverRidesCount是73，会不会是Clip过多的原因？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在真机运行时发现animatorOverride[name]=clip的耗时会受到animatorcotrollor中的clip数目的影响，随数目的增多耗时会明显增加，70个以上的clip耗时确实能达到50ms(红米note2)以上。&lt;/li&gt;
+  &lt;li&gt;换为applyOverrides方法时耗时仍然很高，而且出现了堆内存分配，但并没有达到400ms那么高。&lt;/li&gt;
+  &lt;li&gt;尝试了整体替换AnimatorOverrideController，即不在现用的AnimatorOverrideController中替换clip，而是在另一OverrideController中换好clip后，再整体替换到runtimeAnimatorController，这样耗时就会降到很低了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+&lt;h4 id=&quot;unity-551sprite-packeriosrgba-pvrtc4spritepvrtc4467&quot;&gt;Unity 5.5.1版本下，Sprite Packer在iOS平台下RGBA PVRTC4打包图集失真非常严重（对单个的Sprite设置PVRTC4是正常的），参照了4.6.7版本是正常的，我想知道为什么呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;unity的bug&lt;/li&gt;
+  &lt;li&gt;在 Windows 下尝试用 4.7 的 pvrtextool.exe 替换了 5.x 的，暂时解决了这个问题，建议也尝试一下。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;asynchronous-texture-upload&quot;&gt;异步纹理加载Asynchronous Texture Upload这个功能最后到底有没有实用？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_84%2F5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个是默认就开启的，只是得开启多线程渲染才有效，因为要在 Render Thread 里上传纹理，还有文档里提到的各种限制，比如只针对关闭了 Read/Write 的纹理… 非多线程渲染时，异步加载纹理的时候，可以在 Loading.UpdatePreLoading 这个函数里看到较高的 Texture.AwakeFromLoad。但多线程渲染时，这部分的开销就会变得很小，因为这部分开销被放到 Render Thread 去了，如下图中的 Gfx.UploadTexture。&lt;/li&gt;
+  &lt;li&gt;但需要注意的是，这个地方的异步并不是流式的加载，也就是说，当加载一个大纹理的时候，还是一次性完成的，并不会分帧去做，如下图加载了一张2048的纹理，图中绿色峰值是Gfx.WaitForPresent，也就是主线程在等待 Render Thread。&lt;/li&gt;
+  &lt;li&gt;综上，这个功能实际上就是把某些满足要求的纹理的加载时间从主线程移到了渲染线程。在某些情况下，确实是可以提高总体的加载速度的。但这个功能并不能真正地“解决异步加载时纹理却只能同步加载”的问题，只是把卡顿放到渲染线程去了（如果耗时高了，主线程还是要等的）。&lt;/li&gt;
+  &lt;li&gt;非常好的问题，建议直接看答案。 https://blog.uwa4d.com/archives/TechSharing_84.html Q3&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unity&quot;&gt;在目前的Unity版本中，使用多维材质是否会对效率产生影响，用多维材质和把模型分块哪个更好？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;制作美术资源时，应该尽量避免使用多维材质。&lt;/li&gt;
+  &lt;li&gt;先举例说明多维材质的一个优点是拆分模型做不到的： 一块大石头有石头和草地两个材质，做成一个整体的模型，使用多维材质，作为一个物件进行烘焙，在Lightmap上的UV分布是一个整体，不会出现拆分为两个模型烘焙产生的接缝问题。&lt;/li&gt;
+  &lt;li&gt;除了上面这种情况，其他情况下推荐将模型拆分成多个模型赋予不同的材质。&lt;/li&gt;
+  &lt;li&gt;优点是：
+    &lt;ul&gt;
+      &lt;li&gt;1、多个模型会作为多个MeshObject参与到裁剪、静态批次等优化中 ；&lt;/li&gt;
+      &lt;li&gt;2、拆分的模型和贴图可以进行材质合并，程序才能进行下一步的优化，如果本身是多维材质，就无法进行合并DrawCall的优化；&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第一个优点就能带来很大的收益。制作上应该按照一个模型对应一个贴图的做法进行，如果模型是一个整体，比如房子由底座、墙体、屋顶组成，建议将他们多选导出成一个FBX。&lt;/li&gt;
+  &lt;li&gt;另外，不同材质的模型建议做成多个模型，再多选导出成一个FBX，仍然是一个模型对应一个贴图的规范进行制作。&lt;/li&gt;
+  &lt;li&gt;PS: 对于人物模型可能不考虑剪裁，但是至少减少了drawcall。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;ugui-uirootscreen-space---camera-culling-mask-uirootuilayer&quot;&gt;我在UGUI 使用一个UIRoot，类型使用Screen Space - Camera，使用摄像机的 Culling Mask, 如果UIRoot可视，下面的UI子物体设置不可视Layer，是不是不会被裁掉？有没有什么解决办法吗？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;UGUI的网格合并是以Canvas为单位的，所以只能改Canvas的Layer才有效。&lt;/li&gt;
+  &lt;li&gt;如果只是个别UI元素要快速隐藏和显示，可以考虑用Scale为0来做，Scale为0时UI的顶点信息会被清空，所以隐藏时就不会参与网格重建了。&lt;/li&gt;
+  &lt;li&gt;PS:顶点清空的第一帧应该会出现rebuild，后续帧不参与rebuild。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ui867outline-canvas&quot;&gt;在UI中，有两个字体控件每帧都要显示不同的数字，第一个有8个字，第二个有6~7个字，需要开outline增加辨识度，从而引起了较高的性能开销。 把这两个控件单独放到另外独立的Canvas，该问题依然存在。现已确定该开销是由这两个字体控件每帧的文本更改引起的。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;提到一个是8个字，一个是6到7个字，都开启了outline。 首先建议再做一次确认，看是不是禁用这两个之后，SendWill就确实没开销了。因为这个字数看上去并不应该造成很明显的开销；&lt;/li&gt;
+  &lt;li&gt;其次，如果确实是这两个造成的，那么就需要先考虑下能不能转成带outline效果的静态字体，不行的话再考虑下能不能降低更新的频率了，是不是确实要每帧都变；&lt;/li&gt;
+  &lt;li&gt;如果要再降低，就只能考虑静态字体了，如果文本是一些比较固定的内容就很好处理，但如果是像聊天一样，内容无法预知的话似乎就没什么办法了。或者就是低端机用shadow来做。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;resourcesloaduiprefabui&quot;&gt;现在用Resources.Load()加载资源时，UI动画会出现卡顿的现象，如果想消除卡顿，是不是只能通过异步加载，分拆Prefab和优化材质网格动画之类的操作来实现？还是说UI动画可以在另外的线程播放之类呢？另外我想问下，异步速度是不是一定比同步慢呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;不直接贴答案了&lt;/li&gt;
+  &lt;li&gt;总结一下就是遇到这样的卡顿的解决办法
+    &lt;ul&gt;
+      &lt;li&gt;分析卡顿原因&lt;/li&gt;
+      &lt;li&gt;使用异步方法&lt;/li&gt;
+      &lt;li&gt;拆分功能、预加载&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;unityframe-debuggerprofilerdraw-calldrawcall&quot;&gt;Unity中的Frame Debugger中的渲染顺序以及数量和Profiler中看到的Draw Call数量，以及在高通的调试工具里看到的DrawCall数，它们之间有什么关系呢？哪个数值是影响渲染的重要指标？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;简单来说，Unity引擎中Total Batches是我们建议最需要关注的指标。&lt;/li&gt;
+  &lt;li&gt;1个Setpass Call或者Batch，相当于是一次Render State的切换，而1个Draw Call则是CPU让GPU去进行渲染某一个Object的1次操作。在当前的移动设备中，1次Render State的切换要1个Draw Call本身要耗时。&lt;/li&gt;
+  &lt;li&gt;所以，Total Batches是我们较为建议的关注指标，也是UWA性能报告中所提供的Draw Call查看指标。而Frame Debugger中，其数量是与Total Batches相一致的，即查看的是每一个Batch的渲染物体。 更为详细一些的说明，可以查看https://answer.uwa4d.com/question/58d29b8b5a5050b366a6b6ae&lt;/li&gt;
+  &lt;li&gt;而Unity Profiler中的Draw Call，其理论上对应的则是glDrawElements的调用次数，其与高通或其他第三方工具所返回的Gl Trace信息操作数量不太一致，但应该与其中的glDrawElements API的调用次数基本一致，题主可以自行检测看看。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uwa-gotcpustacktraceutility&quot;&gt;我用UWA GOT进行本地性能测试，在CPU的数据分析中发现，某些帧StackTraceUtility耗时特别高，这是什么原因导致的呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;StackTraceUtility.XXX是Unity引擎的Log输出，可能是本身Debug.Log/LogError的调用输出，也可能是使用过程中引擎端出现了Warning/Error等信息而自动输出的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;profilerassetbundlelockpersistentmanager&quot;&gt;我在Profiler中观察性能曲线，发现某一帧AssetBundle加载中，LockPersistentManager耗时比较大。请问这部分能否优化？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这说明当前帧或前几帧中存在较大量的资源在通过LoadAsync来进行加载，其本质是所加载的资源过大所致，对自身资源进行合理优化可降低Loading.LockPersistentManager的开销。&lt;/li&gt;
+  &lt;li&gt;另外，将异步加载换成同步加载，LockPersistentManager就不会出现了，但其总加载耗时是没有变化的，因为总加载量没变。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;profilerpciosandroidandroidgraphics-jobsplayer-settings&quot;&gt;我在安卓真机上跑游戏，发现Profiler下的合批数据和PC或者iOS下的不一样，因此不确定Android的合批是否有效。经过分析，Android上不能设置Graphics Jobs(在Player Settings里面)，也是不断打包测试发现这个问题，想了解一下具体是什么原因呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Graphics Job目前在Android平台上是为Vulkan而设计的，也就是只有支持Vulkan设备的才会真正起作用。按照Unity原厂的说法，该选项在不支持Vulkan的Android设备上应该是没有效果的。&lt;/li&gt;
+  &lt;li&gt;另外，Graphics Job和MultiThread Rendering并不建议同时使用，而且以目前的Android设备来说，建议只开启MultiThread Rendering一项即可。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;unity3danimationclipframerate&quot;&gt;在Unity3d的官方文档中，animationclip.framerate的解释如下：&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“Frame rate at which keyframes are sampled. (Read Only) This is the frame rate that was used in the animation program you used to create the animation or model.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;我对此有些疑问：&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;1）这个是否为动画系统每一秒钟更新动画的次数？如果是，当这个值高于Application.targetFrameRate时，一秒钟更新动画的次数依据哪个为准&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2）这个是否只是调节动画播放速度的一个参数，而每秒钟动画状态更新的次数不受影响？&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;A: 动画采样的时候是根据当前播放的时间去找对应的前后两个关键帧做插值。所以动画本身得告诉Unity两个关键帧（没做keyframe reduction时）的间隔时间是多少，或者一秒有几帧，这个值就是framerate。所以这个是只读的，导出时就应该是确定的。因此这个值也不会影响运行时动画的更新次数，默认情况下动画就是每帧更新一次的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;loadlevelasyncloadlevelloadlevelasyncloadlevel40loadlevelloadingloadlevelasyncloadingprefabprefabresourcesloadasync2200ms&quot;&gt;在手机上测试LoadLevelAsync和LoadLevel的加载速度，同一个场景，LoadLevelAsync要比LoadLevel多花费40%左右的时间，请问这是正常的么？LoadLevel会有卡顿，导致Loading进度条不平滑，但是LoadLevelAsync好像又会增加Loading的时间？我项目中场景动态加载的做法是，是把物件做成Prefab，然后根据主角的位置做动态加载相应的Prefab，用的是Resources.LoadAsync方法。现在加载一些比较大的物件时，在红米2等低端机上，仍然比较卡，要消耗200ms以上。请问有什么好的方式，能平滑这个加载过程么，谢谢！&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;LoadLevelAsync一般情况下是要比LoadLevel慢的，但是否要慢40%，这个其实是根据每个场景所要加载的不同量而定的，并不是确数。&lt;/li&gt;
+  &lt;li&gt;LoadLevel和LoadLevelAsync其实最本质的区别，是前者一定要在下一帧结束前完成加载操作，所以当加载场景较大时，其随后的单帧开销就会很大，而后者则没有这个限制，引擎可以根据当前的使用情况或者ThreadPriority（这个值是是否对LoadLevelAsync有影响，还没做过具体实验，但对于LoadAsync确实有影响 ）来自行调控。&lt;/li&gt;
+  &lt;li&gt;还需要说明一点的是，不是说使用Async，它就一定是绝对平滑，下图红框是LoadLevel，绿框是LoadLevelAsync操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_86%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;关于真正“平滑”异步的加载方式，Unity引擎目前还是没有的。在遇到较为复杂的Prefab（比如大纹理、多AnimationClip等等）时，其加载依然会出现卡顿。如果想要缓解该问题，建议如下：定位资源-&amp;gt;查看资源为何开销-&amp;gt;采用预加载的方式处理这样的资源。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;il2cppmonoil2cppprofilermanagedobject-int32&quot;&gt;我使用了IL2CPP后是否还存在Mono内存呢？使用IL2CPP后，通过Profiler工具获取的managedObject（例如： int32[]）是哪种内存？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以简单地认为，Il2CPP只是替换掉了Mono的虚拟机实现，所以该分配堆内存的地方还是会一样的分配（可能会有某些细节的地方不一样）。&lt;/li&gt;
+  &lt;li&gt;IL2CPP在堆内存分配方面和Mono 最大的不同主要是Reserved Total 是可以下降的，而 Mono的 Reserved Total 只会上升不会下降。&lt;/li&gt;
+  &lt;li&gt;PS：原来是这样，我一直以为是直接转成了CPP语言。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;物理&lt;/h2&gt;
+&lt;h4 id=&quot;boxcollider2d00f00f--10f10fphysics2dboxcastnew-vector210f1702-vector210f-14f-0-vector200f10f-20f-1700-17021706&quot;&gt;我的游戏场景中有一个boxcollider2D，位置在(0.0f,0.0f) 到 (1.0f,1.0f)；调用Physics2D.BoxCast(new Vector2(1.0f,1.702), Vector2(1.0f, 1.4f), 0, Vector2(0.0f,1.0f), 2.0f); 会产生碰撞，理论上碰撞的边界在1.700 ，我已经将位置放到1.702，应该是规避了浮点数误差的问题的，如果我将该值放大了1.706就不会产生碰撞了，请问哪里可以调整这个误差值的范围呢?&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Unity 2017.1版本的Physics2DSettings里面有一个Default Contact Offset，表示当两个collider之间的距离小于它们的ContactOffset之和就会产生碰撞。把这个值设置小一点应该能解决题主的问题。&lt;/li&gt;
+  &lt;li&gt;Unity 5.x中Contact Offset，默认是0.01，这也是为何1.702不行，而1.706可以的原因。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;性能综合&lt;/h2&gt;
+&lt;h4 id=&quot;uigameobjectdestroyresourcesunloadunusedassets&quot;&gt;释放了资源，但纹理还在内存中，且引用数为0，要如何销毁呢？纹理所在的UI的GameObject是通过Destroy销毁的，并且执行了Resources.UnloadUnusedAssets();&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ref Count为0应该就是可以通过Resources.UnloadUnusedAssets或Resources.UnloadAsset来进行卸载了。&lt;/li&gt;
+  &lt;li&gt;出现这种情况建议如下：
+    &lt;ul&gt;
+      &lt;li&gt;尝试将Resources.UnloadUnusedAssets在Destroy稍后几帧执行；&lt;/li&gt;
+      &lt;li&gt;在加载时尝试直接获取这些资源，然后在Destroy后通过Resources.UnloadAsset来卸载指定资源。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;resourcesunloadunusedassets-uwa&quot;&gt;Resources.UnloadUnusedAssets() 在卸载旧场景后加载新场景前调用好，还是在加载新场景后调用比较好呢？如果考虑内存峰值的话，我觉得是前者好，但是在UWA上看到有些文章说是加载场景后调用。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果是通过LoadLevel(Async)类似的方式来加载场景的话，那么Unity自身会在底层执行一次类似Resources.UnloadUnusedAssets的操作。所以，这时如果手动调用Resources.UnloadUnusedAssets操作，时间间隔很短，其实这个是有些重复的。因此才建议在新场景加载后再调用一次。&lt;/li&gt;
+  &lt;li&gt;但如果使用LoadLevelAdditive或其他类似的API来切换场景的话，那么Unity是不会调用Resources.UnloadUnusedAssets的，这时在旧场景卸载后调用，其实也是很不错的选择。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 23 Dec 2017 16:55:12 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>每天一点UWA：第十九周</title>
+        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
+&lt;h4 id=&quot;assetbundleplayersettingsoptimize-mesh-data-optimize-mesh-datamesh-&quot;&gt;在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;一般来说，开启“Optimize Mesh Data”选项，引擎会在发布时遍历所有的网格数据，去除其多余数据，从而降低其数据量大小。需要注意的是，这里的“多余”数据是指Mesh数据中包含了渲染时Shader中所不需要的数据，即如果Mesh数据中含有Position、UV、Normal、Color、Tangent等顶点数据，但其渲染所用的Shader中仅需要Position、UV和Normal，则Mesh数据中的Color和Tangent则为“多余”数据，引擎在发布游戏时，会将这些数据自动去除。&lt;/li&gt;
+  &lt;li&gt;开启这个选项是一把双刃剑。对于在Runtime情况下有更换Shader需求的Mesh，建议研发团队对其特别注意。如果Runtime时需要为某一个GameObject更换更为复杂、需要访问更多顶点属性的Shader，则建议先将这些Shader挂载在相应的Prefab上再进行发布，以免引擎去除Runtime时会使用到的网格数据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;assetbundleassetbundlewwwassetbundlegameobjectwwwdisposeassetbundleunloaddestroydestoyimmediatassetbundleassets-&quot;&gt;对于运行时动态加载的普通模型比如怪物，我们目前的打包策略是把它单独打一个AssetBundle包，通过AssetBundle加载并实例化的消耗。如下图所示，对于WWW、AssetBundle、GameObject，卸载方法分别为WWW.Dispose、assetBundle.Unload、Destroy/DestoyImmediat。但对于通过AssetBundle加载出来的Assets资源， 这块的资源用什么策略清理合适？&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1）Resources.UnloadUnusedAssets，但该函数比较费时，一般只在切换场景时候使用；&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2）assetBundle.Unload(true); 运行时Assetbundle在Instantiate prefab完成后也立即执行了unload(false)，所以也不适用；&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;对实例化出来的GameObject在使用后即使执行了DestroyImmediate，模型引用的贴图还驻留在内存中，难道要遍历GameObject使用的Assets分别执行UnloadAsset么？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果是仅加载Prefab，那么随Prefab一起加载进来的资源是不太方便被“优雅”地卸载的，即便是对应的GameObject被Destroy了，那么它对应的资源会变成“游离”状态（没有Refcount），只能等到手动调用Resources.UnloadUnusedAssets或场景切换时被引擎卸载。 所以，一般建议研发团队尝试通过依赖关系进行打包，将资源和Prefab进行分离，这样可以将加载资源和加载Prefab分开，从而可以通过“显式”地方式加载资源并将其进行储存，这样当你想精准释放资源时，则可以直接通过Resources.UnloadAsset来进行卸载。&lt;/li&gt;
+  &lt;li&gt;PS: 这个问题本身就很有内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;audio&quot;&gt;Audio&lt;/h2&gt;
+&lt;h4 id=&quot;unity-472unity-553apk200mb472apk553200mbkbunity-472mp3unity-553wav&quot;&gt;将一个Unity 4.7.2的项目升级到Unity 5.5.3。打成安卓包，发现APK文件比之前大了200MB。然后分别对4.7.2打出来的APK包和5.5.3打出来的包分别进行解包，发现音频文件个数一样，但所占大小多了200MB左右，平均每个文件都大了几百KB。Unity 4.7.2的解包为Mp3格式，Unity 5.5.3的解包为Wav格式。&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;于是我在Unity 4.7.2和Unity 5.5.3下，分别新建一个空工程，将单独一个音频文件（ogg格式）放入Resources文件下，即两个Unity版本的空工程里只有一个Resources文件夹，文件夹里只有一个相同的Ogg格式音频文件，打成安卓包。使用解包工具解包，发现Unity 4.7.2的音频文件转成了mp3格式，大小几十kb；Unity 5.5.3的音频文件转成Wav格式，大小200多KB。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;请问这种问题怎么解决？针对音频，Unity 4.x和Unity 5.x在打包过程中，作了那些修改？&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;引用Unity 5.0的release note：https://unity3d.com/unity/whats-new/unity-5.0
+“Rewritten Audio asset pipeline and AudioClip backend.””Much improved audio formats in terms of memory and CPU usage.** The Format property no longer refers to a specific platform-specific file format, but to a encoding method** (Uncompressed, Compressed, ADPCM).”&lt;/li&gt;
+    &lt;li&gt;可以看到，在Unity 5.x中，不同平台的音频不再与特定的文件格式关联，而是与文件编码关联。文件格式不等同于音频编码，虽然同是Wav格式的文件，但其有不同的编码方法（PCM，ADPCM，Vorbis，Wav也可以用mp3编码），编码方法会影响到Apk的大小。选定编码方式后降低quality和sample rate也会降低apk大小。
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F7.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
+&lt;h4 id=&quot;iphone5cfontcachefontfortextuwablogfonttexturefont-texture-34&quot;&gt;我们在iPhone5c上测试时发现Font.CacheFontForText会造成很严重的卡顿，看了UWA的Blog，了解到可能是因为创建FontTexture导致的开销。那是否可以认为如果我们一开始申请了足够大的Font Texture，后面即便有新的文字，开销也不会很大？ 如果可以这么做，一开始申请使用的字符串是根据自己项目生成一个字典，还是直接使用网上3、4千字的常用字库更好？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;是的，如果Font.CacheFontForText开销较大，那么在无法降低字体数量的情况下，一开始增大Font Texture是较为可行的方法。建议根据自己项目的字体来撑大Font Texture，避免不必要的浪费。 同时，也建议看一下这篇&lt;a href=&quot;https://blog.uwa4d.com/archives/Sparkle_Font.html&quot;&gt;关于字体的精简优化方法&lt;/a&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;gameplay&quot;&gt;GamePlay&lt;/h2&gt;
+&lt;h4 id=&quot;colliderboundssize-aabbobb&quot;&gt;我想了解下如何获取物体的最小包围盒？Collider.bounds.size 获取的是与世界坐标系坐标轴平行的包围盒(AABB)，当物体旋转时包围盒大小会发生变化。那如何获取物体的OBB，使包围盒的大小不会随物体旋转而改变呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;获取 OBB 可以用 Mesh.bonuds(模型空间)。注意蒙皮Mesh这一类在Shader中修改顶点坐标的操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scriptableobjectassetassetbundledlldllscriptableobjectassetbundleassetbundleprotobufscriptableobjectscriptableobject&quot;&gt;安卓客户端存在大量的模板数据需要配置，其中一些模板表甚至可能达到万级的数据条目，那么怎么对这些数据模板表进行打包和加载，可以兼顾加载速度和热更新表结构？一开始我们采用了ScriptableObject，把全部模板数据加载到内存并序列化为Asset的方式进行Assetbundle打包，该方案加载速度较为理想。但当我们通过Dll替换热更新安卓客户端时，发现这种方式不支持热更新，一旦Dll中修改了模板表结构，热更新替换后，ScriptableObject的AssetBundle就无法读取了，提示损坏的AssetBundle，目前的方案是采用Protobuf代替ScriptableObject进行序列化，可以实现热更新模板表结构，但是加载速度相对ScriptableObject有较大的差距，目前数据模板加载较慢便导致了玩家进入世界的时间比较久。因此想了解大家有什么好的建议呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;用ScriptableObject或者BinaryFormatter二进制存储然后反序列化成保存数据结构的对象，这两种方法应该是加载速度最快的。
+我们实际没有采取这个方案，也使用的是Protobuf，是出于以下考虑:
+    &lt;ul&gt;
+      &lt;li&gt;一份二进制数据，客户端和服务器可以通用。从服务器推数据很方便；&lt;/li&gt;
+      &lt;li&gt;策划习惯使用Excel编辑，有脚本可以把表格内容导出成Protobuf的二进制数据，另外，还有.cs/.go表结构描述文件需要重点考虑。也就是说，策划修改表结构、增减表，服务器和客户端的结构描述文件可以自动生成好；&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第一个问题：配置表存储格式
+现在主流的数据存储基本分为三大类，各有优劣，需要根据实际情况选择：
+    &lt;ul&gt;
+      &lt;li&gt;ProtoBuf或类似序列化库，这种方式兼容性高，但是加载速度一般；&lt;/li&gt;
+      &lt;li&gt;自己实现二进制数据存储，兼容性差，需要精心设计达到较高的数据表达能力；&lt;/li&gt;
+      &lt;li&gt;采用Lua热更新方案的游戏，普遍直接把数据存储为Lua表。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;第二个问题：配置表数据与代码兼容
+一般不建议大量修改数据结构，比如增删字段，如果实在无法避免，需要代码连同数据一起发布进行热更，做好版本管理即可。&lt;/li&gt;
+  &lt;li&gt;第三个问题：配置读取速度优化
+    &lt;ul&gt;
+      &lt;li&gt;先从数据量上约减，减小数据冗余重复，数据存储设计优化，多次引用的字段多引用等等；&lt;/li&gt;
+      &lt;li&gt;采用多线程加载，避免使用Unity提供的API，在游戏启动时，并行加载配置表，充分利用多核优势；&lt;/li&gt;
+      &lt;li&gt;就我们自己项目而言，没有使用Lua的更新方案，但是我们依然采用Lua作为了数据存储，经过优化后加载速度也不错，可以参考 LuaTableOptimizer。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;maincamera--screen-depth-buffer-camera2--maincamera--rendertexture--screen-depth-buffer--camera2rendertexturecolorbuffer--camera2--unity--screen-depth-buffer--rendertexturecolorbuffer-&quot;&gt;MainCamera 渲染完场景后，在 Screen Depth Buffer 上记录了整个场景的深度信息。Camera2 在 MainCamera 后，将模型绘制到一个 RenderTexture 上，我想利用 Screen Depth Buffer + Camera2.RenderTexture.ColorBuffer 对 Camera2 绘制的内容进行深度剔除，这时 Unity 会提示 Screen Depth Buffer 和 RenderTexture.ColorBuffer 不能混用。这样的需求该怎么做呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这是一个很有意思的问题，参考https://blog.uwa4d.com/archives/1945.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;inspectordictionary--public-dictionarystringstring-dict&quot;&gt;请问怎么在inspector中显示Dictionary呢？ 例如： Public Dictionary&amp;lt;string,string&amp;gt; dict;&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Unity 无法序列化Dictionary类型，无法将其显示在inspector中。一个Workaround是将Dictionary的Key和Value拆到两个list中，list可以在Inspector中显示。利用API：ISerializationCallbackReceiver （https://docs.unity3d.com/ScriptReference/ISerializationCallbackReceiver.html 有示例代码）可以在序列化/反序列化时将Dictoionary中的内容与list内容同步。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unityfloat&quot;&gt;Unity需要对float进行相等判定&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Mathf.Approximately&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uguibuttononclickaddlistenerbuttonbuttoncdelegategetinvocationlistdbuttonapibutton&quot;&gt;通常UGUI中的Button点击事件在代码中是通过onClick.addListener()来添加的。而且这种按钮的点击事件通常只会执行一次，如果添加了多次就会出现点击一次、按钮调用多次的事件函数。如果该Button只会添加一种事件，可以通过引用来判断是否添加了重复事件，从而不再重复添加相同事件。但是如果Button添加了多种点击事件，那么引用的方式就无效了。C#中的Delegate中有一个函数GetInvocationListD()可以获取此委托中的事件列表，从而剔除相同事件。然而让人头痛的是，我查看了Button的API似乎并没有暴露出此Button添加了的事件列表，所以没有办法剔除相同事件。不知道是否有什么办法可以解决这个问题?&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;onClick是一个ButtonClickedEvent对象，而ButtonClickedEvent的基类是UnityEventBase。UnityEventBase里有一个InvokableCallList对象，里面应该就存了事件列表，但这个是private的，可能只能尝试通过反射，去取里面的值来对比了。看上去并没有比较简便的方法。&lt;/li&gt;
+  &lt;li&gt;可以考虑扩展下Button组件，封装一个AddUniqueListener的接口，保留一下已经onClick.addListener的UnityEvent，然后每次Add前都先和这些UnityEvent做个对比，没有重复再进行onClick.addListener。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;如果场景中有大量物体，请问如何利用相机拾取获取不同范围内的物体？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;采用Physics.SphereCastAll函数来获取，类似下面这个场景：
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;在SphereCastAll这个API的参数中，第二radius可以控制获取半径，我们分别设置5和10的效果是这样的：
+radius=5：
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;radius=10：
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unityandroidunityiosandroidunity552&quot;&gt;如下图，蓝色部分为Unity视图，绿色为Android图片，我现在需要把Unity蓝色区域透视或者去除，iOS上已经透视成功，但Android一直失败，Unity版本为5.5.2，大家有什么建议呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;只记录下方案 https://blog.uwa4d.com/archives/TechSharing_79.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;guilayoutscrollview&quot;&gt;改变GUILayout中ScrollView滑动条宽度&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GUIStyle gs = GUI.skin.verticalScrollbar;
+GUIStyle gs1 = GUI.skin.verticalScrollbarThumb;
+        
+gs.fixedWidth = 30;
+gs1.fixedWidth = 30;
+......
+pos = GUILayout.BeginScrollView(pos);
+......
+GUILayout.EndScrollView();
+......
+gs.fixedWidth = 0;
+gs1.fixedWidth = 0;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;staticbatchlightmaprendererlightmapindex-and-offsetlightingdataassetlightmapsettingrendererlightmapindex-and-offset-lightmaplightingdataasset-uwa&quot;&gt;我这边做了个测试，把场景中的物件进行StaticBatch，用Lightmap烘焙，并且在烘焙完记录每个物件Renderer的lightmapindex and offset，然后在运行中，我删除了生成的LightingData.Asset，自己设置了Lightmapsetting，并且恢复了每个物体Renderer的Lightmapindex and offset, 结果我发现烘焙出来的场景Lightmap还是不对的。我怀疑是不是LightingData.Asset 还记录了别的东西，想问问看UWA有没有什么经验呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个问题还是出在Static Batching上。经过测试我们发现如果去掉场景中物件的“Static Batching”标记，换成手动Batching，即采用StaticBatchingUtility.Combine的方式结果就正确了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_81%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;同时，我们发现使用LightingData.Asset时，开启Static Batching与不开启都正确，因此我们认为LightingData.Asset可能记录了与CombinedMesh有关的数据，导致如果仅仅使用gameobject的LightMap参数无法正确读取CombinedMesh的LightMap UV。另外一种可能是Unity的一个Bug。
+最后，我们建议采用上述手动Batching的方式，即可解决此问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;linearuiuilinearuilinear&quot;&gt;当使用Linear设置时，UI上图片透明度等也跟着变化，出来的效果与美术人员的需求不一样。请问有什么办法可以让UI不使用Linear或者让UI可以在Linear影响下也正常呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;值记录下做法：https://blog.uwa4d.com/archives/2066.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
+&lt;h4 id=&quot;iospvrtc-&quot;&gt;请问在iOS上，图集如何设置成PVRTC的格式呢？ 下图中的设置是否正确？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_74%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;图集的设置需要考虑到该图集的用法，如果是作为普通的Texture给3D物体用的，那么TextureType选择Texture，然后Format选择Compressed就可以，因为在iOS上，Unity会自动处理NPOT（把纹理拉伸为边长为2的幂次的正方形），并默认采用PVRTC。&lt;/li&gt;
+  &lt;li&gt;设置之后可以看一下下方的预览面板，会直接显示PVRTC的；如果是给UGUI用，那不同情况下，设置又不一样了；如果是给NGUI用，可以按照问题中截图里的设置即可，最终再确认下预览图上是不是PVRTC。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;loadsubsasyncloadsubsspritedata-loadtextureloadsubsloadsubsasyncspritedata-loadsubsasyncloadsubstexturespritedatatexturespritedata&quot;&gt;LoadSubsAsync和LoadSubs加载SpriteData，我想请问一下： 如果先LoadTexture加载纹理再加载LoadSubs，或者LoadSubsAsync函数调用加载SpriteData，纹理是否会加载两次，以及性能如何呢？ 按照我的理解，LoadSubsAsync或者LoadSubs，它自身有Texture属性，我断点调试可以看到SpriteData内的Texture会随着SpriteData加载而出来。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;LoadSub和LoadSubAsync是会同时加载Texture的。 而先Load再LoadSub，并不会造成冗余问题，所以Load过Texture后，LoadSub的耗时就很小了。 但如果Texture里的Sprite是打了图集的，那么LoadSub的时候还是会有个图集加载的耗时。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
+&lt;h4 id=&quot;q1uguicanvassendwillrenderviewviewcanvasgroupscalesendwillrender&quot;&gt;Q1：众所周知，UGUI中有个Canvas.sendWillRender()函数在View打开的时候很耗时，所以通常的做法是把View移出屏幕外，或者Canvas.group，或者Scale等类似的处理机制。这样虽然能解决SendWillRender()消耗过高的问题，但也会有新的问题出现：&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;EventSystem.Update()。由于各个View都是Active的状态，所以这个函数底下的Graphic.GetDepth()消耗很大，而且又由于不止一个GraphicRaycaster组件，所以这个函数下面的List.Sort()消耗巨大，更何况是每帧都在耗。&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;还有一个函数ScrollRect.LateUpdate()，它的开销也很高。而如果将Scale设置成0，其消耗更大，这种情况下，我还是倾向于用回Active/Deactive的处理机制，因为就界面打开的时候会卡一下，而不至于影响总体的帧率。&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;界面的快速隐藏和显示，比较推荐的做法是：
+    &lt;ul&gt;
+      &lt;li&gt;把界面单独作为一个Canvas，并绑定一个相机，同时在绑定相机的Culling Mask中设置一个不渲染的Layer；&lt;/li&gt;
+      &lt;li&gt;隐藏时，把Canvas移出相机范围，同时把Canvas的Layer改为不被渲染的Layer，禁用对应的GraphicRaycaster组件，把Canvas中所有的动态UI元素停止。&lt;/li&gt;
+      &lt;li&gt;显示时，移回Canvas，改回Layer，激活GraphicRaycaster组件。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;针对题主的问题1，禁用GraphicRaycaster组件后就没问题了，被禁用的GraphicRaycaster不会进行Raycast操作；&lt;/li&gt;
+  &lt;li&gt;针对题主的问题2，ScrollRect.LateUpdate中会通过EnsureLayoutHasRebuilt提前触发Canvas.SendWillRenderCanvases()，所以实际上还是Canvas.SendWillRenderCanvases()的开销。Canvas.SendWillRenderCanvases()开销高，是因为用Scale改为0的方式会清除顶点信息，在Scale改回1的时候还是需要重新创建顶点信息，开销肯定还是很高的，所以不推荐用Scale改为0来隐藏复杂的UI界面。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;uistaticstatic--&quot;&gt;UI界面勾选Static是会节省一部分性能，但是如果我移动了某个设置为Static界面下的元素，这个界面还算是静态的么? 还是等运动的元素停下来后的界面才算静态的? 如果是这样，是不是我全部界面都设置静态就好了?&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果题主所指的“勾选static”是指GameObject右上角的Static框，这个Static和UI是无关的，不会对UI有影响；如果是NGUI的UIPanel上的Static选项，勾上之后，子节点中的UI元素是无法移动的（即使改了Transform，其图标位置也不会更新）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;工具&lt;/h2&gt;
+&lt;h4 id=&quot;profilerassetsscene-memorymeshscene-memorymesh2meshcombinedmeshroot-sceneassetsmesh100meshmeshassetsmeshreferenced-byhierarchy&quot;&gt;Profiler里Assets和Scene Memory的区别是什么？比如Mesh这一项，在Scene Memory的Mesh中看到的只有2个合并的Mesh：CombinedMesh(root: scene)，在Assets的Mesh里看到的有100多个，包括场景里的非合并Mesh，动态加载出来的角色Mesh等。并且Assets的Mesh中的某些点击后选择右边的Referenced By，在Hierarchy里会自动选中场景中的物体，怎么看也不像是单纯的模板，而是实例化出来的东西。&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F2.png&quot; alt=&quot;image&quot; /&gt;
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Resources.Load/Assetbundle.Load出来的ParticleSystem都是放Assets下的，可以认为是模板资源，并不在场景里。Instantiate出来的放在Scene Memory下，是出现在场景里的。&lt;/strong&gt; 所以两边都有是正常的。&lt;/li&gt;
+  &lt;li&gt;在Unity里资源至少分为两类：
+    &lt;ul&gt;
+      &lt;li&gt;一类是可以被引用的，比如Mesh、Texture，如果要渲染多个相同的Mesh，并不需要对Mesh实例化，只需要在场景里多创建几份MeshRenderer/MeshFilter去引用它即可。所以Assets下的Mesh不应该被认为是实例化出来的东西，这些Mesh仅仅是通过AsssetBundle.Load/Resources.Load加载出来的，只是被场景里的东西引用了；&lt;/li&gt;
+      &lt;li&gt;但SceneMemory下的Mesh通常是通过new Mesh或者Instantiate创建的，这部分可以说是实例化出来的了，另外像CombinedMesh是Unity自己创建的，也可以算是实例化的。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;另一类是不可被引用的，通常是组件资源，比如ParticleSystem，如果要渲染多个相同的ParticleSystem，就需要实例化多份出来，ParticleSystem的模板在Assets下，而实例化出来的在SceneMemory下。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;editor-mono672mb515mbgccollectmono&quot;&gt;我在Editor下测试， 前一帧Mono还是67.2MB，下一帧突然自己掉到了51.5MB。然而并没有gc.collect()调用，这Mono是为什么减少？因为有不明原因的减少，所以担心也有不明原因的增多。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果题主是在Editor测的，这个Mono的回落就正常了。Editor本身（渲染窗口，处理交互事件等）就会造成内存分配，同时也会触发GC。&lt;/li&gt;
+  &lt;li&gt;但默认情况下，Editor本身的开销在Profiler里是看不到的，除非题主点击一下“Profile Editor”。 点击之后，就可以看到Editor本身函数的耗时和GC的触发了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
+&lt;h4 id=&quot;hierarchyanimation-windowmissingcurve&quot;&gt;场景中放置一动画物体，原先正常进行动画，修改了物体Hierarchy某结点的名称，然后动画就异常了。打开Animation Window，发现动画曲线变为Missing。把物体名称改回后又恢复正常。我的疑问是动画Curve是与物体名称绑定的吗？如果是，如何修改动画物体的名称呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;anim文件里有节点路径的：
+比如：curve: serializedVersion: 2 m_Curve:
+    &lt;ul&gt;
+      &lt;li&gt;time: 0 value: {x: -0.187, y: -0.003, z: 0.062} inSlope: {x: 0, y: 0, z: 0} outSlope: {x: 0, y: 0, z: 0} tangentMode: 0&lt;/li&gt;
+      &lt;li&gt;time: 0.93333334 value: {x: -0.187, y: -0.003, z: 0.062} inSlope: {x: 0, y: 0, z: 0} outSlope: {x: 0, y: 0, z: 0} tangentMode: 0 m_PreInfinity: 2 m_PostInfinity: 2 m_RotationOrder: 4 path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Finger1&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Animation Curve与动画物体是名称绑定的（名称包含其Hierarchy的Path，除去Root）；&lt;/li&gt;
+  &lt;li&gt;Animation Window中可以修改Curve的绑定名，可以将其更新为改名后物体的Path；&lt;/li&gt;
+  &lt;li&gt;如李先生所说Animation文件包含结点路径，可以“ForceText”后用文本工具来修改，比较方便；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;平时研究动画系统的时候有几个不太明白的问题：&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;BlendTree（不论1D或者2D） 在采样的时候，如果BlendTree内的AnimationClip的长度不同，那么输出的动画长度是可变的。不同的BlendTree参数会导致不同的BlendTree输出的动画长度。问题是BlendTree最终输出的动画长度是如何计算出来的？采样AnimationClip的时候，对于动画的TimeScale做了什么调整？ 图例：run是一个BlendTree2D，当它的参数Speed=300时，和Speed=900时的长度是不一样的。
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_78%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2.Unity的BlendTree2D是如何根据两个动画参数确定该在哪几个AnimationClip中采样？这些AnimationClip各自的权重是多少？ 图例：当Direction=-19，Speed=777的时候，黄箭头所指的动画实际上是由红箭头所指的4个动画混合而成的。那么混合权重分别是多少？
+&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_78%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;对于不同的Clip动画数据进行Blend时，Unity会把所有Clip的时间都归一化（展开为相同长度）后，再根据各个Clip的权重进行加权平均。&lt;/li&gt;
+  &lt;li&gt;Blend后的时间长度与各Clip的权重相关，时间更接近权重大的Clip的时间（近似时间长度的加权平均）。BlendTree参数值用来决定当前Blend各Clip的权重值，参数不同导致权重不同，因此时间也就不同。参数值如何决定哪些Clip进行Blend，其权重则跟不同Clip的参数threshhold相关。&lt;/li&gt;
+  &lt;li&gt;2D时在参数空间中根据（x,y)的坐标位置对临近的Clips进行插值。不同2D Blend 类型使用的插值方法不同，而插值方法的实现也就决定了各Clip的权重。对于插值算法可以参考这里提供的pdf：
+http://answers.unity3d.com/questions/1206428/how-weights-of-2d-blending-are-calculated.html&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;性能综合&lt;/h2&gt;
+&lt;h4 id=&quot;scriptmapperstandardshaderstandardshader&quot;&gt;如下图，不理解ScriptMapper具体是什么，为什么会引用StandardShader，有什么办法可以彻底把StandardShader从内存里移除呢？&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;这说明是有代码在索引这个Shader。建议题主尝试以下方法来定位Standard Shader的具体引用：
+    &lt;ul&gt;
+      &lt;li&gt;在游戏运行时遍历所有的GameObject或者Material，然后获取其所使用的Shader信息，查找跟“Standard”名称相对应的Shader，然后就可以定位它是出自哪个Material或GameObject。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;上述方法应该适用于大部分情况，但无法适用于以下情况：
+    &lt;ul&gt;
+      &lt;li&gt;Shader被加载后直接被缓存在代码脚本中；&lt;/li&gt;
+      &lt;li&gt;Shader是通过AssetBundle.LoadAll加载的；&lt;/li&gt;
+      &lt;li&gt;Shader通过Preload Shader加载的。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;unitygameobjectactiveactiveuwaunityactive&quot;&gt;Unity对GameObject.active()这个底层具体做了什么？因为在优化项目的时候看见有些界面active()这个函数造成的开销比较高，我采取的办法是移除摄像机的范围，这是参照UWA以前文章找到的办法，但是我还是想知道Unity对Active底层具体做了哪些操作，否则会有点困惑。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;至少SetActive后，如果GameObject被激活，那么会调用该GameObject和所有子GameObject上的所有组件的OnEnable函数。而各种不同的UI组件的OnEnable中也有各种不同的操作。 如果题主希望深入研究下，可以看一下NGUI或者UGUI的源码，OnEnable具体做了什么都可以看到。同时，针对UI界面而言，还会在同一帧里触发其他的相关函数，出现后续的开销，如UGUI里的SendWillRenderCanvases和NGUI里的UIPanel.LateUpdate。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Fri, 22 Dec 2017 16:49:12 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</guid>
+        
+        <category>UWA</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity特效学习：动画</title>
+        <description>&lt;h4 id=&quot;unity&quot;&gt;Unity动画创建&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;选中物体后按Ctrl+6可以开启动画编辑器。
+&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NDQ4M1Z2TlZ0TFU1b1VpaHZqb0dFR0F1TlNaeDhDSFRnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;点击Add Property可以选中你要编辑的物体对象上的属性。可以看到几乎物体上所有组件的可编辑的属性都可以通过动画来编辑。这也意味着很多东西不需要编码来完成，比如你要做物体transform的变化、要做shader属性的变化等。以往可能需要进行代码编辑，在update或者某个corroutine中来使用Time.deltatime来做变化，但是现在只要通过动画编辑器就可以实现了。&lt;/li&gt;
+  &lt;li&gt;有时间线的区域就是帧动画编辑区&lt;/li&gt;
+  &lt;li&gt;红线是时间线&lt;/li&gt;
+  &lt;li&gt;可以右键然后选项add key来实现关键帧的添加。也可以拖动红线到某个位置，测试在inspector中改变对于属性的值时会自动的添加一个key。
+&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NmdVMlVtaWFlOXlWWFZxazNsNWtYcnduRFVzdG9UVzdnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;最下面有Dopesheet和Curves的不同模式。下图是选择了rotation后的curves，可以看到X和Z就是一条直线没有变化，因为这个动画我确实只是选择了Y轴，而Y所对应的黄色曲线有明显的变化。
+&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NWhmK2k0NzlFeS9MMTNSclF4YjJrSkVheU4rL1ZQMWtRPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+  &lt;li&gt;Curves的编辑：和unity中其他的curves一样，右键添加key，然后key有各种的设置，总之动画效果完全是可视化编辑的。
+&lt;img src=&quot;http://imglf4.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2eEFBTWhIR0l0WXlGK3RCblNyamU3WFVnelVwVStKc3dnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;d&quot;&gt;使用3D软件制作动画&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;事实上unity能够制作的动画比较简单。一个真正游戏中的复杂模型的动画还是靠的3D软件来制作。&lt;/li&gt;
+  &lt;li&gt;还有我不会3D软件 (｡◕ˇ∀ˇ◕)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section&quot;&gt;如何修改动画软件导入的动画信息&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过FBX得到的动画信息可以通过Animation编辑器打开，但是会显示为read-only。这有有个小机器，就是我们选择FBX的动画片段后，Ctrl+D 复制一个动画出来，在打开后就可以编辑啦。&lt;/li&gt;
+  &lt;li&gt;另外一个小技巧是，在运行unity时播放某个动画的时候，暂停然后选择Hierarchy面板中的对象，选择copy，然后停止unity play。在hierarchy中paste，此时会粘贴模型到hierarchy中，而且模型的动作就是copy的瞬间的动画动作。好神奇！！！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;说明&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;Demo的地址为https://github.com/klkucan/UnityEffect&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 09 Dec 2017 22:35:34 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/</guid>
+        
+        <category>Unity</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity特效学习：粒子</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;参数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;只记录一些特别的参数&lt;/li&gt;
+  &lt;li&gt;Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。&lt;/li&gt;
+  &lt;li&gt;StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。&lt;/li&gt;
+  &lt;li&gt;Color：
+    &lt;ul&gt;
+      &lt;li&gt;Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。&lt;/li&gt;
+      &lt;li&gt;Random：粒子颜色从两个值随机取&lt;/li&gt;
+      &lt;li&gt;还有梯度随机&lt;/li&gt;
+      &lt;li&gt;纯粹随机：这个可以自定义N个颜色区间。&lt;/li&gt;
+      &lt;li&gt;梯度编辑器很强大。注意：点击颜色条上沿添加的节点是调整alpha的，下沿是调整颜色的。藏的好深啊。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Emission:
+    &lt;ul&gt;
+      &lt;li&gt;Rate over Distance:按照移动距离发射粒子。不动的情况下就不发射。可以用来模拟移动的汽车的尾气。动起来才有，不动就没有了。必须配合world模式。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Shape:
+    &lt;ul&gt;
+      &lt;li&gt;发射器可以选择不同的形状。当选择了Emit from为Base shell，并且将start speed设置为0时粒子就会出现在外轮廓的固定位置。可以呈现比较特殊的粒子效果。尤其是圆形或者柱状时。
+&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiLythcEdyaE01eGtmc0RPdjltcXZYSTRyNm5veW9yd0JBPT0.jpg?imageView&amp;amp;thumbnail=1809y511&amp;amp;type=jpg&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+      &lt;li&gt;mesh:想做特殊形状的粒子需要这个，很特别，看下图。
+&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMGdNdDdZMkVPS25yYmdwRU1rVHVRYnVLV0ZBbjlKdzJRPT0.jpg?imageView&amp;amp;thumbnail=1699y586&amp;amp;type=jpg&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Velocity over lifetime: 简单来说就是在生命周期中给与一个3D方向的移动速度。比如我们只给x一个5的值，那么看上就是有粒子北风吹走的感觉了。目前想到的就是风吹的效果。&lt;/li&gt;
+  &lt;li&gt;Limit Velocity over lifetime: 速度的衰减。speed为最终速度、dampen为删减的速度。基本上的公式应该是&lt;code class=&quot;highlighter-rouge&quot;&gt;speed = start speed - dampen * time&lt;/code&gt;。只给可以配合Velocity over lifetime实现一个更为真实的风吹效果。&lt;/li&gt;
+  &lt;li&gt;Rotation over left：这个主要是旋转粒子，材质球选择一个具体的纹理图后比较明显。现在看效果比较适合做技能特效。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;External Force：配合风场更适合做各种风的效果。具体设置看Demo。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Sub Emitters:自发射器可以实现多个粒子的配合效果，最常用的就是烟花。
+    &lt;ul&gt;
+      &lt;li&gt;birth：主粒子产生时产生子粒子&lt;/li&gt;
+      &lt;li&gt;collision：主粒子碰撞时产生子粒子&lt;/li&gt;
+      &lt;li&gt;death：主粒子消失时产生子粒子&lt;/li&gt;
+      &lt;li&gt;在death粒子如果想做出一次性的烟花效果需要注意：首先lifetime要短，其次总离子数量要小于rate over time，这样才能实现一次性发射所有的粒子。具体设置见demo。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf6.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiNWJCd0ROTUNyb2lpeXhrZDRDMVQvakgxbGNQTVl3WEV3PT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Texture Sheet Animation：粒子序列帧动画。需要在材质球中配合特别的序列动画纹理图。最常见的就是做火焰。这个功能极其强大。
+    &lt;ul&gt;
+      &lt;li&gt;Tiles：动画纹理中动画的横轴纵轴的数量。我demo中的图是8x8的，所以这里也要设置成8x8。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMEhQMGlNckU0WFJ1MWt4eldWQzlyYSsrbWE0OU1oeCtRPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;说明&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;Demo的地址为https://github.com/klkucan/UnityEffect&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 09 Dec 2017 14:46:13 +0800</pubDate>
+        <link>https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/</link>
+        <guid isPermaLink="true">https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/</guid>
+        
+        <category>Unity</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第十八周</title>
@@ -658,665 +1272,6 @@ echo MyClass::constant . PHP_EOL;
         <pubDate>Sun, 19 Nov 2017 01:04:30 +0800</pubDate>
         <link>https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：卡通渲染笔记</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;描边的方法&lt;/h2&gt;
-&lt;h4 id=&quot;section-1&quot;&gt;基于视角的勾边&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;PS：这个是最简单的绘制边界的做法。计算方式就是dot(viewDir, normal)。根据 三角函数的定义值越小说明视角与模型某个点的表面法线的夹角越大，夹角为90°时说明这个triangle是视角看不到的，也就是边界了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;基于几何生成方法的描边&lt;/h4&gt;
-&lt;h5 id=&quot;shell-method&quot;&gt;shell method&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先在绘制结束正常的模型后，将需要描边的物体改用正面剔除再绘制一遍，在VS中将顶点沿着法线方向膨胀一定距离，然后在FS中将模型用纯色输出。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;z-bias&quot;&gt;z-bias&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;也是绘制背面，但不膨胀，而是把背面顶点的Z值稍微向前偏移一点点，使得背面的些许部分显示出来形成描边效果。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;基于图像处理的描边&lt;/h4&gt;
-
-&lt;h5 id=&quot;section-4&quot;&gt;什么是“边缘”呢？&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;边缘就是在深度或者法线上不连续的位置。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-5&quot;&gt;做法：&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;需要将深度信息和法线信息以贴图的形式传入，运用边缘检测算法去寻找这些像素。&lt;/li&gt;
-  &lt;li&gt;这类方法的优点是描边的线宽一致，缺点是需要额外的法线和深度信息，当然，由于近年来流行的延迟渲染框架，法线和深度本来就是G-Buffer的一部分，因此往往不需要额外绘制法线和深度的信息。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;美式卡通中的做法&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;美式卡通中往往倾向于使用基于图像处理的描边方法来生成均匀一致的描边效果。在《英雄联盟》中小兵和英雄的勾边效果就是用Sobel算子对深度信息进行边缘检测来获得的。&lt;/li&gt;
-  &lt;li&gt;当物体较多时在进行正常绘制的阶段用stencil buffer标记出需要描边的物体，然后用一个全屏的后处理，对stencil buffer标记的像素进行边缘检测，当然这样的话，就很难给每个物体单独指定描边颜色了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;日式卡通中的做法&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;日式卡通中往往倾向于使用基于几何体生成的方法去描边，这类描边方法相较于另两类方法的好处在于线宽更容易为美术所控制。&lt;/li&gt;
-  &lt;li&gt;在《GUILTY GEAR Xrd》中，角色的描边就是通过几何体生成的方法，结合了shell method和z-bias method，并引入了逐物体的顶点色来控制描边细节，同时也是为了保证描边粗细不会随着摄像机视距发生变化，具体来说，顶点色存储的信息包括：
-    &lt;ul&gt;
-      &lt;li&gt;R通道：控制toon shading的阈值，和描边无关，和着色有关，这个我们后面描述&lt;/li&gt;
-      &lt;li&gt;G通道：控制顶点根据视距膨胀的强度（这个部分具体操作我也没有完全弄清楚，希望了解的朋友来补充）&lt;/li&gt;
-      &lt;li&gt;B通道：控制描边的z-bias，越大则描边越不可见&lt;/li&gt;
-      &lt;li&gt;A通道：控制描边的粗细&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-8&quot;&gt;着色&lt;/h2&gt;
-
-&lt;h4 id=&quot;cel-shading&quot;&gt;Cel Shading&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;只考虑光线&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS1.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS2.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F10.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;同时考虑光线和视角&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS3.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F11.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;tone-based-shading&quot;&gt;Tone Based Shading&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Tone Based Shading的风格化是基于美术指定的色调插值，并且插值得到的色阶是连续的。首先需要由美术指定冷色调和暖色调，而最终模型的着色将根据法线和光照方向的夹角，在这两个色调的基础上进行插值，具体算法如下：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS5.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS25.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;其中，Kd仍是模型自身色彩贴图，Kblue，Kyellow和alpha，beta则均是自定义的参数。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F12.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;基于tone based shading绘制的球体&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-9&quot;&gt;日式卡通中的着色&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;以《GUILTY GEAR Xrd》为例，它也一定程度上包含了Cel Shading和Tone Based Shading的部分思想，将色阶离散成为“明暗”两个色调，并由美术指定冷暖色调的颜色：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS7.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS8.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;上述公式表示了这个卡通渲染的漫反射部分&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;threshold表示明暗交界的阈值，在游戏中通过顶点色的R通道来实现逐顶点的控制。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Kcool和Kwarm由美术逐物体地指定，Ksss是对模型次表面散射效果的模拟，对皮肤而言一般呈粉红色，通过美术绘制的SSS贴图来实现逐像素控制，并且只有暗部的像素才会受SSS贴图的影响。Kd是模型自身的颜色贴图。darkness表示了某个像素的明暗程度，用于确定色调的冷暖。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;美术绘制的AO贴图，来实现一些边角缝隙的暗部效果。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;高光的计算更简单一些：基本上与blinn-phong一样&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS10.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS11.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-10&quot;&gt;美式卡通中的着色&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Valve在其游戏《军团要塞2》将卡通渲染着色分为了view dependent term和view independent term。两部分的计算分别如下：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS12.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS13.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS14.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PS：从公式中可以看到不依赖view的版本是l也就是光照向量，而依赖view的中是r，也就是反射计算。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://wikimedia.org/api/rest_v1/media/math/render/svg/d5acd56487631512ad0fc984bf3c11ce700589c4&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section-11&quot;&gt;风格化高光和阴影&lt;/h2&gt;
-&lt;h4 id=&quot;section-12&quot;&gt;可变形状的高光&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;从日式着色的高光公式看，改变形状的关键在于H向量。这个H就是半角向量，参考Blinn-Phong公式。具体做法有：
-    &lt;ul&gt;
-      &lt;li&gt;平移，改变高光的位置： &lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS17.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-      &lt;li&gt;有方向的缩放，沿着切线空间的某个轴缩放高光形状：&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS18.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-      &lt;li&gt;分割，将一块连续的高光切分成两块：&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS19.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;方块化，将趋于圆形的高光变成方形：&lt;/p&gt;
-
-        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS20.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS21.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-        &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2FGS22.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F16.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-13&quot;&gt;风格化阴影&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;类似于风格化的高光，风格化的阴影也是在标准的阴影计算流程之后，定义了一系列针对标准阴影的操作，通过这些操作，配合用户自定义的参数，便可以达到风格化阴影的效果，总的来说，共有四类操作：
-    &lt;ul&gt;
-      &lt;li&gt;膨胀/腐蚀（Inflation）：扩大或者缩小阴影范围，用参数i来控制&lt;/li&gt;
-      &lt;li&gt;亮度（Brightness）：阴影区域的亮度，可以用于模拟半影区的效果，用参数b控制&lt;/li&gt;
-      &lt;li&gt;柔度（Softness）：阴影边界处的柔和程度，用参数s控制&lt;/li&gt;
-      &lt;li&gt;抽象度（Abstraction）：阴影形状的抽象程度，用参数alpha控制&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F17.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-14&quot;&gt;几种操作和相应的效果&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;整个风格化阴影的生成是基于图像空间的，从一个已经生成的精确阴影图开始。可以分成五个阶段：&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;精确阴影的生成，由于是基于图像空间的，因此对精确阴影图的生成方法没有特别要求，可以是shadow volume，shadow map，ray tracing或者其他阴影生成技术，但必须要注意的是这里的阴影值一定是二值化的。&lt;/li&gt;
-      &lt;li&gt;有向距离场的生成，基于图像空间的精确阴影，计算每个像素距离最近阴影边界的有向距离，这是文中算法的核心，也是后面风格化的基础，在文中给出了一种有向距离场的计算方法，当然也可以采用其他方案。&lt;/li&gt;
-      &lt;li&gt;有向距离场的高斯模糊，这一步是抽象阴影生成的关键。&lt;/li&gt;
-      &lt;li&gt;过滤，通过一个转移函数，将模糊后的有向距离场重新映射为阴影图。&lt;/li&gt;
-      &lt;li&gt;使用过滤后的阴影进行光照计算。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2Fsparkle_cartoonshading%2F18.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PS：如果是unity的话可能要做屏幕后处理，如果是延迟渲染的的话G-buffer不确定有没有阴影信息。而且移动平台也不推荐。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-15&quot;&gt;结束语&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;除了好好学习还能有啥好说的呢╮(╯▽╰)╭&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 14 Nov 2017 14:24:54 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十五周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;unityprefabassetbundleassetbundleassetbundleobjectobjectobjectdestroyinstantiateobjectobjectdestroyloadassetbundle&quot;&gt;我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。&lt;/li&gt;
-  &lt;li&gt;PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;materialassetbundleassetbundleassetbundle&quot;&gt;美术做粒子的时候，粒子与粒子之间共用资源的情况很多，例如某几个粒子共用一个Material，某几个粒子共用一个贴图等，应该如何组织AssetBundle？要是对应到最细的那个程度，凡是共用过的资源都单独打一个AssetBundle，好像又会很琐碎，假如不那么做，粒子与粒子之间的AssetBundle又会有冗余。这方面有什么好的建议？&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;AssetBundle打包没有标准的方式，单就粒子系统而言，因为其个体本身比较小，并且在项目中经常大量出现，所以并不建议将粒子系统逐个打包，而是建议根据其出现频率进行打包，比如将同一段时间、同一出现场景等的粒子系统打包在一起。同时，由于粒子系统的Shader基本上都是Unity内置Shader，因此，尽可能将Shader进行依赖打包。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
-&lt;h4 id=&quot;optimize-game-objectsavatar&quot;&gt;我把骨骼文件的Optimize Game Objects”开启了，然后骨骼信息就没有了，那Avatar换装时候需要处理的骨骼信息怎么办？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在开启“Optimize GameObject”选项后，因为Avatar信息消失，所以并不能通过原始的合并骨骼、合并Mesh的方法再来实现换装功能。对于开启“Optimize GameObject”选项的模型，Unity本身有另外一套更为方便的换装方式，即只要所换装模型的骨骼结点信息与Avatar自身骨骼信息可以匹配，那么直接将换装模型挂在Avatar模型下做为子节点即可，而不必再通过骨骼合并的方式来进行换装。&lt;/li&gt;
-  &lt;li&gt;PS:mark一下，没看懂。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;mipmap&quot;&gt;关于Mipmap的设置&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过修改Texture的mipMapbias这个值可以改变使用的mipmap的层级。但是这个值目没有办法在全局设置，在导入图片的时候要用代码设置。&lt;/li&gt;
-  &lt;li&gt;unit官方建议&lt;code class=&quot;highlighter-rouge&quot;&gt;Note that using large negative bias can reduce performance, so it’s not recommended to use more than -0.5 negative bias.&lt;/code&gt;，但是Mipmap的层级数的确是一个整数。mipMapbias是由Unity引擎定义的一个参数，按照Unity官网解释来看整数代表了比当前层级更低（级数更大，更模糊）的Mipmap，负数代表了比当前层级更高的Mipmap。“-0.5”具体是偏移多少层级目前也不是很清楚。&lt;/li&gt;
-  &lt;li&gt;Trilinear应该是会比Bilinear效果好一些，但是也差强人意。原因是这样：传统的Mipmap（不采用Anisotropic Filtering）都是每层将u，v两个方向缩减一半，即：512x512的下一层是256x256。这就导致在两层交界处在不同层采样出来的纹理在u，v两个方向都被拉伸（或者叫变模糊）。Anisotropic Filtering的方式可以简单理解为在交界处只在某一个方向上被拉伸，另一个方向保持原有采样率（或者叫纹理分辨率），这样才能明显降低突变的模糊感。&lt;/li&gt;
-  &lt;li&gt;使用Anisotropic Filtering不仅纹理内存占用会增高，而且采样率也增高（因为有一个方向的保持不变），因此它比传统的mipmap更耗时，耗时在于GPU端对纹理进行采样时增加了访存，在CPU端没有影响。虽然Anisotropic Filtering 耗时增加，但是相比于直接增加mipmap level（也就是设置-0.5的偏移），要达到相同的效果，Anisotropic Filtering的时间耗时还是相对更低的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;canvascanvasuguispriterenderer&quot;&gt;我在改血条，我原来是一个Canvas里放了所有血条，后来改成每个血条一个Canvas，再改成每个血条完全不用UGUI，直接用SpriteRenderer绘制，感觉性能越来越差了，怎么办呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于“所有血条放一个Canvas”和“一个血条放一个Canvas”做一个比较：
-    &lt;ul&gt;
-      &lt;li&gt;前者的开销主要在于网格的更新，在Unity5.2之后主要是在子线程中通过Timeline来查看。因此只看主线程的话，这种方法肯定是更高效的；&lt;/li&gt;
-      &lt;li&gt;后者的开销主要在于DrawCall的数量（前者理论上能做到只用1个DrawCall，后者一个Canvas即一个DrawCall），开销被包含在了Camera.Render或者Canvas.RenderOverlays中。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;因此，在选择时，需要考虑的就是“网格更新”和“DrawCall”的权衡。&lt;/li&gt;
-  &lt;li&gt;还是建议尽可能降低血条的顶点数，然后选择前者。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;generichumanoid&quot;&gt;优化动画精度时发现针对Generic效果明显，而Humanoid变化不大。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;精度优化降内存（并非通过减少位数降低文本体积降内存），其实质是将曲线上过于接近0的数值（例如有效数字出现在小数点6位以后）直接归零，使部分曲线变为constant曲线来降低内存消耗。&lt;/li&gt;
-  &lt;li&gt;在Generic中，大量曲线存在这样的数值，因而降低精度后，constant曲线增加，内存降低。&lt;/li&gt;
-  &lt;li&gt;但在Humanoid中，动画信息被转化到Muscle空间后，muscle曲线上的数值很少约等于零，很难因为精度降低变为constant曲线，因此内存占用受精度降低的影响不大。&lt;/li&gt;
-  &lt;li&gt;但归一化的Muscle空间本身就对动画信息进行了精简，自身内存占用相比Generic已经降低了不少，如果需要继续降低，可以尝试提高压缩选项下的Error值。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;animatoranimationclip&quot;&gt;Animator会把所有状态的AnimationClip加载到内存，有什么好的办法可以动态加载？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Animator Controller结构不需要改变，但动画需要变化。比如随着人物等级或技能升级，同种的攻击动作随着变化等。该种需求可以通过AnimatorOverrideController来进行完成，即按需加载新的AnimationClip，然后替换AnimatorOverrideController中相应的AnimationClip即可。目前，Unity的AnimatorOverriderController不仅可以进行单个替换，同时也可以ApplyOverrides成组替换；&lt;/li&gt;
-  &lt;li&gt;Animator Controller结构需要改变，类似于Animation老版本动画的AddClip功能。这种需求需要替换AnimatorController，研发团队可以在动态加载AnimationClip的同时，动态加载相应的Animator Controller，然后进行替换即可。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;transformparentanimatorparentnull&quot;&gt;为什么Transform.设置Parent会触发Animator的初始化吗？Parent是等于null的。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;把 Parent 设为null，相当于把这个 GameObject 变为根节点。如果在设置之前这个 GameObject 本身是激活状态，但其的父节点是未激活状态，那么设置之后，相当于把这个GameObject 激活。而激活GameObject 时就会触发 Animator.Initialize 等操作了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;unity--profilerwarning&quot;&gt;在Unity 的 Profiler里，有些记录右边会有Warning的个数信息，请问这个是否影响性能，或者是否有必要修改呢？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_62%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;这种字符的出现很可能会导致后续的物理更新出现较大的性能开销，包含在Physics.Simulate/Processing中。&lt;/li&gt;
-  &lt;li&gt;针对这个图是受限于Unity版本中的PhysX在移动静态碰撞体是开销较高的问题（虽然文档中说5.x下已经解决，但我们确实发现在5.x的项目中该项仍然存在）。&lt;/li&gt;
-  &lt;li&gt;建议给需要移动的Collider加上RigidBody并勾选Is Kinematic复选框，从而将其变为动态碰撞体。对于不移动的物体，则直接将模型的Apply Root Motion选项进行关闭，从而直接省去Static Collider.Move的性能开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;targetframerate30&quot;&gt;我们设置了TargetFrameRate为30，想避免过高的耗电和发热，请问这样做是合理的么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这种设置仅在帧率本身很好的情况下，才会起到减少耗电和发热的作用。但如果本身游戏已经较为卡顿，那么该设置方法意义不大。对于耗电和发热，研发团队需从CPU、GPU和IO入手，尽可能降低这三方面的负载压力。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;materialsetpassfast&quot;&gt;项目渲染中Material.SetPassFast的开销高&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Material.SetPassFast是Unity引擎在渲染过程中Material的轮循切换开销，一般在Unity5.0~Unity5.3版本中出现。它的开销主要分为两种：
-    &lt;ul&gt;
-      &lt;li&gt;Shader.CreateGPUProgram峰值开销：这种情况主要出现在Shader第一次渲染时。在Unity5.0以后，引擎为了避免Shader加载时过高的CPU峰值出现，已经将Shader.Parse和Shader.CreateGPUProgram两种操作分开执行，前者在Shader加载时，后者在Shader第一次渲染时。&lt;/li&gt;
-      &lt;li&gt;渲染状态切换开销：这种情况是几乎每一帧都发生的，有渲染的地方就会有Material的切换。从问题图中可以看出，在运行的16000帧中，Material.SetPassFast一共被调用137万次。这里可以认为几乎全部是渲染时Material的切换操作。因此，该项较高的主要原因还是材质切换操作过多所致。所以，建议研发团队在报告中的详细材质页面查看是否有过多“冗余”的材质出现，如有则尽可能降低材质的使用冗余度。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;shaderassetbundleshadershader-variantsshaderwarmupallshadersshadervariantcollectionwarmup&quot;&gt;将需要的Shader打到一个AssetBundle包中（包含一个关联了所有Shader的Shader Variants），分别用Shader.WarmupAllShaders和ShaderVariantCollection.WarmUp两种方式进行预加载，后者耗时更少。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;根据官方的文档的描述，确实是ShaderVariantCollection的效率更高，详见：
-https://docs.unity3d.com/Manual/OptimizingShaderLoadTime.html&lt;/li&gt;
-  &lt;li&gt;因为在ShaderVariantCollection中，是可以给每个Shader添加指定的Keyword的，ShaderVariantCollection.WarmUp的调用只会对ShaderVariantCollection中指定的Keyword进行Warmup操作；而Shader.WarmupAllShaders则是对所有的Keyword全部进行Warmup操作（其中大多数很可能都不会用到）。&lt;/li&gt;
-  &lt;li&gt;因此在Shader.WarmupAllShaders的文档中也提到，建议使用ShaderVariantCollection.Warmup来进行细粒度的Warmup操作，避免大量多余的Keyword被Warmup，造成严重的卡顿，大家可以参考下文：
-https://docs.unity3d.com/ScriptReference/Shader.WarmupAllShaders.html&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity-56directional-modedirectional-specular&quot;&gt;在Unity 5.6版本中如何解决预渲染缺少高光的问题？该版本中光照预渲染Directional Mode选项中少了Directional Specular选项，渲染出来的效果场景缺少高光。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果需要在使用Lightmap时渲染高光，替代方案是采用Mix Lights模式下的Shadow Mask以及Distance Shadow Mask选项。即将场景中的Directional Light改成Mix Lighting类型，并且在Lighting Mode选Shadow Mask或者Distance Shadow Mask。&lt;/li&gt;
-  &lt;li&gt;其原理是：LIghtmap中仅仅存储indirect的光照，而direct光照是实时计算的，所以包括高光、阴影等都可以是实时的（阴影也可以是预计算好的）。这样做的好处是给Lightmap光照一定的灵活度，原来的Lightmap是完全静态的，现在是部分静态（direct的实时，indirect静态）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity-5--shader-variant-collection-&quot;&gt;Unity 5 的 Shader Variant Collection 功能&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;经过测试，在较新的版本中（如Unity 5.5.3），将ShaderVariantCollection与Shader打包在相同的AssetBundle中后，其中会包含该Shader在ShaderVariantCollection中指定的Variant。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;shader-shader--shader-&quot;&gt;使用 Shader 变体之后，Shader 是否还能走资源更新？抑或 Shader 不推荐走资源更新？&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用 ShaderVariantCollection后依然可以进行资源更新（通过更新AssetBundle，来更新Shader的实现或者ShaderVariantCollection中包含的Variant）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;shader--shader-always-include-&quot;&gt;Shader 变体和 Shader Always Include 的主要区别是什么？二者对内存和帧率影响如何？&lt;/h5&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ShaderVariantCollection与Always Included Shaders的区别主要在于打包时所包含的Variant。Always Included Shaders中的Shader，其所有的Variant都会被包含，好处是，理论上不会出现Variant丢失的情况；坏处是，会导致更大的发布包以及额外的内存占用，而影响最大的是手动进行Warmup时的耗时以及ShaderLab的内存占用。因此一般来说，对于Variant特别多的Shader（如Standard Shader），并不推荐放入Always Included Shaders中。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;unity-5-shader-bug&quot;&gt;在 Unity 5 较早的版本中，Shader 变体功能似乎有一些Bug，现在是否可靠？&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;目前即使是较新的版本，其可靠性我们也并不能确保，依然建议在使用前进行一些测试来验证。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;==PS: 需要关注的问题==&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 13 Nov 2017 09:22:09 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：动画重定向笔记</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;基本原理&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;动画重定向技术主要是针对骨骼动画的方案，由骨骼来描述动作信息，用蒙皮来表示模型网格与骨骼之间的关系，从而得到模型最终的样子。
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FAnimationRetargeting%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;PS：这张图很形象&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;动画就是每一帧为模型制作一个Pose（姿势），在每帧之间的姿势可以通过差值获得。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;最简单的情况：只有骨骼大小不一致的情况&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;此时因为骨骼在模型空间中具有一个对应的位置，因此以大人和小孩的骨骼为例，是没办法直接将大人的动画信息用在小孩的骨骼上的。&lt;/li&gt;
-  &lt;li&gt;如何解决这个问题的呢？unity使用了一个参考姿势（通常情况下，会把T-Pose作为参考姿势）来计算不同大小骨骼之间的差值，然后应用到动画数据上。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;a1是A骨架的参考姿势，b1是B骨架的参考姿势，动画中某一帧的姿势是a2，我们想得到的结果是b2，我们认为，a2与参考姿势a1的差异应当和b2与其对应的参考姿势b1的差异相同，即：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;a2 - a1 = b2 - b1&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;我们可以得到计算过程为： b2 = a2 - a1 + b2 = a2 + (b1 - a1)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;参考姿势a1和b1都是提前得到的，因此可以进行预先计算好b1-a1的值。要知道这里的加法和减法要转换为每根骨骼的PRS计算，因此还是有不少CPU消耗的。下图给出了使用一个简单整数代替骨骼的PRS数据来模拟动画重定向的计算过程。
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FAnimationRetargeting%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;不同引擎的实现上可能不一样，文中提到了Havok的实现。&lt;/li&gt;
-  &lt;li&gt;以上就解决了骨骼长度不一致的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;真实的世界：骨骼名称、数量、父子关系不一致的情况&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先在如果项目中确定使用动画重定向，那么在模型制作时就需要约定好名称、数量和关系。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;骨骼名称不一致&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于CS骨骼，由于在3DS Max中通常美术只会添加不同的前缀，因此可以通过去除前缀的方式进行模糊匹配来做骨骼映射；&lt;/li&gt;
-  &lt;li&gt;Unity的做法细节不清楚，但是感觉会根据整个骨架的父子关系和结构来进行映射关系的计算；&lt;/li&gt;
-  &lt;li&gt;而对于Bone骨骼，在没有预先定义好类似最大化骨骼这样规范的情况下，非常难通过程序来判断映射关系，可以提供可视化编辑的功能来让美术自己定义它们之间的映射关系。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;骨骼数量不一致&lt;/h4&gt;
-
-&lt;h5 id=&quot;cs&quot;&gt;在非CS骨骼或者不重要的部分存在多余的骨骼&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果动画文件的骨架中存在多余骨骼，通常的做法是把这些骨骼忽略掉，而如果目标骨架上存在多余的骨骼，即有些骨骼原始动画中并不存在，这其实没有办法为它生成动画，只需要保证其保留在原始姿势的local space当中，即让其跟着父骨骼移动。比如身上的飘带，如果原始动画中没有，在不使用布料系统等物理方案的情况下，只能让其按照参考姿势中的样子，“僵硬”地跟随角色移动。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-5&quot;&gt;在重要的位置存在骨骼不一致&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;多图，请直接看原文。解决的办法就是使用链式映射。&lt;/li&gt;
-  &lt;li&gt;链式映射要做的就是将多根骨骼组成的骨链A和另外一个骨骼中多根骨骼组成的骨链B进行映射，做到整条B骨链的样子和A骨链的样子相近。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;骨骼父子关系不一致&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;当两套骨骼的父子关系都不一致的情况下，其实很难得到正确的映射，简单的不一致可能可以容忍，但是可以想象，把一个人形骨骼的动画映射给四足动物甚至蜘蛛这样的八脚动物，是一件非常难做的事情。&lt;/li&gt;
-  &lt;li&gt;也因为这样的原因，目前大范围应用的动画重定向，基本还是在人形骨骼上，当然，用相同的算法，把四足的战马动画映射到不同的体型的战马上也是可以的。基本的原则是骨架尽量具有更多的相似性，重定向的效果也就会更好。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;unity&quot;&gt;Unity中的重定向&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity引擎中动画重定向的实现不是一个直观的方法，而是封装在了Humanoid类型的动画系统里面，&lt;strong&gt;==也就是必须是人形的骨架、==使用Humanoid才可以使用它====&lt;/strong&gt;。&lt;/li&gt;
-  &lt;li&gt;Unity没有像前文描述的基本原理那样去定义两套骨架之间的映射关系，而是自己在内部定义一套骨架模板，所有的Avatar骨骼都必须映射到这套模板上才可以由同一个Animator来驱动产生Retargeting之后的动画效果。&lt;/li&gt;
-  &lt;li&gt;关于如何预览一个重定向之后的动画的效果，只能把模型放到Scene中，设置同一个Animator来观察。在动画文件的预览窗口，&lt;strong&gt;如果拖拽另外一个模型文件到其中，并不能预览到正确的效果。&lt;/strong&gt; PS：话说我以前都是这么干的。。&lt;/li&gt;
-  &lt;li&gt;PS：具体操作过程参考原文或者unity文档吧，就是avatar设置那套流程。不过unity的avatar里面还能改变肌肉控制。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;使用中的一些问题&lt;/h4&gt;
-&lt;h5 id=&quot;humanoid&quot;&gt;角色的武器或者飘带在使用Humanoid类型的动画系统之后不会移动了，或者移动的位置有了很大的偏差。&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;这时候可以在动画文件的属性设置里，查看Mask下的Transform选项，里面可能存在没有被勾选的骨骼。目前的做法是把Transform下的所有骨骼对象都勾选上。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-8&quot;&gt;角色的武器在动作中出现了乱飘的情况，与手部无法紧密地绑定在一起&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;由于我们最初为了方便美术制作武器的动作，把其父骨骼设置给了盆骨这样一根相对稳定的骨骼，但是经过Retargeting计算之后，由于角色身材不同产生了一些偏差导致。最终我们还是把武器骨骼的父骨骼设置为手部的骨骼，才解决了这一问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-9&quot;&gt;某些角色在重定向之后的动画中表现为脚不贴地，和地面之间有缝隙，原始动画中没有&lt;/h5&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;可能是重定向算法或者是参考姿势这两个因素导致&lt;/li&gt;
-  &lt;li&gt;在avatar设置中，可以看看目标骨骼在T-POSS是否正常。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-10&quot;&gt;性能消耗&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过前面的原理分析可以看出，即使在有预计算的情况下，与普通的动画计算，Retargeting的过程还是有一定的CPU消耗的，但是这与通常会造成CPU瓶颈的蒙皮、渲染指令提交等相比，其实消耗并不算大。&lt;/li&gt;
-  &lt;li&gt;Unity与Retargeting相关的还制作了肌肉控制的功能，Humanoid形式的动画系统相对于Generic形式的动画系统虽然有一部分额外的性能消耗，但是Unity内部做了比较好的优化，差别不是很大，因此可以放心使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-11&quot;&gt;补充&lt;/h2&gt;
-&lt;h4 id=&quot;section-12&quot;&gt;一些概念&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;CAT和CS之前都是插件形式出现的&lt;/li&gt;
-  &lt;li&gt;CS主要是用来创建两足动物的比如人类&lt;/li&gt;
-  &lt;li&gt;CAT不但可以创建两足动物还能创建多足动物，这就是CAT相对于CS最大的优势了。&lt;/li&gt;
-  &lt;li&gt;bones是3DMAX原始的骨骼系统，这个骨骼你需要自己手动创建才行，而CAT和CS可以自动生成&lt;/li&gt;
-  &lt;li&gt;skin是蒙皮系统，就是用骨骼对模型进行蒙皮后模型和骨骼产生关联，这样模型就能跟着骨骼一起运动了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-13&quot;&gt;原文&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/AnimationRetargeting.html&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Wed, 08 Nov 2017 09:51:58 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/08/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A8%E7%94%BB%E9%87%8D%E5%AE%9A%E5%90%91%E7%AC%94%E8%AE%B0/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/08/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A8%E7%94%BB%E9%87%8D%E5%AE%9A%E5%90%91%E7%AC%94%E8%AE%B0/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十四周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;assetbundleassetbundle&quot;&gt;AssetBundle划分过细的问题，比如每个资源都是AssetBundle。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;加载IO次数过多，从而增大了硬件设备耗能和发热的压力；&lt;/li&gt;
-  &lt;li&gt;Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBundle时，其SerializedFile的内存占用将会非常巨大。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;buildassetbundleoptionsdisablewritetypetree&quot;&gt;BuildAssetBundleOptions.DisableWriteTypeTree这个选项的实际用处是什么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在Unity 5.x版本中，AssetBundle在制作时会默认写入TypeTree信息，这样做的好处是可以保证AssetBundle文件的向下兼容性，即高版本可以支持以前低版本制作的AssetBundle文件。&lt;/li&gt;
-  &lt;li&gt;所以，如果开启DisableWriteTypeTree选项，则可能造成AssetBundle对Unity版本的兼容问题，虽然关闭TypeTree会使Bundle更小，但我们一般都不建议研发团队在制作AssetBundle文件时开启该选项。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundlecscriptpublicassetbundlescriptassetbundlecsmd5&quot;&gt;我们项目做AssetBundle打包时，发现如果资源所依赖的C#Script的Public成员变量有变化时，用新代码加载旧的AssetBundle就会不兼容。有没有什么方法能判断这些Script在变化时是否需要重新打AssetBundle呢？目前我们使用.CS文件的MD5来判断是否需要重新打包，但其实这样应该有很多不必要的重复打包，对吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;该问题的本质原因是新代码的序列化信息变化所致。建议研发团队使用Unity 5的新的AssetBundle打包方式，默认情况下，Unity 5引擎会自动检测其脚本的序列化信息是否进行改变，从而自动进行增量打包。&lt;/li&gt;
-  &lt;li&gt;PS: 虽然已经可以通过升级来解决，但是这个是个需要关注的点。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundle-1&quot;&gt;AssetBundle颗粒度问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;详见https://blog.uwa4d.com/archives/TechSharing_59.html 第一个问题&lt;/li&gt;
-  &lt;li&gt;总结一下：
-    &lt;ul&gt;
-      &lt;li&gt;不要一个资源一个AssetBundle，因为Android上面一个serializedFile有512k,但是5.6后应该是32k。不过实际测试的情况是不一定是32K。WTF。。&lt;/li&gt;
-      &lt;li&gt;对于AssetBundle小于1MB的限制在5.4后没意义，之前是因为www走webstream，会导致内存中占用AssetBundle大小4-5倍的空间。但是LZ4后基于其Chunk的加载特点，AB加载很快，且内存占用要比之前小很多。&lt;/li&gt;
-      &lt;li&gt;仍旧需要注意的：&lt;/li&gt;
-      &lt;li&gt;对于需要热更新的AB，也如问答中其他朋友的所言，要考虑实际情况控制AB的大小；- PS:可能是考虑网络下载的问题，以为过大的文件如果不做断点续传会是恶梦。&lt;/li&gt;
-      &lt;li&gt;即便是LZ4的AB，其加载方式不同，加载效率也可能完全不一致。&lt;/li&gt;
-      &lt;li&gt;对于AB的打包，尽可能把逻辑上同时出现（一个Prefab中非Share的Asset）、小而细碎的资源（Shader、Material、粒子系统等）尽可能打包在一起，并通过LoadAll来进行加载，因为这样会带来更好的加载效率。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadfromcacheordownloadversion&quot;&gt;使用LoadFromCacheOrDownload时如果用version参数，缓存的资源如何清除。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;AssetBundle，其Version版本号变化时，新的解压Data是不会覆盖旧的解压Data的。清除旧的解压Data主要有三种方式：
-    &lt;ul&gt;
-      &lt;li&gt;设置缓存的过期日期，默认情况下是150天；&lt;/li&gt;
-      &lt;li&gt;调用Caching.CleanCache来全部清空缓存；&lt;/li&gt;
-      &lt;li&gt;当本地Cache已满时，Unity会从最早的AssetBundle来进行自动清理。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;wwwloadfromcacheordownloadsystemstring-url-int32-versionunity-4x500unityunity-5x-&quot;&gt;WWW.LoadFromCacheOrDownload(System.String url, Int32 version)这个接口加载资源，如果是Unity 4.x的版本，会有500个资源的数量限制，如果超过这个限制，Unity会删除之前缓存的每个资源，是这样吗？那在Unity 5.x 版本上是否还存在这样的问题呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在Unity 4.x的版本中，如果通过LoadFromCacheOrDownload来加载AssetBundle，那么有两种情况需要考虑：
-  -内存中加载的AssetBundle数量。在iOS平台上，通过该接口加载、同时存在于内存中的AssetBundle数量确实是有限的，接近300个，这是由于iOS上文件句柄数的限制导致。而该限制在Unity 5.0以后则被完善了，因为Unity 5引入了虚拟文件系统，所以不再有这个限制；在Android平台上，则没有这个限制，或者说数量限制值非常大，基本可以忽略。
-    &lt;ul&gt;
-      &lt;li&gt;本地Cache中缓存的AsseBundle数量。无论是iOS、Android还是PC版本，都没有500的数量限制，而是有一个硬盘占用大小限制。具体来说，在WebPlayer平台上，有50MB的缓存限制，而在其他平台上，则是4GB的缓存限制。所以只要硬盘占用大小不超过限定值即可。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
-&lt;h4 id=&quot;unity-534p6uguiatexttextdisableloada-managedstaticrefrences-font-textdisableafont&quot;&gt;我们在内存优化时发现一个问题，编辑器版本 Unity 5.3.4p6，使用UGUI，场景A中一个Text控件使用自定义字体资源，然后把该控件Text属性勾选为空（disable），再Load一个空场景，看场景A卸载后在内存中的残留，发现有一份引用是 ManagedStaticRefrences（）的 Font 内存。如果不是把Text属性disable，则场景A卸载后内存里不会再残留被引用的Font内存，请问可能是什么原因造成的呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;UWA对于该例子进行了检测，的确能够在 Editor 复现。查了下 UGUI 代码，能对 Font 产生引用的，主要是这个函数 FontUpdateTracker.TrackText(Text)，其中会把 t.font 引用起来；而对应的解引用的函数为 FontUpdateTracker.UntrackText。因此，如果出现了两者的调用不匹配，就有可能造成 font 的 ManagedStaticRefrences 引用。&lt;/li&gt;
-  &lt;li&gt;进一步查看后，可以看到在定义了 UNITY_EDITOR 宏时，UI 元素会增加一个名为 OnValidate 的函数，Text 组件则在其中进行了 TrackText 的操作。
-而最关键的是，该函数在 Text 组件以“未激活”的状态被实例化时同样会被触发，同时，如果这样的 Text 组件在后续没有被激活过就被销毁，其 OnDestroy 和 OnDisable 函数是不会被调用的，参见文档中的这句话：OnDestroy will only be called on game objects that have previously been active.
-而 OnDisable 中才会调用 Untrack 解引用，所以造成了不匹配，导致了 font 的 ManagedStaticRefrences。&lt;/li&gt;
-  &lt;li&gt;但是，OnValidate 函数只在 Editor 上才有，真机上不会发生上面说到的不匹配的情况。所以建议研发团队先在真机上测试下是否还有这种情况，如果确实没有，那么就忽略该问题即可。&lt;/li&gt;
-  &lt;li&gt;PS:Mark&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
-&lt;h4 id=&quot;mask&quot;&gt;我想了解如何使用顶点色Mask控制明暗关系，才能达到类似崩坏琪亚娜效果？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/TechSharing_60.html 第五个问题，NB&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;nguihud600panel2drawcall&quot;&gt;我们游戏中用到NGUI的HUD，单位主要是一个进度条和一个倒计时文本(持续更新)，同屏数量达600左右，单位本身在持续移动。现已将这些设置为独立Panel，且只有2个DrawCall(进度条所在图集和文本)，但还是卡顿得很厉害，请问是否有优化的方法？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;简化元素的几何：进度条中的元素尽量避免Sliced 模式（改Simple）；倒计时部分如果使用了Outline或者Shadow，将其转为“图片字”；&lt;/li&gt;
-  &lt;li&gt;降低更新频率：如倒计时按“秒”统一更新；进度条按1%甚至5%的间隔更新一次；移动速度较慢时可以尝试隔帧更新位置等；&lt;/li&gt;
-  &lt;li&gt;拆分子UIPanel：尽可能将更新频率相同的UI元素放在一个UIPanel中，从而降低每次更新时涉及到的UI元素数量。具体的拆分数量，则可能要通过较多的测试来确定。需要说明的是，此处即使增加10到20个DrawCall，对渲染上的影响并不大。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;粒子&lt;/h2&gt;
-&lt;h4 id=&quot;prefab100-200gameobjectgameobjectprefab&quot;&gt;我们项目中有大量的特效，一个特效Prefab可能包含100-200个GameObject，每个GameObject上都挂有一个粒子系统，但是实际上很多特效只有延时和坐标旋转之类的参数的区别。我看了Prefab文件后发现每个粒子系统分别记录了各自的信息，从而导致整体文件很大，内存占用也比较大。请问是否有优化的方法？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果开发的是一个手游项目，那么一个Prefab下含有100-200个粒子系统是非常不足取的，主要会造成以下几种问题：
-    &lt;ul&gt;
-      &lt;li&gt;同时播放100个以上的ParticleSystem，其ParticleSystem.Update本身的CPU占用会很高。下图为一款游戏在华为6Plus上的表现。可以看到Active Particle数量还没有达到100，其Update耗时就已经占到了5ms；&lt;/li&gt;
-      &lt;li&gt;ParticleSystem.ScheduleGeometryJobs开销会很高。其耗时主要体现在渲染模块中的Culling阶段，与粒子系统的数量相关，场景中Active粒子系统的数量越多，其开销越高；&lt;/li&gt;
-      &lt;li&gt;子线程中的渲染压力较大。Unity5.3版本以后，粒子系统的渲染虽然在主线程中占用很小，但并不意味它没有耗时，其耗时在渲染线程中，当渲染线程压力过大时，主线程同样会出现等待（Gfx.WaitForPresent），因此同样可能对帧率产生影响；&lt;/li&gt;
-      &lt;li&gt;GPU的渲染压力较高。同屏中渲染的粒子系统越多，其屏幕每帧的填充率越高，从而更加容易造成设备的发热；&lt;/li&gt;
-      &lt;li&gt;内存压力较高。如果一个Prefab上有100-200个粒子系统，并且如果场景中有10个以上这样的Prefab存在，那么其内存占用将在10~25MB内存区间内。就目前而言，粒子系统仍然是以Clone的形式存在，所以虽然粒子系统可能仅仅是某些参数不同，但其仍然是多个不同的粒子系统。因此，我们在UWA报告中会显示粒子系统在项目运行时的具体显示数量，以方便研发团队对粒子系统进行关注。如下图所示，一般来说，每帧中粒子系统的数量建议在400以下。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;fbxreadwrite-staticbatchingutilitycombinemesh&quot;&gt;网格模型FBX文件在不开启Read/Write选项时， 如果通过StaticBatchingUtility的CombineMesh来合批的话，内存会增加么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;增加内存，主要表现在内存中CombinedMesh的增加以及一定量堆内存的增加。&lt;/li&gt;
-  &lt;li&gt;该API使用的前提必须是网格Fbx模型开启Read/Write，如果不开启，则无法读到网格数据，进而不能完成网格的拼合操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;如下图，请问这几个参数的单位是什么？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_58/2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Rotation Error使用角度（degree）作为单位。Position和Scale是距离偏差的百分比（曲线调节前后的距离偏差与某距离值之比，取决于Unity内部实现），取值范围1~100，但实际可以高于100，并有作用。
-我们建议研发团队在调节该误差时，将调节前后的动画效果进行对比，使文件体积压缩得尽量小，同时使动画效果在视觉上偏差不会太大。&lt;/li&gt;
-  &lt;li&gt;PS:没找到，可能是动画导入的选项。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;resamplecurves&quot;&gt;如下图，这个ResampleCurves选项的作用，以及是否和对内存性能的影响？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_58/1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;ResampleCurves选项是在Unity 5.3版本后加入的，在之前的版本中是隐藏并且默认勾选的。该选项会改变Unity动画数据的存储方式。&lt;/li&gt;
-  &lt;li&gt;动画文件在导入到Unity之前，其关键帧的数据通常是以欧拉角（Euler format）的方式存储。在勾选该选项时导入，Unity会将欧拉角转换为四元数（Quaternion）表示，并且会生成逐帧的数据（不只是关键帧）。新生成的逐帧数据是为了解决四元数插值问题。关闭该选项会使动画文件保持欧拉角表示，但在应用于GameObject时仍会转换为四元数。&lt;/li&gt;
-  &lt;li&gt;建议保持默认勾选该选项，只有当发现Unity中的动画播放效果与在动画编辑工具中的效果出现较大偏差时，尝试取消该选项，查看是否是该选项的原因导致动画偏差。我们在测试中发现该选项对运行性能影响并不明显。在内存方面，勾选该选项会使动画文件略微增加。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;scale&quot;&gt;动画提出scale&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;参见https://blog.uwa4d.com/archives/TechSharing_58.html第五个。&lt;/li&gt;
-  &lt;li&gt;PS:很不错。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;animatorsprocessanimationsjobanimatorswritejobcpu&quot;&gt;动画模块中，Animators.ProcessAnimationsJob和Animators.WriteJob的CPU占用较高，这些与什么因素有关？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Animators.WriteJob受模型骨骼数目影响较大（受animation curves影响不明显），骨骼数目越多，该函数耗时越大。同时，开启Optimize GameObject选项能够降低该函数耗时。Animators.ProcessAnimationsJob 同样受骨骼数目影响较大，同时也受animation curves数目影响，二者数目越多，该函数耗时越大。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;cpugpugpuprofiler&quot;&gt;在整体的性能消耗上，CPU和GPU各占一半合理吗？如果不是，各占多少为好？还是说需要根据机型来看？其次，我如何知道游戏在手机上的GPU消耗？Profiler是看不到的，有工具推荐吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先，CPU和GPU是并行的，也就是CPU在运算的时候GPU也在运算，一帧的结束时间是两者中比较晚结束的那个。因此，一般我们在考虑这个问题的时候，经常会说是CPU bound还是GPU bound，也就是GPU在等CPU还是CPU在等GPU。&lt;/li&gt;
-  &lt;li&gt;最理想的情况是两者都并行均衡，且都没有出现互相等待的情况。但在目前的大多数移动游戏中，都是CPU耗时为主要性能瓶颈。这也是为什么有多线程渲染的原因，多线程渲染就是利用CPU端的并行性，让CPU处理得更快，不拖后腿。&lt;/li&gt;
-  &lt;li&gt;对于GPU的压力分析，可以尝试用Intel GPA，Mali或者高通出的针对自家芯片的工具。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unityprefabgc-allocated&quot;&gt;为什么Unity里实例化一个Prefab会产生那么多GC Allocated?&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这是一个特例，但是从里面可以总结出一个问题，就是在Instantiate一个对象时会发生或者&lt;strong&gt;可能发生&lt;/strong&gt;以下的事情
-    &lt;ul&gt;
-      &lt;li&gt;序列化和反序列化的处理，因为用prefab生成对象本身就是需要反序列化的。而直接clone一个对象可能还有先序列化在反序列化。&lt;/li&gt;
-      &lt;li&gt;可能的资源的加载，比如prefab上用到的mesh、贴图等。&lt;/li&gt;
-      &lt;li&gt;可能的shader编译，如果用了一个之前没有用过的shader就会实时的编译。&lt;/li&gt;
-      &lt;li&gt;对象身上脚本的初始化。如果实例化一个prefab发现很占用时间要注意是不是脚本里面在awake或者start里面的功能太多了。&lt;/li&gt;
-      &lt;li&gt;UI界面的Active和Deactive也会造成UI代码底层的一些相关OnEnable和OnDisable操作，同样会造成一定的堆内存分配。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;unityskip&quot;&gt;Unity的材质的宏是有材质用到时才会被编译吗？还是说不手动Skip都会编译？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在Unity中shader variant也包含两种类型，一种是通过 shader_feature 定义，一种是通过 multi_compile 定义。而只有通过 shader_feature 定义的 variant 在发布时会根据其使用情况来进行剥离。&lt;/li&gt;
-  &lt;li&gt;具体可见Unity官方的文档：https://docs.unity3d.com/Manual/SL-MultipleProgramVariants.html&lt;/li&gt;
-  &lt;li&gt;需要注意的是，放在Always Included Shaders中的Shader，其包含的所有 variant 都不会被剥离，因此对于Standard Shader这类包含了大量 shader_feature的Shader，不推荐将其放入。&lt;/li&gt;
-  &lt;li&gt;PS:没有回答根本的问题：
-    &lt;ul&gt;
-      &lt;li&gt;Editor中：修改shader并保存时立即编译。
-  Runtime下，无论哪个平台，都是在进入场景时加载shader object内容到内存，但是首次实际调用渲染时才编译，编译完成之后会cache下来。
-  有两种优化方法：
-  调用Shader.WarmupAllShaders()，自动编译该场景中用到的所有shader。该方法在Unity5中已经废弃。
-  在项目设置的GraphicsSettings中，可以导出ShaderVariantCollection，并在Preloaded Shader中导入，这样的话就可以在载入场景时一并编译需要预加载的shader，这样的优化在移动平台上用得比较多。
-  具体见&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;cpugfxwaitforpresent&quot;&gt;听说移动端开启多线程，把后期效果移动到渲染线程会节省后期的消耗。我测试了一下，虽然主线程中后期显示的CPU占用降低了，但是却多了Gfx.WaitForPresent的时间，最后两者相加基本还是一样的。那开启多线程这个功能，对后期到底有没有帮助呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;开启多线程渲染一般情况下会极大降低主线程的渲染耗时，但并不会降低其本身的总体计算量。因为这并不是底层算法或硬件上的提升，而是将部分计算从主线程搬到了子线程。所以，开启多线程的好处在于为主线程带来了大量空间来执行其他耗时模块（如代码逻辑等）。&lt;/li&gt;
-  &lt;li&gt;但这并不意味着开启多线程渲染就“万事大吉”。如果渲染模块本身开销就很高，那么子线程一样会很耗时，更有可能出现主线程等待子线程的现象，也就是WaitForPresent开销较高的情况。所以，开启多线程是会降低主线程的渲染压力，但其帧率未必会大幅提升，还需研发团队自行在自己项目中进行尝试和比较。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 05 Nov 2017 10:07:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/</guid>
         
         <category>UWA</category>
         

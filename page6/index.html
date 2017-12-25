@@ -173,6 +173,97 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：1、概述和创建
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
+
+
+概述
+
+
+  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
+
+
+AB流程
+
+
+
+  Editor编辑，...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
+        <h2 class="post-title">
+            SendMessage测试
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.
+  obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。
+  如果Foo的参数不对，会提...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 8, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
+        <h2 class="post-title">
+            关于AssetBundle解压的讨论结果
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  一切的起源在于这篇文章，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
+    
+      在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 5, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：双缓冲
+        </h2>
+        
+        <div class="post-content-preview">
+            第三篇：序列模型
+
+  双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以下文来说明下序列模型部分的重要性。
+
+
+
+  电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on February 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/">
         <h2 class="post-title">
             游戏设计模式读书笔记：观察者模式与事件队列
@@ -348,96 +439,6 @@ Clusters
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/11/19/%E7%94%B1%E4%B8%80%E4%B8%AA%E7%BE%8E%E6%9C%AF%E9%9C%80%E6%B1%82%E5%BC%95%E5%8F%91%E7%9A%84Custom-Inspector/">
-        <h2 class="post-title">
-            由一个美术需求引发的Custom Inspector
-        </h2>
-        
-        <div class="post-content-preview">
-            需求
-
-  Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。
-
-
-需求分析
-
-
-  
-    如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，transform.GetComponent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/">
-        <h2 class="post-title">
-            代码生成AnimatorController
-        </h2>
-        
-        <div class="post-content-preview">
-            0.出发点
-
-  
-    现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 12, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/11/12/%E5%90%91%E9%87%8F%E5%A4%B9%E8%A7%92%E8%AE%A1%E7%AE%97/">
-        <h2 class="post-title">
-            向量夹角计算
-        </h2>
-        
-        <div class="post-content-preview">
-            向量夹角
-// 基于点积计算，
-// a.b = ||a|| * ||b|| * sin(θ) 
-// =&gt; θ = arccos(a·b / (||a|| * ||b||))
-// =&gt; θ = arccos(a·b) //当a和b按照单位向量算时
-float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized))...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 12, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/10/12/Deepoon%E7%9A%84%E7%9B%B8%E5%85%B3%E8%AE%BE%E7%BD%AE%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E7%8E%A9steam%E6%B8%B8%E6%88%8F/">
-        <h2 class="post-title">
-            Deepoon的相关设置以及如何玩steam游戏
-        </h2>
-        
-        <div class="post-content-preview">
-            基本
-
-  保证Deepoon助手、显卡驱动是最新的。
-  安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。
-
-
-DpnnGetLastError的处理
-
-  目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。
-  ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 12, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -532,7 +533,7 @@ DpnnGetLastError的处理
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="23">
+                                <a href="/tags/#UWA" title="UWA" rel="25">
                                     UWA
                                 </a>
                             
@@ -540,6 +541,12 @@ DpnnGetLastError的处理
                             
                                 <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Unity" title="Unity" rel="2">
+                                    Unity
                                 </a>
                             
                         

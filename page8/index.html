@@ -173,6 +173,114 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2016/09/16/06%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">
+        <h2 class="post-title">
+            iOS学习笔记-06数据处理
+        </h2>
+        
+        <div class="post-content-preview">
+            6.数据处理
+
+6.1 plsit
+
+
+  
+    创建plist文件及添加数值
+
+    
+  
+  
+    数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。
+  
+
+
+    NSString* filePath = [[NSBundle mainBundle] pathForResource:@"dict_data" ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/05%E7%BA%BF%E7%A8%8B/">
+        <h2 class="post-title">
+            iOS学习笔记-05线程
+        </h2>
+        
+        <div class="post-content-preview">
+            5.线程
+
+5.1 GCD
+
+  GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是dispatch_async(queue, block);参数中的queue可以通过dispatch_queue_create或者系统提供的标准dispatch queue。
+
+
+    // 生成一个serial dispatch queue
+    dispat...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/04%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+        <h2 class="post-title">
+            iOS学习笔记-04内存管理
+        </h2>
+        
+        <div class="post-content-preview">
+            4.内存管理
+4.1 手动管理
+
+
+  自己生成的对象自己持有，可以调用release方法减少retain数量。
+  非自己生成的对象也可以持有，通过调用retain方法可以持有对象，引用数+1。
+  不再需要自己持有的对象要及时释放，注意类中的property要在- (void)dealloc
+方法中赋值nil，这样写相当于release了。
+
+
+- (void)dealloc
+{
+   ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2016/09/16/03UI/">
+        <h2 class="post-title">
+            iOS学习笔记-03UI
+        </h2>
+        
+        <div class="post-content-preview">
+            3.UI
+
+
+  iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。
+
+
+3.1 手动编写UI
+
+
+  ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2016/09/16/02%E9%9B%86%E5%90%88/">
         <h2 class="post-title">
             iOS学习笔记-02集合
@@ -307,7 +415,7 @@ typ...
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="23">
+                                <a href="/tags/#UWA" title="UWA" rel="25">
                                     UWA
                                 </a>
                             
@@ -315,6 +423,12 @@ typ...
                             
                                 <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Unity" title="Unity" rel="2">
+                                    Unity
                                 </a>
                             
                         

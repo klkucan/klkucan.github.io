@@ -173,6 +173,87 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第二十周
+        </h2>
+        
+        <div class="post-content-preview">
+            小结&amp;新的开始
+
+  从今年的7月29号发布第一周的笔记算起不知不觉已经二十周了，当时的想法也很简单就是下定决心读完当时算下来是168篇文章。5个月过去了，在写这篇的文章的时候基本上已经通读完了所有厚积薄发版块的关于unity的文章，真的感觉这是我这些年来做的最有毅力的一件事情。可以说在这二十周里面对于unity的理解尤其是图形学上学到了很多东西，而且也学会了很多优化的理论和别人实践...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十九周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Dat...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 22, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/">
+        <h2 class="post-title">
+            Unity特效学习：动画
+        </h2>
+        
+        <div class="post-content-preview">
+            Unity动画创建
+
+  
+    选中物体后按Ctrl+6可以开启动画编辑器。
+
+  
+  点击Add Property可以选中你要编辑的物体对象上的属性。可以看到几乎物体上所有组件的可编辑的属性都可以通过动画来编辑。这也意味着很多东西不需要编码来完成，比如你要做物体transform的变化、要做shader属性的变化等。以往可能需要进行代码编辑，在update或者某个corroutine...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/">
+        <h2 class="post-title">
+            Unity特效学习：粒子
+        </h2>
+        
+        <div class="post-content-preview">
+            参数
+
+  只记录一些特别的参数
+  Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。
+  StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。
+  Color：
+    
+      Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。
+  ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第十八周
@@ -295,97 +376,6 @@ Gamma校正的由来和计算方式
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/">
-        <h2 class="post-title">
-            每天一点UWA：卡通渲染笔记
-        </h2>
-        
-        <div class="post-content-preview">
-            描边的方法
-基于视角的勾边
-
-  PS：这个是最简单的绘制边界的做法。计算方式就是dot(viewDir, normal)。根据 三角函数的定义值越小说明视角与模型某个点的表面法线的夹角越大，夹角为90°时说明这个triangle是视角看不到的，也就是边界了。
-
-
-基于几何生成方法的描边
-shell method
-
-  首先在绘制结束正常的模型后，将需要描边的物体改用正面剔除再绘制一遍，在V...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十五周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 13, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/08/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A8%E7%94%BB%E9%87%8D%E5%AE%9A%E5%90%91%E7%AC%94%E8%AE%B0/">
-        <h2 class="post-title">
-            每天一点UWA：动画重定向笔记
-        </h2>
-        
-        <div class="post-content-preview">
-            基本原理
-
-  动画重定向技术主要是针对骨骼动画的方案，由骨骼来描述动作信息，用蒙皮来表示模型网格与骨骼之间的关系，从而得到模型最终的样子。
-
-  
-    PS：这张图很形象
-  
-  动画就是每一帧为模型制作一个Pose（姿势），在每帧之间的姿势可以通过差值获得。
-
-
-最简单的情况：只有骨骼大小不一致的情况
-
-
-  此时因为骨骼在模型空间中具有一个对应的位置，因此以大人和小孩的骨骼为例，...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十四周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
-
-  加载IO次数过多，从而增大了硬件设备耗能和发热的压力；
-  Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 5, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -476,7 +466,7 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
                             
                         
                             
-                                <a href="/tags/#UWA" title="UWA" rel="23">
+                                <a href="/tags/#UWA" title="UWA" rel="25">
                                     UWA
                                 </a>
                             
@@ -484,6 +474,12 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
                             
                                 <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#Unity" title="Unity" rel="2">
+                                    Unity
                                 </a>
                             
                         
