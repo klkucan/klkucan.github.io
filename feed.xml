@@ -5,8 +5,8 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 26 Jan 2018 00:11:02 +0800</pubDate>
-    <lastBuildDate>Fri, 26 Jan 2018 00:11:02 +0800</lastBuildDate>
+    <pubDate>Fri, 26 Jan 2018 00:19:34 +0800</pubDate>
+    <lastBuildDate>Fri, 26 Jan 2018 00:19:34 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -193,7 +193,8 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;new&quot;&gt;new做了什么&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKZXdRcjVXdmlqelZyVUZlU3pqajNjazBUdk80Rm1yYlJRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKZXdRcjVXdmlqelZyVUZlU3pqajNjazBUdk80Rm1yYlJRPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;section-3&quot;&gt;生命周期&lt;/h4&gt;
 &lt;ul&gt;
@@ -203,7 +204,7 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;section-4&quot;&gt;对象在内存中是什么样的布局&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG0vaVk3MW1oaWJMY3Vzcis3WUhrNWRNelB4aWVwUGZkYlE1K3RtVkY4Z3pnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG0vaVk3MW1oaWJMY3Vzcis3WUhrNWRNelB4aWVwUGZkYlE1K3RtVkY4Z3pnPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h5 id=&quot;section-5&quot;&gt;看图说话&lt;/h5&gt;
 &lt;ul&gt;
@@ -227,14 +228,14 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;delete&quot;&gt;delete做了什么&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKUmgvZmViUytFdzB1dGE5ZHFJNzkrclBFbHlEbnk3Vi93PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKUmgvZmViUytFdzB1dGE5ZHFJNzkrclBFbHlEbnk3Vi93PT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;section-8&quot;&gt;数组删除&lt;/h4&gt;
 &lt;ul&gt;
   &lt;li&gt;如果动态生产了数组内存，则在析构函数或者当需要删除对象时需要用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete[]&lt;/code&gt;。在这个过程中具体干了什么呢？&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKVlNpclgvbmkxK2xPZmJWSGZMSkx0L0IrZ1lTOG9ic2pnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKVlNpclgvbmkxK2xPZmJWSGZMSkx0L0IrZ1lTOG9ic2pnPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;上面也说了，delete会先执行析构函数，其实对于一个对象来说，由于上下hook的存在因此析构函数可以完美的删除这个对象所占用的内存。所以图中左右两个delete都可以删除p所指向的数组，但是因为数组中是string的指针， 所以删除数组后string指针对指向的string对象本身并没有删除。而这个string对象本身其实就是char[]。这才是不用delete[]造成内存泄漏的本质。&lt;/li&gt;
