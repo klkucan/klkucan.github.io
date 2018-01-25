@@ -173,6 +173,277 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/">
+        <h2 class="post-title">
+            七周七并发模型：线程与锁
+        </h2>
+        
+        <div class="post-content-preview">
+            为何使用多线程和锁
+
+  为了能够并行的计算一些东西
+  因为在多线程下，如果要修改同一个对象是值会出现竞态条件（即代码行为取决于各操作的时序）。它的表现可能是值的不对，甚至某些时候这个值的前半段是一个线程修改的，后半段是另一个线程修改的。因为这个对象可能不是原子的。
+
+
+锁，或者说是并行控制的进化
+
+第一阶段：锁与同步方法
+
+基础的锁
+
+  从代码层面看就是一个lock函数
+
+
+同步方法
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 17, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：对象的创建和销毁
+        </h2>
+        
+        <div class="post-content-preview">
+            概述
+
+  本文会记录CPP中对象的创建和销毁的过程中的细节
+
+
+big three函数
+
+  拷贝构造函数
+  拷贝赋值函数
+  析构函数
+
+
+用途：这三个函数是在类中包含了指针的情况下使用的。
+
+  当有一个成员变量是一个指针时，就有了给这个变量赋值的问题。如果这个赋值需要深拷贝，那么就需要申请内存空间。这样在析构函数中就需要对指针进行delete。
+  这个成员变量可以是在对象构造函数...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 16, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：Object Model
+        </h2>
+        
+        <div class="post-content-preview">
+            composition &amp; delegate &amp; inherit 的构造和析构顺序
+
+  如果有以下代码：
+
+
+class A
+{
+public：
+    A();
+    ~A();
+    Foo();
+}
+
+class B
+{
+public：
+    B();
+    ~B();
+}
+
+class C:A
+{
+public：
+    C();
+    ~C();
+pri...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 9, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：Reference
+        </h2>
+        
+        <div class="post-content-preview">
+            本质
+
+  通过指针实现，所以本质就是指针
+
+
+意义
+
+  是某个变量的代表，因此下面的代码中，x的值为5。在给x赋值后i和x都是6。
+
+
+int i = 5;
+
+int&amp; x = i;
+
+x = 6;
+
+
+
+编译器的一些做法
+
+  以一下代码为例，如果有一个变量b是a的引用，那么有sizeof(a) == sizeof(b)而且&amp;a == &amp;b。
+  上面也说了引用...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 7, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：偏特化
+        </h2>
+        
+        <div class="post-content-preview">
+            什么是偏特化
+
+  泛化（泛型）的反义
+  分为个数的偏特化和范围的偏特化
+
+
+数量偏特化
+
+  举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。
+
+
+template&lt;typename T, typename U&gt...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：类型转换
+        </h2>
+        
+        <div class="post-content-preview">
+            自己转换为别的类型
+
+  做法：使用operator关键字，无需返回值，函数名称就是返回值。如有需要加上const修饰。
+
+
+Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    operator double() const
+    {
+        return (double)...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：面向对象
+        </h2>
+        
+        <div class="post-content-preview">
+            Composition
+
+  组合
+  其实就是一个类（Container）中包含了另一个类的实例（Component），注意是实例。
+
+
+delegate
+
+  组合的一种
+  但是包含的是一个类的引用(reference)。
+
+
+组合的使用
+
+  用这样的方式可以做出adapter模式，比如A功能很多但是如果只要暴露出一部分，可以用B来包含A，然后只在B中定义一些方法，这些方法都是直接调...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：基础
+        </h2>
+        
+        <div class="post-content-preview">
+            1.类
+
+
+  带指针的类
+  不带指针的类：大多数不需要析构函数
+
+
+2.定义头文件
+
+
+  防御式代码，避免多次include时重复导入
+
+
+#ifndef _COMPLEX_
+#define _COMPLEX_
+
+...
+
+#endif
+
+
+
+
+  头文件布局:
+    
+      前置声明
+      类声明
+        
+          class head class ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 1, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第二十周
@@ -203,175 +474,6 @@
     </a>
     <p class="post-meta">
         Posted by 蔡华的博客 on December 22, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/">
-        <h2 class="post-title">
-            Unity特效学习：动画
-        </h2>
-        
-        <div class="post-content-preview">
-            Unity动画创建
-
-  
-    选中物体后按Ctrl+6可以开启动画编辑器。
-
-  
-  点击Add Property可以选中你要编辑的物体对象上的属性。可以看到几乎物体上所有组件的可编辑的属性都可以通过动画来编辑。这也意味着很多东西不需要编码来完成，比如你要做物体transform的变化、要做shader属性的变化等。以往可能需要进行代码编辑，在update或者某个corroutine...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 9, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/">
-        <h2 class="post-title">
-            Unity特效学习：粒子
-        </h2>
-        
-        <div class="post-content-preview">
-            参数
-
-  只记录一些特别的参数
-  Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。
-  StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。
-  Color：
-    
-      Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。
-  ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 9, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十八周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Uni...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 3, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十七周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。
-
-  原文较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个As...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 2, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
-        <h2 class="post-title">
-            Gamma校正与线性空间
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  近期看了一篇文章，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。
-
-
-Gamma校正的由来和计算方式
-
-  所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为Lout = pow(Lin, 0.45)  ，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.73...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 30, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/">
-        <h2 class="post-title">
-            Unity Android二次开发经(血)验(泪)谈(史)
-        </h2>
-        
-        <div class="post-content-preview">
-            主要参考的是这篇文章，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。
-
-准备工作
-
-  安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。
-  AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。
-  从AS上可以下载到的build-tool是27，但是最新的tools是un...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 20, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/19/PHP%E7%9A%84OOP/">
-        <h2 class="post-title">
-            PHP的OOP
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。
-  类中用var定义变量，var $name，使用方式$this-&gt;name
-  构造函数function __construct()，析构函数function __destruct()
-  继承class Child_Site extend...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十六周
-        </h2>
-        
-        <div class="post-content-preview">
-            Texture
-
-如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？
-
-  使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；
-  当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；
-  在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2017
     </p>
 </div>
 <hr>
@@ -483,6 +585,18 @@ Gamma校正的由来和计算方式
                                 </a>
                             
                         
+                            
+                                <a href="/tags/#CPP" title="CPP" rel="7">
+                                    CPP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#并发模型" title="并发模型" rel="1">
+                                    并发模型
+                                </a>
+                            
+                        
                     </div>
                 </section>
                 
@@ -554,7 +668,7 @@ Gamma校正的由来和计算方式
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 蔡华的博客 2017
+                    Copyright &copy; 蔡华的博客 2018
                     <!-- <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

@@ -173,6 +173,206 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B9%9D%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第九周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+关于AssetBundle依赖的问题
+
+  如果Panel A和Panel B，它们均依赖一个共享Atlas C。如果在加载完AtlasC后卸载它所在的AssetBundle，再创建A和B，此时会失败。因为他们的依赖关系在AssetBundle上。
+
+
+请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？
+
+  绝大部分...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第八周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+打包AssetBundle的时候，我发现切换场景时，即使打同一个场景的AssetBundle，它们的Hash值都是不一样的，可能是什么原因造成的呢？
+
+
+  目前很可能是Shader Stripping造成的，其原理可见文档。
+  简单来说就是根据当前场景对Shader进行简化，因此如果打包时包含的场景的Lightmap或Fog设置不同，打出来的AssetBundle...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/">
+        <h2 class="post-title">
+            每天一点UWA：UI优化小结
+        </h2>
+        
+        <div class="post-content-preview">
+            说明
+
+  经过一个半月的学习，对UI的优化有了一些心得，同时也希望把零散的知识点总结到一起，因此有了这个专题。
+
+
+那些需要关注的性能指标函数
+UGUI参考的函数
+
+  
+    1、Canvas.SendWillRenderCanvases()
+该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。
+  
+  
+    2...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 10, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第七周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
+
+在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
+
+
+  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
+  建议，可以把Packi...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 10, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
+        <h2 class="post-title">
+            从零开始开发一款AR应用
+        </h2>
+        
+        <div class="post-content-preview">
+            Vuforia
+
+什么是vuforia
+
+  我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。
+
+
+怎么使用
+
+  进入Vuforia，右上角注册。
+  点击Develop进入下图
+
+
+
+
+
+  
+    License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuf...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第六周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+这是一个很长的问题：
+字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。
+
+请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 4, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：组件模式
+        </h2>
+        
+        <div class="post-content-preview">
+            为什么是组件
+意图
+
+  允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。
+
+
+实体-组件-系统(ECS)
+
+  组件模式在游戏中常见的体现就是ECS
+
+
+为什么是组件
+
+  在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。
+  将不同类型的功能切分成不同的组件，既是对结构的优化...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 28, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第五周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+shader加载
+
+  首先 Shader. WarmupAllShaders 并不影响 Shader 的加载，因为该函数的作用是将所有已加载的 Shader 都做一次快速渲染(渲染单个像素，GPU 在首次使用某一个 Shader 时会有额外开销，Warm 相当于是将这部分开销提前)。
+  可以通过AssetBundle.LoadAll等接口预加载 AssetBund...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 27, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/08/27/bat%E5%AD%A6%E4%B9%A0/">
         <h2 class="post-title">
             bat学习
@@ -224,197 +424,6 @@ C:\Users\Administrator\Desktop...
     </a>
     <p class="post-meta">
         Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%9B%9B%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第四周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Texture、Mesh等真正的资源。对于由Prefab加载出来的Object或Component，则不能通过该函数来进行释放。
-
-用的是Resource的加载方式，并且已经预加载好了材质所在的Prefab ，但是为什么在第一次显示材质的时候还要Load这个材质？
-...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/">
-        <h2 class="post-title">
-            Lua学习笔记：迭代和闭包
-        </h2>
-        
-        <div class="post-content-preview">
-            关系
-
-  迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由闭包函数本身和一个创建该闭包函数的工厂函数组成。
-  以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/">
-        <h2 class="post-title">
-            Lua学习笔记：函数深入
-        </h2>
-        
-        <div class="post-content-preview">
-            闭包
-
-  lua中的函数都可以认为是闭包，只不过为了便于理解还是用了函数的概念。
-  lua中函数的返回值可以是匿名函数，也就是闭包。以下面的代码为例，提出一个概念：非局部的变量。在下面的代码中，匿名函数访问了一个变量i，它对于newCount来说是局部变量，对于匿名函数来说是既不是局部变量也不是全局变量，在lua中这个称谓非局部的变量。
-  在lua中一个闭包指的是一个函数和该函数所需要...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第三周
-        </h2>
-        
-        <div class="post-content-preview">
-            内存
-资源复用
-
-  如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时Persistent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第二周
-        </h2>
-        
-        <div class="post-content-preview">
-            内存
-
-概述
-
-  内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。
-
-
-资源内存
-
-  大头在纹理，其次在网格、动画片段和音频。
-
-
-纹理
-
-从格式解决内存占用问题
-
-  选择正确的格式，比如Android上是ETC，ios的PVRTC，PC上DXT。
-
-
-不同格式可能出现的问题：
-
-
-  
-    因为ETC、PVRTC都是有损压缩因此可能出...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 7, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/">
-        <h2 class="post-title">
-            Lua学习笔记：高级概念
-        </h2>
-        
-        <div class="post-content-preview">
-            高级概念
-
-
-  这部分中会记录一些lua语言中的高级概念和技术。
-
-
-模块
-
-概念
-
-  从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。
-  一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。
-  具体实现看教程
-
-
-使用
-
--- 创建一个叫Class...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 7, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第一周
-        </h2>
-        
-        <div class="post-content-preview">
-            初衷
-
-  首先UWA一直以来都是一个我很喜欢的网站，因为他们在unity的优化方面是非常专业的，而且他们对于技术的分享也是毫不吝啬的。在他们的网站上有很多的技术文章，很久以来都想系统的阅读一遍，但是一直没有去做。这周开始下定决心要从第一篇开始，把UWA所有的技术分享文章读完，这个系列的文章会对每周读到的技术做一个总结，但是因为文章涉及的方向比较杂，因此会简单的用技术进行一个分类。
-
-
-CP...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on July 29, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/07/29/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
-        <h2 class="post-title">
-            Lua学习笔记：基本语法
-        </h2>
-        
-        <div class="post-content-preview">
-            初步印象
-
-  语法和python、js这些很像，解释型语言、弱类型等等。写着舒服是真的。
-  while do\repeat until这样的语法其实真心不舒服，感觉在语法上有些累赘。大多数语言都是do while，但是它非要是repeat until，也是无语。
-  我个人认为语法中的then和do设计的很混淆。比如if是和then，for是和do。从我对语言的理解上感觉可以统一用do或...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on July 29, 2017
     </p>
 </div>
 <hr>
@@ -530,6 +539,18 @@ CP...
                                 </a>
                             
                         
+                            
+                                <a href="/tags/#CPP" title="CPP" rel="7">
+                                    CPP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#并发模型" title="并发模型" rel="1">
+                                    并发模型
+                                </a>
+                            
+                        
                     </div>
                 </section>
                 
@@ -601,7 +622,7 @@ CP...
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 蔡华的博客 2017
+                    Copyright &copy; 蔡华的博客 2018
                     <!-- <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

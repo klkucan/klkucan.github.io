@@ -173,6 +173,200 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/07/16/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%B5%84%E4%BA%A7-%E5%AF%B9%E8%B1%A1%E5%92%8C%E5%BA%8F%E5%88%97%E5%8C%96/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：资产、对象和序列化
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  这篇及后续的几篇笔记是我阅读A guide to AssetBundles and Resources的一些记录。官方的这个系列文章详细的阐述了unity是管理资源的。从一个asset的导入开始，unity就在背后开始了它的工作。它为每个资源创造了一个mate文件，给予了资源一个唯一的ID，从此这个资源的一切都与这个ID紧密结合到了一起。可能我们的一些操作会导致资源丢失它的mat...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/">
+        <h2 class="post-title">
+            5.6混合光照
+        </h2>
+        
+        <div class="post-content-preview">
+            原文地址
+原有混合光照的问题
+
+  5.6之前的光照存在一个严重的问题就是: 混合光照仅当只有一个定向光时才能正常工作。
+  这是什么个意思呢？
+    
+      首先说一下unity的GI一直以来都是依靠烘焙来做的，但是在unity5中加入了PRGI。
+      目前的unity在一个场景中可以混合使用烘焙光照和实时光照，一部分静态对象使用烘焙好的光照和影子，而一些非静态的对象可以继...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/06/04/%E5%86%99%E7%82%B9%E4%B8%9C%E8%A5%BF-%E8%AF%81%E6%98%8E%E6%88%91%E8%BF%98%E5%9C%A8%E6%9B%B4%E6%96%B0/">
+        <h2 class="post-title">
+            写点东西，证明我还在更新
+        </h2>
+        
+        <div class="post-content-preview">
+            最近的一些情况
+
+
+  很久没有更新博客了，从4月份开始为了项目赶进度开始了996模式，实在没有什么时间写东西。这个是公司也是我自己做的第一个VR旅游项目，可以说从零开始吧，毕竟与游戏开发不一样，期间学到了多东西，也走了不少的弯路。
+  在项目期间很神奇的看了一大半冯乐乐写的《Shader入门精要》，在这给这本书打打广告，这是一本很适合入门的Shader书籍，而且紧密的结合了Unity5。对...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on June 4, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：4、AssetBundle的下载与asset的加载
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle的下载
+下载AssetBundle
+
+
+  首先需要理解的是这个下载就是指的从网络下载。因此只有WWW和 WWW.LoadFromCacheOrDownload两个方法。
+  www是不带缓存的，而后者是带缓存的。
+  LoadFromCacheOrDownload的version参数，如果缓存中不存在，或者version低于指定的版本就会重新下载，否则直接从缓存拿数据...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on April 4, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：3、AssetBundle内部结构
+        </h2>
+        
+        <div class="post-content-preview">
+            本质
+
+  AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。
+
+
+Normal AssetBundle structure
+
+
+
+  对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on April 4, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/">
+        <h2 class="post-title">
+            AssetBundle学习笔记：2、压缩
+        </h2>
+        
+        <div class="post-content-preview">
+            格式
+
+  
+    谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。
+  
+  LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。
+  LZ4：5.3以后才加入的一种压缩格式...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 20, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/">
+        <h2 class="post-title">
+            我所了解的法线贴图
+        </h2>
+        
+        <div class="post-content-preview">
+            两篇文章
+
+  
+    本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。
+
+    凹凸映射
+
+    写给笨人的法线贴图原理
+  
+
+
+一些基本的概念
+
+1.法线贴图的定义
+
+顾名思义，法线贴图保存的是法线的信息贴图。
+
+2.用来干什么
+用来进行凹凸映射。
+
+
+  凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法不会真的改变模型的顶点...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/03/16/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：原型模式
+        </h2>
+        
+        <div class="post-content-preview">
+            原型模式
+定义
+
+  定义：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。
+原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。
+  看图
+
+
+
+模式的理解
+
+  当需要快速并且尽可能少的占用内存的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
         <h2 class="post-title">
             AssetBundle学习笔记：1、概述和创建
@@ -218,223 +412,6 @@ AB流程
     </a>
     <p class="post-meta">
         Posted by 蔡华的博客 on March 8, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
-        <h2 class="post-title">
-            关于AssetBundle解压的讨论结果
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  一切的起源在于这篇文章，在文中对AssetBundle的加载进行了详细的描述，但是疑问也由此而生。以下是我在UWA讨论群的提问：
-    
-      在讲WWW的时候有这样一段话【解压后的内容，通常为原Bundle文件的4~5倍大小，纹理资源比例可能更大】，在我理解就是www这样的方式获取到的资源（压缩形式的）会被解压缩，并放置到webstream中。而在【AssetBundle加载...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 5, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%8F%8C%E7%BC%93%E5%86%B2/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：双缓冲
-        </h2>
-        
-        <div class="post-content-preview">
-            第三篇：序列模型
-
-  双缓冲模式算是书中第三篇：序列模型中的一个，它与游戏循环和更新方法组成了第三篇。后两者可以说是在我做Unity中最常用到的，而且也是游戏引擎本身已经实现了的。谨以下文来说明下序列模型部分的重要性。
-
-
-
-  电子游戏之所有有趣，很大程度上归功于它们会将我们带到别的地方。 几分钟后（或者，诚实点，可能会更长），我们活在一个虚拟的世界。 创造那样的世界是游戏程序员至上的欢...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/25/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%E4%B8%8E%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：观察者模式与事件队列
-        </h2>
-        
-        <div class="post-content-preview">
-            观察者模式
-定义
-
-  定义：在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。
-  看图
-
-
-
-模式的理解
-
-  观察者模式由来已久，其目的就是为了解耦。观察对象保存观察者的链接，使得观察者与被观察者解耦。这一点与C#中的事件刚好相反。
-  传统的观察者模式也有其弊端。...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%89-Clusters%E5%92%8C%E6%80%BB%E7%BB%93/">
-        <h2 class="post-title">
-            《Unity預計算即時GI》笔记：三、Clusters和总结
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-
-  这篇文章是对《Unity預計算即時GI》这个系列文章的笔记。
-
-
-Clusters
-
-
-  叢集，透過修改叢集(Clusters)也是一個降低Unity預計算流程所需要執行的工作數量的好方法。降低叢集數量也能提高執行時的效能。
-
-
-
-  當採用PRGI來計算場景光照時，Unity會簡化產生一個立體像素化結構的計算，這些立體像素(Voxel)叫做叢集。叢集實際上是反映到場景靜態幾...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 22, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%BA%8C-%E5%85%89%E7%85%A7%E5%9B%BE/">
-        <h2 class="post-title">
-            《Unity預計算即時GI》笔记：二、光照图
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-
-  这篇文章是对《Unity預計算即時GI》这个系列文章的笔记。
-
-
-光照图
-
-什么是光照图
-
-  光照图在第三章中有如下的定义，读起来很是费解。
-
-
-
-  一個光照圖(Chart)是表示一個光照貼圖的區域，用來映射場景物件的光照貼圖UV。你可以想像是能影響物件的一張小磁磚圖，一張光照圖由兩部分組成:輻照度(照明)和方向性(主要光線方向編碼)。
-
-
-
-  到了第六章又有如下讲解，读...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 22, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/02/22/Unity%E9%A0%90%E8%A8%88%E7%AE%97%E5%8D%B3%E6%99%82GI-%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E4%B8%80%E4%BA%9B%E8%AE%BE%E7%BD%AE/">
-        <h2 class="post-title">
-            《Unity預計算即時GI》笔记：一、基本概念与一些设置
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-
-  这篇文章是对《Unity預計算即時GI》这个系列文章的笔记。
-
-
-基本概念
-
-  在Unity裡，可以用兩種不同的技術來計算全域光照GI或光源反射，就是烘焙全域光照(Baked GI)和預計算即時全域光照(Precomputed Realtime GI)。
-
-
-
-  當啟用PRGI時，一個光照預計算就是用來計算靜態幾何物件周圍光的反射，並存成資料給Runtime執行使用的一個過...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 22, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/12/26/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：命令模式
-        </h2>
-        
-        <div class="post-content-preview">
-            模式定义
-
-  
-    定义：将一个请求封装成一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。
-  
-  
-    看图（图片资源来自于百度，侵删）
-
-  
-
-
-模式的理解
-
-
-  
-    所谓命令模式说白了就是把一个方法对象化。怎么来理解这句话呢？可以看下UML图中的Command的interface，里面有个execute方法，还有...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 26, 2016
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2016/12/17/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%9E%B6%E6%9E%84-%E6%80%A7%E8%83%BD-%E6%B8%B8%E6%88%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：架构、性能、游戏
-        </h2>
-        
-        <div class="post-content-preview">
-            架构、性能、游戏
-
-
-  
-    在开始读第一章的时候会觉得有点混乱，作者提出了什么是架构这个问题，但是并没有像其它书里那样给出一个明确的定义，而是提到了：
-
-    
-      这本书是关于上面这一切要使用的代码的组织方式。这里少谈代码，多谈代码组织。
-    
-  
-  
-    仔细品读这句话，你会发现这里面其实已经提到了什么是架构：所谓架构就是代码的组织方式。但是从我个人的认识来...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 17, 2016
     </p>
 </div>
 <hr>
@@ -550,6 +527,18 @@ Clusters
                                 </a>
                             
                         
+                            
+                                <a href="/tags/#CPP" title="CPP" rel="7">
+                                    CPP
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#并发模型" title="并发模型" rel="1">
+                                    并发模型
+                                </a>
+                            
+                        
                     </div>
                 </section>
                 
@@ -621,7 +610,7 @@ Clusters
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 蔡华的博客 2017
+                    Copyright &copy; 蔡华的博客 2018
                     <!-- <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe

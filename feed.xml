@@ -5,9 +5,818 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 25 Dec 2017 22:53:36 +0800</pubDate>
-    <lastBuildDate>Mon, 25 Dec 2017 22:53:36 +0800</lastBuildDate>
+    <pubDate>Fri, 26 Jan 2018 00:04:55 +0800</pubDate>
+    <lastBuildDate>Fri, 26 Jan 2018 00:04:55 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>七周七并发模型：线程与锁</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;为何使用多线程和锁&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;为了能够并行的计算一些东西&lt;/li&gt;
+  &lt;li&gt;因为在多线程下，如果要修改同一个对象是值会出现竞态条件（即代码行为取决于各操作的时序）。它的表现可能是值的不对，甚至某些时候这个值的前半段是一个线程修改的，后半段是另一个线程修改的。因为这个对象可能不是原子的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;锁，或者说是并行控制的进化&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;第一阶段：锁与同步方法&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;基础的锁&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;从代码层面看就是一个lock函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;同步方法&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在java或者C#中可以通过attribute来让方法同步执行，但是这个的效率是很低的。&lt;/li&gt;
+  &lt;li&gt;同时还引出了另外一个问题，当同时使用多个锁的时候不但效率会进一步降低，而且容易产生死锁。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;基础锁带来的问题&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;死锁&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;当出现多个锁的时候，因为执行顺的问题，导致多个对象都持有一个锁，同时在等待其他人释放锁。例子就是哲学家进餐问题。&lt;/li&gt;
+  &lt;li&gt;哲学家进餐问题的解决方法就是:
+    &lt;blockquote&gt;
+      &lt;p&gt;一个线程想使用多把锁时，就需要考虑死锁的可能。幸运的是，有一个简单的规则可以避开死锁——总是按照一个全局的固定的顺序获取多把锁。&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-7&quot;&gt;外星方法问题&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;所谓外星方法指的是在锁的block中调用了一个外部的方法，但是这个方法中可能会要求获得当前锁的权限，但是因为这个锁正在被使用，导致了代码出现死锁。&lt;/li&gt;
+  &lt;li&gt;解决方案：
+    &lt;ul&gt;
+      &lt;li&gt;唯一的解决思路是避免持有锁时调用外星方法；&lt;/li&gt;
+      &lt;li&gt;一种方法是在遍历之前对listeners进行保护性复制（defensive copy），再针对这份副本进行遍历；&lt;/li&gt;
+      &lt;li&gt;PS：但是我的理解是这个情况只有当数据是并发read时，如果是并发的write想来就有问题了。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;第二阶段： 进击的锁&lt;/h3&gt;
+&lt;h4 id=&quot;section-9&quot;&gt;中断死锁&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;死锁问题是很让人沮丧的，而且也是很多时候都会遇到的。在我们的C#代码中使用lock来做锁，如果遇到死锁，我们是没有办法终止这个被锁的线程的。但是好在还有办法可以结束锁，在java中就是书中说的&lt;code class=&quot;highlighter-rouge&quot;&gt;ReentrantLock &lt;/code&gt;，对应的在C#中是&lt;code class=&quot;highlighter-rouge&quot;&gt;Monitor&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;PS：java的部分可以看下&lt;a href=&quot;http://blog.csdn.net/lipeng_bigdata/article/details/52154637&quot;&gt;这篇文章&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;PS2：两个类的功能基本是一致的，都包含了超时的功能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;问题是否得到了解决？&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;虽然tryLock()方案避免了无尽地死锁，但这并不是一个足够好的方案。首先，这个方案并不能避免死锁——它只是提供了从死锁中恢复的手段。其次，这个方案会受到活锁现象的影响——如果所有死锁线程同时超时，它们极有可能再次陷入死锁。虽然死锁没有永远持续下去，但对资源的争夺状况却没有得到任何改善。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有一些方法可以减小活锁的几率。比如为每个线程设置不同的超时时间，来减少所有线程同时超时的几率。但通过设置超时来处理死锁不能说是一个好的方案——以后我们还可以做得更好。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;条件变量&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;C#中的Monitor有wait、Pulse和PulseAll，对应了ReentrantLock的&lt;code class=&quot;highlighter-rouge&quot;&gt;reachSixCondition&lt;/code&gt;对应。用法参考&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/system.threading.monitor.pulse.aspx&quot;&gt;这里&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;该方法可以显著调高并发度&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-12&quot;&gt;原子变量&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;C#中可以使用Interlocked.Increment来做计算，这个是原子性的。在计数类的场景比较实用。&lt;/li&gt;
+  &lt;li&gt;这个是为了解决基础锁使用过程中对于数据的操作比较繁琐的问题。比如对于计数类的变量，需要保证其get\set都有锁的保护，这样写的方法就比较多了。&lt;/li&gt;
+  &lt;li&gt;原子变量是无锁（lock-free）非阻塞（non-blocking）算法的基础，这种算法可以不用锁和阻塞来达到同步的目的。无锁的代码比起有锁的代码更为复杂。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-13&quot;&gt;第三阶段：终极形态&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;书中以一个大数据的单词解析为例。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-14&quot;&gt;线程池&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;好处就是可以节约线程数，因此往往不能无限制的使用多线程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;影响线程池最优大小的因素有很多，例如硬件的性能、线程任务是CPU密集型还是IO密集型、是否有其他任务在同时运行。还有很多其他原因也会产生影响。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;话虽如此，但也存在经验法则：对于CPU密集型的任务，线程池大小应接近于可用核数；对于IO密集型的任务，线程池可以设置得更大些。
+当然，最佳的方法是建立一个真实环境下的压力测试来衡量性能&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-15&quot;&gt;解决方案的进化&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-16&quot;&gt;生产者消费者模式&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;将数据的解析与计算分割为生产者与消费者。从而分析出性能的瓶颈在消费者（统计单词量）这边。&lt;/li&gt;
+  &lt;li&gt;使用多线程分别进行生产和消费。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;关键在于生产者和消费者可能不会（几乎肯定不会）保持相同的速度。比如，当生产者的速度快于消费者的速度时，队列会越来越大。Wikipedia的dump差不多有40 GiB，很容易就让队列大小超过内存容量。
+相比之下，阻塞队列只允许生产者的速度在一定程度上超过消费者的速度，但不会超过很多。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;section-17&quot;&gt;消费者端的并发执行&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;将解析出来的数据放入到一个HashMap中&lt;/li&gt;
+  &lt;li&gt;在计算上，使用多线程来对HashMap进行统计，但是真正的计算方法本身采样lock。&lt;/li&gt;
+  &lt;li&gt;问题是从结果统计看并没有提高效率。其原因为：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;答案是因为过度竞争——过多的线程尝试同时使用一个共享资源。在我们的程序中，消费者花费大量时间等待被其他消费者锁住的counts，它们的等待时间比实际运算时间还要长，最终导致惨烈的性能下降。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;concurrenthashmap&quot;&gt;使用ConcurrentHashMap来解决共享资源的并发访问&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;C#中对应的是&lt;code class=&quot;highlighter-rouge&quot;&gt;ConcurrentDictionary&amp;lt;TKey, TValue&amp;gt;.AddOrUpdate Method (TKey, TValue, Func&amp;lt;TKey, TValue, TValue&amp;gt;)&lt;/code&gt;。也就是并发集合，依赖于内置的并发集合来提高并发的访问。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;concurrenthashmap-1&quot;&gt;使用多个ConcurrentHashMap&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用ConcurrentHashMap并没有完全的释放多核的威力。&lt;/li&gt;
+  &lt;li&gt;对原来的数据进一步拆分，进而分配给不同的线程来统计，极大的利用了多核。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-18&quot;&gt;优缺点&lt;/h2&gt;
+&lt;h4 id=&quot;section-19&quot;&gt;优点&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;线程与锁模型的最大优点是其适用面很广。它是其他许多技术的基础，适用于解决很多类型的问题。同时，线程与锁模型更接近于“本质”——近似于对硬件工作方式的形式化——正确使用时，其效率很高。这也意味着它能够解决从小到大不同粒度的问题。&lt;/li&gt;
+  &lt;li&gt;另外，这个模型可以被轻松地集成到大多数编程语言中。语言设计者们可以轻易让一门指令式语言或面向对象语言支持线程与锁模型。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-20&quot;&gt;缺点&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;线程与锁模型没有为并行提供直接的支持。&lt;/li&gt;
+  &lt;li&gt;线程与锁模型仅支持共享内存模型。如果要支持分布式内存模型（无论是地理分布型或者容错型），就需要寻求其他技术的帮助。这也意味着线程与锁模型不适用于单个系统无力解决的问题。&lt;/li&gt;
+  &lt;li&gt;多线程的难点不在于难以编程，而在于难以测试。&lt;/li&gt;
+  &lt;li&gt;我们要全程保证所有对象的同步都是正确的、必须按照顺序来获取多把锁、持有锁时不调用外星方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Wed, 17 Jan 2018 00:01:05 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/</guid>
+        
+        <category>并发模型</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：对象的创建和销毁</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;概述&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;本文会记录CPP中对象的创建和销毁的过程中的细节&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;big-three&quot;&gt;big three函数&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;拷贝构造函数&lt;/li&gt;
+  &lt;li&gt;拷贝赋值函数&lt;/li&gt;
+  &lt;li&gt;析构函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;用途：这三个函数是在类中包含了指针的情况下使用的。&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;当有一个成员变量是一个指针时，就有了给这个变量赋值的问题。如果这个赋值需要深拷贝，那么就需要申请内存空间。这样在析构函数中就需要对指针进行delete。&lt;/li&gt;
+  &lt;li&gt;这个成员变量可以是在对象构造函数中被赋值的，比如是个拷贝构造函数。也可以是在拷贝赋值函数中被赋值的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;对象创建&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Complex c1(1,2)&lt;/code&gt;这样的形式还是&lt;code class=&quot;highlighter-rouge&quot;&gt;Complex* c2 = new Complex(1,2)&lt;/code&gt;这样的形式，都可以创建对象。&lt;/li&gt;
+  &lt;li&gt;构造函数不能直接被指针调用&lt;code class=&quot;highlighter-rouge&quot;&gt;p-&amp;gt;P::P()&lt;/code&gt;，这样写在某些编译器下可以通过编译但是某些不行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;new&quot;&gt;new做了什么&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKZXdRcjVXdmlqelZyVUZlU3pqajNjazBUdk80Rm1yYlJRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;生命周期&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于c1这样在栈上的，生命周期就是C1的作用域。&lt;/li&gt;
+  &lt;li&gt;对于C2这样指针的，生命周期也看C2的生命周期，比如C2是个函数的局部变量，那么在函数结束时因为要调用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete c2&lt;/code&gt;，此时对象也就被销毁了。&lt;/li&gt;
+  &lt;li&gt;如果一个c3是static的，那么按照C里面的约定这个变量的生命周期就是进程的生命周期，不管这个C3是全局还是局部。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;对象在内存中是什么样的布局&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG0vaVk3MW1oaWJMY3Vzcis3WUhrNWRNelB4aWVwUGZkYlE1K3RtVkY4Z3pnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;看图说话&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;图是VC中的内存布局，一个对象的大小必须是16字节的倍数。&lt;/li&gt;
+  &lt;li&gt;灰色部分是debug模式下才有的，用于debug。&lt;/li&gt;
+  &lt;li&gt;Release模式下一个对象包含上下hook共4*2=8个字节，对象本身的字节数（complex那个例子下就是实部和虚部共2个double，即4*2=8字节）。如果不够16的倍数就会出现墨绿色部分的pad，也就是填补内存。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-6&quot;&gt;对象的销毁&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;生成的对象c1和c2都会在作用域结束后销毁。如果是c1那么它这个对象本身就在栈上保存，因此销毁后全部内存就释放掉了。但是指针的形式，因为对象是在堆上的，如果c2指针被销毁了，那么堆上这块内存就无法找到并销毁了（直到进程结束），造成了内存泄漏。&lt;/li&gt;
+  &lt;li&gt;因此对于指针形式的c2，在其使用完成后就可以直接调用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete c2&lt;/code&gt;来实现销毁。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;析构函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果一个对象中动态的分配了内存，那么需要在析构函数找那个对分配的内存进行删除。&lt;/li&gt;
+  &lt;li&gt;如果不显式的去写析构函数编译器应该会生成一个，如果我没有记错的话。&lt;/li&gt;
+  &lt;li&gt;上面的c1中如果是在栈上的，那么变量离开作用域后会自动销毁并调用析构函数。&lt;/li&gt;
+  &lt;li&gt;构造函数执行两个步骤，第一个执行&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;delete&quot;&gt;delete做了什么&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKUmgvZmViUytFdzB1dGE5ZHFJNzkrclBFbHlEbnk3Vi93PT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;数组删除&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果动态生产了数组内存，则在析构函数或者当需要删除对象时需要用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete[]&lt;/code&gt;。在这个过程中具体干了什么呢？&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKVlNpclgvbmkxK2xPZmJWSGZMSkx0L0IrZ1lTOG9ic2pnPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上面也说了，delete会先执行析构函数，其实对于一个对象来说，由于上下hook的存在因此析构函数可以完美的删除这个对象所占用的内存。所以图中左右两个delete都可以删除p所指向的数组，但是因为数组中是string的指针， 所以删除数组后string指针对指向的string对象本身并没有删除。而这个string对象本身其实就是char[]。这才是不用delete[]造成内存泄漏的本质。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Tue, 16 Jan 2018 23:49:53 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：Object Model</title>
+        <description>&lt;h4 id=&quot;composition--delegate--inherit-&quot;&gt;composition &amp;amp; delegate &amp;amp; inherit 的构造和析构顺序&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果有以下代码：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class A
+{
+public：
+    A();
+    ~A();
+    Foo();
+}
+
+class B
+{
+public：
+    B();
+    ~B();
+}
+
+class C:A
+{
+public：
+    C();
+    ~C();
+private:
+    B* b;
+}
+
+main()
+{
+    C c;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在前面面向对象中讲过，B和C组成了composition &amp;amp; delegate，而A和C是继承关系。&lt;/li&gt;
+  &lt;li&gt;那么在内存使用的顺序上会先调用A的构造函数，然后调用B的构造函数。最后调用C的构造函数。&lt;/li&gt;
+  &lt;li&gt;在析构时的顺序是：先调用C的析构，在调用B的，最后调用A的。&lt;/li&gt;
+  &lt;li&gt;其顺序可以从代码层面这样的解释&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C::C() ：A(), B() { // c在构造函数中要做的事情}
+
+C::~C()
+{
+    // c的析构
+    ~B();
+    ~C();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;vptr--vtbl&quot;&gt;vptr &amp;amp; vtbl&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在C++中函数分为虚函数和非虚函数，对于非虚函数来说调用的时候编译器会编译为&lt;code class=&quot;highlighter-rouge&quot;&gt;call(method address)&lt;/code&gt;的形式，也就是说函数的地址是已知的，即使是继承下来的函数，等于也是调用了父类的函数的地址。这个被称为静态绑定。&lt;/li&gt;
+  &lt;li&gt;但是对于虚函数，因为有override的情况，所以C++中采用了虚机制，也可以说是动态绑定。&lt;/li&gt;
+  &lt;li&gt;虚机制的基础是虚指针和虚表。虚指针是对象中的一个指向虚表的指针，虚表是一个对象中所有的虚函数地址表。&lt;/li&gt;
+  &lt;li&gt;与C#方法列表进行比对： C#中方法列表包含了所有函数的地址，而C++的虚表中只是虚函数的。因为不知道子对象是否会override父类虚函数，所以这个虚表里面的函数可能指向了父类的虚函数，也可能指向了子类的虚函数，还有可能是子类override的虚函数。&lt;/li&gt;
+  &lt;li&gt;什么时候C++会使用动态绑定呢？
+    &lt;ul&gt;
+      &lt;li&gt;调用方法的对象是一个指针&lt;/li&gt;
+      &lt;li&gt;对象使用时是up cast，也就是协变。&lt;/li&gt;
+      &lt;li&gt;调用的是虚函数&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;本质：从下面的代码看*(p-&amp;gt;vptr)是虚指针指向的虚表，虚表中其实是函数地址的数组，调用某个函数就是去数组的值，然后传递参数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;( *(p-&amp;gt;vptr) [n] )(...)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;PS：对于栈上的对象的方法调用，就不考虑虚机制。下面例子中B继承自A，AB中均有虚函数vFunc的情况下，结果是调用了A的虚函数，因为a不是指针。如果a是指针，那么走虚机制，应该执行的是B的vFunc。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;B b;
+
+A a = (A)b;
+
+a.vFunc();
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Tue, 09 Jan 2018 23:48:28 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：Reference</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;本质&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;通过指针实现，所以本质就是指针&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;意义&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;是某个变量的代表，因此下面的代码中，x的值为5。在给x赋值后i和x都是6。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int i = 5;
+
+int&amp;amp; x = i;
+
+x = 6;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;编译器的一些做法&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;以一下代码为例，如果有一个变量b是a的引用，那么有&lt;code class=&quot;highlighter-rouge&quot;&gt;sizeof(a) == sizeof(b)&lt;/code&gt;而且&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;a == &amp;amp;b&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;上面也说了引用是个指针，在32位系统中sizeof指针应该是4个byte。但是因为b是a的引用，它代表了a，所以代码中&lt;code class=&quot;highlighter-rouge&quot;&gt;sizeof(b)&lt;/code&gt;是16byte。而且a和b取地址得到的值也是一样的，虽然我们知道这个在内存中肯定是不一样的。只不过编译器做了这些的处理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;typedef struct A {int a, b, c, d};
+
+A a;
+A&amp;amp; b = a;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;reference&quot;&gt;reference的常用方式&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;主要用于参数的修饰，很少用来声明变量。&lt;/li&gt;
+  &lt;li&gt;参考以下的代码，在使用上引用传递在写法上和值传递是一样的，当然本质不同。但是从代码的优雅性上引用会比指针的参数形式好。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void Func1 (Cls a)
+void Func2 (Cls&amp;amp; a)
+void Func3 (Cls* a)
+
+...
+
+Cls obj;
+
+Func1(obj);
+Func2(obj);
+Func3(&amp;amp;obj);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;需要注意以下两个函数不能同时定义，因为在调用上会出现歧义。但是const修饰符可以实现重载。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;void Func (Cls a)
+void Func (Cls&amp;amp; a)
+
+......
+
+Cls obj;
+Func(obj);
+
+......
+
+void Func (Cls a) const
+void Func (Cls&amp;amp; a)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 07 Jan 2018 23:45:30 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：偏特化</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;什么是偏特化&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;泛化（泛型）的反义&lt;/li&gt;
+  &lt;li&gt;分为个数的偏特化和范围的偏特化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;数量偏特化&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template&amp;lt;typename T, typename U&amp;gt;
+class vector {}
+
+
+template&amp;lt;typename U&amp;gt;
+class vector&amp;lt;bool, U&amp;gt; {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;范围偏特化&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;说白了进一步约束泛型的类型。这个和C#中泛型的where约束有点像。&lt;/li&gt;
+  &lt;li&gt;对于下面的例子来说，第一个C约束几乎没有，但是第二个就约束为指针类型了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template&amp;lt;typename T&amp;gt;
+class C {}
+
+
+template&amp;lt;typename U&amp;gt;
+class C&amp;lt;U*&amp;gt; {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Tue, 02 Jan 2018 23:45:30 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：类型转换</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;自己转换为别的类型&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;做法：使用&lt;code class=&quot;highlighter-rouge&quot;&gt;operator&lt;/code&gt;关键字，无需返回值，函数名称就是返回值。如有需要加上const修饰。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    operator double() const
+    {
+        return (double)(x/y);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;non-explicit-one-argument-ctor&quot;&gt;non-explicit-one-argument ctor&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;本质是编译器将别的对象转化为我们定义的对象&lt;/li&gt;
+  &lt;li&gt;要求的自定义构造函数比较特殊&lt;/li&gt;
+  &lt;li&gt;在实例代码中编译器会把4装换为A，然后执行+ 操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    A operator +(const A&amp;amp; a) 
+    {
+        return A(....);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+A a(2,3);
+double d = a + 4;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;编译器有时会不清楚&lt;/h4&gt;
+
+&lt;p&gt;-下面的代码中a+4时编译器发现可以用double操作，也可以用+操作，在这样的情况下编译器会不知道如何选择进而报错。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    A operator +(const A&amp;amp; a) 
+    {
+        return A(....);
+    }
+    
+    operator double() const
+    {
+        return (double)(x/y);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+A a(2,3);
+double d = a + 4;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;explicit-one-argument-ctor&quot;&gt;explicit-one-argument ctor&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;explicit关键字几乎都是用到构造函数前面的，告诉编译器不要随便的把别的类型转换为我自定的类型。&lt;/li&gt;
+  &lt;li&gt;下面的例子中，编译器不会再把4转成A，因此这个表达式是错误的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
+{
+Public:
+    explicit A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    A operator +(const A&amp;amp; a) 
+    {
+        return A(....);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+A a(2,3);
+double d = a + 4;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Tue, 02 Jan 2018 23:44:24 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：面向对象</title>
+        <description>&lt;h4 id=&quot;composition&quot;&gt;Composition&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;组合&lt;/li&gt;
+  &lt;li&gt;其实就是一个类（Container）中包含了另一个类的实例（Component），注意是实例。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;delegate&quot;&gt;delegate&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;组合的一种&lt;/li&gt;
+  &lt;li&gt;但是包含的是一个类的引用(reference)。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;组合的使用&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;用这样的方式可以做出adapter模式，比如A功能很多但是如果只要暴露出一部分，可以用B来包含A，然后只在B中定义一些方法，这些方法都是直接调用A的即可。&lt;/li&gt;
+  &lt;li&gt;还可以引申出面向接口编程。比如A中要调用某一类的功能，但是这些功能可以由B\C\D来提供，或者说不通的条件下使用不通的提供者，那么我们就可以为这些功能定义一个接口，然后让BCD实现接口，A中只要是一个对接口类型的引用即可。&lt;/li&gt;
+  &lt;li&gt;PS：目前我看到C++里面的接口是用虚函数实现的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;no-virtualvirtual&quot;&gt;no-virtual&amp;amp;virtual&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;C++的函数使用virtual关键字标记为虚函数。&lt;/li&gt;
+  &lt;li&gt;虚函数分为纯虚函数和虚函数，区别就是虚函数是有实现的，哪怕只是个空的函数体&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;&lt;/code&gt;。但是纯虚函数是没有实现的，定义方式为&lt;code class=&quot;highlighter-rouge&quot;&gt;virtual void Foo() = 0&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;虚函数不要求子对象一定实现override，但是纯虚函数要求一定实现。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 02 Jan 2018 23:42:45 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>侯捷C++学习笔记：基础</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;1.类&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;带指针的类&lt;/li&gt;
+  &lt;li&gt;不带指针的类：大多数不需要析构函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;2.定义头文件&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;防御式代码，避免多次include时重复导入&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#ifndef _COMPLEX_
+#define _COMPLEX_
+
+...
+
+#endif
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;头文件布局:
+    &lt;ul&gt;
+      &lt;li&gt;前置声明&lt;/li&gt;
+      &lt;li&gt;类声明
+        &lt;ul&gt;
+          &lt;li&gt;class head &lt;code class=&quot;highlighter-rouge&quot;&gt;class Complex&lt;/code&gt;&lt;/li&gt;
+          &lt;li&gt;class body : 定义数据和函数&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;类定义&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    operator double() const
+    {
+        return (double)(x/y);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;3.函数&lt;/h2&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;构造函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;默认参数&lt;/li&gt;
+  &lt;li&gt;initialization list，只有构造函数有&lt;/li&gt;
+  &lt;li&gt;用法：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;如果构造函数的参数是类型本身，那么叫拷贝构造。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;只要类带指针必须有拷贝构造函数。PS: 同时要有拷贝赋值函数。&lt;/strong&gt; 编译器会默认生成，但是需要根据情况自己写。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;inline&quot;&gt;inline函数：&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;当一个函数在class body内定义并且实现了功能，则会自动成为inline函数。&lt;/li&gt;
+  &lt;li&gt;在外部实现并且加上inline关键字的函数，只是作为inline函数的一个候选人，是否成为一个inline函数完全看编译器会不会这样来编译它。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;函数重载&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;CPP中重载函数在代码中同名，但是在编译后不同名。&lt;/li&gt;
+  &lt;li&gt;如果出现一个函数&lt;code class=&quot;highlighter-rouge&quot;&gt;foo()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;foo(int i = 0)&lt;/code&gt;这样的情况，实际上是不行的，因为编译器认为在调用的无参版本时两个函数都可以，这样就出现了错误。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;const-member-functions-&quot;&gt;const member functions (常量成员函数)&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;以下面的函数为例，参数括号后加上const修饰符，则说明这个函数是不改变对象中数据的值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; double real () const { return re; }
+ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在函数的使用上可能与如下的方式，说明我生成的对象c1中的数据是不希望修改的，那么如果real函数中没有const的话编译时会报错。因为如果没有const，说明real函数可能会修改对象中的数据的值，但是我们定义的c1又是一个不会被修改的，那么就有矛盾了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; const complex c1()
+ c1.real()
+ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;passreturn-by-value-vs-passreturn-by-reference-to-const&quot;&gt;pass（return） &lt;em&gt;by value&lt;/em&gt; vs pass（return） &lt;em&gt;by reference&lt;/em&gt; (to const)&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;这个符号在c中是取地址的操作，在C++中也有这个用发，但是多了一个用法。比如如下的代码中：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;complex&amp;amp; operator += (const complex&amp;amp;);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;参数类型后面加&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;说明这个参数是按引用传递，本质就是指针。如果不加const修饰，则函数中可以修改参数的值，如果加了则说明这个参数就是按指针传递给函数使用，但是不能修改其值。&lt;/li&gt;
+  &lt;li&gt;通常来说尽可能用按引用传递，因为毕竟指针只有4个byte，对于多数情况来说是比较快速和省资源的（栈上的数据少）。但是如果遇到传递的值是char的，也可以安值传递。&lt;/li&gt;
+  &lt;li&gt;传递者无需知道接受者是以reference的形式接收。传递者把对象传递个函数，但是函数是使用值形式的参数还是引用形式的参数完全看函数的定义，但是调用者无需关心。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;value&quot;&gt;何时使用value来传递呢？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果函数的返回值是函数内部的一个local object就需要安值传递。因为在函数结束后对象就从栈中销毁了，此时用引用的话在获取值的时候，对象已经没了。&lt;/li&gt;
+  &lt;li&gt;++&lt;strong&gt;所以是返回引用还是值，根本上要看这个返回值内存是在函数内还是函数外。&lt;/strong&gt;++&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;友元函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;加&lt;code class=&quot;highlighter-rouge&quot;&gt;friend&lt;/code&gt;修饰符，只是告诉类某个函数是友元的，可以直接访问private的变量。&lt;/li&gt;
+  &lt;li&gt;++&lt;strong&gt;相同class的各个对象互为friend（友元）&lt;/strong&gt;++&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int foo(const complex&amp;amp; param)
+{
+    return param.re + param.im;
+}
+
+...
+
+complex c1(1,2);
+complex c2;
+
+c2.foo(c1);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;静态函数&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;与C#不同的是CPP中静态函数可以通过对象来调用，同时当有也可以用类+函数名的方式调用。即&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class::StaticFuntion();
+
+Class c1;
+c1.StaticFunction();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;总结&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;数据一定放在private里面&lt;/li&gt;
+  &lt;li&gt;参数和返回值尽可能用reference来传递，加不加const根据实际情况&lt;/li&gt;
+  &lt;li&gt;class body中函数如果没有修改数据则加const&lt;/li&gt;
+  &lt;li&gt;构造函数尽量用初始列表&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 01 Jan 2018 23:40:45 +0800</pubDate>
+        <link>https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/</guid>
+        
+        <category>CPP</category>
+        
+        
+      </item>
     
       <item>
         <title>每天一点UWA：第二十周</title>
@@ -501,777 +1310,6 @@ http://answers.unity3d.com/questions/1206428/how-weights-of-2d-blending-are-calc
         <pubDate>Fri, 22 Dec 2017 16:49:12 +0800</pubDate>
         <link>https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</link>
         <guid isPermaLink="true">https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity特效学习：动画</title>
-        <description>&lt;h4 id=&quot;unity&quot;&gt;Unity动画创建&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;选中物体后按Ctrl+6可以开启动画编辑器。
-&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NDQ4M1Z2TlZ0TFU1b1VpaHZqb0dFR0F1TlNaeDhDSFRnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;点击Add Property可以选中你要编辑的物体对象上的属性。可以看到几乎物体上所有组件的可编辑的属性都可以通过动画来编辑。这也意味着很多东西不需要编码来完成，比如你要做物体transform的变化、要做shader属性的变化等。以往可能需要进行代码编辑，在update或者某个corroutine中来使用Time.deltatime来做变化，但是现在只要通过动画编辑器就可以实现了。&lt;/li&gt;
-  &lt;li&gt;有时间线的区域就是帧动画编辑区&lt;/li&gt;
-  &lt;li&gt;红线是时间线&lt;/li&gt;
-  &lt;li&gt;可以右键然后选项add key来实现关键帧的添加。也可以拖动红线到某个位置，测试在inspector中改变对于属性的值时会自动的添加一个key。
-&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NmdVMlVtaWFlOXlWWFZxazNsNWtYcnduRFVzdG9UVzdnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;最下面有Dopesheet和Curves的不同模式。下图是选择了rotation后的curves，可以看到X和Z就是一条直线没有变化，因为这个动画我确实只是选择了Y轴，而Y所对应的黄色曲线有明显的变化。
-&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NWhmK2k0NzlFeS9MMTNSclF4YjJrSkVheU4rL1ZQMWtRPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;Curves的编辑：和unity中其他的curves一样，右键添加key，然后key有各种的设置，总之动画效果完全是可视化编辑的。
-&lt;img src=&quot;http://imglf4.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2eEFBTWhIR0l0WXlGK3RCblNyamU3WFVnelVwVStKc3dnPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;d&quot;&gt;使用3D软件制作动画&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;事实上unity能够制作的动画比较简单。一个真正游戏中的复杂模型的动画还是靠的3D软件来制作。&lt;/li&gt;
-  &lt;li&gt;还有我不会3D软件 (｡◕ˇ∀ˇ◕)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section&quot;&gt;如何修改动画软件导入的动画信息&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过FBX得到的动画信息可以通过Animation编辑器打开，但是会显示为read-only。这有有个小机器，就是我们选择FBX的动画片段后，Ctrl+D 复制一个动画出来，在打开后就可以编辑啦。&lt;/li&gt;
-  &lt;li&gt;另外一个小技巧是，在运行unity时播放某个动画的时候，暂停然后选择Hierarchy面板中的对象，选择copy，然后停止unity play。在hierarchy中paste，此时会粘贴模型到hierarchy中，而且模型的动作就是copy的瞬间的动画动作。好神奇！！！&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-1&quot;&gt;说明&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;Demo的地址为https://github.com/klkucan/UnityEffect&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 09 Dec 2017 22:35:34 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/</guid>
-        
-        <category>Unity</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity特效学习：粒子</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;参数&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;只记录一些特别的参数&lt;/li&gt;
-  &lt;li&gt;Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。&lt;/li&gt;
-  &lt;li&gt;StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。&lt;/li&gt;
-  &lt;li&gt;Color：
-    &lt;ul&gt;
-      &lt;li&gt;Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。&lt;/li&gt;
-      &lt;li&gt;Random：粒子颜色从两个值随机取&lt;/li&gt;
-      &lt;li&gt;还有梯度随机&lt;/li&gt;
-      &lt;li&gt;纯粹随机：这个可以自定义N个颜色区间。&lt;/li&gt;
-      &lt;li&gt;梯度编辑器很强大。注意：点击颜色条上沿添加的节点是调整alpha的，下沿是调整颜色的。藏的好深啊。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Emission:
-    &lt;ul&gt;
-      &lt;li&gt;Rate over Distance:按照移动距离发射粒子。不动的情况下就不发射。可以用来模拟移动的汽车的尾气。动起来才有，不动就没有了。必须配合world模式。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Shape:
-    &lt;ul&gt;
-      &lt;li&gt;发射器可以选择不同的形状。当选择了Emit from为Base shell，并且将start speed设置为0时粒子就会出现在外轮廓的固定位置。可以呈现比较特殊的粒子效果。尤其是圆形或者柱状时。
-&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiLythcEdyaE01eGtmc0RPdjltcXZYSTRyNm5veW9yd0JBPT0.jpg?imageView&amp;amp;thumbnail=1809y511&amp;amp;type=jpg&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-      &lt;li&gt;mesh:想做特殊形状的粒子需要这个，很特别，看下图。
-&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMGdNdDdZMkVPS25yYmdwRU1rVHVRYnVLV0ZBbjlKdzJRPT0.jpg?imageView&amp;amp;thumbnail=1699y586&amp;amp;type=jpg&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Velocity over lifetime: 简单来说就是在生命周期中给与一个3D方向的移动速度。比如我们只给x一个5的值，那么看上就是有粒子北风吹走的感觉了。目前想到的就是风吹的效果。&lt;/li&gt;
-  &lt;li&gt;Limit Velocity over lifetime: 速度的衰减。speed为最终速度、dampen为删减的速度。基本上的公式应该是&lt;code class=&quot;highlighter-rouge&quot;&gt;speed = start speed - dampen * time&lt;/code&gt;。只给可以配合Velocity over lifetime实现一个更为真实的风吹效果。&lt;/li&gt;
-  &lt;li&gt;Rotation over left：这个主要是旋转粒子，材质球选择一个具体的纹理图后比较明显。现在看效果比较适合做技能特效。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;External Force：配合风场更适合做各种风的效果。具体设置看Demo。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Sub Emitters:自发射器可以实现多个粒子的配合效果，最常用的就是烟花。
-    &lt;ul&gt;
-      &lt;li&gt;birth：主粒子产生时产生子粒子&lt;/li&gt;
-      &lt;li&gt;collision：主粒子碰撞时产生子粒子&lt;/li&gt;
-      &lt;li&gt;death：主粒子消失时产生子粒子&lt;/li&gt;
-      &lt;li&gt;在death粒子如果想做出一次性的烟花效果需要注意：首先lifetime要短，其次总离子数量要小于rate over time，这样才能实现一次性发射所有的粒子。具体设置见demo。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf6.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiNWJCd0ROTUNyb2lpeXhrZDRDMVQvakgxbGNQTVl3WEV3PT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Texture Sheet Animation：粒子序列帧动画。需要在材质球中配合特别的序列动画纹理图。最常见的就是做火焰。这个功能极其强大。
-    &lt;ul&gt;
-      &lt;li&gt;Tiles：动画纹理中动画的横轴纵轴的数量。我demo中的图是8x8的，所以这里也要设置成8x8。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMEhQMGlNckU0WFJ1MWt4eldWQzlyYSsrbWE0OU1oeCtRPT0.jpg?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;section-1&quot;&gt;说明&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;Demo的地址为https://github.com/klkucan/UnityEffect&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 09 Dec 2017 14:46:13 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/</guid>
-        
-        <category>Unity</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十八周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;assetbundleshaderalways-includeshadershaderbundleshadershaderbundleunity534f1&quot;&gt;最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先，只要资源在工程里并且需要用到它，就会被打包进AssetBundle。&lt;/li&gt;
-  &lt;li&gt;然后Always include里built-in Shader不会被打包进AssetBundle，这是一个特例。这个特例仅限于没有放到工程里的部分，有些项目会自己下载built-in Shader放到工程里，这样的Shader和自己写的没有区别，也会被打包。&lt;/li&gt;
-  &lt;li&gt;最后，你遇到的问题是正常现象，需要你们通过资源管理的策略避免掉。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;shaderalways-includebundle-shader-shader-feature-enableclipshaderbundleshader-feature-shader-variant&quot;&gt;自定义Shader放入Always include里面，造成Bundle 资源冗余。项目中的某一个自定义的Shader 使用了Shader feature ENABLE_CLIP，Shader被打进最终的Bundle包的时候，这个Shader feature 不起作用了，是因为这个Shader Variant没有被打入最终包吗，官方文档里的说明是：&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;the only difference is that unused variants of shader_feature shaders will not be included into game build. So shader_feature makes most sense for keywords that will be set on the materials, while multi_compile for keywords that will be set from code globally.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;shader-featureshader-variant-bundle&quot;&gt;但是我确实有个材质是使用了这个Shader Feature的，为什么这个Shader Variant 没有进入最终的Bundle包呢？&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;据了解，Unity官方有在英文论坛里提到Asset Bundle team正在解决这个问题。如果不将Shader对应的Material与Shader一同打包，当前另外的解决方案包括：
-    &lt;ul&gt;
-      &lt;li&gt;使用dummy materials / ShaderVariantCollection 与shader打在同一ab内。&lt;/li&gt;
-      &lt;li&gt;使用multi_compile替换shader_feature。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;fbxfbxmeshuvreadwrite-able&quot;&gt;我把FBX和粒子系统分开打包了。加载的时候先加载FBX文件，然后再加载粒子系统，结果那些粒子系统是Mesh模式的时候，它们的UV会消失。怎么办呢？开了Read/Write able就不会消失。不分开打包也不会消失，这种情况如何破？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;建议考虑在 FBX 的 AssetBundle 里再放一个带粒子系统，并且引用这个 Mesh 的 Prefab（但不去加载，也不去使用它），只是为了让 UV 可以被正确获得。 理论上这样做的话，基本不需要修改原来的加载方式，也不用开Read/Write。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;gameplay&quot;&gt;Gameplay&lt;/h2&gt;
-&lt;h4 id=&quot;shadershadercullcull-off&quot;&gt;我写了一个顶点动画的Shader，对物体顶点位置进行了修改，使其能够跟随相机移动，并总是出现在相机前面。当游戏运行后，开始时物体能够正常显示。相机在场景中移动一段距离后，物体便不再显示，但相机换一下朝向，物体又能显示。目前排除了面剔除的原因，在Shader中已经关闭了Cull（Cull Off），请问还可能是什么其他原因呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;消失的原因应当是Unity的Frustum Culling引起。因为顶点动画是在shader中修改的顶点位置，而Frustum Culling是根据顶点修改之前的Mesh的bounds进行的，因此随着相机移动，Mesh实际已经出了Frustum的范围。最简单的解决方法是直接将Mesh的bounds设置足够大，让Unity始终不对其进行Culling：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mesh.bounds = new UnityEngine.Bounds(transform.position, new Vector3(float.MaxValue, float.MaxValue,
-float.MaxValue));
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;systeminfographicsdevicenamegpuarmmalit880-mp2t880-mp12t880mp&quot;&gt;使用SystemInfo.graphicsDeviceName获取的GPU信息不太详细。比如ARM系列的Mali，T880 MP2与T880 MP12相差甚远，但是只能获取到T880，无法获取MP的信息。各位是否有办法？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于获取GPU名称信息，在Android的Java层中可以利用API：GLES20.glGetString(GLES20.GLRENDERER)获取显示设备名。可以尝试在Unity中利用AndroidJavaClass(https://docs.unity3d.com/ScriptReference/AndroidJavaClass.html)来调用该API，尝试获取更详细的型号。&lt;/li&gt;
-  &lt;li&gt;如果获取GPU名称的目的是判断GPU性能，可以看下SystemInfo中其他graphicsDevice相关的GPU性能信息是否够用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;colliderrigidbodyoncollisionenteroncollsionenter&quot;&gt;两个挂了Collider的物体，一个物体挂了Rigidbody，去碰撞另一物体，为什么每次OnCollisionEnter这个函数在实际还没有碰撞的时候就调用了呢？如下图，这时OnCollsionEnter已经被调用，但从图上可以看到两物体实际还没有接触，这个函数调用之后才会真正碰撞在一起。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;物理系统在FixedUpdate中触发，包括OnCollisionEnter。而FixedUpdate早于Frame Rendering，因此碰撞实际已经发生，只是画面还没更新。其实在运行时这点时间差几乎应该可以忽略。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;unityocclusion-cullingunityocclusion-cullingdrawcalltriangleocclusion-cullingnavmeshdata&quot;&gt;想对场景中的静态物件做一个遮挡剔除，不知道Unity自带的Occlusion Culling对性能优化的提升有多少呢？我们用Unity官方例子测试，启用Occlusion Culling后发现DrawCall、Triangle几乎没有变化。另外也想获知，Occlusion Culling的数据能否像NavMeshData那样可以动态加载呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Occlusion Culling在使用后具体能提升多少，这个其实是没有明确数值的，甚至可能不升反降！这个只能题主在自己的项目中进行尝试。&lt;/li&gt;
-  &lt;li&gt;一般来说，Occlusion Culling功能特别适合第一人称或第三人称跟随的平视角相机（比如传统意义上的MMO等类似游戏），且适用于在场景中存在大量的遮挡情况。因此，在城市街道漫游、峡谷漫游等特定场景中，比较推荐开启Occlusion Culling功能。&lt;/li&gt;
-  &lt;li&gt;但是Occlusion Culling功能本身存在一定的性能开销，因为需要每帧均遍历烘焙的Cell来明确哪些物体需要或不需要渲染，所以场景中Cell越细，那么其查询开销也就越大。因此，如果场景中本身没有大量的遮挡关系，那么开启Occlusion Culling功能后，其节省下来的渲染耗时可能抵不上其Cell查询耗时来的大，这样就得不偿失了。&lt;/li&gt;
-  &lt;li&gt;最后，Occlusion Culling的Data目前并不能动态加载，只能随场景来进行加载。因此，可以尝试创造一个拥有Occlusion Culling Data的“空场景”，然后通过LoadLevelAdditive方式来进行加载，从而来达到“动态”加载的效果。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;profilergetmonoheapsizeuiui68mbprofiler&quot;&gt;通过Profiler.GetMonoHeapSize()获取到的堆内存，在操作UI的时候，打开某个节点比较多的UI界面，根据上面接口取到的堆内存会突然涨6~8MB，但是Profiler取不到这个数据，该怎么办呢？我不是固定打开某个界面，而是随机出现在某个界面上，这样的问题该如何入手呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Mono总体堆内存一次性涨6-8MB是比较正常的。Mono内存并不是随用随分配的，而是当其发现不够用时，一次性从系统中获取一段连续的内存。在游戏运行一段时间后，这个值一般是8MB。所以，题主遇到的情况很有可能是在连续操作UI界面时，Mono发现堆内存不够用了，于是就有了题主观察到的内存分配。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;drawcallgpu20msxcode-profilercpu78ms&quot;&gt;下图这一项是指渲染透明物体的渲染消耗么，主要是提交DrawCall是么，现在游戏的GPU消耗在20ms以内Xcode Profiler结果。但是有些粒子系统比较耗CPU，就是这个涨得比较厉害，峰值有7~8ms，请问有没有什么优化建议?&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_71%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先，需要说明的是，Draw Call是CPU端的耗时开销，XCode上GPU上的开销统计与其关系不大。&lt;/li&gt;
-  &lt;li&gt;其次，图中红框所示确实表示的是半透明物体渲染在CPU端的耗时，其不仅与Draw Call数量相关，也和渲染State的切换相关（从图中可以看出，项目使用的是Unity 4.x版本，对应的需要关注Shader.SetPass的开销）。&lt;/li&gt;
-  &lt;li&gt;再次，粒子系统的耗时开销很高，如果还是持续在7~8ms左右，那么研发团队关注较高耗时处的游戏场景，并控制粒子系统的使用数量，粒子系统的优化并没有“神奇”的方案，目前研发团队需尽可能控制粒子系统的使用数量。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 03 Dec 2017 22:59:12 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十七周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;texturematerialspritetexture&quot;&gt;当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://blog.uwa4d.com/archives/TechSharing_66.html&quot;&gt;原文&lt;/a&gt;较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个AssetBundle。&lt;/li&gt;
-  &lt;li&gt;这是一个重要的问题，而且这个问题也是看unity版本的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundleunloadtrueanimationclip--animationclipprofiler&quot;&gt;使用AssetBundle.Unload(true)释放AnimationClip , 但发现AnimationClip在Profiler看到还存在，请问要怎样才释放干净呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果这个AnimaitonClip是从AssetBundle中加载过来的，那么当这个AssetBundle调用unload(true)时，该AnimationClip理论上是会被强行卸载的。如果Profiler中查看还有，那么只有两种情况：
-    &lt;ul&gt;
-      &lt;li&gt;仍然存在的AnimationClip是从其他地方加载来的，而不是来自于该卸载的AssetBundle；&lt;/li&gt;
-      &lt;li&gt;Unity引擎的Bug，这种概率不是没有，但很小。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundlenameassetbundleunityassetbundlenamegetallassetnamesloadallassets&quot;&gt;在打包的时候，有一部分资源是没有设置AssetBundleName的，打包的时候会和依赖它们的资源打到同一个AssetBundle包里（Unity自动完成）。在资源加载的时候，无法主动获取到这些没有设置AssetBundleName的资源。GetAllAssetNames、LoadAllAssets这些接口的返回值中都没有这部分资源。&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;请问，在你们看来，这种情况是Unity的设计还是Bug？如果是如此设计的话，有什么特别的意义吗？ 提供一个简单的情景，如下：
-１）有A、B两个Prefab，其中A上挂个脚本引用了B
-２）打包的时候，设置A的AssetBundleName＝”prefab.unity3d”，B的AssetBundleName=None
-３）打包，只产生prefab.unity3d这一个AB包，其中包含了A、B两个资源
-４）加载代码使用AssetBundle.LoadAllAssets()，返回的数组里只有一个资源（A）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;我们刚刚在Unity 5.5.2版本上进行了一个测试，得到与题主一样的结论。
-我们更加倾向于它是一种设计，而非Bug。&lt;/li&gt;
-  &lt;li&gt;因为Prefab B是作为一种参数被引用在A的脚本中，所以在AssetBundle中，它将以GameObject B的形式存在，但是不会存在于AssetBundle的映射表中。&lt;/li&gt;
-  &lt;li&gt;而对于题主的这种打包方式而言，AssetBundle的映射表中只会有一个，就是Prefab A。而AssetBundle.LoadAllAssets虽然会把GameObject A、B及其关联的资源全部加载，但其返回的Object[]内容应该就只有一个，也就是Prefab A。&lt;/li&gt;
-  &lt;li&gt;所以，UWA推测，AssetBundle中在打包时是自己维护了一个map的，只有明确被设置ABName的资源才会被放入map中，也只有map中的资源才可以通过特定名称进行Load，而其关联的资源则会被打包到AssetBundle中的其他container中，是无法通过LoadAsset或LoadAllAssets API来获取到的。&lt;/li&gt;
-  &lt;li&gt;PS：==这是一个需要注意的问题==&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundlebitmap-aassetbundlealtas-bb&quot;&gt;AssetBundle包字体bitmap A的使用到AssetBundle包Altas B时B冗余&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;出现冗余是因为vip和betaCommon两个Prefab实际上并没有建立其依赖关系（虽然mainfest上注明了存在dependencies）。&lt;/li&gt;
-  &lt;li&gt;问题解决方式，只需要将BetaCommon Material设置为一个“显式”的AssetBundleName，那么冗余问题就不会存在了。&lt;/li&gt;
-  &lt;li&gt;PS:让bitmap A的material被显示打包。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
-&lt;h4 id=&quot;unity-55uguitestmesh-prongui&quot;&gt;Unity 5.5版本下的UGUI，我将字体设置为粗体，发现字体只是变宽不加粗，不像正常的粗体，如下图所示。另外，TestMesh Pro需要预渲染，不能用动态字体，只能用于特定范围，有像NGUI(效果还不错)那种对动态字体加粗的方法么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;动态字体加粗显示的外观是和字体本身有关系的，如果字体中没有包含“粗体”的字形，那么Unity会通过拉伸来“模拟”加粗，因此得到的效果是有问题的。&lt;/li&gt;
-  &lt;li&gt;而这个行为在UGUI和NGUI中是一样的。因此，如果要确保加粗显示正确，则需要使用包含了“粗体”字形的字体，甚至需要考虑是否将其include到发布包中（因为某些设备中的内置字体也有可能被精简过）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-&lt;h4 id=&quot;uguitaggroupdrawcallgroup&quot;&gt;UGUI自动打包图集时，有时候同一个Tag会自己打出多个Group图集，导致DrawCall增加，有什么解决方法吗？这个分Group的原理是什么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;产生Group的原因主要有两种：
-    &lt;ul&gt;
-      &lt;li&gt;纹理的格式不同 。举例来说，有这样四张纹理格式分别为：RGB24，ETC1，RGBA32和ETC2，那么设置一样的Tag后，对应的图集就会有四个Group。&lt;/li&gt;
-      &lt;li&gt;纹理量太大。一个Group放不进，这个原因是容易理解的，就不解释了。&lt;/li&gt;
-      &lt;li&gt;其中特别容易忽略的一点是，某些小纹理可能没有Alpha通道，导致了图集被分成两个Group，引起DrawCall的增高，这种情况下可以直接修改纹理，也可以强制设定为Aalpha通道的格式。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;ugui-image-sprite-profilerspritemeshgeneratortraceshape-&quot;&gt;请问UGUI Image 在切换Sprite（网络图片） 的时候有卡顿，从Profiler中看到具体卡在SpriteMeshGenerator.TraceShape 这个方法上，如下图所示，有没有什么优化的方法呢？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_66%2F9.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;图中的==SpriteMeshGenerator.TraceShape/Decompose/Simplify==的函数，通常出现在加载或者创建（Sprite.Create）SpriteMeshType为==Tight类型==的Sprite时，==Tight类型的Sprite在加载或创建时，需要检测图片的alpha区域从而生成多边形==。计算量较大，建议将其改为FullRect模式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;unity-profiler&quot;&gt;Unity Profiler中如下函数的耗时异常高，请问是什么原因导致呢？这些函数分别是什么意思，有什么具体优化方法呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Profiler.FinalizeAndSendFrame: 这个是Unity Profiler在记录和传输性能数据的开销，研发团队可忽略，因为在release版本中，该项并不存在；&lt;/li&gt;
-  &lt;li&gt;WaitForJobGroup:是主线程在等待子线程完成的耗时开销，如果该项较高，那么说明该帧中某子线程的开销很大。就目前我们优化过的项目而言，绝大部分均为UGUI在子线程的开销所致。更多的参考资料建议研发团队参考UWA问答之前的记录：
-https://answer.uwa4d.com/question/search?q=waitingforjob&lt;/li&gt;
-  &lt;li&gt;Camera.Render:是Unity引擎的主要渲染函数，其中负责了绝大部分场景的渲染工作&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;gfxprocesscommands&quot;&gt;Gfx.ProcessCommands包含哪些行为操作？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;该行为是在RenderThread中，导致该行为耗时的主要原因是DrawCall。&lt;/li&gt;
-  &lt;li&gt;另外过程耗时统计还包括顶点、材质贴图以及Shader等从内存到GPU的IO时间。&lt;/li&gt;
-  &lt;li&gt;即使是多线程渲染，图形API的调用也需要在同一个线程中。其一，是Android系统的EGLContext一般不是线程独共享的，也就是只有一个线程能向同一个EGLContext里面发送GL指令。其二，如果使用共享的EGLContext，多个线程都能提交图形API，渲染的结果很难保证正确性。比如：如何保证线程A绑定了VBO或者Texture之后，线程B提交DrawCall时一定是它需要的呢。综上所述，我们认为这些行为应该都在一个线程里面执行的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;模型和动画&lt;/h2&gt;
-&lt;h4 id=&quot;newmeshmesh&quot;&gt;New出来的Mesh好像都是可读写的，在我填充完数据以后，有什么办法能把这个Mesh改为只读么？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;通过&lt;code class=&quot;highlighter-rouge&quot;&gt;public void UploadMeshData(bool markNoLogerReadable);&lt;/code&gt;来设置。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;meshrendercanvasuimeshrendersortingorderimagerendersortingorder-&quot;&gt;请问我一个MeshRender的显示层级能不能夹在一个Canvas下的两个UI节点下？我通过设置MeshRender.sortingOrder数值在两个Image的Render的sortingOrder数值之间 ，是否能做到呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Image的sortingorder设置通常是无效的，因为UGUI会对DrawCall进行合并，调整其渲染顺序。因此，需要将Mesh前后的UI元素拆分到不同的Canvas中，从而直接设置Canvas的sortingorder。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;physicsgameobjectboxcolliderprofilephysicsprocessingprofilerphysicsunity536f1&quot;&gt;在游戏里没有使用物理（Physics)相关功能时，怎么把物理相关的性能消耗降到最低？我们游戏里完全没用到物理相关的功能，只是因为需要做点击碰撞检测，所以GameObject上需要加上BoxCollider组件，但是Profile时会时不时看到Physics.Processing的消耗有点高，也不算非常高，但是理论上如果完全没用物理相关功能的话，总感觉这部分消耗是可以完全干掉的，对于Profiler中Physics模块中给的几个统计不太清楚是怎么计算的，目前使用的Unity版本是5.3.6f1版本。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;就我们目前的分析来看，在Unity5.4版本之前，物理模块是会每帧都运行的。而在Unity5.4版本之后，如果没有使用任何物理相关的功能时（Rigidbody、CharacterController、Rogdoll、Cloth模拟等等），物理模块会被关闭。所以，就你的问题而言，物理模块的开销只能降低，而不能完全消除。&lt;/li&gt;
-  &lt;li&gt;对于物理模块的开销，我们建议从宏观上进行了解，当你的项目完全没有使用物理模块时，那就需要从它的调用次数入手了。&lt;/li&gt;
-  &lt;li&gt;Physics.Processing调用次数高：可以看到，很多时候，该函数的CPU耗时其实并不是物理开销过高，而是调用次数过多。这主要是因为Unity 5.x默认设置的Fixed Timestep为0.02，Maximum Allowed TimeStep为0.333。也就是说，物理模块每20ms更新一次，所以如果某一帧很卡（200ms），那么物理模块会被调用10次，这样耗时就直接上去了。而0.333表示如果该帧CPU开销超过333ms了，那么就不会再调用物理模块，所以上图中调用次数中最大是17次。&lt;/li&gt;
-  &lt;li&gt;所以，如果想进一步降低物理模块的开销，在完全没有使用物理的情况下，可以将Fixed Timestep设置为0.05或0.1均可，降低它被调用的频率。同时，尽可能优化其他模块耗时，让每帧的总体耗时尽可能降低。&lt;/li&gt;
-  &lt;li&gt;另外，需要注意的是，修改Fixed Timestep也会影响FixedUpdate的调用，在修改之前一定要检测项目中是否有使用FixedUpdate。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;monobehaviourprefabloadprefab&quot;&gt;MonoBehaviour中包含了被加载出来的Prefab上的组件（通过Load接口加载出来的），而这部分组件只能在Prefab被销毁的时候才会释放。&lt;/h4&gt;
-
-&lt;h4 id=&quot;opengl-es-20ios--metal&quot;&gt;工程里还是选择只使用 OpenGL ES 2.0吗？iOS 是否该加上 Metal？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;目前都是用的Auto，主要有两个原因：
-    &lt;ul&gt;
-      &lt;li&gt;Metal测试下来CPU Overhead会比GLES低很多&lt;/li&gt;
-      &lt;li&gt;GLES3能够有tex2Dlod支持 兼容性上来说只有实在老的机器和模拟器会fallback到GLES2，可能效果上会略差一些不过我们测试下来都可以接受。&lt;/li&gt;
-      &lt;li&gt;选ES3.0还有一个原因，就是发现AssetBundle打出来的资源会比选Auto小很多。&lt;/li&gt;
-      &lt;li&gt;PS:如果游戏面对的是高端机玩家可以放弃ES2&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uiassetbundle&quot;&gt;切换UI场景使用AssetBundle加载慢，怎么优化界面进入速度，是应该预加载吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;界面加载慢主要的原因有，图集纹理的加载以及大量UI元素的实例化操作。&lt;/li&gt;
-  &lt;li&gt;针对图集的加载，可以尝试合理的规划图集，尽量控制界面所引用的图集数量（即使用到了某个图集中的一个Sprite，也会加载整个图集）；&lt;/li&gt;
-  &lt;li&gt;可以尝试对公共图集进行预加载，通常公共图集较大，且被使用的概率很大。&lt;/li&gt;
-  &lt;li&gt;针对大量UI元素的实例化，这项开销大通常只发生在背包等复杂的界面中，而对于这类复杂界面可以考虑进行分步实例化，即首先实例化如外框、容器等部分的UI元素，然后分帧实例化背包中的UI元素，从而提高界面打开的速度以及流畅性。&lt;/li&gt;
-  &lt;li&gt;PS： ==分帧是关键。在FPS60的情况下，只要100ms内响应即可。一帧是16.7，也就是说5~6帧做完就可以了。==&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;渲染&lt;/h2&gt;
-&lt;h4 id=&quot;unityshaderios&quot;&gt;Unity官方半透明Shader代码在iOS上运行出现问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;PS:遇到了看https://blog.uwa4d.com/archives/TechSharing_70.html&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 02 Dec 2017 22:53:34 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Gamma校正与线性空间</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;前言&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;近期看了&lt;a href=&quot;https://blog.uwa4d.com/archives/1882.html&quot;&gt;一篇文章&lt;/a&gt;，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;gamma&quot;&gt;Gamma校正的由来和计算方式&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为&lt;code class=&quot;highlighter-rouge&quot;&gt;Lout = pow(Lin, 0.45)  &lt;/code&gt;，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.732。从下图可以看到绿色的线就是经过校正后的亮度曲线。在这个坐标系中，x轴为原始亮度，y轴是校正后的数值。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f41b427d4bdc48f225b5d/1465860589637/A+graph+of+pow%28x%2C+gamma%29?format=750w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果以原始亮度0.5作为一个分界线，很明显的看出来0.5之前的亮度在校正后占据了70%（0.732)以上的数据空间。这也是为何会有gamma校正的根本原因，即：肉眼对较暗区域的变化更为敏感，而0.5为灰度的界限，原始亮度小于0.5的部分可以认为是较暗的区域。因此将0.5之前的亮度经过校正，使得其结果的范围变大到0-0.732，这就可以进一步的放大黑暗区域的范围，从而使得照片更加真实。&lt;/li&gt;
-  &lt;li&gt;但是从这个曲线我们看到，除了0和1以外的像素的亮度整体的变大了，因此就出现了下图的中左边图中的现象，即经过0.45的gamma校正后图片变亮。但是为何我们最后在电视或者电脑屏幕上看到的图像基本和肉眼看到的真实亮度一样呢， 是因为显示器的硬件也会做一次gamma校正，而这个指数是2.2，即&lt;code class=&quot;highlighter-rouge&quot;&gt;pow(0.732，2.2） ≈ 0.5035&lt;/code&gt; ，和0.5有数值上的差异但是基本接近。这只是个巧合。&lt;/li&gt;
-  &lt;li&gt;同理，如果是原始像素的图片不经过gamma校正而直接输出到显示器，其结果就是下图中右边图的结果，也就是亮度整体变暗。这个和上图中蓝色曲线的结果也相同。计算方法也是幂计算。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f4222e321408871d71230/1465860711911/Images+representing+various+gamma+values?format=1000w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;unity&quot;&gt;导入unity中的图片&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;基本上所有的绘图软件在输出的结果上都是做过gamma校正的，否则在电脑屏幕上看到的就是偏暗。&lt;/li&gt;
-  &lt;li&gt;因此在导入到unity后，在作用到shader时也是gamma校正后的图片。&lt;/li&gt;
-  &lt;li&gt;当然我们也可以在绘图软件中就输出不经过gamma校正的图，这个后面说。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity-1&quot;&gt;unity中的颜色空间&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;unity的颜色空间就是gamma或者liner space&lt;/li&gt;
-  &lt;li&gt;gamma选项下默认unity在shader中直接用gamma校正后的图片进行光照计算，然后输出到现实设备时硬件会做一次gamma校正，最终输出结果。&lt;/li&gt;
-  &lt;li&gt;线性空间选项中，unity shader会对输入的图片进行一次gamma校正（2.2），得到真正的亮度值后进行光照计算。最后在进入颜色缓存区之前做一次gamma校正（0.45），然后图像进入显示设备，再次进行gamma校正（2.2）。&lt;/li&gt;
-  &lt;li&gt;两者在最终结果的比对可以参考下图&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f42e327d4bdc48f2261e4/1465860851928/An+image+comparing+gamma+and+linear+pipelines?format=1000w&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;可以看出来线性空间下产生的最终渲染效果比较接近于真实。&lt;/li&gt;
-  &lt;li&gt;我们以一个亮度为1的点为例进行两种模式的计算，对比下结果，假设这个点的法线与点到光源的向量的夹角为60°。根据Lambert公式，此时该点的亮度（用亮度代替像素值）为Clight * Cdiffuse * max(0, dot(n,I))，为了简化计算我们认为Clight也就是光照颜色也是1， n和I都是1。
-    &lt;ul&gt;
-      &lt;li&gt;gamma下原始亮度是1的点，Cdeffuse为1，60°的点积是0.5，计算出来的颜色是0.5，输出到屏幕经过gamma校正（2.2）后值为0.218。&lt;/li&gt;
-      &lt;li&gt;线性空间下线移除gamma校正，亮度1的移除后结果也是1，60°的光照结果也是0.5，输出到颜色缓冲区线做一次校正（0.45），到屏幕做一次校正（2.2），期结果应该是0.5035。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;可以看出来两者在最后的结果上，线性空间的结果比较接近真实的60°情况下的亮度，这个真实值就是0.5。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;线性空间工作流&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;现在unity中移动平台已经支持线性空间，只是需要OpenGL ES3。那么如果使用线性空间就需要一套类似PBR的流程。&lt;/li&gt;
-  &lt;li&gt;首先就是纹理图是移除了gamma校正的。&lt;/li&gt;
-  &lt;li&gt;在烘焙光照贴图的时候也要移除gamma校正。&lt;/li&gt;
-  &lt;li&gt;后期处理的时候倒是不用额外做什么，因为unity已经对颜色值做了处理。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;引用&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.kinematicsoup.com/news/2016/6/15/gamma-and-linear-space-what-they-are-how-they-differ&quot;&gt;GAMMA AND LINEAR SPACE - WHAT THEY ARE AND HOW THEY DIFFER&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;ps&quot;&gt;PS&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;开头提到的lightmap偏暗的问题，在2017.2.0p1中移动平台lightmap处理LDR时已经加入了是否是gamma的判定，然后根据结果会对LDR的亮度进行不同的补偿。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 30 Nov 2017 00:54:00 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity Android二次开发经(血)验(泪)谈(史)</title>
-        <description>&lt;h4 id=&quot;httpwwwcnblogscomxtqqkssp6387271html&quot;&gt;主要参考的是&lt;a href=&quot;http://www.cnblogs.com/xtqqkss/p/6387271.html&quot;&gt;这篇文章&lt;/a&gt;，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。&lt;/h4&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;准备工作&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。&lt;/li&gt;
-  &lt;li&gt;AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。&lt;/li&gt;
-  &lt;li&gt;从AS上可以下载到的build-tool是27，但是最新的tools是unity不支持，会在输出工程的时候报错，目前我使用的是26。&lt;/li&gt;
-  &lt;li&gt;PS:实际上在这几天的尝试过程中使用27在unity端会有一个&lt;code class=&quot;highlighter-rouge&quot;&gt;can not get xx list&lt;/code&gt;的错误，通过网上查询说是build tools版本的问题。而AS端似乎也有问题，不过没有记清楚。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;as&quot;&gt;AS中做的事情&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;按照文中的说法做即可。&lt;/li&gt;
-  &lt;li&gt;其实作者本人也提到了几个点：
-    &lt;ul&gt;
-      &lt;li&gt;在建立module后要删除原来的app内存。&lt;/li&gt;
-      &lt;li&gt;module名字和unity工程名字相同。&lt;/li&gt;
-      &lt;li&gt;这是一个很坑的地方，在最开始的时候，我不断的遇到一个提示错误：library和project使用了同样的package name，而且unity的文档也说了不能同名。但是实际上是完全可以同名的。而且不管是直接用module还是把APP改成module，这两种方式都需要包名相同。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;build-aar&quot;&gt;build AAR&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;其实在AS中只要把工程设置成了module，那么选择build apk出来的也是AAR。&lt;/li&gt;
-  &lt;li&gt;AAR文件放到&lt;code class=&quot;highlighter-rouge&quot;&gt;Assets\Plugins\Android\libs&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;或者通过gradle直接生成，这个方式是目前用这最方便的。看下图，双击即可build。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGtyd2tYaDIzbUF2MEYyMUkyRlJuZlExM3VTUUJCUkpVeWdBc3JxQ3JkcDJ3PT0.jpg?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;图中的classes.jar就是我们自己的代码，libs文件夹下的是我们拷贝unity的，要删除掉。
-&lt;img src=&quot;http://imglf4.nosdn.127.net/img/Nld0N0tacnNuUGx4UzhpR2QzUzFkejc3S3V3eGVEL3hUVWRtczVhU3NGMnFieGJkcjFJdXhBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;unitybuild-apk&quot;&gt;unity中build apk&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这块分开说下，因为我在整个尝试的过程中尝试了直接使用module方法（以下用方法1替代），这个方法不需要用到AS中的manifest。还有就是将app改造成module（以下用方法2替代），这个需要提供manifest。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;manifest&quot;&gt;方法1因为不需要提供manifest，所以省了很多事。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先按照文中的方法先在AS中改造下manifest文件。&lt;/li&gt;
-  &lt;li&gt;拷贝到Plugins/Android文件夹下。&lt;/li&gt;
-  &lt;li&gt;在unity的PlayerSetting中进行设置。保证包名一致，保证minimum api level和AS中设置的一样。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在AS中我设置了&lt;code class=&quot;highlighter-rouge&quot;&gt;compileSdkVersion&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;targetSdkVersion&lt;/code&gt;为25，开始按照文中和其他人的说法，在unity中target api level也设置的是25，==但是导出project时遇到android:configChanges错误：==&lt;/p&gt;
-
-    &lt;blockquote&gt;
-      &lt;p&gt;unity  CommandInvokationFailure: Gradle build failed. ‘configChanges’ with value…&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;真正的解决这个问题应该是在unity中Player Setting中将target API level设置为auto，这个要比minimum高才行。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;方法2会遇到的问题：&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;因为开始没有把AndroidManifest.xml放到Plugin下，导致每次unity编译的时候都生成一个新的build-id，与AS中的不一致。这个问题其实只要把AS中的manifest文件放到unityPlugin中，就保证了不会每次编译都ID变的问题。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;==合并manifest==：AS的Gradle插件默认会启用Manifest Merger Tool，若Library项目中也定义了与主项目相同的属性（例如默认生成的android:icon和android:theme），则此时会合并失败。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;解决方法有以下2种：1有效，2没试：&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;方法1：在Manifest.xml的application标签下添加tools:replace=”android:icon, android:theme”（多个属性用,隔开，并且记住在manifest根标签上加入xmlns:tools=”http://schemas.android.com/tools”，否则会找不到namespace哦）&lt;/li&gt;
-      &lt;li&gt;PS：其实是这样写&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;category tools:replace=&quot; android:name&quot; android:name=&quot;com.google.intent.category.CARDBOARD&quot; /&amp;gt;&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;方法2：在build.gradle根标签上加上useOldManifestMerger true （懒人方法）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;各种错误的处理&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://kotlintc.com/articles/3938&quot;&gt;Failed to resolve:com.android.support:appcompat-v7:27+:报错处理&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;这个问题本质在于AS或者说本地的工具版本低，从下图中可以找到本地的版本。可以看到时26，所以需要在build.gradle中设置&lt;code class=&quot;highlighter-rouge&quot;&gt;compile 'com.android.support:appcompat-v7:26.+'&lt;/code&gt;，将27改为26即可。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG5EUnpPWTVFTzMrZzJGdm5VMHhqWmUveENURXZnajJPUTRPcWpvY010eldBPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;在project structure中可以设置java语言的版本，1.7的时候是不支持lambda的。需要注意。如果仍旧抽风般的提示lambda的问题就重启AS.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;AS2.3使用java8，本来3.0直接用的，2.3需要做如下处理。设置成功后也解决了&lt;code class=&quot;highlighter-rouge&quot;&gt;unity Can't read classes.jar&lt;/code&gt;这个问题，&lt;code class=&quot;highlighter-rouge&quot;&gt;是因为项目使用的Java（JDK）版本比较高，而ProGuard, version 4.4支持的版本（最高到1.6），所以产生该问题。&lt;/code&gt;，看了AS是一样的问题。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;android {
-  ...
-  defaultConfig {
-    ...
-    jackOptions {
-      enabled true
-    }
-  }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;下面这个错误印象中是改AS中工程的target版本，或者删除了对应的代码。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Error:(4) Error retrieving parent for item: No resource found that matches the given name ‘android:TextAppearance.Material.Widget.Button.Inverse’.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;AS3版本好像不能支持gradle4.1，找到dependencies改成如下。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dependencies {
-		classpath 'com.android.tools.build:gradle:3.0.0'
-	}
-	
-...	
-
-apply plugin: 'com.android.library'
-
-....
-
-defaultConfig {
-		targetSdkVersion 27
-		//applicationId 'xxxx'
-	}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个错误的情况是用unity生成并导出Android的代码，在2017.2p1的情况下输出的代码中gradle是4.1的。&lt;/li&gt;
-  &lt;li&gt;如果是用AS自己生成APP或者module就没这样的问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;adbexe-&quot;&gt;adb.exe 已停止工作&lt;/h5&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个问题最终发现是360手机助手占用了5037端口造成的&lt;/li&gt;
-  &lt;li&gt;排查过程记录一下：
-    &lt;ul&gt;
-      &lt;li&gt;在\platform-tools目录下调用adb devices命令&lt;/li&gt;
-      &lt;li&gt;提示这个错误：&lt;code class=&quot;highlighter-rouge&quot;&gt;adb server version (31) doesn't match this client (39); killing...
-error: could not install *smartsocket* listener: cannot bind to 127.0.0.1:5037: 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。 (1
-0048)&lt;/code&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CMD:netstat -ano | findstr &quot;5037&quot;&lt;/code&gt; //查看占用这个端口的APP，发现是进程15128&lt;/li&gt;
-      &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CMD:tasklist | findstr &quot;14152&quot;&lt;/code&gt;    //查看这个进程对应的应用&lt;/li&gt;
-      &lt;li&gt;下图中的14152进程是adb.exe，此时adb就允许正常了。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG16ZHdGdmd1MEpFMkxkdWJUTEdTTURSc1NYYnhuSkUzZkY3MURnYnhRZ0JRPT0.png?imageView&amp;amp;thumbnail=500x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;后记&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;其实在整个的使用过程中还遇到了非常多的问题，都是遇到一个搜索一个。所以也不可能完全的记录下来。&lt;/li&gt;
-  &lt;li&gt;另外遗留了一个问题就是目前还不能调用Android中的类方法。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 20 Nov 2017 00:47:54 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>PHP的OOP</title>
-        <description>&lt;ul&gt;
-  &lt;li&gt;在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。&lt;/li&gt;
-  &lt;li&gt;类中用var定义变量，&lt;code class=&quot;highlighter-rouge&quot;&gt;var $name&lt;/code&gt;，使用方式&lt;code class=&quot;highlighter-rouge&quot;&gt;$this-&amp;gt;name&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;构造函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function __construct()&lt;/code&gt;，析构函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function __destruct()&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;继承&lt;code class=&quot;highlighter-rouge&quot;&gt;class Child_Site extends Site&lt;/code&gt;，使用extends关键字&lt;/li&gt;
-  &lt;li&gt;实例化类&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Login
-{
-    var $m_user;
-    var $m_pw;
-
-    function __construct($user, $pw)
-    {
-        $this-&amp;gt;m_user = $user;
-        $this-&amp;gt;m_pw = $pw;
-    }
-
-    function Login()
-    {
-        echo $this-&amp;gt;m_user .'-'. $this-&amp;gt;m_user;
-    }
-}
-
-$user = $_POST['user'];
-$pw = $_POST['pw'];
-
-$login = new Login($user, $pw);
-$login-&amp;gt;Login();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;可以使用interface&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
-
-// 声明一个'iTemplate'接口
-interface iTemplate
-{
-    public function setVariable($name, $var);
-    public function getHtml($template);
-}
-
-
-// 实现接口
-class Template implements iTemplate
-{
-    private $vars = array();
-  
-    public function setVariable($name, $var)
-    {
-        $this-&amp;gt;vars[$name] = $var;
-    }
-  
-    public function getHtml($template)
-    {
-        foreach($this-&amp;gt;vars as $name =&amp;gt; $value) {
-            $template = str_replace('{' . $name . '}', $value, $template);
-        }
- 
-        return $template;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;常量&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;?php
-class MyClass
-{
-    const constant = '常量值';
-
-    function showConstant() {
-        echo  self::constant . PHP_EOL;
-    }
-}
-
-echo MyClass::constant . PHP_EOL;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;静态属性不能通过一个类已实例化的对象来访问（但静态方法可以）。&lt;/li&gt;
-  &lt;li&gt;静态属性不可以由对象通过 -&amp;gt; 操作符来访问。调用方法是&lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;抽象类与C#一样&lt;/li&gt;
-  &lt;li&gt;Final 关键字，作用与C#的sealed一样。&lt;/li&gt;
-  &lt;li&gt;子类中调用父类的方法&lt;code class=&quot;highlighter-rouge&quot;&gt;parent::Login();&lt;/code&gt;，与C#的&lt;code class=&quot;highlighter-rouge&quot;&gt;base.Login&lt;/code&gt;结构上一样。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 19 Nov 2017 22:00:09 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/19/PHP%E7%9A%84OOP/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/19/PHP%E7%9A%84OOP/</guid>
-        
-        <category>PHP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十六周</title>
-        <description>&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-
-&lt;h4 id=&quot;etcargb32&quot;&gt;如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；&lt;/li&gt;
-  &lt;li&gt;当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；&lt;/li&gt;
-  &lt;li&gt;在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资源，以保证内存峰值在可控范围内。&lt;/li&gt;
-  &lt;li&gt;果ETC压&amp;gt; 缩效果不好的，会使用RGBA32并降一个尺寸规格来压缩，这样虽然图片会模糊点，但是过渡还是平滑的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;astcandroidmalirgba32astc&quot;&gt;ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。&lt;/h4&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;工具&lt;/h2&gt;
-
-&lt;h4 id=&quot;putgeometryjobfence&quot;&gt;PutGeometryJobFence开销较高&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;就目前我们所优化过的项目而言，推测PutGeometryJobFence是Unity项目的主线程在等子线程的一些网格计算操作完成，其在不同的模块中均有出现（UGUI模块、渲染模块、Mesh.Skin操作、Animator动画模块等等），出现的地方不同，其本身含义也并不相同，不能一概而论。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;transformsetposition&quot;&gt;Transform.set_position的开销很大&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Deep Profiler本身对于耗时的统计影响很大，通常在Deep Profiler下调用次数越多的函数，其耗时的统计就会越明显地偏高，因此，我们首先建议关闭Deep Profiler，同时用Profiler.BeginSample/EndSample将修改Position的代码包进来，再查看其耗时，相对会更加准确。&lt;/li&gt;
-  &lt;li&gt;CanvasRenderer.OnTransformChanged过多，移动UI元素相比于移动其他的元素确实会有额外的开销。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity-profilercanvasrendersubbatchui&quot;&gt;Unity Profiler中的Canvas.RenderSubBatch是否属于UI上渲染的开销？和重建有关系吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;是UI模块（UGUI）的渲染开销，但是跟UI的重建并无太大关系，主要还是跟UI界面的渲染Draw Call相关。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;clear&quot;&gt;Clear的耗时过大&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_65%2F7.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Clear操作一般是用来清除Camera的各种Render Buffer，当图像后处理使用的越多，则同一帧中开辟更多的Buffer的概率也越大，从而造成Clear的开销也较高。&lt;/li&gt;
-  &lt;li&gt;项目中Clear耗时较高，且高耗时较为频繁，则建议先关闭图像后处理操作，来查看该情况是否有所好转。然后再逐步开启各个图像后处理操作，逐步定位造成Clear较高的耗时根源&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;uwa&quot;&gt;如何降低动画文件的浮点数精度？之前UWA给过思路，但具体怎么个执行方法？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;动画文件后处理可以做两件事，1）精度压缩，2）scale曲线剔除。比起用工具修改原始fbx文件，这样比较灵活。
-实际测试，在开启Optimal压缩的情况下，加上这个后处理，能再节省40%左右。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 19 Nov 2017 01:04:30 +0800</pubDate>
-        <link>https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/</guid>
         
         <category>UWA</category>
         

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Be publicly useful and privately happy.">
+    <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>侯捷C++学习笔记：基础 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+
+    <link rel="canonical" href="https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">蔡华的博客</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About Me</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/home-bg-o.jpg')
+    }
+
+    
+</style>
+<header class="intro-header" >
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#CPP" title="CPP">CPP</a>
+                        
+                    </div>
+                    <h1>侯捷C++学习笔记：基础</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by 蔡华的博客 on January 1, 2018</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h2 id="section">1.类</h2>
+
+<ul>
+  <li>带指针的类</li>
+  <li>不带指针的类：大多数不需要析构函数</li>
+</ul>
+
+<h2 id="section-1">2.定义头文件</h2>
+
+<ul>
+  <li>防御式代码，避免多次include时重复导入</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#ifndef _COMPLEX_
+#define _COMPLEX_
+
+...
+
+#endif
+</code></pre>
+</div>
+
+<ul>
+  <li>头文件布局:
+    <ul>
+      <li>前置声明</li>
+      <li>类声明
+        <ul>
+          <li>class head <code class="highlighter-rouge">class Complex</code></li>
+          <li>class body : 定义数据和函数</li>
+        </ul>
+      </li>
+      <li>类定义</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    operator double() const
+    {
+        return (double)(x/y);
+    }
+    
+private:
+    int x;
+    int y;
+}
+
+</code></pre>
+</div>
+
+<h2 id="section-2">3.函数</h2>
+
+<h4 id="section-3">构造函数</h4>
+<ul>
+  <li>默认参数</li>
+  <li>initialization list，只有构造函数有</li>
+  <li>用法：</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+</code></pre>
+</div>
+
+<ul>
+  <li>如果构造函数的参数是类型本身，那么叫拷贝构造。</li>
+  <li><strong>只要类带指针必须有拷贝构造函数。PS: 同时要有拷贝赋值函数。</strong> 编译器会默认生成，但是需要根据情况自己写。</li>
+</ul>
+
+<h4 id="inline">inline函数：</h4>
+
+<ul>
+  <li>当一个函数在class body内定义并且实现了功能，则会自动成为inline函数。</li>
+  <li>在外部实现并且加上inline关键字的函数，只是作为inline函数的一个候选人，是否成为一个inline函数完全看编译器会不会这样来编译它。</li>
+</ul>
+
+<h4 id="section-4">函数重载</h4>
+<ul>
+  <li>CPP中重载函数在代码中同名，但是在编译后不同名。</li>
+  <li>如果出现一个函数<code class="highlighter-rouge">foo()</code>和<code class="highlighter-rouge">foo(int i = 0)</code>这样的情况，实际上是不行的，因为编译器认为在调用的无参版本时两个函数都可以，这样就出现了错误。</li>
+</ul>
+
+<h4 id="const-member-functions-">const member functions (常量成员函数)</h4>
+
+<ul>
+  <li>以下面的函数为例，参数括号后加上const修饰符，则说明这个函数是不改变对象中数据的值。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> double real () const { return re; }
+ 
+</code></pre>
+</div>
+
+<ul>
+  <li>在函数的使用上可能与如下的方式，说明我生成的对象c1中的数据是不希望修改的，那么如果real函数中没有const的话编译时会报错。因为如果没有const，说明real函数可能会修改对象中的数据的值，但是我们定义的c1又是一个不会被修改的，那么就有矛盾了。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> const complex c1()
+ c1.real()
+ 
+</code></pre>
+</div>
+
+<h4 id="passreturn-by-value-vs-passreturn-by-reference-to-const">pass（return） <em>by value</em> vs pass（return） <em>by reference</em> (to const)</h4>
+
+<ul>
+  <li><code class="highlighter-rouge">&amp;</code>这个符号在c中是取地址的操作，在C++中也有这个用发，但是多了一个用法。比如如下的代码中：</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>complex&amp; operator += (const complex&amp;);
+
+</code></pre>
+</div>
+<ul>
+  <li>参数类型后面加<code class="highlighter-rouge">&amp;</code>说明这个参数是按引用传递，本质就是指针。如果不加const修饰，则函数中可以修改参数的值，如果加了则说明这个参数就是按指针传递给函数使用，但是不能修改其值。</li>
+  <li>通常来说尽可能用按引用传递，因为毕竟指针只有4个byte，对于多数情况来说是比较快速和省资源的（栈上的数据少）。但是如果遇到传递的值是char的，也可以安值传递。</li>
+  <li>传递者无需知道接受者是以reference的形式接收。传递者把对象传递个函数，但是函数是使用值形式的参数还是引用形式的参数完全看函数的定义，但是调用者无需关心。</li>
+</ul>
+
+<h4 id="value">何时使用value来传递呢？</h4>
+<ul>
+  <li>如果函数的返回值是函数内部的一个local object就需要安值传递。因为在函数结束后对象就从栈中销毁了，此时用引用的话在获取值的时候，对象已经没了。</li>
+  <li>++<strong>所以是返回引用还是值，根本上要看这个返回值内存是在函数内还是函数外。</strong>++</li>
+</ul>
+
+<h4 id="section-5">友元函数</h4>
+<ul>
+  <li>加<code class="highlighter-rouge">friend</code>修饰符，只是告诉类某个函数是友元的，可以直接访问private的变量。</li>
+  <li>++<strong>相同class的各个对象互为friend（友元）</strong>++</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>int foo(const complex&amp; param)
+{
+    return param.re + param.im;
+}
+
+...
+
+complex c1(1,2);
+complex c2;
+
+c2.foo(c1);
+</code></pre>
+</div>
+
+<h4 id="section-6">静态函数</h4>
+<ul>
+  <li>与C#不同的是CPP中静态函数可以通过对象来调用，同时当有也可以用类+函数名的方式调用。即</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Class::StaticFuntion();
+
+Class c1;
+c1.StaticFunction();
+</code></pre>
+</div>
+
+<h2 id="section-7">总结</h2>
+<ul>
+  <li>数据一定放在private里面</li>
+  <li>参数和返回值尽可能用reference来传递，加不加const根据实际情况</li>
+  <li>class body中函数如果没有修改数据则加const</li>
+  <li>构造函数尽量用初始列表</li>
+</ul>
+
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第二十周">
+                        Previous<br>
+                        <span>每天一点UWA：第二十周</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" data-toggle="tooltip" data-placement="top" title="侯捷C++学习笔记：面向对象">
+                        Next<br>
+                        <span>侯捷C++学习笔记：面向对象</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
+                                    iOS学习笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="1">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#杂记" title="杂记" rel="3">
+                                    杂记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#VR/AR" title="VR/AR" rel="3">
+                                    VR/AR
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Unity3D" title="Unity3D" rel="13">
+                                    Unity3D
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#3D数学" title="3D数学" rel="1">
+                                    3D数学
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                    游戏设计模式读书笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
+                                    Unity預計算即時GI笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="6">
+                                    AssetBundle学习笔记
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Lua" title="Lua" rel="6">
+                                    Lua
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#UWA" title="UWA" rel="25">
+                                    UWA
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#PHP" title="PHP" rel="1">
+                                    PHP
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#Unity" title="Unity" rel="2">
+                                    Unity
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#CPP" title="CPP" rel="7">
+                                    CPP
+                                </a>
+                            
+        				
+                            
+                				<a href="/tags/#并发模型" title="并发模型" rel="1">
+                                    并发模型
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: ''
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/klkucan">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 蔡华的博客 2018
+                    <!-- <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe> -->
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async('/js/jquery.tagcloud.js',function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-86194707-1';
+    var _gaDomain = 'caihua.tech';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Side Catalog -->
+
+
+
+
+</body>
+
+</html>
