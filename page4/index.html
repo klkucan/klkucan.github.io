@@ -173,6 +173,48 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/10/05/Xlua%E6%91%98%E8%A6%81/">
+        <h2 class="post-title">
+            Xlua摘要
+        </h2>
+        
+        <div class="post-content-preview">
+            加载机制
+
+  xlua在加载lua文件时会使用多个loader，LuaEnv的构造函数中有这么一段代码:
+
+
+AddSearcher(StaticLuaCallbacks.LoadBuiltinLib, 2); // just after the preload searcher
+AddSearcher(StaticLuaCallbacks.LoadFromCustomLoaders, 3...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 5, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+AssetBundle中的脚本
+
+  首先，需要说明的是，脚本本身的内容是不会被打包到AssetBundle文件中的，AssetBundle文件储存的仅是脚本的索引信息。因此，即便有多个AssetBundle中都存在UIAtlas这一脚本索引，对堆内存也几乎是不产生影响的，且不会产生冗余问题。
+  其次，脚本被当做资源且会产生依赖这一现象，仅在Unity 4.x版本中...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 5, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B9%9D%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第九周
@@ -372,62 +414,6 @@ shader加载
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/08/27/bat%E5%AD%A6%E4%B9%A0/">
-        <h2 class="post-title">
-            bat学习
-        </h2>
-        
-        <div class="post-content-preview">
-            概念
-
-  批处理的本质，是一堆DOS和cmd命令按一定顺序排列而形成的集合。
-  熟悉DOS语法，然后按照正确的顺序来进行指令的运行。
-
-
-系统教程
-
-  使用/?查看if的功能，使用与很多指令，%似乎不行。
-
-
-if /?
-pause
-
---------------------------------------------
-
-C:\Users\Administrator\Desktop...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/">
-        <h2 class="post-title">
-            每天一点UWA：加载模块深度解析
-        </h2>
-        
-        <div class="post-content-preview">
-            专题
-
-  因为UWA上会对一些技术进行系列的专题讲解，而且文章并不连续，如果按照每周的形式就会割裂这些内容，因此针对这样的情况统一写成专题形式。
-
-
-概述
-
-  载模块中最为耗时的性能开销可以归结为以下几类：资源加载、资源卸载、Object的实例化和代码的序列化等。
-  资源加载是加载模块中最为耗时的部分，其CPU开销在Unity引擎中主要体现在Loading.UpdatePreloadi...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -474,7 +460,7 @@ C:\Users\Administrator\Desktop...
                             
                         
                             
-                                <a href="/tags/#杂记" title="杂记" rel="3">
+                                <a href="/tags/#杂记" title="杂记" rel="4">
                                     杂记
                                 </a>
                             
@@ -540,7 +526,7 @@ C:\Users\Administrator\Desktop...
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="1">
+                                <a href="/tags/#并发模型" title="并发模型" rel="2">
                                     并发模型
                                 </a>
                             

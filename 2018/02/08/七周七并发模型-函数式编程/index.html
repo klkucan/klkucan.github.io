@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Github Page爬坑指南 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>七周七并发模型：函数式编程 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/">
+    <link rel="canonical" href="https://caihua.tech/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#杂记" title="杂记">杂记</a>
+                        <a class="tag" href="/tags/#并发模型" title="并发模型">并发模型</a>
                         
                     </div>
-                    <h1>Github Page爬坑指南</h1>
+                    <h1>七周七并发模型：函数式编程</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on October 3, 2016</span>
+                    <span class="meta">Posted by 蔡华的博客 on February 8, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,60 +187,179 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="jekyll">1.jekyll的使用</h4>
-
+				<h4 id="section">概念</h4>
 <ul>
-  <li>
-    <p>jekyll的核心命令就几个</p>
+  <li>命令式编程的代码由一系列改变全局状态的语句构成，而函数式编程则是将计算过程抽象成表达式求值。</li>
+  <li>这些表达式由纯数学函数构成，而这些数学函数是第一类对象（我们可以像操作数值一样操作第一类对象）并且没有副作用。由于没有副作用，函数式编程可以更容易做到线程安全，因此特别适合于并发编程。</li>
+</ul>
 
-    <div class="highlighter-rouge"><pre class="highlight"><code>jekyll new blog // 选好文件夹位置
-jekyll build    // 在_site文件夹下生成网站内容
-jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000
-   
+<h4 id="section-1">为什么在并发和并行问题时会用到函数式编程</h4>
+<ul>
+  <li>有关锁的一些规则，都是针对于线程之间共享的可变的数据——换个说法就是共享可变状态。而对于不变的数据，多线程不使用锁就可以安全地进行访问。</li>
+  <li>这就是为什么在解决并发和并行问题时函数式编程会如此引人注目——它没有可变状态，所以不会遇到由共享可变状态带来的种种问题。</li>
+  <li><strong>纯粹的函数式语言中，函数都具有引用透明性——在任何调用函数的地方，都可以用函数运行的结果来替换函数的调用，而不会对程序产生副作用。这个特性也使得可以任意安排多个计算过程的求值顺序，包括让它们并行<em>。</em></strong></li>
+  <li>所有函数（至少是理论上）都可以同时执行。这种执行方式被称为数据流式编程（dataflow programming）。</li>
+  <li>PS：其实本书在第三章函数式编程部分的前两天中的内容，在我看来更多的是利用语言或者运行时本书的并发能力。后续会专门写个文章总结下C#中对应的并发功能。</li>
+</ul>
+
+<h4 id="section-2">写在2018.2.8的第一版总结</h4>
+<ul>
+  <li>函数式编程确实是个大话题，在七周七并发模式看到第三章的时候我卡到了函数式编程这里。然后看完了《函数式编程思维》这本书，《C#函数式程序设计》还在路上，我想这是一次很不错的机会，让我好好的学习下。</li>
+</ul>
+
+<h2 id="section-3">参考</h2>
+
+<h4 id="c">从C#的角度看看</h4>
+<ul>
+  <li>Map、Reduce、Filter分别对应了C# linq中的三个函数</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Map = Select | Enumerable.Range(1, 10).Select(x =&gt; x + 2);
+Reduce = Aggregate | Enumerable.Range(1, 10).Aggregate(0, (acc, x) =&gt; acc + x);
+Filter = Where | Enumerable.Range(1, 10).Where(x =&gt; x % 2 == 0);
 </code></pre>
-    </div>
-  </li>
-  <li>
-    <p>模板，参考别人的模板进行了修改，<a href="https://github.com/Huxpro/huxpro.github.io">地址</a>。</p>
-  </li>
-</ul>
-
-<h4 id="github">2.github上的设置</h4>
+</div>
 
 <ul>
-  <li>github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。</li>
+  <li>Map从下面函数式编程部分的含义看就是接收一个函数，作用于范畴中每一个值，使得范畴从A变成B。</li>
+  <li>Filter就是过滤，在我理解里面其实也就是一个传递给map的函数，这里的map是函子中的map。</li>
+  <li>Reduce，正如下图说的，它是个折叠的作用。要我说就是sum的过程。只不过也许并不是真的对数值进行累加，而是可以做其它的处理。总之细细体会下面图片中的文字吧。</li>
+  <li>PS:折叠这个词用的好。</li>
 </ul>
 
-<h4 id="section">3.个人域名绑定</h4>
+<h4 id="httpswwwzhihucomquestion28292740">来自知乎的一个<a href="https://www.zhihu.com/question/28292740">回答</a></h4>
+
+<blockquote>
+  <p>结论：函数式编程会把数据的结构外显，而命令式则把执行过程外显。
+或者这样说：你在读函数式代码时，经常会想不清楚执行过程；而你在读命令式代码时，会经常搞不清楚当前对象有哪些属性。</p>
+</blockquote>
+
+<h3 id="section-4">函数式编程思维</h3>
+
+<p><img src="https://c1.staticflickr.com/5/4669/40374586841_18f607ea60.jpg" alt="image" /></p>
+
+<h3 id="section-5">函数式编程</h3>
+<h4 id="section-6">原文</h4>
+<ul>
+  <li><a href="http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html">函数式编程入门教程</a></li>
+</ul>
+
+<h4 id="section-7">范畴</h4>
+<ul>
+  <li>彼此之间存在某种关系的概念、事物、对象等等，都构成”范畴”。随便什么东西，只要能找出它们之间的关系，就能定义一个”范畴”。</li>
+  <li>范畴的数学模型：
+    <ul>
+      <li>所有成员是一个集合</li>
+      <li>变形关系是函数</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="section-8">容器</h4>
+<ul>
+  <li>可以把”范畴”想象成是一个容器，里面包含两样东西。
+    <ul>
+      <li>值（value）</li>
+      <li>值的变形关系，也就是函数。</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="section-9">范畴论与函数式编程的关系</h4>
+<ul>
+  <li>范畴论使用函数，表达范畴之间的关系。</li>
+  <li><strong>本质上，函数式编程只是范畴论的运算方法，跟数理逻辑、微积分、行列式是同一类东西，都是数学方法，只是碰巧它能用来写程序。</strong></li>
+  <li>为什么函数式编程要求函数必须是纯的，不能有副作用？因为它是一种数学运算，原始目的就是求值，不做其他事情，否则就无法满足函数运算法则了。</li>
+  <li>总之，在函数式编程中，<strong>函数就是一个管道（pipe）。这头进去一个值，那头就会出来一个新的值，没有其他作用。</strong></li>
+</ul>
+
+<h4 id="section-10">函子</h4>
 
 <ul>
+  <li>函子是函数式编程里面最重要的数据类型，也是基本的运算单位和功能单位。</li>
+  <li>++<strong>它首先是一种范畴，也就是说，是一个容器，包含了值和变形关系</strong>++。<strong>比较特殊的是，它的变形关系可以依次作用于每一个值，将当前容器变形成另一个容器。</strong></li>
+  <li>一般约定，函子的标志就是容器具有map方法。该方法将容器里面的每一个值，映射到另一个容器。</li>
   <li>
-    <p>首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech</p>
+    <p>函数式编程里面的运算，都是通过函子完成，即运算不直接针对值，而是针对这个值的容器—-函子。函子本身具有对外接口（map方法），各种函数就是运算符，通过接口接入容器，引发容器里面的值的变形。</p>
   </li>
-  <li>去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入<code class="highlighter-rouge">云解析 DNS</code>，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173328629-236251795.jpg" alt="" /></li>
-  <li>
-    <p>记录值为<code class="highlighter-rouge">sam.github.io.</code>，注意io后面有个点。</p>
-  </li>
-  <li>经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。</li>
+  <li>PS:实际上函子通过map方法接收函数来实现转换。而所有的计算本质还是这个函数对函子中的值的计算</li>
 </ul>
 
-<h4 id="https">4.https的问题</h4>
+<h4 id="section-11">常见的函子</h4>
+
+<h5 id="of">of</h5>
+<ul>
+  <li>new一个函子</li>
+</ul>
+
+<h5 id="maybe">Maybe</h5>
+<ul>
+  <li>Maybe 函子就是为了解决内部值为null而设计的。简单说，它的map方法里面设置了空值检查。</li>
+</ul>
+
+<h5 id="either">Either</h5>
+<ul>
+  <li>条件运算if…else是最常见的运算之一，函数式编程里面，使用 Either 函子表达。</li>
+  <li>Either 函子内部有两个值：左值（Left）和右值（Right）。右值是正常情况下使用的值，左值是右值不存在时使用的默认值。</li>
+</ul>
+
+<h5 id="ap">ap</h5>
+<ul>
+  <li>函子B内部的函数，可以使用函子A内部的值进行运算。这时就需要用到 ap 函子。</li>
+  <li>ap 是 applicative（应用）的缩写。凡是部署了ap方法的函子，就是 ap 函子。</li>
+  <li>ap是为了解决一个函子使用另一个函子的值的问题。</li>
+</ul>
+
+<h5 id="monad">Monad</h5>
 
 <ul>
+  <li>Monad 函子的作用是，总是返回一个单层的函子。</li>
+  <li>它有一个flatMap方法，与map方法作用相同，唯一的区别是如果生成了一个嵌套函子，它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。</li>
   <li>
-    <p>经过上面的几步已经可以正常访问网站了，但是会注意到在chrome中会提示网站不安全，因为不支持https。</p>
+    <p>Monad 函子的重要应用，就是实现 I/O （输入输出）操作。</p>
   </li>
-  <li>
-    <p>解决办法参考了<a href="https://zhuanlan.zhihu.com/p/22667528">这篇文章</a>，在阿里云中通过<code class="highlighter-rouge">域名→管理</code>然后设置新的nameservers即可。只不过一直提示<code class="highlighter-rouge">非万网DNS</code>。
-<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173334707-1998000533.jpg" alt="" /></p>
-  </li>
+  <li>举例说明：</li>
 </ul>
 
-<h4 id="section-1">5.图片链接问题</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code>class Monad extends Functor {
+  join() {
+    return this.val;
+  }
+  flatMap(f) {
+    return this.map(f).join();
+  }
+}
+
+// 具体事例
+
+var fs = require('fs');
+
+var readFile = function(filename) {
+  return new IO(function() {
+    return fs.readFileSync(filename, 'utf-8');
+  });
+};
+
+var print = function(x) {
+  return new IO(function() {
+    console.log(x);
+    return x;
+  });
+}
+
+readFile('./user.txt')
+.flatMap(print)
+
+</code></pre>
+</div>
 
 <ul>
-  <li>目前生成出来的HTML代码中图片的路径是错误的，从网上也找了很多办法但是都不理想，咋这篇文章中使用的图片其实是我把图片上传到博客园，然后拿到URL后使用的。也就是说使用图片存储服务来实现，这样的好处就在于github page容量有限，如果将来图片多了会很麻烦，不如一开始就使用第三方来存储图片。</li>
+  <li>上面第一段代码中如果f函数返回一个函子，map本身也是返回函子。这样就的造成了this.map(f)是函子的嵌套。</li>
+  <li>从事例的角度看，<code class="highlighter-rouge">readFile('./user.txt')</code>本身是返回了一个函子IO，其中的值为函数<code class="highlighter-rouge">function() { return fs.readFileSync(filename, 'utf-8');}</code>（注意：函子的值可以是函数，而且因为这里的new实际就是上面的of，所以里面的参数应该是值），它其实是从文件中读取到的数据。而<code class="highlighter-rouge">.flatMap(print)</code>根据上面的描述<code class="highlighter-rouge">它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。</code>
+。它取出的就是第一个IO函子中的值（函数），然后在将这个值作为参数传递到print函数中。只有就形成了函数链。</li>
+  <li>PS：以上只是我的理解，这篇文章的评论区有很多质疑，但是因为我确实对这个不了解，所以就按照原文的理解来解释了。</li>
 </ul>
+
 
 
                 <hr>
@@ -251,17 +370,17 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/" data-toggle="tooltip" data-placement="top" title="解决JSONKit在macOS Sierra上crash的问题">
+                        <a href="/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/" data-toggle="tooltip" data-placement="top" title="七周七并发模型：线程与锁">
                         Previous<br>
-                        <span>解决JSONKit在macOS Sierra上crash的问题</span>
+                        <span>七周七并发模型：线程与锁</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/10/09/VR%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-toggle="tooltip" data-placement="top" title="VR开发环境搭建">
+                        <a href="/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/" data-toggle="tooltip" data-placement="top" title="使用整体性学习方法来提高学习效率">
                         Next<br>
-                        <span>VR开发环境搭建</span>
+                        <span>使用整体性学习方法来提高学习效率</span>
                         </a>
                     </li>
                     

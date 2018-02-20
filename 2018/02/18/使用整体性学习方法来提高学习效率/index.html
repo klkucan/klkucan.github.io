@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Github Page爬坑指南 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>使用整体性学习方法来提高学习效率 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2016/10/03/github-page%E7%88%AC%E5%9D%91%E6%8C%87%E5%8D%97/">
+    <link rel="canonical" href="https://caihua.tech/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -164,12 +164,12 @@
                         <a class="tag" href="/tags/#杂记" title="杂记">杂记</a>
                         
                     </div>
-                    <h1>Github Page爬坑指南</h1>
+                    <h1>使用整体性学习方法来提高学习效率</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on October 3, 2016</span>
+                    <span class="meta">Posted by 蔡华的博客 on February 18, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,59 +187,88 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="jekyll">1.jekyll的使用</h4>
-
+				<h3 id="section">前言</h3>
 <ul>
-  <li>
-    <p>jekyll的核心命令就几个</p>
-
-    <div class="highlighter-rouge"><pre class="highlight"><code>jekyll new blog // 选好文件夹位置
-jekyll build    // 在_site文件夹下生成网站内容
-jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000
-   
-</code></pre>
-    </div>
-  </li>
-  <li>
-    <p>模板，参考别人的模板进行了修改，<a href="https://github.com/Huxpro/huxpro.github.io">地址</a>。</p>
-  </li>
+  <li>这篇文章可以说是一篇读书笔记，内容来自《如何高效学习：1年完成MIT4年33门课程的整体性学习法》这本书。</li>
+  <li>实际上看到书名的时候我的第一反应这是本讲费曼技巧的书，因为在很多年前我看到过一篇<a href="https://kb.cnblogs.com/page/162480/">文章</a>，标题和这个非常类似，直到我重新翻出来后发现文中所讲的那个人正是这本书的作者。</li>
 </ul>
 
-<h4 id="github">2.github上的设置</h4>
-
+<h3 id="section-1">书的内容</h3>
 <ul>
-  <li>github上需要设置的反而是最少的，创建一个用户名下的repository，例如sam.github.io，然后直接将jekyll中_site下的文件提交到这个repository即可。如果代码没错就可以直接通过访问sam.github.io进入个人网站了。</li>
+  <li>在这里我不打算过多的写书中的内容，只是简单的把一些核心的内容列出来。实际上如果没有时间看书，我觉得看上面链接中的那篇文章是一样的。因为这本书的观点比较简单，大部分内容是来证明这些观点，并且列出了一些如何实践的方法。</li>
 </ul>
 
-<h4 id="section">3.个人域名绑定</h4>
-
+<h4 id="section-2">结构、模型和高速公路</h4>
 <ul>
-  <li>
-    <p>首先在sam.github.io这个repository下添加一个名为CNAME的文件，内容为你自己的网站地址，比如sam.tech</p>
+  <li>这本书虽然叫做如何高效学习，但实际上主要讲的是整体性学习方法。作者一上来先讲了三个主要的观点：结构、模型和高速公路。</li>
+  <li>结构：理解是结构高度发达完善的结果，结构是学习新知识时与其它知识建立联系。</li>
+  <li>模型：
+    <ul>
+      <li>简化的结构、结构的快照</li>
+      <li>模型的目的是压缩信息</li>
+      <li>核心概念联系在一起创建模型</li>
+      <li>模型是逐渐调整和更新的</li>
+    </ul>
   </li>
-  <li>去自己的域名管理中进行解析设置，以阿里云为例。从左侧进入<code class="highlighter-rouge">云解析 DNS</code>，选择域名后点击解析。删除原来的几个默认生成的解析，然后进行如下设置<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173328629-236251795.jpg" alt="" /></li>
   <li>
-    <p>记录值为<code class="highlighter-rouge">sam.github.io.</code>，注意io后面有个点。</p>
+    <p>高速公路：结构之间的联系</p>
   </li>
-  <li>经过上面两步如果你的域名和网站内容没有问题的话就可以通过域名访问了。</li>
+  <li>实际上这三点是整体性学习的核心内容或者说是最终形态。在我的理解中所谓的整体性学习更像是用类比的方式来快速对新知识进行学习，而在类比的过程中对于已有的知识需要一个结构或者模型，在这个基础上通过联想、类比等方法来进行学习。不同的知识之间是有相似性或者本身就是有联系的，这就是高速公路。</li>
+  <li>以学习编程语言为例，我们知道目前的编程语言会分成不同的范式，比如有面向对象的、面向过程的、函数式的、命令式的等等。现代的编程语言往往包含了多个范式，以C#为例它是面向对象的，也是命令式和函数式都有的。在学会了C#之后，对于java这样的编程的语言在学习上会很快，因为他们几乎在编程范式是一样的，在语法上的差异和API的时候在使用的过程中再慢慢熟悉即可。但是在赋值、条件判断、循环、多线程、文件操作、lambda等等上都非常的接近，这样就可以通过类比的当时来快速的学习。</li>
+  <li>对于lua、python或者JavaScript这样的脚本语言来说，其在赋值、条件判断、循环这些基本操作上也是一样的，再加上函数式编程的范式使得学习起来也会有一种熟悉的感觉。这也是为啥工作了几年的人在学习一门新的编程语言时会比较快，因为会有一种熟悉感、进而进行类比的学习。快速掌握共同点、重点学习不同点和API就可以很快的掌握。</li>
 </ul>
 
-<h4 id="https">4.https的问题</h4>
-
+<h4 id="section-3">五个信息类型</h4>
 <ul>
-  <li>
-    <p>经过上面的几步已经可以正常访问网站了，但是会注意到在chrome中会提示网站不安全，因为不支持https。</p>
+  <li>书中列出了五种信息类型，也是知识类型。分别是：
+    <ul>
+      <li>随意信息</li>
+      <li>观点信息</li>
+      <li>过程信息</li>
+      <li>具体信息</li>
+      <li>抽象信息</li>
+    </ul>
   </li>
-  <li>
-    <p>解决办法参考了<a href="https://zhuanlan.zhihu.com/p/22667528">这篇文章</a>，在阿里云中通过<code class="highlighter-rouge">域名→管理</code>然后设置新的nameservers即可。只不过一直提示<code class="highlighter-rouge">非万网DNS</code>。
-<img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003173334707-1998000533.jpg" alt="" /></p>
-  </li>
+  <li>其中随意信息是最难以记忆的，因为它们往往是一些事实，比如历史中的事件的时间，这些东西往往就是枯燥的记忆内容，没有什么很好的类比方式。</li>
 </ul>
 
-<h4 id="section-1">5.图片链接问题</h4>
-
+<h4 id="section-4">学习的顺序</h4>
 <ul>
-  <li>目前生成出来的HTML代码中图片的路径是错误的，从网上也找了很多办法但是都不理想，咋这篇文章中使用的图片其实是我把图片上传到博客园，然后拿到URL后使用的。也就是说使用图片存储服务来实现，这样的好处就在于github page容量有限，如果将来图片多了会很麻烦，不如一开始就使用第三方来存储图片。</li>
+  <li>文中还列出了一个学习的顺序，实际上就是一种知识的学习过程：
+    <ul>
+      <li>获取：快速阅读和笔记法</li>
+      <li>理解：使用内在化、类比、比喻等技巧。所谓内在化更像是观想法，也就是把知识具现化。</li>
+      <li>拓展：同上</li>
+      <li>纠错</li>
+      <li>应用</li>
+    </ul>
+  </li>
+  <li>这个没什么特别的地方，基本上就是一个获取知识的过程。实际上，这本书中很多的内容对于天朝读了十几年书的人来说都是没什么新意。</li>
+  <li>书中用了很大的篇幅来描述着5个过程，比如获取就介绍了快速阅读和笔记法。在这里快速阅读推荐指读法，也就是用手指的移动来带动阅读，这样可以让人的注意力集中在手指所在的地方。而笔记法，推荐使用康奈尔笔记法或者与其接近的黄金三分法来做笔记。</li>
+  <li>对于理解和拓展，就是内在化、图表法等。</li>
+  <li>对于随意信息的记忆推荐联想法、信息压缩技术。</li>
+</ul>
+
+<h3 id="section-5">真正的干货 - 费曼技巧</h3>
+<ul>
+  <li>费曼技巧的过程：
+    <ul>
+      <li>选择要学习的概念</li>
+      <li>设想你是老师，正在试图教会一名新生这个知识点</li>
+      <li>当你感到疑惑时，回过头来，重新阅读参考材料、听讲座或找老师解答，直到你觉得搞懂了为止，然后把解释记到纸上。</li>
+    </ul>
+  </li>
+  <li>总结来说就是小学老师告诉我们的，如果你能给你的同学讲明白一个知识点你就是真的懂了这个知识点。</li>
+</ul>
+
+<h3 id="section-6">我所总结出来的学习方法</h3>
+<ul>
+  <li>在学习一个新的知识点的时候尽可能的联系已经学过的知识，通过知识的连接和类比来快速掌握知识。</li>
+  <li>实际上费曼技巧是很实用而且也比较容易实施的方法，费曼技巧的根本理论在于找出自己没有真正掌握的知识，从而查漏补缺。</li>
+  <li>使用思维导图来做联想、类比和内在化。书中很多方法都提到了联想、内在化、图表法等，在我看来都可以总结为思维导图。思维导图的制作本身就是一个查漏补缺和思维拓展的过程。</li>
+  <li>使用方格笔记和黄金三分法，这个技巧也是有人专门写过书的，个人认为还是很有用的。</li>
+  <li>最后这本书的笔记可以看<a href="https://www.flickr.com/photos/142765619@N07/40075301272/in/dateposted-public/">这里</a>
+<img src="https://c1.staticflickr.com/5/4602/40075301272_eb0642788d_b.jpg" alt="image" /></li>
 </ul>
 
 
@@ -251,19 +280,12 @@ jekyll serve    // 可以在本地生成一个服务查看生成网站的内容�
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/22/%E8%A7%A3%E5%86%B3JSONKit%E5%9C%A8macOS-Sierra%E4%B8%8Acrash%E7%9A%84%E9%97%AE%E9%A2%98/" data-toggle="tooltip" data-placement="top" title="解决JSONKit在macOS Sierra上crash的问题">
+                        <a href="/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" data-toggle="tooltip" data-placement="top" title="七周七并发模型：函数式编程">
                         Previous<br>
-                        <span>解决JSONKit在macOS Sierra上crash的问题</span>
+                        <span>七周七并发模型：函数式编程</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2016/10/09/VR%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-toggle="tooltip" data-placement="top" title="VR开发环境搭建">
-                        Next<br>
-                        <span>VR开发环境搭建</span>
-                        </a>
-                    </li>
                     
                 </ul>
 

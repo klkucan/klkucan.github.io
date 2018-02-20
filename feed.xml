@@ -5,9 +5,289 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 26 Jan 2018 00:19:34 +0800</pubDate>
-    <lastBuildDate>Fri, 26 Jan 2018 00:19:34 +0800</lastBuildDate>
+    <pubDate>Tue, 20 Feb 2018 14:41:05 +0800</pubDate>
+    <lastBuildDate>Tue, 20 Feb 2018 14:41:05 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>使用整体性学习方法来提高学习效率</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;这篇文章可以说是一篇读书笔记，内容来自《如何高效学习：1年完成MIT4年33门课程的整体性学习法》这本书。&lt;/li&gt;
+  &lt;li&gt;实际上看到书名的时候我的第一反应这是本讲费曼技巧的书，因为在很多年前我看到过一篇&lt;a href=&quot;https://kb.cnblogs.com/page/162480/&quot;&gt;文章&lt;/a&gt;，标题和这个非常类似，直到我重新翻出来后发现文中所讲的那个人正是这本书的作者。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;书的内容&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;在这里我不打算过多的写书中的内容，只是简单的把一些核心的内容列出来。实际上如果没有时间看书，我觉得看上面链接中的那篇文章是一样的。因为这本书的观点比较简单，大部分内容是来证明这些观点，并且列出了一些如何实践的方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;结构、模型和高速公路&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;这本书虽然叫做如何高效学习，但实际上主要讲的是整体性学习方法。作者一上来先讲了三个主要的观点：结构、模型和高速公路。&lt;/li&gt;
+  &lt;li&gt;结构：理解是结构高度发达完善的结果，结构是学习新知识时与其它知识建立联系。&lt;/li&gt;
+  &lt;li&gt;模型：
+    &lt;ul&gt;
+      &lt;li&gt;简化的结构、结构的快照&lt;/li&gt;
+      &lt;li&gt;模型的目的是压缩信息&lt;/li&gt;
+      &lt;li&gt;核心概念联系在一起创建模型&lt;/li&gt;
+      &lt;li&gt;模型是逐渐调整和更新的&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;高速公路：结构之间的联系&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;实际上这三点是整体性学习的核心内容或者说是最终形态。在我的理解中所谓的整体性学习更像是用类比的方式来快速对新知识进行学习，而在类比的过程中对于已有的知识需要一个结构或者模型，在这个基础上通过联想、类比等方法来进行学习。不同的知识之间是有相似性或者本身就是有联系的，这就是高速公路。&lt;/li&gt;
+  &lt;li&gt;以学习编程语言为例，我们知道目前的编程语言会分成不同的范式，比如有面向对象的、面向过程的、函数式的、命令式的等等。现代的编程语言往往包含了多个范式，以C#为例它是面向对象的，也是命令式和函数式都有的。在学会了C#之后，对于java这样的编程的语言在学习上会很快，因为他们几乎在编程范式是一样的，在语法上的差异和API的时候在使用的过程中再慢慢熟悉即可。但是在赋值、条件判断、循环、多线程、文件操作、lambda等等上都非常的接近，这样就可以通过类比的当时来快速的学习。&lt;/li&gt;
+  &lt;li&gt;对于lua、python或者JavaScript这样的脚本语言来说，其在赋值、条件判断、循环这些基本操作上也是一样的，再加上函数式编程的范式使得学习起来也会有一种熟悉的感觉。这也是为啥工作了几年的人在学习一门新的编程语言时会比较快，因为会有一种熟悉感、进而进行类比的学习。快速掌握共同点、重点学习不同点和API就可以很快的掌握。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;五个信息类型&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;书中列出了五种信息类型，也是知识类型。分别是：
+    &lt;ul&gt;
+      &lt;li&gt;随意信息&lt;/li&gt;
+      &lt;li&gt;观点信息&lt;/li&gt;
+      &lt;li&gt;过程信息&lt;/li&gt;
+      &lt;li&gt;具体信息&lt;/li&gt;
+      &lt;li&gt;抽象信息&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;其中随意信息是最难以记忆的，因为它们往往是一些事实，比如历史中的事件的时间，这些东西往往就是枯燥的记忆内容，没有什么很好的类比方式。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;学习的顺序&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;文中还列出了一个学习的顺序，实际上就是一种知识的学习过程：
+    &lt;ul&gt;
+      &lt;li&gt;获取：快速阅读和笔记法&lt;/li&gt;
+      &lt;li&gt;理解：使用内在化、类比、比喻等技巧。所谓内在化更像是观想法，也就是把知识具现化。&lt;/li&gt;
+      &lt;li&gt;拓展：同上&lt;/li&gt;
+      &lt;li&gt;纠错&lt;/li&gt;
+      &lt;li&gt;应用&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;这个没什么特别的地方，基本上就是一个获取知识的过程。实际上，这本书中很多的内容对于天朝读了十几年书的人来说都是没什么新意。&lt;/li&gt;
+  &lt;li&gt;书中用了很大的篇幅来描述着5个过程，比如获取就介绍了快速阅读和笔记法。在这里快速阅读推荐指读法，也就是用手指的移动来带动阅读，这样可以让人的注意力集中在手指所在的地方。而笔记法，推荐使用康奈尔笔记法或者与其接近的黄金三分法来做笔记。&lt;/li&gt;
+  &lt;li&gt;对于理解和拓展，就是内在化、图表法等。&lt;/li&gt;
+  &lt;li&gt;对于随意信息的记忆推荐联想法、信息压缩技术。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;真正的干货 - 费曼技巧&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;费曼技巧的过程：
+    &lt;ul&gt;
+      &lt;li&gt;选择要学习的概念&lt;/li&gt;
+      &lt;li&gt;设想你是老师，正在试图教会一名新生这个知识点&lt;/li&gt;
+      &lt;li&gt;当你感到疑惑时，回过头来，重新阅读参考材料、听讲座或找老师解答，直到你觉得搞懂了为止，然后把解释记到纸上。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;总结来说就是小学老师告诉我们的，如果你能给你的同学讲明白一个知识点你就是真的懂了这个知识点。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;我所总结出来的学习方法&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;在学习一个新的知识点的时候尽可能的联系已经学过的知识，通过知识的连接和类比来快速掌握知识。&lt;/li&gt;
+  &lt;li&gt;实际上费曼技巧是很实用而且也比较容易实施的方法，费曼技巧的根本理论在于找出自己没有真正掌握的知识，从而查漏补缺。&lt;/li&gt;
+  &lt;li&gt;使用思维导图来做联想、类比和内在化。书中很多方法都提到了联想、内在化、图表法等，在我看来都可以总结为思维导图。思维导图的制作本身就是一个查漏补缺和思维拓展的过程。&lt;/li&gt;
+  &lt;li&gt;使用方格笔记和黄金三分法，这个技巧也是有人专门写过书的，个人认为还是很有用的。&lt;/li&gt;
+  &lt;li&gt;最后这本书的笔记可以看&lt;a href=&quot;https://www.flickr.com/photos/142765619@N07/40075301272/in/dateposted-public/&quot;&gt;这里&lt;/a&gt;
+&lt;img src=&quot;https://c1.staticflickr.com/5/4602/40075301272_eb0642788d_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 18 Feb 2018 01:49:43 +0800</pubDate>
+        <link>https://caihua.tech/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/</guid>
+        
+        <category>杂记</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>七周七并发模型：函数式编程</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;概念&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;命令式编程的代码由一系列改变全局状态的语句构成，而函数式编程则是将计算过程抽象成表达式求值。&lt;/li&gt;
+  &lt;li&gt;这些表达式由纯数学函数构成，而这些数学函数是第一类对象（我们可以像操作数值一样操作第一类对象）并且没有副作用。由于没有副作用，函数式编程可以更容易做到线程安全，因此特别适合于并发编程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;为什么在并发和并行问题时会用到函数式编程&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;有关锁的一些规则，都是针对于线程之间共享的可变的数据——换个说法就是共享可变状态。而对于不变的数据，多线程不使用锁就可以安全地进行访问。&lt;/li&gt;
+  &lt;li&gt;这就是为什么在解决并发和并行问题时函数式编程会如此引人注目——它没有可变状态，所以不会遇到由共享可变状态带来的种种问题。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;纯粹的函数式语言中，函数都具有引用透明性——在任何调用函数的地方，都可以用函数运行的结果来替换函数的调用，而不会对程序产生副作用。这个特性也使得可以任意安排多个计算过程的求值顺序，包括让它们并行&lt;em&gt;。&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;所有函数（至少是理论上）都可以同时执行。这种执行方式被称为数据流式编程（dataflow programming）。&lt;/li&gt;
+  &lt;li&gt;PS：其实本书在第三章函数式编程部分的前两天中的内容，在我看来更多的是利用语言或者运行时本书的并发能力。后续会专门写个文章总结下C#中对应的并发功能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;写在2018.2.8的第一版总结&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;函数式编程确实是个大话题，在七周七并发模式看到第三章的时候我卡到了函数式编程这里。然后看完了《函数式编程思维》这本书，《C#函数式程序设计》还在路上，我想这是一次很不错的机会，让我好好的学习下。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;参考&lt;/h2&gt;
+
+&lt;h4 id=&quot;c&quot;&gt;从C#的角度看看&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Map、Reduce、Filter分别对应了C# linq中的三个函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Map = Select | Enumerable.Range(1, 10).Select(x =&amp;gt; x + 2);
+Reduce = Aggregate | Enumerable.Range(1, 10).Aggregate(0, (acc, x) =&amp;gt; acc + x);
+Filter = Where | Enumerable.Range(1, 10).Where(x =&amp;gt; x % 2 == 0);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Map从下面函数式编程部分的含义看就是接收一个函数，作用于范畴中每一个值，使得范畴从A变成B。&lt;/li&gt;
+  &lt;li&gt;Filter就是过滤，在我理解里面其实也就是一个传递给map的函数，这里的map是函子中的map。&lt;/li&gt;
+  &lt;li&gt;Reduce，正如下图说的，它是个折叠的作用。要我说就是sum的过程。只不过也许并不是真的对数值进行累加，而是可以做其它的处理。总之细细体会下面图片中的文字吧。&lt;/li&gt;
+  &lt;li&gt;PS:折叠这个词用的好。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;httpswwwzhihucomquestion28292740&quot;&gt;来自知乎的一个&lt;a href=&quot;https://www.zhihu.com/question/28292740&quot;&gt;回答&lt;/a&gt;&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;结论：函数式编程会把数据的结构外显，而命令式则把执行过程外显。
+或者这样说：你在读函数式代码时，经常会想不清楚执行过程；而你在读命令式代码时，会经常搞不清楚当前对象有哪些属性。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;函数式编程思维&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4669/40374586841_18f607ea60.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;函数式编程&lt;/h3&gt;
+&lt;h4 id=&quot;section-6&quot;&gt;原文&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2017/02/fp-tutorial.html&quot;&gt;函数式编程入门教程&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;范畴&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;彼此之间存在某种关系的概念、事物、对象等等，都构成”范畴”。随便什么东西，只要能找出它们之间的关系，就能定义一个”范畴”。&lt;/li&gt;
+  &lt;li&gt;范畴的数学模型：
+    &lt;ul&gt;
+      &lt;li&gt;所有成员是一个集合&lt;/li&gt;
+      &lt;li&gt;变形关系是函数&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;容器&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;可以把”范畴”想象成是一个容器，里面包含两样东西。
+    &lt;ul&gt;
+      &lt;li&gt;值（value）&lt;/li&gt;
+      &lt;li&gt;值的变形关系，也就是函数。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;范畴论与函数式编程的关系&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;范畴论使用函数，表达范畴之间的关系。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;本质上，函数式编程只是范畴论的运算方法，跟数理逻辑、微积分、行列式是同一类东西，都是数学方法，只是碰巧它能用来写程序。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;为什么函数式编程要求函数必须是纯的，不能有副作用？因为它是一种数学运算，原始目的就是求值，不做其他事情，否则就无法满足函数运算法则了。&lt;/li&gt;
+  &lt;li&gt;总之，在函数式编程中，&lt;strong&gt;函数就是一个管道（pipe）。这头进去一个值，那头就会出来一个新的值，没有其他作用。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;函子&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;函子是函数式编程里面最重要的数据类型，也是基本的运算单位和功能单位。&lt;/li&gt;
+  &lt;li&gt;++&lt;strong&gt;它首先是一种范畴，也就是说，是一个容器，包含了值和变形关系&lt;/strong&gt;++。&lt;strong&gt;比较特殊的是，它的变形关系可以依次作用于每一个值，将当前容器变形成另一个容器。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;一般约定，函子的标志就是容器具有map方法。该方法将容器里面的每一个值，映射到另一个容器。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数式编程里面的运算，都是通过函子完成，即运算不直接针对值，而是针对这个值的容器—-函子。函子本身具有对外接口（map方法），各种函数就是运算符，通过接口接入容器，引发容器里面的值的变形。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;PS:实际上函子通过map方法接收函数来实现转换。而所有的计算本质还是这个函数对函子中的值的计算&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;常见的函子&lt;/h4&gt;
+
+&lt;h5 id=&quot;of&quot;&gt;of&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;new一个函子&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;maybe&quot;&gt;Maybe&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;Maybe 函子就是为了解决内部值为null而设计的。简单说，它的map方法里面设置了空值检查。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;either&quot;&gt;Either&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;条件运算if…else是最常见的运算之一，函数式编程里面，使用 Either 函子表达。&lt;/li&gt;
+  &lt;li&gt;Either 函子内部有两个值：左值（Left）和右值（Right）。右值是正常情况下使用的值，左值是右值不存在时使用的默认值。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;ap&quot;&gt;ap&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;函子B内部的函数，可以使用函子A内部的值进行运算。这时就需要用到 ap 函子。&lt;/li&gt;
+  &lt;li&gt;ap 是 applicative（应用）的缩写。凡是部署了ap方法的函子，就是 ap 函子。&lt;/li&gt;
+  &lt;li&gt;ap是为了解决一个函子使用另一个函子的值的问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;monad&quot;&gt;Monad&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Monad 函子的作用是，总是返回一个单层的函子。&lt;/li&gt;
+  &lt;li&gt;它有一个flatMap方法，与map方法作用相同，唯一的区别是如果生成了一个嵌套函子，它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Monad 函子的重要应用，就是实现 I/O （输入输出）操作。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;举例说明：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Monad extends Functor {
+  join() {
+    return this.val;
+  }
+  flatMap(f) {
+    return this.map(f).join();
+  }
+}
+
+// 具体事例
+
+var fs = require('fs');
+
+var readFile = function(filename) {
+  return new IO(function() {
+    return fs.readFileSync(filename, 'utf-8');
+  });
+};
+
+var print = function(x) {
+  return new IO(function() {
+    console.log(x);
+    return x;
+  });
+}
+
+readFile('./user.txt')
+.flatMap(print)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上面第一段代码中如果f函数返回一个函子，map本身也是返回函子。这样就的造成了this.map(f)是函子的嵌套。&lt;/li&gt;
+  &lt;li&gt;从事例的角度看，&lt;code class=&quot;highlighter-rouge&quot;&gt;readFile('./user.txt')&lt;/code&gt;本身是返回了一个函子IO，其中的值为函数&lt;code class=&quot;highlighter-rouge&quot;&gt;function() { return fs.readFileSync(filename, 'utf-8');}&lt;/code&gt;（注意：函子的值可以是函数，而且因为这里的new实际就是上面的of，所以里面的参数应该是值），它其实是从文件中读取到的数据。而&lt;code class=&quot;highlighter-rouge&quot;&gt;.flatMap(print)&lt;/code&gt;根据上面的描述&lt;code class=&quot;highlighter-rouge&quot;&gt;它会取出后者内部的值，保证返回的永远是一个单层的容器，不会出现嵌套的情况。&lt;/code&gt;
+。它取出的就是第一个IO函子中的值（函数），然后在将这个值作为参数传递到print函数中。只有就形成了函数链。&lt;/li&gt;
+  &lt;li&gt;PS：以上只是我的理解，这篇文章的评论区有很多质疑，但是因为我确实对这个不了解，所以就按照原文的理解来解释了。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 08 Feb 2018 20:52:19 +0800</pubDate>
+        <link>https://caihua.tech/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</guid>
+        
+        <category>并发模型</category>
+        
+        
+      </item>
     
       <item>
         <title>七周七并发模型：线程与锁</title>
@@ -193,8 +473,7 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;new&quot;&gt;new做了什么&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKZXdRcjVXdmlqelZyVUZlU3pqajNjazBUdk80Rm1yYlJRPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4670/40329065372_ff712bf4f9_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;section-3&quot;&gt;生命周期&lt;/h4&gt;
 &lt;ul&gt;
@@ -204,7 +483,7 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;section-4&quot;&gt;对象在内存中是什么样的布局&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://imglf.nosdn.127.net/img/Nld0N0tacnNuUG0vaVk3MW1oaWJMY3Vzcis3WUhrNWRNelB4aWVwUGZkYlE1K3RtVkY4Z3pnPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4613/39477530815_26b8a6f5c4_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h5 id=&quot;section-5&quot;&gt;看图说话&lt;/h5&gt;
 &lt;ul&gt;
@@ -228,19 +507,18 @@
 &lt;/ul&gt;
 
 &lt;h4 id=&quot;delete&quot;&gt;delete做了什么&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://imglf2.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKUmgvZmViUytFdzB1dGE5ZHFJNzkrclBFbHlEbnk3Vi93PT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4664/25502410297_0d908862e7_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;section-8&quot;&gt;数组删除&lt;/h4&gt;
 &lt;ul&gt;
   &lt;li&gt;如果动态生产了数组内存，则在析构函数或者当需要删除对象时需要用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete[]&lt;/code&gt;。在这个过程中具体干了什么呢？&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://imglf0.nosdn.127.net/img/Nld0N0tacnNuUGtzTWNrbTJLM0pKVlNpclgvbmkxK2xPZmJWSGZMSkx0L0IrZ1lTOG9ic2pnPT0.png?imageView&amp;amp;thumbnail=1680x0&amp;amp;quality=96&amp;amp;stripmeta=0&amp;amp;type=jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4710/40329065432_911ca4b950_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;上面也说了，delete会先执行析构函数，其实对于一个对象来说，由于上下hook的存在因此析构函数可以完美的删除这个对象所占用的内存。所以图中左右两个delete都可以删除p所指向的数组，但是因为数组中是string的指针， 所以删除数组后string指针对指向的string对象本身并没有删除。而这个string对象本身其实就是char[]。这才是不用delete[]造成内存泄漏的本质。&lt;/li&gt;
 &lt;/ul&gt;
-
 </description>
         <pubDate>Tue, 16 Jan 2018 23:49:53 +0800</pubDate>
         <link>https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</link>
@@ -815,504 +1093,6 @@ c1.StaticFunction();
         <guid isPermaLink="true">https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/</guid>
         
         <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第二十周</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;小结&amp;amp;新的开始&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;从今年的7月29号发布第一周的笔记算起不知不觉已经二十周了，当时的想法也很简单就是下定决心读完当时算下来是168篇文章。5个月过去了，在写这篇的文章的时候基本上已经通读完了所有厚积薄发版块的关于unity的文章，真的感觉这是我这些年来做的最有毅力的一件事情。可以说在这二十周里面对于unity的理解尤其是图形学上学到了很多东西，而且也学会了很多优化的理论和别人实践的方法。&lt;/li&gt;
-  &lt;li&gt;理论已经学习完了，在后面的工作中就是一个实践的过程了。现在的项目会开始使用GOT工具进行优化的工作，真正的把优化这条路走下去。&lt;/li&gt;
-  &lt;li&gt;由于UWA出文章的速度不可能太快，而且自己的工作也很忙，所以每周的笔记可能会改成每月一篇了，继续加油。&lt;/li&gt;
-  &lt;li&gt;还有就是UWA都开始搞UE了，还有什么理由不开始学UE。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;gameplay&quot;&gt;GamePlay&lt;/h2&gt;
-&lt;h4 id=&quot;uwameshuwa-got200mbunloadunusedassets&quot;&gt;在UWA的测评结果中，我们的Mesh文件内存过高（使用UWA GOT测试最大的场景会达到200MB），大部分是由于场景的物件导致的。我们的场景物件是这样加载的：场景有一个基础的框架（地面、天空盒和个别大的物件等），在进入场景后，会根据位置来加载其他的物件，加载的物件在离开视野后，为了防止下次再加载，只将其隐藏了，并没有销毁，这样的话，人物如果在场景里跑了一圈，就相当于整个场景的物件，都会进入内存。请问，是不是将离开视野的场景物件销毁比较好呢，销毁后是不是要调用UnloadUnusedAssets才能彻底从内存中去除呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果题主做的是移动游戏，那么200MB确实太大了。&lt;/li&gt;
-  &lt;li&gt;建议题主建立一个Memory Pool来缓存场景中的物体，至少有以下两个规则：
-    &lt;ul&gt;
-      &lt;li&gt;Pool必须有一个上限，一般为容器的数量，超过最大阈值后即开始进行清理；&lt;/li&gt;
-      &lt;li&gt;为Pool中每个Object记录一个存储时间，当时间超过一定阈值后进行清理，或者当Pool满了后，将时间最长的进行Deactive Object进行清理。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;通过缓存池来进行销毁较长时间不再显示的的物体，同时，可以通过UnloadAsset API来卸载相关的资源，Resources.UnloadUnusedAssets API一般只建议在场景切换处进行使用。&lt;/li&gt;
-  &lt;li&gt;PS:说两句，如果一个最长时间的物体正好在视线内就不好办了。所以这个答案有点太粗暴，个人感觉还是要根据摄像机位置进行动态的删除对象。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;navmeshasset&quot;&gt;解析NavMesh.asset数据，用于服务器寻路。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/2110.html&lt;/li&gt;
-  &lt;li&gt;Q3&lt;/li&gt;
-  &lt;li&gt;给大佬跪了&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;reflectionprobe&quot;&gt;ReflectionProbe在移动平台丢失部分高光数据&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;https://blog.uwa4d.com/archives/2110.html&lt;/li&gt;
-  &lt;li&gt;Q4&lt;/li&gt;
-  &lt;li&gt;仅记录，没仔细看过后续版本的bugfix，遇到了在处理吧。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;animator-controller&quot;&gt;大批量地合入美术资源时，经常会出现构建出来的版本出现材质引用丢失、Animator Controller引用错误、贴图引用错误等资源引用错误的问题。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;出现这个问题可能是如下原因：&lt;/li&gt;
-  &lt;li&gt;是否使用代码混淆。在Prefab 上挂的脚本忘记添加到排除混淆的列表，导致序列化的字段被混淆，打完Bundle后的Prefab资源加载时候，挂接的脚本出现引用错误；&lt;/li&gt;
-  &lt;li&gt;资源导入都重载过OnPostProcess并处理了资源设置，这一步是否修改了什么不合理的地方，比如破坏了引用关系；&lt;/li&gt;
-  &lt;li&gt;打包AssetBundle时，在构建Bundle 之前有没有使用文件操作API（不是 Unity 的AssetDatabase的API）来直接修改了某个文件夹或者其他会破坏引用关系的行为，然后构建Bundle，完成后恢复文件夹名字（或者恢复资源原始状态），这样丢失引用关系的几率很大；&lt;/li&gt;
-  &lt;li&gt;有没有可能发布机器上，看着正常，但是Perforce里面已经存在一堆已修改的Meta文件；这种问题常出现于美术本地有两个A1，A2个相同资源在不同文件夹，A1受版本控制，但是由于某种操作，本地临时资源A2使用了原本A1的Guid，原本正确的 A1 被迫使用了不正确的新生成Guid（相当于两人交换），然后上传了A1的Meta，结果发布机器的下来的A1 Meta就会跟别人丢失引用，或者更新下来本地重新分配了新的Guid；美术策划最容易犯这个错误；&lt;/li&gt;
-  &lt;li&gt;我们是Unity 5.3.8p2，上周遇到一个疑似bug，美术多上传了一组相同的资源，我们更新下来都会重新生成Guid，但是很多挂起的Meta在Unity里重新导入后，在版本控制里神奇地消失了，但修改还在；&lt;/li&gt;
-  &lt;li&gt;如果都不是，只能尝试最小排除法了，删除项目绝大部分资源，一点点增加，然后打包，重现，排除原因；不行的话然后删除代码，一点点添加，打包，重现…有时候笨办法也是最容易接近真相的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;animatoroverridenameclip3-6cpu50-180mslisthttpsdocsunity3dcomscriptreferenceanimatoroverridecontrollerapplyoverrideshtml-lateupdateapplyoverrides400msoverridescount73clip&quot;&gt;游戏对战时因为会频繁更换武器或释放技能（主要是网络玩家），会替换不同的动作，但是发现每次设置animatorOverride[name]=clip（每次设置3-6个），CPU占用50-180ms，请问这是什么原因？我按照官方的指导存了一个list（https://docs.unity3d.com/ScriptReference/AnimatorOverrideController.ApplyOverrides.html） ，然后每次LateUpdate的时候调用ApplyOverrides，发现占用更高了，每次400ms，请问这个要怎么解决？目前每个网络玩家玩家OverRidesCount是73，会不会是Clip过多的原因？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在真机运行时发现animatorOverride[name]=clip的耗时会受到animatorcotrollor中的clip数目的影响，随数目的增多耗时会明显增加，70个以上的clip耗时确实能达到50ms(红米note2)以上。&lt;/li&gt;
-  &lt;li&gt;换为applyOverrides方法时耗时仍然很高，而且出现了堆内存分配，但并没有达到400ms那么高。&lt;/li&gt;
-  &lt;li&gt;尝试了整体替换AnimatorOverrideController，即不在现用的AnimatorOverrideController中替换clip，而是在另一OverrideController中换好clip后，再整体替换到runtimeAnimatorController，这样耗时就会降到很低了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-&lt;h4 id=&quot;unity-551sprite-packeriosrgba-pvrtc4spritepvrtc4467&quot;&gt;Unity 5.5.1版本下，Sprite Packer在iOS平台下RGBA PVRTC4打包图集失真非常严重（对单个的Sprite设置PVRTC4是正常的），参照了4.6.7版本是正常的，我想知道为什么呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;unity的bug&lt;/li&gt;
-  &lt;li&gt;在 Windows 下尝试用 4.7 的 pvrtextool.exe 替换了 5.x 的，暂时解决了这个问题，建议也尝试一下。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;asynchronous-texture-upload&quot;&gt;异步纹理加载Asynchronous Texture Upload这个功能最后到底有没有实用？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_84%2F5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个是默认就开启的，只是得开启多线程渲染才有效，因为要在 Render Thread 里上传纹理，还有文档里提到的各种限制，比如只针对关闭了 Read/Write 的纹理… 非多线程渲染时，异步加载纹理的时候，可以在 Loading.UpdatePreLoading 这个函数里看到较高的 Texture.AwakeFromLoad。但多线程渲染时，这部分的开销就会变得很小，因为这部分开销被放到 Render Thread 去了，如下图中的 Gfx.UploadTexture。&lt;/li&gt;
-  &lt;li&gt;但需要注意的是，这个地方的异步并不是流式的加载，也就是说，当加载一个大纹理的时候，还是一次性完成的，并不会分帧去做，如下图加载了一张2048的纹理，图中绿色峰值是Gfx.WaitForPresent，也就是主线程在等待 Render Thread。&lt;/li&gt;
-  &lt;li&gt;综上，这个功能实际上就是把某些满足要求的纹理的加载时间从主线程移到了渲染线程。在某些情况下，确实是可以提高总体的加载速度的。但这个功能并不能真正地“解决异步加载时纹理却只能同步加载”的问题，只是把卡顿放到渲染线程去了（如果耗时高了，主线程还是要等的）。&lt;/li&gt;
-  &lt;li&gt;非常好的问题，建议直接看答案。 https://blog.uwa4d.com/archives/TechSharing_84.html Q3&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unity&quot;&gt;在目前的Unity版本中，使用多维材质是否会对效率产生影响，用多维材质和把模型分块哪个更好？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;制作美术资源时，应该尽量避免使用多维材质。&lt;/li&gt;
-  &lt;li&gt;先举例说明多维材质的一个优点是拆分模型做不到的： 一块大石头有石头和草地两个材质，做成一个整体的模型，使用多维材质，作为一个物件进行烘焙，在Lightmap上的UV分布是一个整体，不会出现拆分为两个模型烘焙产生的接缝问题。&lt;/li&gt;
-  &lt;li&gt;除了上面这种情况，其他情况下推荐将模型拆分成多个模型赋予不同的材质。&lt;/li&gt;
-  &lt;li&gt;优点是：
-    &lt;ul&gt;
-      &lt;li&gt;1、多个模型会作为多个MeshObject参与到裁剪、静态批次等优化中 ；&lt;/li&gt;
-      &lt;li&gt;2、拆分的模型和贴图可以进行材质合并，程序才能进行下一步的优化，如果本身是多维材质，就无法进行合并DrawCall的优化；&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第一个优点就能带来很大的收益。制作上应该按照一个模型对应一个贴图的做法进行，如果模型是一个整体，比如房子由底座、墙体、屋顶组成，建议将他们多选导出成一个FBX。&lt;/li&gt;
-  &lt;li&gt;另外，不同材质的模型建议做成多个模型，再多选导出成一个FBX，仍然是一个模型对应一个贴图的规范进行制作。&lt;/li&gt;
-  &lt;li&gt;PS: 对于人物模型可能不考虑剪裁，但是至少减少了drawcall。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;ugui-uirootscreen-space---camera-culling-mask-uirootuilayer&quot;&gt;我在UGUI 使用一个UIRoot，类型使用Screen Space - Camera，使用摄像机的 Culling Mask, 如果UIRoot可视，下面的UI子物体设置不可视Layer，是不是不会被裁掉？有没有什么解决办法吗？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;UGUI的网格合并是以Canvas为单位的，所以只能改Canvas的Layer才有效。&lt;/li&gt;
-  &lt;li&gt;如果只是个别UI元素要快速隐藏和显示，可以考虑用Scale为0来做，Scale为0时UI的顶点信息会被清空，所以隐藏时就不会参与网格重建了。&lt;/li&gt;
-  &lt;li&gt;PS:顶点清空的第一帧应该会出现rebuild，后续帧不参与rebuild。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;ui867outline-canvas&quot;&gt;在UI中，有两个字体控件每帧都要显示不同的数字，第一个有8个字，第二个有6~7个字，需要开outline增加辨识度，从而引起了较高的性能开销。 把这两个控件单独放到另外独立的Canvas，该问题依然存在。现已确定该开销是由这两个字体控件每帧的文本更改引起的。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;提到一个是8个字，一个是6到7个字，都开启了outline。 首先建议再做一次确认，看是不是禁用这两个之后，SendWill就确实没开销了。因为这个字数看上去并不应该造成很明显的开销；&lt;/li&gt;
-  &lt;li&gt;其次，如果确实是这两个造成的，那么就需要先考虑下能不能转成带outline效果的静态字体，不行的话再考虑下能不能降低更新的频率了，是不是确实要每帧都变；&lt;/li&gt;
-  &lt;li&gt;如果要再降低，就只能考虑静态字体了，如果文本是一些比较固定的内容就很好处理，但如果是像聊天一样，内容无法预知的话似乎就没什么办法了。或者就是低端机用shadow来做。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;resourcesloaduiprefabui&quot;&gt;现在用Resources.Load()加载资源时，UI动画会出现卡顿的现象，如果想消除卡顿，是不是只能通过异步加载，分拆Prefab和优化材质网格动画之类的操作来实现？还是说UI动画可以在另外的线程播放之类呢？另外我想问下，异步速度是不是一定比同步慢呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;不直接贴答案了&lt;/li&gt;
-  &lt;li&gt;总结一下就是遇到这样的卡顿的解决办法
-    &lt;ul&gt;
-      &lt;li&gt;分析卡顿原因&lt;/li&gt;
-      &lt;li&gt;使用异步方法&lt;/li&gt;
-      &lt;li&gt;拆分功能、预加载&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;unityframe-debuggerprofilerdraw-calldrawcall&quot;&gt;Unity中的Frame Debugger中的渲染顺序以及数量和Profiler中看到的Draw Call数量，以及在高通的调试工具里看到的DrawCall数，它们之间有什么关系呢？哪个数值是影响渲染的重要指标？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;简单来说，Unity引擎中Total Batches是我们建议最需要关注的指标。&lt;/li&gt;
-  &lt;li&gt;1个Setpass Call或者Batch，相当于是一次Render State的切换，而1个Draw Call则是CPU让GPU去进行渲染某一个Object的1次操作。在当前的移动设备中，1次Render State的切换要1个Draw Call本身要耗时。&lt;/li&gt;
-  &lt;li&gt;所以，Total Batches是我们较为建议的关注指标，也是UWA性能报告中所提供的Draw Call查看指标。而Frame Debugger中，其数量是与Total Batches相一致的，即查看的是每一个Batch的渲染物体。 更为详细一些的说明，可以查看https://answer.uwa4d.com/question/58d29b8b5a5050b366a6b6ae&lt;/li&gt;
-  &lt;li&gt;而Unity Profiler中的Draw Call，其理论上对应的则是glDrawElements的调用次数，其与高通或其他第三方工具所返回的Gl Trace信息操作数量不太一致，但应该与其中的glDrawElements API的调用次数基本一致，题主可以自行检测看看。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uwa-gotcpustacktraceutility&quot;&gt;我用UWA GOT进行本地性能测试，在CPU的数据分析中发现，某些帧StackTraceUtility耗时特别高，这是什么原因导致的呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;StackTraceUtility.XXX是Unity引擎的Log输出，可能是本身Debug.Log/LogError的调用输出，也可能是使用过程中引擎端出现了Warning/Error等信息而自动输出的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;profilerassetbundlelockpersistentmanager&quot;&gt;我在Profiler中观察性能曲线，发现某一帧AssetBundle加载中，LockPersistentManager耗时比较大。请问这部分能否优化？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这说明当前帧或前几帧中存在较大量的资源在通过LoadAsync来进行加载，其本质是所加载的资源过大所致，对自身资源进行合理优化可降低Loading.LockPersistentManager的开销。&lt;/li&gt;
-  &lt;li&gt;另外，将异步加载换成同步加载，LockPersistentManager就不会出现了，但其总加载耗时是没有变化的，因为总加载量没变。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;profilerpciosandroidandroidgraphics-jobsplayer-settings&quot;&gt;我在安卓真机上跑游戏，发现Profiler下的合批数据和PC或者iOS下的不一样，因此不确定Android的合批是否有效。经过分析，Android上不能设置Graphics Jobs(在Player Settings里面)，也是不断打包测试发现这个问题，想了解一下具体是什么原因呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Graphics Job目前在Android平台上是为Vulkan而设计的，也就是只有支持Vulkan设备的才会真正起作用。按照Unity原厂的说法，该选项在不支持Vulkan的Android设备上应该是没有效果的。&lt;/li&gt;
-  &lt;li&gt;另外，Graphics Job和MultiThread Rendering并不建议同时使用，而且以目前的Android设备来说，建议只开启MultiThread Rendering一项即可。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;unity3danimationclipframerate&quot;&gt;在Unity3d的官方文档中，animationclip.framerate的解释如下：&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“Frame rate at which keyframes are sampled. (Read Only) This is the frame rate that was used in the animation program you used to create the animation or model.”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;我对此有些疑问：&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;1）这个是否为动画系统每一秒钟更新动画的次数？如果是，当这个值高于Application.targetFrameRate时，一秒钟更新动画的次数依据哪个为准&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;2）这个是否只是调节动画播放速度的一个参数，而每秒钟动画状态更新的次数不受影响？&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;A: 动画采样的时候是根据当前播放的时间去找对应的前后两个关键帧做插值。所以动画本身得告诉Unity两个关键帧（没做keyframe reduction时）的间隔时间是多少，或者一秒有几帧，这个值就是framerate。所以这个是只读的，导出时就应该是确定的。因此这个值也不会影响运行时动画的更新次数，默认情况下动画就是每帧更新一次的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadlevelasyncloadlevelloadlevelasyncloadlevel40loadlevelloadingloadlevelasyncloadingprefabprefabresourcesloadasync2200ms&quot;&gt;在手机上测试LoadLevelAsync和LoadLevel的加载速度，同一个场景，LoadLevelAsync要比LoadLevel多花费40%左右的时间，请问这是正常的么？LoadLevel会有卡顿，导致Loading进度条不平滑，但是LoadLevelAsync好像又会增加Loading的时间？我项目中场景动态加载的做法是，是把物件做成Prefab，然后根据主角的位置做动态加载相应的Prefab，用的是Resources.LoadAsync方法。现在加载一些比较大的物件时，在红米2等低端机上，仍然比较卡，要消耗200ms以上。请问有什么好的方式，能平滑这个加载过程么，谢谢！&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LoadLevelAsync一般情况下是要比LoadLevel慢的，但是否要慢40%，这个其实是根据每个场景所要加载的不同量而定的，并不是确数。&lt;/li&gt;
-  &lt;li&gt;LoadLevel和LoadLevelAsync其实最本质的区别，是前者一定要在下一帧结束前完成加载操作，所以当加载场景较大时，其随后的单帧开销就会很大，而后者则没有这个限制，引擎可以根据当前的使用情况或者ThreadPriority（这个值是是否对LoadLevelAsync有影响，还没做过具体实验，但对于LoadAsync确实有影响 ）来自行调控。&lt;/li&gt;
-  &lt;li&gt;还需要说明一点的是，不是说使用Async，它就一定是绝对平滑，下图红框是LoadLevel，绿框是LoadLevelAsync操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_86%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;关于真正“平滑”异步的加载方式，Unity引擎目前还是没有的。在遇到较为复杂的Prefab（比如大纹理、多AnimationClip等等）时，其加载依然会出现卡顿。如果想要缓解该问题，建议如下：定位资源-&amp;gt;查看资源为何开销-&amp;gt;采用预加载的方式处理这样的资源。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;il2cppmonoil2cppprofilermanagedobject-int32&quot;&gt;我使用了IL2CPP后是否还存在Mono内存呢？使用IL2CPP后，通过Profiler工具获取的managedObject（例如： int32[]）是哪种内存？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;可以简单地认为，Il2CPP只是替换掉了Mono的虚拟机实现，所以该分配堆内存的地方还是会一样的分配（可能会有某些细节的地方不一样）。&lt;/li&gt;
-  &lt;li&gt;IL2CPP在堆内存分配方面和Mono 最大的不同主要是Reserved Total 是可以下降的，而 Mono的 Reserved Total 只会上升不会下降。&lt;/li&gt;
-  &lt;li&gt;PS：原来是这样，我一直以为是直接转成了CPP语言。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;物理&lt;/h2&gt;
-&lt;h4 id=&quot;boxcollider2d00f00f--10f10fphysics2dboxcastnew-vector210f1702-vector210f-14f-0-vector200f10f-20f-1700-17021706&quot;&gt;我的游戏场景中有一个boxcollider2D，位置在(0.0f,0.0f) 到 (1.0f,1.0f)；调用Physics2D.BoxCast(new Vector2(1.0f,1.702), Vector2(1.0f, 1.4f), 0, Vector2(0.0f,1.0f), 2.0f); 会产生碰撞，理论上碰撞的边界在1.700 ，我已经将位置放到1.702，应该是规避了浮点数误差的问题的，如果我将该值放大了1.706就不会产生碰撞了，请问哪里可以调整这个误差值的范围呢?&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity 2017.1版本的Physics2DSettings里面有一个Default Contact Offset，表示当两个collider之间的距离小于它们的ContactOffset之和就会产生碰撞。把这个值设置小一点应该能解决题主的问题。&lt;/li&gt;
-  &lt;li&gt;Unity 5.x中Contact Offset，默认是0.01，这也是为何1.702不行，而1.706可以的原因。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;uigameobjectdestroyresourcesunloadunusedassets&quot;&gt;释放了资源，但纹理还在内存中，且引用数为0，要如何销毁呢？纹理所在的UI的GameObject是通过Destroy销毁的，并且执行了Resources.UnloadUnusedAssets();&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Ref Count为0应该就是可以通过Resources.UnloadUnusedAssets或Resources.UnloadAsset来进行卸载了。&lt;/li&gt;
-  &lt;li&gt;出现这种情况建议如下：
-    &lt;ul&gt;
-      &lt;li&gt;尝试将Resources.UnloadUnusedAssets在Destroy稍后几帧执行；&lt;/li&gt;
-      &lt;li&gt;在加载时尝试直接获取这些资源，然后在Destroy后通过Resources.UnloadAsset来卸载指定资源。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;resourcesunloadunusedassets-uwa&quot;&gt;Resources.UnloadUnusedAssets() 在卸载旧场景后加载新场景前调用好，还是在加载新场景后调用比较好呢？如果考虑内存峰值的话，我觉得是前者好，但是在UWA上看到有些文章说是加载场景后调用。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果是通过LoadLevel(Async)类似的方式来加载场景的话，那么Unity自身会在底层执行一次类似Resources.UnloadUnusedAssets的操作。所以，这时如果手动调用Resources.UnloadUnusedAssets操作，时间间隔很短，其实这个是有些重复的。因此才建议在新场景加载后再调用一次。&lt;/li&gt;
-  &lt;li&gt;但如果使用LoadLevelAdditive或其他类似的API来切换场景的话，那么Unity是不会调用Resources.UnloadUnusedAssets的，这时在旧场景卸载后调用，其实也是很不错的选择。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 23 Dec 2017 16:55:12 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/</guid>
-        
-        <category>UWA</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>每天一点UWA：第十九周</title>
-        <description>&lt;h2 id=&quot;assetbundle&quot;&gt;AssetBundle&lt;/h2&gt;
-&lt;h4 id=&quot;assetbundleplayersettingsoptimize-mesh-data-optimize-mesh-datamesh-&quot;&gt;在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;一般来说，开启“Optimize Mesh Data”选项，引擎会在发布时遍历所有的网格数据，去除其多余数据，从而降低其数据量大小。需要注意的是，这里的“多余”数据是指Mesh数据中包含了渲染时Shader中所不需要的数据，即如果Mesh数据中含有Position、UV、Normal、Color、Tangent等顶点数据，但其渲染所用的Shader中仅需要Position、UV和Normal，则Mesh数据中的Color和Tangent则为“多余”数据，引擎在发布游戏时，会将这些数据自动去除。&lt;/li&gt;
-  &lt;li&gt;开启这个选项是一把双刃剑。对于在Runtime情况下有更换Shader需求的Mesh，建议研发团队对其特别注意。如果Runtime时需要为某一个GameObject更换更为复杂、需要访问更多顶点属性的Shader，则建议先将这些Shader挂载在相应的Prefab上再进行发布，以免引擎去除Runtime时会使用到的网格数据。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;assetbundleassetbundlewwwassetbundlegameobjectwwwdisposeassetbundleunloaddestroydestoyimmediatassetbundleassets-&quot;&gt;对于运行时动态加载的普通模型比如怪物，我们目前的打包策略是把它单独打一个AssetBundle包，通过AssetBundle加载并实例化的消耗。如下图所示，对于WWW、AssetBundle、GameObject，卸载方法分别为WWW.Dispose、assetBundle.Unload、Destroy/DestoyImmediat。但对于通过AssetBundle加载出来的Assets资源， 这块的资源用什么策略清理合适？&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;1）Resources.UnloadUnusedAssets，但该函数比较费时，一般只在切换场景时候使用；&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2）assetBundle.Unload(true); 运行时Assetbundle在Instantiate prefab完成后也立即执行了unload(false)，所以也不适用；&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;对实例化出来的GameObject在使用后即使执行了DestroyImmediate，模型引用的贴图还驻留在内存中，难道要遍历GameObject使用的Assets分别执行UnloadAsset么？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果是仅加载Prefab，那么随Prefab一起加载进来的资源是不太方便被“优雅”地卸载的，即便是对应的GameObject被Destroy了，那么它对应的资源会变成“游离”状态（没有Refcount），只能等到手动调用Resources.UnloadUnusedAssets或场景切换时被引擎卸载。 所以，一般建议研发团队尝试通过依赖关系进行打包，将资源和Prefab进行分离，这样可以将加载资源和加载Prefab分开，从而可以通过“显式”地方式加载资源并将其进行储存，这样当你想精准释放资源时，则可以直接通过Resources.UnloadAsset来进行卸载。&lt;/li&gt;
-  &lt;li&gt;PS: 这个问题本身就很有内容。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;audio&quot;&gt;Audio&lt;/h2&gt;
-&lt;h4 id=&quot;unity-472unity-553apk200mb472apk553200mbkbunity-472mp3unity-553wav&quot;&gt;将一个Unity 4.7.2的项目升级到Unity 5.5.3。打成安卓包，发现APK文件比之前大了200MB。然后分别对4.7.2打出来的APK包和5.5.3打出来的包分别进行解包，发现音频文件个数一样，但所占大小多了200MB左右，平均每个文件都大了几百KB。Unity 4.7.2的解包为Mp3格式，Unity 5.5.3的解包为Wav格式。&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;于是我在Unity 4.7.2和Unity 5.5.3下，分别新建一个空工程，将单独一个音频文件（ogg格式）放入Resources文件下，即两个Unity版本的空工程里只有一个Resources文件夹，文件夹里只有一个相同的Ogg格式音频文件，打成安卓包。使用解包工具解包，发现Unity 4.7.2的音频文件转成了mp3格式，大小几十kb；Unity 5.5.3的音频文件转成Wav格式，大小200多KB。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;请问这种问题怎么解决？针对音频，Unity 4.x和Unity 5.x在打包过程中，作了那些修改？&lt;/p&gt;
-  &lt;ul&gt;
-    &lt;li&gt;引用Unity 5.0的release note：https://unity3d.com/unity/whats-new/unity-5.0
-“Rewritten Audio asset pipeline and AudioClip backend.””Much improved audio formats in terms of memory and CPU usage.** The Format property no longer refers to a specific platform-specific file format, but to a encoding method** (Uncompressed, Compressed, ADPCM).”&lt;/li&gt;
-    &lt;li&gt;可以看到，在Unity 5.x中，不同平台的音频不再与特定的文件格式关联，而是与文件编码关联。文件格式不等同于音频编码，虽然同是Wav格式的文件，但其有不同的编码方法（PCM，ADPCM，Vorbis，Wav也可以用mp3编码），编码方法会影响到Apk的大小。选定编码方式后降低quality和sample rate也会降低apk大小。
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F7.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&quot;font&quot;&gt;Font&lt;/h2&gt;
-&lt;h4 id=&quot;iphone5cfontcachefontfortextuwablogfonttexturefont-texture-34&quot;&gt;我们在iPhone5c上测试时发现Font.CacheFontForText会造成很严重的卡顿，看了UWA的Blog，了解到可能是因为创建FontTexture导致的开销。那是否可以认为如果我们一开始申请了足够大的Font Texture，后面即便有新的文字，开销也不会很大？ 如果可以这么做，一开始申请使用的字符串是根据自己项目生成一个字典，还是直接使用网上3、4千字的常用字库更好？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;是的，如果Font.CacheFontForText开销较大，那么在无法降低字体数量的情况下，一开始增大Font Texture是较为可行的方法。建议根据自己项目的字体来撑大Font Texture，避免不必要的浪费。 同时，也建议看一下这篇&lt;a href=&quot;https://blog.uwa4d.com/archives/Sparkle_Font.html&quot;&gt;关于字体的精简优化方法&lt;/a&gt;。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;gameplay&quot;&gt;GamePlay&lt;/h2&gt;
-&lt;h4 id=&quot;colliderboundssize-aabbobb&quot;&gt;我想了解下如何获取物体的最小包围盒？Collider.bounds.size 获取的是与世界坐标系坐标轴平行的包围盒(AABB)，当物体旋转时包围盒大小会发生变化。那如何获取物体的OBB，使包围盒的大小不会随物体旋转而改变呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;获取 OBB 可以用 Mesh.bonuds(模型空间)。注意蒙皮Mesh这一类在Shader中修改顶点坐标的操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;scriptableobjectassetassetbundledlldllscriptableobjectassetbundleassetbundleprotobufscriptableobjectscriptableobject&quot;&gt;安卓客户端存在大量的模板数据需要配置，其中一些模板表甚至可能达到万级的数据条目，那么怎么对这些数据模板表进行打包和加载，可以兼顾加载速度和热更新表结构？一开始我们采用了ScriptableObject，把全部模板数据加载到内存并序列化为Asset的方式进行Assetbundle打包，该方案加载速度较为理想。但当我们通过Dll替换热更新安卓客户端时，发现这种方式不支持热更新，一旦Dll中修改了模板表结构，热更新替换后，ScriptableObject的AssetBundle就无法读取了，提示损坏的AssetBundle，目前的方案是采用Protobuf代替ScriptableObject进行序列化，可以实现热更新模板表结构，但是加载速度相对ScriptableObject有较大的差距，目前数据模板加载较慢便导致了玩家进入世界的时间比较久。因此想了解大家有什么好的建议呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;用ScriptableObject或者BinaryFormatter二进制存储然后反序列化成保存数据结构的对象，这两种方法应该是加载速度最快的。
-我们实际没有采取这个方案，也使用的是Protobuf，是出于以下考虑:
-    &lt;ul&gt;
-      &lt;li&gt;一份二进制数据，客户端和服务器可以通用。从服务器推数据很方便；&lt;/li&gt;
-      &lt;li&gt;策划习惯使用Excel编辑，有脚本可以把表格内容导出成Protobuf的二进制数据，另外，还有.cs/.go表结构描述文件需要重点考虑。也就是说，策划修改表结构、增减表，服务器和客户端的结构描述文件可以自动生成好；&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第一个问题：配置表存储格式
-现在主流的数据存储基本分为三大类，各有优劣，需要根据实际情况选择：
-    &lt;ul&gt;
-      &lt;li&gt;ProtoBuf或类似序列化库，这种方式兼容性高，但是加载速度一般；&lt;/li&gt;
-      &lt;li&gt;自己实现二进制数据存储，兼容性差，需要精心设计达到较高的数据表达能力；&lt;/li&gt;
-      &lt;li&gt;采用Lua热更新方案的游戏，普遍直接把数据存储为Lua表。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;第二个问题：配置表数据与代码兼容
-一般不建议大量修改数据结构，比如增删字段，如果实在无法避免，需要代码连同数据一起发布进行热更，做好版本管理即可。&lt;/li&gt;
-  &lt;li&gt;第三个问题：配置读取速度优化
-    &lt;ul&gt;
-      &lt;li&gt;先从数据量上约减，减小数据冗余重复，数据存储设计优化，多次引用的字段多引用等等；&lt;/li&gt;
-      &lt;li&gt;采用多线程加载，避免使用Unity提供的API，在游戏启动时，并行加载配置表，充分利用多核优势；&lt;/li&gt;
-      &lt;li&gt;就我们自己项目而言，没有使用Lua的更新方案，但是我们依然采用Lua作为了数据存储，经过优化后加载速度也不错，可以参考 LuaTableOptimizer。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;maincamera--screen-depth-buffer-camera2--maincamera--rendertexture--screen-depth-buffer--camera2rendertexturecolorbuffer--camera2--unity--screen-depth-buffer--rendertexturecolorbuffer-&quot;&gt;MainCamera 渲染完场景后，在 Screen Depth Buffer 上记录了整个场景的深度信息。Camera2 在 MainCamera 后，将模型绘制到一个 RenderTexture 上，我想利用 Screen Depth Buffer + Camera2.RenderTexture.ColorBuffer 对 Camera2 绘制的内容进行深度剔除，这时 Unity 会提示 Screen Depth Buffer 和 RenderTexture.ColorBuffer 不能混用。这样的需求该怎么做呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这是一个很有意思的问题，参考https://blog.uwa4d.com/archives/1945.html&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;inspectordictionary--public-dictionarystringstring-dict&quot;&gt;请问怎么在inspector中显示Dictionary呢？ 例如： Public Dictionary&amp;lt;string,string&amp;gt; dict;&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity 无法序列化Dictionary类型，无法将其显示在inspector中。一个Workaround是将Dictionary的Key和Value拆到两个list中，list可以在Inspector中显示。利用API：ISerializationCallbackReceiver （https://docs.unity3d.com/ScriptReference/ISerializationCallbackReceiver.html 有示例代码）可以在序列化/反序列化时将Dictoionary中的内容与list内容同步。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unityfloat&quot;&gt;Unity需要对float进行相等判定&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Mathf.Approximately&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uguibuttononclickaddlistenerbuttonbuttoncdelegategetinvocationlistdbuttonapibutton&quot;&gt;通常UGUI中的Button点击事件在代码中是通过onClick.addListener()来添加的。而且这种按钮的点击事件通常只会执行一次，如果添加了多次就会出现点击一次、按钮调用多次的事件函数。如果该Button只会添加一种事件，可以通过引用来判断是否添加了重复事件，从而不再重复添加相同事件。但是如果Button添加了多种点击事件，那么引用的方式就无效了。C#中的Delegate中有一个函数GetInvocationListD()可以获取此委托中的事件列表，从而剔除相同事件。然而让人头痛的是，我查看了Button的API似乎并没有暴露出此Button添加了的事件列表，所以没有办法剔除相同事件。不知道是否有什么办法可以解决这个问题?&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;onClick是一个ButtonClickedEvent对象，而ButtonClickedEvent的基类是UnityEventBase。UnityEventBase里有一个InvokableCallList对象，里面应该就存了事件列表，但这个是private的，可能只能尝试通过反射，去取里面的值来对比了。看上去并没有比较简便的方法。&lt;/li&gt;
-  &lt;li&gt;可以考虑扩展下Button组件，封装一个AddUniqueListener的接口，保留一下已经onClick.addListener的UnityEvent，然后每次Add前都先和这些UnityEvent做个对比，没有重复再进行onClick.addListener。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;如果场景中有大量物体，请问如何利用相机拾取获取不同范围内的物体？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;采用Physics.SphereCastAll函数来获取，类似下面这个场景：
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;在SphereCastAll这个API的参数中，第二radius可以控制获取半径，我们分别设置5和10的效果是这样的：
-radius=5：
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;radius=10：
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_79%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unityandroidunityiosandroidunity552&quot;&gt;如下图，蓝色部分为Unity视图，绿色为Android图片，我现在需要把Unity蓝色区域透视或者去除，iOS上已经透视成功，但Android一直失败，Unity版本为5.5.2，大家有什么建议呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;只记录下方案 https://blog.uwa4d.com/archives/TechSharing_79.html&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;guilayoutscrollview&quot;&gt;改变GUILayout中ScrollView滑动条宽度&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;GUIStyle gs = GUI.skin.verticalScrollbar;
-GUIStyle gs1 = GUI.skin.verticalScrollbarThumb;
-        
-gs.fixedWidth = 30;
-gs1.fixedWidth = 30;
-......
-pos = GUILayout.BeginScrollView(pos);
-......
-GUILayout.EndScrollView();
-......
-gs.fixedWidth = 0;
-gs1.fixedWidth = 0;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;staticbatchlightmaprendererlightmapindex-and-offsetlightingdataassetlightmapsettingrendererlightmapindex-and-offset-lightmaplightingdataasset-uwa&quot;&gt;我这边做了个测试，把场景中的物件进行StaticBatch，用Lightmap烘焙，并且在烘焙完记录每个物件Renderer的lightmapindex and offset，然后在运行中，我删除了生成的LightingData.Asset，自己设置了Lightmapsetting，并且恢复了每个物体Renderer的Lightmapindex and offset, 结果我发现烘焙出来的场景Lightmap还是不对的。我怀疑是不是LightingData.Asset 还记录了别的东西，想问问看UWA有没有什么经验呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个问题还是出在Static Batching上。经过测试我们发现如果去掉场景中物件的“Static Batching”标记，换成手动Batching，即采用StaticBatchingUtility.Combine的方式结果就正确了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_81%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;同时，我们发现使用LightingData.Asset时，开启Static Batching与不开启都正确，因此我们认为LightingData.Asset可能记录了与CombinedMesh有关的数据，导致如果仅仅使用gameobject的LightMap参数无法正确读取CombinedMesh的LightMap UV。另外一种可能是Unity的一个Bug。
-最后，我们建议采用上述手动Batching的方式，即可解决此问题。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;linearuiuilinearuilinear&quot;&gt;当使用Linear设置时，UI上图片透明度等也跟着变化，出来的效果与美术人员的需求不一样。请问有什么办法可以让UI不使用Linear或者让UI可以在Linear影响下也正常呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;值记录下做法：https://blog.uwa4d.com/archives/2066.html&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;texture&quot;&gt;Texture&lt;/h2&gt;
-&lt;h4 id=&quot;iospvrtc-&quot;&gt;请问在iOS上，图集如何设置成PVRTC的格式呢？ 下图中的设置是否正确？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_74%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;图集的设置需要考虑到该图集的用法，如果是作为普通的Texture给3D物体用的，那么TextureType选择Texture，然后Format选择Compressed就可以，因为在iOS上，Unity会自动处理NPOT（把纹理拉伸为边长为2的幂次的正方形），并默认采用PVRTC。&lt;/li&gt;
-  &lt;li&gt;设置之后可以看一下下方的预览面板，会直接显示PVRTC的；如果是给UGUI用，那不同情况下，设置又不一样了；如果是给NGUI用，可以按照问题中截图里的设置即可，最终再确认下预览图上是不是PVRTC。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;loadsubsasyncloadsubsspritedata-loadtextureloadsubsloadsubsasyncspritedata-loadsubsasyncloadsubstexturespritedatatexturespritedata&quot;&gt;LoadSubsAsync和LoadSubs加载SpriteData，我想请问一下： 如果先LoadTexture加载纹理再加载LoadSubs，或者LoadSubsAsync函数调用加载SpriteData，纹理是否会加载两次，以及性能如何呢？ 按照我的理解，LoadSubsAsync或者LoadSubs，它自身有Texture属性，我断点调试可以看到SpriteData内的Texture会随着SpriteData加载而出来。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;LoadSub和LoadSubAsync是会同时加载Texture的。 而先Load再LoadSub，并不会造成冗余问题，所以Load过Texture后，LoadSub的耗时就很小了。 但如果Texture里的Sprite是打了图集的，那么LoadSub的时候还是会有个图集加载的耗时。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;ui&quot;&gt;UI&lt;/h2&gt;
-&lt;h4 id=&quot;q1uguicanvassendwillrenderviewviewcanvasgroupscalesendwillrender&quot;&gt;Q1：众所周知，UGUI中有个Canvas.sendWillRender()函数在View打开的时候很耗时，所以通常的做法是把View移出屏幕外，或者Canvas.group，或者Scale等类似的处理机制。这样虽然能解决SendWillRender()消耗过高的问题，但也会有新的问题出现：&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;ol&gt;
-    &lt;li&gt;EventSystem.Update()。由于各个View都是Active的状态，所以这个函数底下的Graphic.GetDepth()消耗很大，而且又由于不止一个GraphicRaycaster组件，所以这个函数下面的List.Sort()消耗巨大，更何况是每帧都在耗。&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;ol&gt;
-    &lt;li&gt;还有一个函数ScrollRect.LateUpdate()，它的开销也很高。而如果将Scale设置成0，其消耗更大，这种情况下，我还是倾向于用回Active/Deactive的处理机制，因为就界面打开的时候会卡一下，而不至于影响总体的帧率。&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;界面的快速隐藏和显示，比较推荐的做法是：
-    &lt;ul&gt;
-      &lt;li&gt;把界面单独作为一个Canvas，并绑定一个相机，同时在绑定相机的Culling Mask中设置一个不渲染的Layer；&lt;/li&gt;
-      &lt;li&gt;隐藏时，把Canvas移出相机范围，同时把Canvas的Layer改为不被渲染的Layer，禁用对应的GraphicRaycaster组件，把Canvas中所有的动态UI元素停止。&lt;/li&gt;
-      &lt;li&gt;显示时，移回Canvas，改回Layer，激活GraphicRaycaster组件。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;针对题主的问题1，禁用GraphicRaycaster组件后就没问题了，被禁用的GraphicRaycaster不会进行Raycast操作；&lt;/li&gt;
-  &lt;li&gt;针对题主的问题2，ScrollRect.LateUpdate中会通过EnsureLayoutHasRebuilt提前触发Canvas.SendWillRenderCanvases()，所以实际上还是Canvas.SendWillRenderCanvases()的开销。Canvas.SendWillRenderCanvases()开销高，是因为用Scale改为0的方式会清除顶点信息，在Scale改回1的时候还是需要重新创建顶点信息，开销肯定还是很高的，所以不推荐用Scale改为0来隐藏复杂的UI界面。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;uistaticstatic--&quot;&gt;UI界面勾选Static是会节省一部分性能，但是如果我移动了某个设置为Static界面下的元素，这个界面还算是静态的么? 还是等运动的元素停下来后的界面才算静态的? 如果是这样，是不是我全部界面都设置静态就好了?&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果题主所指的“勾选static”是指GameObject右上角的Static框，这个Static和UI是无关的，不会对UI有影响；如果是NGUI的UIPanel上的Static选项，勾上之后，子节点中的UI元素是无法移动的（即使改了Transform，其图标位置也不会更新）。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;工具&lt;/h2&gt;
-&lt;h4 id=&quot;profilerassetsscene-memorymeshscene-memorymesh2meshcombinedmeshroot-sceneassetsmesh100meshmeshassetsmeshreferenced-byhierarchy&quot;&gt;Profiler里Assets和Scene Memory的区别是什么？比如Mesh这一项，在Scene Memory的Mesh中看到的只有2个合并的Mesh：CombinedMesh(root: scene)，在Assets的Mesh里看到的有100多个，包括场景里的非合并Mesh，动态加载出来的角色Mesh等。并且Assets的Mesh中的某些点击后选择右边的Referenced By，在Hierarchy里会自动选中场景中的物体，怎么看也不像是单纯的模板，而是实例化出来的东西。&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F2.png&quot; alt=&quot;image&quot; /&gt;
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Resources.Load/Assetbundle.Load出来的ParticleSystem都是放Assets下的，可以认为是模板资源，并不在场景里。Instantiate出来的放在Scene Memory下，是出现在场景里的。&lt;/strong&gt; 所以两边都有是正常的。&lt;/li&gt;
-  &lt;li&gt;在Unity里资源至少分为两类：
-    &lt;ul&gt;
-      &lt;li&gt;一类是可以被引用的，比如Mesh、Texture，如果要渲染多个相同的Mesh，并不需要对Mesh实例化，只需要在场景里多创建几份MeshRenderer/MeshFilter去引用它即可。所以Assets下的Mesh不应该被认为是实例化出来的东西，这些Mesh仅仅是通过AsssetBundle.Load/Resources.Load加载出来的，只是被场景里的东西引用了；&lt;/li&gt;
-      &lt;li&gt;但SceneMemory下的Mesh通常是通过new Mesh或者Instantiate创建的，这部分可以说是实例化出来的了，另外像CombinedMesh是Unity自己创建的，也可以算是实例化的。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;另一类是不可被引用的，通常是组件资源，比如ParticleSystem，如果要渲染多个相同的ParticleSystem，就需要实例化多份出来，ParticleSystem的模板在Assets下，而实例化出来的在SceneMemory下。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;editor-mono672mb515mbgccollectmono&quot;&gt;我在Editor下测试， 前一帧Mono还是67.2MB，下一帧突然自己掉到了51.5MB。然而并没有gc.collect()调用，这Mono是为什么减少？因为有不明原因的减少，所以担心也有不明原因的增多。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果题主是在Editor测的，这个Mono的回落就正常了。Editor本身（渲染窗口，处理交互事件等）就会造成内存分配，同时也会触发GC。&lt;/li&gt;
-  &lt;li&gt;但默认情况下，Editor本身的开销在Profiler里是看不到的，除非题主点击一下“Profile Editor”。 点击之后，就可以看到Editor本身函数的耗时和GC的触发了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;模型&amp;amp;动画&lt;/h2&gt;
-&lt;h4 id=&quot;hierarchyanimation-windowmissingcurve&quot;&gt;场景中放置一动画物体，原先正常进行动画，修改了物体Hierarchy某结点的名称，然后动画就异常了。打开Animation Window，发现动画曲线变为Missing。把物体名称改回后又恢复正常。我的疑问是动画Curve是与物体名称绑定的吗？如果是，如何修改动画物体的名称呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;anim文件里有节点路径的：
-比如：curve: serializedVersion: 2 m_Curve:
-    &lt;ul&gt;
-      &lt;li&gt;time: 0 value: {x: -0.187, y: -0.003, z: 0.062} inSlope: {x: 0, y: 0, z: 0} outSlope: {x: 0, y: 0, z: 0} tangentMode: 0&lt;/li&gt;
-      &lt;li&gt;time: 0.93333334 value: {x: -0.187, y: -0.003, z: 0.062} inSlope: {x: 0, y: 0, z: 0} outSlope: {x: 0, y: 0, z: 0} tangentMode: 0 m_PreInfinity: 2 m_PostInfinity: 2 m_RotationOrder: 4 path: Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 R Clavicle/Bip001 R UpperArm/Bip001 R Forearm/Bip001 R Hand/Bip001 R Finger1&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Animation Curve与动画物体是名称绑定的（名称包含其Hierarchy的Path，除去Root）；&lt;/li&gt;
-  &lt;li&gt;Animation Window中可以修改Curve的绑定名，可以将其更新为改名后物体的Path；&lt;/li&gt;
-  &lt;li&gt;如李先生所说Animation文件包含结点路径，可以“ForceText”后用文本工具来修改，比较方便；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;平时研究动画系统的时候有几个不太明白的问题：&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;ol&gt;
-    &lt;li&gt;BlendTree（不论1D或者2D） 在采样的时候，如果BlendTree内的AnimationClip的长度不同，那么输出的动画长度是可变的。不同的BlendTree参数会导致不同的BlendTree输出的动画长度。问题是BlendTree最终输出的动画长度是如何计算出来的？采样AnimationClip的时候，对于动画的TimeScale做了什么调整？ 图例：run是一个BlendTree2D，当它的参数Speed=300时，和Speed=900时的长度是不一样的。
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_78%2F2.png&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;2.Unity的BlendTree2D是如何根据两个动画参数确定该在哪几个AnimationClip中采样？这些AnimationClip各自的权重是多少？ 图例：当Direction=-19，Speed=777的时候，黄箭头所指的动画实际上是由红箭头所指的4个动画混合而成的。那么混合权重分别是多少？
-&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_78%2F3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;对于不同的Clip动画数据进行Blend时，Unity会把所有Clip的时间都归一化（展开为相同长度）后，再根据各个Clip的权重进行加权平均。&lt;/li&gt;
-  &lt;li&gt;Blend后的时间长度与各Clip的权重相关，时间更接近权重大的Clip的时间（近似时间长度的加权平均）。BlendTree参数值用来决定当前Blend各Clip的权重值，参数不同导致权重不同，因此时间也就不同。参数值如何决定哪些Clip进行Blend，其权重则跟不同Clip的参数threshhold相关。&lt;/li&gt;
-  &lt;li&gt;2D时在参数空间中根据（x,y)的坐标位置对临近的Clips进行插值。不同2D Blend 类型使用的插值方法不同，而插值方法的实现也就决定了各Clip的权重。对于插值算法可以参考这里提供的pdf：
-http://answers.unity3d.com/questions/1206428/how-weights-of-2d-blending-are-calculated.html&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;性能综合&lt;/h2&gt;
-&lt;h4 id=&quot;scriptmapperstandardshaderstandardshader&quot;&gt;如下图，不理解ScriptMapper具体是什么，为什么会引用StandardShader，有什么办法可以彻底把StandardShader从内存里移除呢？&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FTechSharing_75%2F1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;这说明是有代码在索引这个Shader。建议题主尝试以下方法来定位Standard Shader的具体引用：
-    &lt;ul&gt;
-      &lt;li&gt;在游戏运行时遍历所有的GameObject或者Material，然后获取其所使用的Shader信息，查找跟“Standard”名称相对应的Shader，然后就可以定位它是出自哪个Material或GameObject。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;上述方法应该适用于大部分情况，但无法适用于以下情况：
-    &lt;ul&gt;
-      &lt;li&gt;Shader被加载后直接被缓存在代码脚本中；&lt;/li&gt;
-      &lt;li&gt;Shader是通过AssetBundle.LoadAll加载的；&lt;/li&gt;
-      &lt;li&gt;Shader通过Preload Shader加载的。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;unitygameobjectactiveactiveuwaunityactive&quot;&gt;Unity对GameObject.active()这个底层具体做了什么？因为在优化项目的时候看见有些界面active()这个函数造成的开销比较高，我采取的办法是移除摄像机的范围，这是参照UWA以前文章找到的办法，但是我还是想知道Unity对Active底层具体做了哪些操作，否则会有点困惑。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;至少SetActive后，如果GameObject被激活，那么会调用该GameObject和所有子GameObject上的所有组件的OnEnable函数。而各种不同的UI组件的OnEnable中也有各种不同的操作。 如果题主希望深入研究下，可以看一下NGUI或者UGUI的源码，OnEnable具体做了什么都可以看到。同时，针对UI界面而言，还会在同一帧里触发其他的相关函数，出现后续的开销，如UGUI里的SendWillRenderCanvases和NGUI里的UIPanel.LateUpdate。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Fri, 22 Dec 2017 16:49:12 +0800</pubDate>
-        <link>https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</link>
-        <guid isPermaLink="true">https://caihua.tech/2017/12/22/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B9%9D%E5%91%A8/</guid>
-        
-        <category>UWA</category>
         
         
       </item>
