@@ -173,6 +173,50 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：基础
+        </h2>
+        
+        <div class="post-content-preview">
+            1.类
+
+
+  带指针的类
+  不带指针的类：大多数不需要析构函数
+
+
+2.定义头文件
+
+
+  防御式代码，避免多次include时重复导入
+
+
+#ifndef _COMPLEX_
+#define _COMPLEX_
+
+...
+
+#endif
+
+
+
+
+  头文件布局:
+    
+      前置声明
+      类声明
+        
+          class head class ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 1, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/12/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%8D%81%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第二十周
@@ -354,28 +398,6 @@ Gamma校正的由来和计算方式
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十六周
-        </h2>
-        
-        <div class="post-content-preview">
-            Texture
-
-如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？
-
-  使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；
-  当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；
-  在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -488,7 +510,7 @@ Gamma校正的由来和计算方式
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="2">
+                                <a href="/tags/#并发模型" title="并发模型" rel="3">
                                     并发模型
                                 </a>
                             

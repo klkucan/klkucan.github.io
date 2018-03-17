@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Gamma校正与线性空间 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>七周七并发模式：Actor - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
+    <link rel="canonical" href="https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
+                        <a class="tag" href="/tags/#并发模型" title="并发模型">并发模型</a>
                         
                     </div>
-                    <h1>Gamma校正与线性空间</h1>
+                    <h1>七周七并发模式：Actor</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on November 30, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on March 15, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,72 +187,107 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="section">前言</h4>
+				<h4 id="actor">什么是Actor</h4>
 <ul>
-  <li>近期看了<a href="https://blog.uwa4d.com/archives/1882.html">一篇文章</a>，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。</li>
+  <li>在本书提到的观点中，认为Actor是一个线程或者进程。在这个线程或者进程中执行了一段代码（函数)，这个代码可以包含状态（数据）也可以不包含。</li>
 </ul>
 
-<h4 id="gamma">Gamma校正的由来和计算方式</h4>
+<blockquote>
+  <p>所谓Actor模型是Sequential Processes和Functions transforming data values两者的结合，可以理解为是综合了过程式计算和函数式计算的一个计算模型。</p>
+</blockquote>
+
+<blockquote>
+  <p>一个Actor会把接收到的消息映射为三个部分，传给其他Actor的消息，一个新的行为（用来处理下一个消息），和创造一些新的Actors。</p>
+</blockquote>
+
+<h4 id="actor-1">为什么会出现Actor</h4>
+
 <ul>
-  <li>所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为<code class="highlighter-rouge">Lout = pow(Lin, 0.45)  </code>，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.732。从下图可以看到绿色的线就是经过校正后的亮度曲线。在这个坐标系中，x轴为原始亮度，y轴是校正后的数值。</li>
+  <li>在本书的第二章谈到了线程和锁，其中提到了这个并发模式存在的一些问题，比如竞争共享资源所导致的阻塞、多重锁导致的死锁等问题。</li>
+  <li>Actor正是为了解决这些问题而产生的。从定义看actor就是多线程，只不过它避免了对于共享资源的并发调用。一个actor只使用自己的资源，而不是直接使用共享资源，它作用单一，顺序执行。不同的Actor之间使用message来传递数据。</li>
+  <li>PS：这里实际上并不存在真的不使用锁。只要存在多个actor共同访问一个数据对象就存在锁的问题，只不过可能无需开发者自己去写相关的代码。因此书中在提到actor缺点时也提到了可能出现死锁的问题。</li>
+  <li>PS2：在书中最后使用Actor来统计wiki的例子里，实际上是将wiki的页面进行拆分，然后不同的page用不同的Actor开统计。</li>
 </ul>
 
-<p><img src="https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f41b427d4bdc48f225b5d/1465860589637/A+graph+of+pow%28x%2C+gamma%29?format=750w" alt="image" /></p>
+<h4 id="section">消息和信箱</h4>
 
 <ul>
-  <li>如果以原始亮度0.5作为一个分界线，很明显的看出来0.5之前的亮度在校正后占据了70%（0.732)以上的数据空间。这也是为何会有gamma校正的根本原因，即：肉眼对较暗区域的变化更为敏感，而0.5为灰度的界限，原始亮度小于0.5的部分可以认为是较暗的区域。因此将0.5之前的亮度经过校正，使得其结果的范围变大到0-0.732，这就可以进一步的放大黑暗区域的范围，从而使得照片更加真实。</li>
-  <li>但是从这个曲线我们看到，除了0和1以外的像素的亮度整体的变大了，因此就出现了下图的中左边图中的现象，即经过0.45的gamma校正后图片变亮。但是为何我们最后在电视或者电脑屏幕上看到的图像基本和肉眼看到的真实亮度一样呢， 是因为显示器的硬件也会做一次gamma校正，而这个指数是2.2，即<code class="highlighter-rouge">pow(0.732，2.2） ≈ 0.5035</code> ，和0.5有数值上的差异但是基本接近。这只是个巧合。</li>
-  <li>同理，如果是原始像素的图片不经过gamma校正而直接输出到显示器，其结果就是下图中右边图的结果，也就是亮度整体变暗。这个和上图中蓝色曲线的结果也相同。计算方法也是幂计算。</li>
+  <li>因为actor模型没有提供直接回复消息的机制，所以将发送进程的标识符包含在消息中。通过这个机制，消息的接收者可以回复消息。</li>
+  <li>异步地发送消息是用actor模型编程的重要特性之一。消息并不是直接发送到一个actor，而是发送到一个信箱（mailbox）。</li>
+  <li>每个Actor都有一个信箱</li>
 </ul>
 
-<p><img src="https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f4222e321408871d71230/1465860711911/Images+representing+various+gamma+values?format=1000w" alt="image" /></p>
+<h4 id="section-1">分布式</h4>
 
-<h4 id="unity">导入unity中的图片</h4>
 <ul>
-  <li>基本上所有的绘图软件在输出的结果上都是做过gamma校正的，否则在电脑屏幕上看到的就是偏暗。</li>
-  <li>因此在导入到unity后，在作用到shader时也是gamma校正后的图片。</li>
-  <li>当然我们也可以在绘图软件中就输出不经过gamma校正的图，这个后面说。</li>
+  <li>与其说Actor是为了并发，不如说Actor是为了分布式。</li>
+  <li>书中使用Elixir语言进行了demo的编写。在不同的设备或者操作系统中（这里可以是一个设备上有多个不同的虚拟机，也就是逻辑意义上的一个主机），不同的Actor可以进行通信，可以协作来处理一些数据。整个过程是异步的，每个Actor因为都看上去是无状态的，或者说即使有状态也是内部的。所以每个Actor的运行并不会影响其它Actor。</li>
 </ul>
 
-<h4 id="unity-1">unity中的颜色空间</h4>
+<h4 id="actor-2">Actor的实现</h4>
+
 <ul>
-  <li>unity的颜色空间就是gamma或者liner space</li>
-  <li>gamma选项下默认unity在shader中直接用gamma校正后的图片进行光照计算，然后输出到现实设备时硬件会做一次gamma校正，最终输出结果。</li>
-  <li>线性空间选项中，unity shader会对输入的图片进行一次gamma校正（2.2），得到真正的亮度值后进行光照计算。最后在进入颜色缓存区之前做一次gamma校正（0.45），然后图像进入显示设备，再次进行gamma校正（2.2）。</li>
-  <li>两者在最终结果的比对可以参考下图</li>
+  <li>这个是我比较郁闷的地方，因为书中使用了Elixir这个我完全不熟悉的语言，因此我对于代码也是看个大概，具体某些语法和函数为什么这么写也是一知半解。</li>
+  <li>但是从demo code来看，也是创建纤程（这个概念个人认为和golang里面的应该是一样的）来实现actor，而一个actor本质就是一个module，里面包含了一些函数用于处理逻辑，收发消息。</li>
+  <li>对于Actor可以使用缓存机制来统一进行管理。这样的好处还有可以控制错误的处理。</li>
 </ul>
 
-<p><img src="https://static1.squarespace.com/static/525ed7ade4b0924d2f499223/t/575f42e327d4bdc48f2261e4/1465860851928/An+image+comparing+gamma+and+linear+pipelines?format=1000w" alt="image" /></p>
+<h4 id="actor-3">Actor的错误处理</h4>
 
 <ul>
-  <li>可以看出来线性空间下产生的最终渲染效果比较接近于真实。</li>
-  <li>我们以一个亮度为1的点为例进行两种模式的计算，对比下结果，假设这个点的法线与点到光源的向量的夹角为60°。根据Lambert公式，此时该点的亮度（用亮度代替像素值）为Clight * Cdiffuse * max(0, dot(n,I))，为了简化计算我们认为Clight也就是光照颜色也是1， n和I都是1。
+  <li>书中对于Actor的错误处理有这样一个观点：任其崩溃。</li>
+  <li>这个观点得益于Actor的独立性，在一个Actor出现异常后，以为它对于某些消息的处理是失败的，因此消息队列或者信箱可以将没有处理的消息交给其它的Actor来处理。</li>
+  <li>出现异常的Actor什么我们可以不做任何的处理。</li>
+  <li>不过如果出现Actor一启动就崩溃了，那么也不能无限制的创建新的Actor。因此书中提到了Actor创建频率的问题，过高的时候就要考虑错误的问题了。</li>
+  <li>对于Actor的错误处理建议的做法是创建一个错误处理内核，这就有一个要求了：<strong><em>那么该系统正确运行的前提是其错误处理内核必须正确运行</em></strong>。</li>
+  <li>如何保证错误处理内核正确运行呢？这需要内核是<code class="highlighter-rouge">顶层的管理者</code>，书中是使用actor的缓存来实现的。</li>
+</ul>
+
+<p><img src="https://c1.staticflickr.com/1/791/39040480120_d12837240a_z.jpg" alt="image" /></p>
+
+<ul>
+  <li>同时在错误处理时还要保证消息的必达性：
     <ul>
-      <li>gamma下原始亮度是1的点，Cdeffuse为1，60°的点积是0.5，计算出来的颜色是0.5，输出到屏幕经过gamma校正（2.2）后值为0.218。</li>
-      <li>线性空间下线移除gamma校正，亮度1的移除后结果也是1，60°的光照结果也是0.5，输出到颜色缓冲区线做一次校正（0.45），到屏幕做一次校正（2.2），期结果应该是0.5035。</li>
+      <li>没有异常发生，消息一定能被送达并被处理</li>
+      <li>如果某个环节出现异常，异常一定会通知到使用者（假设使用者已经连接到或正在管理发生异常的进程）</li>
     </ul>
   </li>
-  <li>可以看出来两者在最后的结果上，线性空间的结果比较接近真实的60°情况下的亮度，这个真实值就是0.5。</li>
 </ul>
 
-<h4 id="section-1">线性空间工作流</h4>
+<h4 id="actor-4">Actor的优势和缺点</h4>
 
 <ul>
-  <li>现在unity中移动平台已经支持线性空间，只是需要OpenGL ES3。那么如果使用线性空间就需要一套类似PBR的流程。</li>
-  <li>首先就是纹理图是移除了gamma校正的。</li>
-  <li>在烘焙光照贴图的时候也要移除gamma校正。</li>
-  <li>后期处理的时候倒是不用额外做什么，因为unity已经对颜色值做了处理。</li>
+  <li>从前面的讲述来看，其优点是：
+    <ul>
+      <li>消息的传输和封装性很好</li>
+      <li>容错能力比较好</li>
+      <li>天然支持分布式。</li>
+    </ul>
+  </li>
+  <li>而缺点是：
+    <ul>
+      <li>同样有死锁问题</li>
+      <li>信箱溢出（这个可能是指的actor如果处理不够及时，mailbox可能会数据量过大)</li>
+      <li>actor本身没有直接提供并发，需要通过并发技术来构造并发方案。</li>
+      <li>由于多个actor并不共享状态，仅通过消息传递来进行交流，所以不太适合实施细粒度的并行。</li>
+    </ul>
+  </li>
 </ul>
 
-<h4 id="section-2">引用</h4>
+<h4 id="section-2">吐槽</h4>
+
 <ul>
-  <li><a href="http://www.kinematicsoup.com/news/2016/6/15/gamma-and-linear-space-what-they-are-how-they-differ">GAMMA AND LINEAR SPACE - WHAT THEY ARE AND HOW THEY DIFFER</a></li>
+  <li>这本书是好书，不过其使用的编程语言确实比较丰富，导致我看代码时很痛苦。</li>
+  <li>像是OTP部分完全是依赖于某个编程语言来写的，对于其真正的机制我觉得描述的不够清楚。</li>
 </ul>
 
-<h4 id="ps">PS</h4>
+<h4 id="section-3">参考</h4>
 <ul>
-  <li>开头提到的lightmap偏暗的问题，在2017.2.0p1中移动平台lightmap处理LDR时已经加入了是否是gamma的判定，然后根据结果会对LDR的亮度进行不同的补偿。</li>
+  <li><a href="https://www.zhihu.com/question/37792465/answer/73537924">为什么我觉得 Actor很难用？</a></li>
+  <li><a href="https://www.zhihu.com/question/266384753">如果理解并行计算中的参与者模式（Actor Model）？</a></li>
+  <li>PS：在这里说下C#的进程间通信实现，可以通过pipe来实现。可以参考：https://gist.github.com/klkucan/b76c85c77fdfcde51aa4eeb1c6f7cd0b</li>
 </ul>
+
 
 
                 <hr>
@@ -263,19 +298,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/" data-toggle="tooltip" data-placement="top" title="Unity Android二次开发经(血)验(泪)谈(史)">
+                        <a href="/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/" data-toggle="tooltip" data-placement="top" title="使用整体性学习方法来提高学习效率">
                         Previous<br>
-                        <span>Unity Android二次开发经(血)验(泪)谈(史)</span>
+                        <span>使用整体性学习方法来提高学习效率</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十七周">
-                        Next<br>
-                        <span>每天一点UWA：第十七周</span>
-                        </a>
-                    </li>
                     
                 </ul>
 

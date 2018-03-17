@@ -5,9 +5,122 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 20 Feb 2018 14:41:05 +0800</pubDate>
-    <lastBuildDate>Tue, 20 Feb 2018 14:41:05 +0800</lastBuildDate>
+    <pubDate>Sat, 17 Mar 2018 09:27:58 +0800</pubDate>
+    <lastBuildDate>Sat, 17 Mar 2018 09:27:58 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>七周七并发模式：Actor</title>
+        <description>&lt;h4 id=&quot;actor&quot;&gt;什么是Actor&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在本书提到的观点中，认为Actor是一个线程或者进程。在这个线程或者进程中执行了一段代码（函数)，这个代码可以包含状态（数据）也可以不包含。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;所谓Actor模型是Sequential Processes和Functions transforming data values两者的结合，可以理解为是综合了过程式计算和函数式计算的一个计算模型。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;一个Actor会把接收到的消息映射为三个部分，传给其他Actor的消息，一个新的行为（用来处理下一个消息），和创造一些新的Actors。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;actor-1&quot;&gt;为什么会出现Actor&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在本书的第二章谈到了线程和锁，其中提到了这个并发模式存在的一些问题，比如竞争共享资源所导致的阻塞、多重锁导致的死锁等问题。&lt;/li&gt;
+  &lt;li&gt;Actor正是为了解决这些问题而产生的。从定义看actor就是多线程，只不过它避免了对于共享资源的并发调用。一个actor只使用自己的资源，而不是直接使用共享资源，它作用单一，顺序执行。不同的Actor之间使用message来传递数据。&lt;/li&gt;
+  &lt;li&gt;PS：这里实际上并不存在真的不使用锁。只要存在多个actor共同访问一个数据对象就存在锁的问题，只不过可能无需开发者自己去写相关的代码。因此书中在提到actor缺点时也提到了可能出现死锁的问题。&lt;/li&gt;
+  &lt;li&gt;PS2：在书中最后使用Actor来统计wiki的例子里，实际上是将wiki的页面进行拆分，然后不同的page用不同的Actor开统计。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;消息和信箱&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;因为actor模型没有提供直接回复消息的机制，所以将发送进程的标识符包含在消息中。通过这个机制，消息的接收者可以回复消息。&lt;/li&gt;
+  &lt;li&gt;异步地发送消息是用actor模型编程的重要特性之一。消息并不是直接发送到一个actor，而是发送到一个信箱（mailbox）。&lt;/li&gt;
+  &lt;li&gt;每个Actor都有一个信箱&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;分布式&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;与其说Actor是为了并发，不如说Actor是为了分布式。&lt;/li&gt;
+  &lt;li&gt;书中使用Elixir语言进行了demo的编写。在不同的设备或者操作系统中（这里可以是一个设备上有多个不同的虚拟机，也就是逻辑意义上的一个主机），不同的Actor可以进行通信，可以协作来处理一些数据。整个过程是异步的，每个Actor因为都看上去是无状态的，或者说即使有状态也是内部的。所以每个Actor的运行并不会影响其它Actor。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;actor-2&quot;&gt;Actor的实现&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个是我比较郁闷的地方，因为书中使用了Elixir这个我完全不熟悉的语言，因此我对于代码也是看个大概，具体某些语法和函数为什么这么写也是一知半解。&lt;/li&gt;
+  &lt;li&gt;但是从demo code来看，也是创建纤程（这个概念个人认为和golang里面的应该是一样的）来实现actor，而一个actor本质就是一个module，里面包含了一些函数用于处理逻辑，收发消息。&lt;/li&gt;
+  &lt;li&gt;对于Actor可以使用缓存机制来统一进行管理。这样的好处还有可以控制错误的处理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;actor-3&quot;&gt;Actor的错误处理&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;书中对于Actor的错误处理有这样一个观点：任其崩溃。&lt;/li&gt;
+  &lt;li&gt;这个观点得益于Actor的独立性，在一个Actor出现异常后，以为它对于某些消息的处理是失败的，因此消息队列或者信箱可以将没有处理的消息交给其它的Actor来处理。&lt;/li&gt;
+  &lt;li&gt;出现异常的Actor什么我们可以不做任何的处理。&lt;/li&gt;
+  &lt;li&gt;不过如果出现Actor一启动就崩溃了，那么也不能无限制的创建新的Actor。因此书中提到了Actor创建频率的问题，过高的时候就要考虑错误的问题了。&lt;/li&gt;
+  &lt;li&gt;对于Actor的错误处理建议的做法是创建一个错误处理内核，这就有一个要求了：&lt;strong&gt;&lt;em&gt;那么该系统正确运行的前提是其错误处理内核必须正确运行&lt;/em&gt;&lt;/strong&gt;。&lt;/li&gt;
+  &lt;li&gt;如何保证错误处理内核正确运行呢？这需要内核是&lt;code class=&quot;highlighter-rouge&quot;&gt;顶层的管理者&lt;/code&gt;，书中是使用actor的缓存来实现的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/791/39040480120_d12837240a_z.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;同时在错误处理时还要保证消息的必达性：
+    &lt;ul&gt;
+      &lt;li&gt;没有异常发生，消息一定能被送达并被处理&lt;/li&gt;
+      &lt;li&gt;如果某个环节出现异常，异常一定会通知到使用者（假设使用者已经连接到或正在管理发生异常的进程）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;actor-4&quot;&gt;Actor的优势和缺点&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;从前面的讲述来看，其优点是：
+    &lt;ul&gt;
+      &lt;li&gt;消息的传输和封装性很好&lt;/li&gt;
+      &lt;li&gt;容错能力比较好&lt;/li&gt;
+      &lt;li&gt;天然支持分布式。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;而缺点是：
+    &lt;ul&gt;
+      &lt;li&gt;同样有死锁问题&lt;/li&gt;
+      &lt;li&gt;信箱溢出（这个可能是指的actor如果处理不够及时，mailbox可能会数据量过大)&lt;/li&gt;
+      &lt;li&gt;actor本身没有直接提供并发，需要通过并发技术来构造并发方案。&lt;/li&gt;
+      &lt;li&gt;由于多个actor并不共享状态，仅通过消息传递来进行交流，所以不太适合实施细粒度的并行。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;吐槽&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这本书是好书，不过其使用的编程语言确实比较丰富，导致我看代码时很痛苦。&lt;/li&gt;
+  &lt;li&gt;像是OTP部分完全是依赖于某个编程语言来写的，对于其真正的机制我觉得描述的不够清楚。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;参考&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/37792465/answer/73537924&quot;&gt;为什么我觉得 Actor很难用？&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/266384753&quot;&gt;如果理解并行计算中的参与者模式（Actor Model）？&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;PS：在这里说下C#的进程间通信实现，可以通过pipe来实现。可以参考：https://gist.github.com/klkucan/b76c85c77fdfcde51aa4eeb1c6f7cd0b&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 15 Mar 2018 22:47:43 +0800</pubDate>
+        <link>https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/</guid>
+        
+        <category>并发模型</category>
+        
+        
+      </item>
     
       <item>
         <title>使用整体性学习方法来提高学习效率</title>
@@ -909,188 +1022,6 @@ double d = a + 4;
         <pubDate>Tue, 02 Jan 2018 23:42:45 +0800</pubDate>
         <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
         <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid>
-        
-        <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：基础</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;1.类&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;带指针的类&lt;/li&gt;
-  &lt;li&gt;不带指针的类：大多数不需要析构函数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;2.定义头文件&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;防御式代码，避免多次include时重复导入&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#ifndef _COMPLEX_
-#define _COMPLEX_
-
-...
-
-#endif
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;头文件布局:
-    &lt;ul&gt;
-      &lt;li&gt;前置声明&lt;/li&gt;
-      &lt;li&gt;类声明
-        &lt;ul&gt;
-          &lt;li&gt;class head &lt;code class=&quot;highlighter-rouge&quot;&gt;class Complex&lt;/code&gt;&lt;/li&gt;
-          &lt;li&gt;class body : 定义数据和函数&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;类定义&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
-{
-Public:
-    A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    operator double() const
-    {
-        return (double)(x/y);
-    }
-    
-private:
-    int x;
-    int y;
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;3.函数&lt;/h2&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;构造函数&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;默认参数&lt;/li&gt;
-  &lt;li&gt;initialization list，只有构造函数有&lt;/li&gt;
-  &lt;li&gt;用法：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;如果构造函数的参数是类型本身，那么叫拷贝构造。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;只要类带指针必须有拷贝构造函数。PS: 同时要有拷贝赋值函数。&lt;/strong&gt; 编译器会默认生成，但是需要根据情况自己写。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;inline&quot;&gt;inline函数：&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;当一个函数在class body内定义并且实现了功能，则会自动成为inline函数。&lt;/li&gt;
-  &lt;li&gt;在外部实现并且加上inline关键字的函数，只是作为inline函数的一个候选人，是否成为一个inline函数完全看编译器会不会这样来编译它。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;函数重载&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;CPP中重载函数在代码中同名，但是在编译后不同名。&lt;/li&gt;
-  &lt;li&gt;如果出现一个函数&lt;code class=&quot;highlighter-rouge&quot;&gt;foo()&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;foo(int i = 0)&lt;/code&gt;这样的情况，实际上是不行的，因为编译器认为在调用的无参版本时两个函数都可以，这样就出现了错误。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;const-member-functions-&quot;&gt;const member functions (常量成员函数)&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;以下面的函数为例，参数括号后加上const修饰符，则说明这个函数是不改变对象中数据的值。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; double real () const { return re; }
- 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在函数的使用上可能与如下的方式，说明我生成的对象c1中的数据是不希望修改的，那么如果real函数中没有const的话编译时会报错。因为如果没有const，说明real函数可能会修改对象中的数据的值，但是我们定义的c1又是一个不会被修改的，那么就有矛盾了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; const complex c1()
- c1.real()
- 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;passreturn-by-value-vs-passreturn-by-reference-to-const&quot;&gt;pass（return） &lt;em&gt;by value&lt;/em&gt; vs pass（return） &lt;em&gt;by reference&lt;/em&gt; (to const)&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;这个符号在c中是取地址的操作，在C++中也有这个用发，但是多了一个用法。比如如下的代码中：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;complex&amp;amp; operator += (const complex&amp;amp;);
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;ul&gt;
-  &lt;li&gt;参数类型后面加&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;说明这个参数是按引用传递，本质就是指针。如果不加const修饰，则函数中可以修改参数的值，如果加了则说明这个参数就是按指针传递给函数使用，但是不能修改其值。&lt;/li&gt;
-  &lt;li&gt;通常来说尽可能用按引用传递，因为毕竟指针只有4个byte，对于多数情况来说是比较快速和省资源的（栈上的数据少）。但是如果遇到传递的值是char的，也可以安值传递。&lt;/li&gt;
-  &lt;li&gt;传递者无需知道接受者是以reference的形式接收。传递者把对象传递个函数，但是函数是使用值形式的参数还是引用形式的参数完全看函数的定义，但是调用者无需关心。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;value&quot;&gt;何时使用value来传递呢？&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果函数的返回值是函数内部的一个local object就需要安值传递。因为在函数结束后对象就从栈中销毁了，此时用引用的话在获取值的时候，对象已经没了。&lt;/li&gt;
-  &lt;li&gt;++&lt;strong&gt;所以是返回引用还是值，根本上要看这个返回值内存是在函数内还是函数外。&lt;/strong&gt;++&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;友元函数&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;加&lt;code class=&quot;highlighter-rouge&quot;&gt;friend&lt;/code&gt;修饰符，只是告诉类某个函数是友元的，可以直接访问private的变量。&lt;/li&gt;
-  &lt;li&gt;++&lt;strong&gt;相同class的各个对象互为friend（友元）&lt;/strong&gt;++&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int foo(const complex&amp;amp; param)
-{
-    return param.re + param.im;
-}
-
-...
-
-complex c1(1,2);
-complex c2;
-
-c2.foo(c1);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;section-6&quot;&gt;静态函数&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;与C#不同的是CPP中静态函数可以通过对象来调用，同时当有也可以用类+函数名的方式调用。即&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class::StaticFuntion();
-
-Class c1;
-c1.StaticFunction();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;section-7&quot;&gt;总结&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;数据一定放在private里面&lt;/li&gt;
-  &lt;li&gt;参数和返回值尽可能用reference来传递，加不加const根据实际情况&lt;/li&gt;
-  &lt;li&gt;class body中函数如果没有修改数据则加const&lt;/li&gt;
-  &lt;li&gt;构造函数尽量用初始列表&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 01 Jan 2018 23:40:45 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/</guid>
         
         <category>CPP</category>
         
