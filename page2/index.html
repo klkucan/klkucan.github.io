@@ -173,6 +173,92 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：偏特化
+        </h2>
+        
+        <div class="post-content-preview">
+            什么是偏特化
+
+  泛化（泛型）的反义
+  分为个数的偏特化和范围的偏特化
+
+
+数量偏特化
+
+  举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。
+
+
+template&lt;typename T, typename U&gt...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：类型转换
+        </h2>
+        
+        <div class="post-content-preview">
+            自己转换为别的类型
+
+  做法：使用operator关键字，无需返回值，函数名称就是返回值。如有需要加上const修饰。
+
+
+Class A
+{
+Public:
+    A(int arg1, int arg2) 
+     : x(arg1), y(arg2) {}
+    
+    operator double() const
+    {
+        return (double)...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：面向对象
+        </h2>
+        
+        <div class="post-content-preview">
+            Composition
+
+  组合
+  其实就是一个类（Container）中包含了另一个类的实例（Component），注意是实例。
+
+
+delegate
+
+  组合的一种
+  但是包含的是一个类的引用(reference)。
+
+
+组合的使用
+
+  用这样的方式可以做出adapter模式，比如A功能很多但是如果只要暴露出一部分，可以用B来包含A，然后只在B中定义一些方法，这些方法都是直接调...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/01/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E7%A1%80/">
         <h2 class="post-title">
             侯捷C++学习笔记：基础
@@ -333,71 +419,6 @@
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
-        <h2 class="post-title">
-            Gamma校正与线性空间
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  近期看了一篇文章，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。
-
-
-Gamma校正的由来和计算方式
-
-  所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为Lout = pow(Lin, 0.45)  ，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.73...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 30, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/">
-        <h2 class="post-title">
-            Unity Android二次开发经(血)验(泪)谈(史)
-        </h2>
-        
-        <div class="post-content-preview">
-            主要参考的是这篇文章，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。
-
-准备工作
-
-  安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。
-  AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。
-  从AS上可以下载到的build-tool是27，但是最新的tools是un...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 20, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/19/PHP%E7%9A%84OOP/">
-        <h2 class="post-title">
-            PHP的OOP
-        </h2>
-        
-        <div class="post-content-preview">
-            
-  在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。
-  类中用var定义变量，var $name，使用方式$this-&gt;name
-  构造函数function __construct()，析构函数function __destruct()
-  继承class Child_Site extend...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 19, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -456,7 +477,7 @@ Gamma校正的由来和计算方式
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="15">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             

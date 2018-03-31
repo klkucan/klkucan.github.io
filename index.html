@@ -173,6 +173,83 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/">
+        <h2 class="post-title">
+            Unity ECS：基本组件和功能
+        </h2>
+        
+        <div class="post-content-preview">
+            ECS的组成
+Entity：
+
+  近似一个轻量级的GameObject对象。
+  内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。
+  可以添加和移除组件
+  具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。
+
+
+IComponentData和ISharedComponentData
+
+  前文说到过...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 27, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/03/23/Unity-ECS-C-Job-System/">
+        <h2 class="post-title">
+            Unity ECS：C# Job System
+        </h2>
+        
+        <div class="post-content-preview">
+            Job system
+Job system解决了什么问题
+
+  unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。
+
+
+Job System如何工作
+
+  在这个系统中真正...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 23, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/">
+        <h2 class="post-title">
+            Unity ECS：概述
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+
+  看来unity已经认识到现在编写代码的一些问题了：OO的模型、mono所编译的糟糕的机器码、GC和单线程。emmm
+  ECS的推出就是为了解决上面的问题，同时使用ECS是为了能够利用C# Job System和Burst compiler。job system是支持多线程的（( Ĭ ^ Ĭ )）
+
+
+ComponentSystem
+
+
+  在后面的文章中会说到ECS中的Com...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 22, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/">
         <h2 class="post-title">
             七周七并发模式：Actor
@@ -387,92 +464,6 @@ x = 6;
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/">
-        <h2 class="post-title">
-            侯捷C++学习笔记：偏特化
-        </h2>
-        
-        <div class="post-content-preview">
-            什么是偏特化
-
-  泛化（泛型）的反义
-  分为个数的偏特化和范围的偏特化
-
-
-数量偏特化
-
-  举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。
-
-
-template&lt;typename T, typename U&gt...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on January 2, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">
-        <h2 class="post-title">
-            侯捷C++学习笔记：类型转换
-        </h2>
-        
-        <div class="post-content-preview">
-            自己转换为别的类型
-
-  做法：使用operator关键字，无需返回值，函数名称就是返回值。如有需要加上const修饰。
-
-
-Class A
-{
-Public:
-    A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    operator double() const
-    {
-        return (double)...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on January 2, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">
-        <h2 class="post-title">
-            侯捷C++学习笔记：面向对象
-        </h2>
-        
-        <div class="post-content-preview">
-            Composition
-
-  组合
-  其实就是一个类（Container）中包含了另一个类的实例（Component），注意是实例。
-
-
-delegate
-
-  组合的一种
-  但是包含的是一个类的引用(reference)。
-
-
-组合的使用
-
-  用这样的方式可以做出adapter模式，比如A功能很多但是如果只要暴露出一部分，可以用B来包含A，然后只在B中定义一些方法，这些方法都是直接调...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on January 2, 2018
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -527,7 +518,7 @@ delegate
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="15">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             

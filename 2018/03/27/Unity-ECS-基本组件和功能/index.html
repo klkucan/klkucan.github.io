@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>AssetBundle学习笔记：3、AssetBundle内部结构 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>Unity ECS：基本组件和功能 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
+    <link rel="canonical" href="https://caihua.tech/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记">AssetBundle学习笔记</a>
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
                         
                     </div>
-                    <h1>AssetBundle学习笔记：3、AssetBundle内部结构</h1>
+                    <h1>Unity ECS：基本组件和功能</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on April 4, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on March 27, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,33 +187,121 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="section">本质</h4>
+				<h3 id="ecs">ECS的组成</h3>
+<h4 id="entity">Entity：</h4>
 <ul>
-  <li>AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。</li>
+  <li>近似一个轻量级的GameObject对象。</li>
+  <li>内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。</li>
+  <li>可以添加和移除组件</li>
+  <li>具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。</li>
 </ul>
 
-<h4 id="normal-assetbundle-structure">Normal AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png" alt="image" /></p>
-
+<h4 id="icomponentdataisharedcomponentdata">IComponentData和ISharedComponentData</h4>
 <ul>
-  <li>对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。<a href="https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html">具体代码参考引用的第二部分</a></li>
+  <li>前文说到过，ECS中的Component是一个结构体，里面只有数据。</li>
+  <li>这个结构体可以继承IComponentData或ISharedComponentData，从源码看这两个接口是空的。</li>
+  <li>IComponentData可以理解为不同entity之间不同的数据，而ISharedComponentData代表了相同的数据。其实从后者的名称上也可以看到一些蛛丝马迹。</li>
 </ul>
 
-<h4 id="streamed-scene-assetbundle-structure">Streamed scene AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureStreamedScene.png" alt="image" /></p>
+<h4 id="entityarchetype">EntityArchetype</h4>
+<ul>
+  <li>其实看到archetype（原型）这个词就大致明白这个类的作用了。</li>
+  <li>EntityArchetype是一个具有唯一性的ComponentType数组，它可以在创建entity时被作为参数使用，一个entity具有什么能力，完全在于它上面挂了什么Component，而多个component组成了一个能力组，这个就是EntityArchetype了。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// Using typeof to create an EntityArchetype from a set of components
+EntityArchetype archetype = EntityManager.CreateArchetype(typeof(MyComponentData), typeof(MySharedComponent));
+
+// Same API but slightly more efficient
+EntityArchetype archetype = EntityManager.CreateArchetype(ComponentType.Create&lt;MyComponentData&gt;(), ComponentType.Create&lt;MySharedComponent&gt;());
+
+// Create an Entity from an EntityArchetype
+var entity = EntityManager.CreateEntity(archetype);
+
+// Implicitly create an EntityArchetype for convenience
+var entity = EntityManager.CreateEntity(typeof(MyComponentData), typeof(MySharedComponent));
+</code></pre>
+</div>
+
+<h4 id="entitymanager">EntityManager</h4>
+<ul>
+  <li>一个管理所有EntityData、Archetype、SharedComponentData  和ComponentGroup的类。与ComponentSystems是同等地位的，看来unity ECS确实是一套新的系统。</li>
+  <li>从下面的代码中可以看出，实际上所有的Entity的创建、添加组件、查询live状态等操作的API都在这个类里面。应该是核心类。</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// Create an Entity with no components on it
+var entity = EntityManager.CreateEntity();
+
+// Adding a component at runtime
+EntityManager.AddComponent(entity, new MyComponentData());
+
+// Get the ComponentData
+MyComponentData myData = EntityManager.GetComponentData&lt;MyComponentData&gt;(entity);
+
+// Set the ComponentData
+EntityManager.SetComponentData(entity, myData);
+
+// Removing a component at runtime
+EntityManager.RemoveComponent&lt;MyComponentData&gt;(entity);
+
+// Does the Entity exist and does it have the component?
+bool has = EntityManager.HasComponent&lt;MyComponentData&gt;(entity);
+
+// Is the Entity still alive?
+bool has = EntityManager.Exists(entity);
+
+// Instantiate the Entity
+var instance = EntityManager.Instantiate(entity);
+
+// Destroy the created instance
+EntityManager.DestroyEntity(instance);
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// EntityManager also provides batch APIs
+// to create and destroy many Entities in one call. 
+// They are significantly faster 
+// and should be used where ever possible
+// for performance reasons.
+
+// Instantiate 500 Entities and write the resulting Entity IDs to the instances array
+var instances = new NativeArray&lt;Entity&gt;(500, Allocator.Temp);
+EntityManager.Instantiate(entity, instances);
+
+// Destroy all 500 entities
+EntityManager.DestroyEntity(instances);
+</code></pre>
+</div>
+
+<h4 id="entity-1">对entity的一个小总结</h4>
 
 <ul>
-  <li>虽然结构不同，但是是一样的压缩方式。</li>
   <li>
-    <h4 id="assetbundle-compression">AssetBundle compression</h4>
-    <p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleArchiveFileSystem.png" alt="image" /></p>
+    <p>EntityManager在生成一个entity时实际使用的是EntityDataManager类中的方法，而EntityDataManager中Entity</p>
   </li>
   <li>
-    <p>LZ4（ chunk-based compression）将原始数据分隔后独立压缩，在解压的时候是随机读取的开销很小。而LZMA(stream-based compression)提供了高压缩比，但是解压时必须按照顺序读取。</p>
+    <p>当一个entity添加或者移除一个component时，实际上改变了其archetype的结构，此时会创建（优先从已有的archetype集合中查询）一个新的archetype来赋值给entity。参考EntityManager源码中相关的代码。</p>
   </li>
-  <li>总结:这篇的内容基本都是图，从normal bundle和scene bundle中可以看到些不同。它们都有一个主序列化文件，然后是</li>
 </ul>
 
+<h4 id="chunk">Chunk</h4>
+<ul>
+  <li>chunk是所有ComponentData存储的方式，或者说在内存中的排列方式。</li>
+  <li>chunk连接着（或者说对应着）一个EntityArchetype。所有使用同一个EntityArchetype的entity都具有相同的内存布局，在内存中这些entity上的components的布局也比较奇特（原谅我用这个词）。它们（components）在存储时按照类型紧密排列的，。同一类型的component实例在内存中被连续的放在一起，后面是另一个类型的所有component实例。</li>
+</ul>
+
+<h4 id="archetypechunk">从内存角度看看archetype和chunk</h4>
+
+<ul>
+  <li>从函数GetOrCreateArchetype可以看到每当新创建一个archetype时本质还是mallco一块内存，但是比较复杂的是一个archetype还包含了很多其它的数据，比如所有ISharedComponentData的类型。</li>
+  <li>但是正如上面提到的，chunk对于着一个archetype，其实chunk不过是一个内存地址。ChunkAllocator中的m_LastChunk维护这一个chunk的链表。</li>
+</ul>
+
+<h4 id="jobcomponentsystem">JobComponentSystem</h4>
+<ul>
+  <li>上一篇最后的代码中提到了JobComponentSystem，它主要是用于自动管理job的依赖。一个例子就是在多个job在操作同一个ComponentData时，如果前面几个是在并行的read数据，突然出现一个write数据的job，此时就要等已经执行的read全部结束后暂停其它的job，让write job完成后在执行其它的。这个东西本质上与.NET的Parallel API是一样的，而大多数并行操作都会采用这样的方式，比如一个典型的例子就是SQLit的操作。</li>
+  <li>同时系统内部还使用Injection和ComponentGroup在管理依赖。</li>
+</ul>
 
 
                 <hr>
@@ -224,19 +312,12 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：2、压缩">
+                        <a href="/2018/03/23/Unity-ECS-C-Job-System/" data-toggle="tooltip" data-placement="top" title="Unity ECS：C# Job System">
                         Previous<br>
-                        <span>AssetBundle学习笔记：2、压缩</span>
+                        <span>Unity ECS：C# Job System</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：4、AssetBundle的下载与asset的加载">
-                        Next<br>
-                        <span>AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</span>
-                        </a>
-                    </li>
                     
                 </ul>
 

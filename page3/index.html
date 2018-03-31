@@ -173,6 +173,71 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
+        <h2 class="post-title">
+            Gamma校正与线性空间
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  近期看了一篇文章，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。
+
+
+Gamma校正的由来和计算方式
+
+  所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为Lout = pow(Lin, 0.45)  ，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.73...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/">
+        <h2 class="post-title">
+            Unity Android二次开发经(血)验(泪)谈(史)
+        </h2>
+        
+        <div class="post-content-preview">
+            主要参考的是这篇文章，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。
+
+准备工作
+
+  安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。
+  AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。
+  从AS上可以下载到的build-tool是27，但是最新的tools是un...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 20, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/19/PHP%E7%9A%84OOP/">
+        <h2 class="post-title">
+            PHP的OOP
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。
+  类中用var定义变量，var $name，使用方式$this-&gt;name
+  构造函数function __construct()，析构函数function __destruct()
+  继承class Child_Site extend...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 19, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第十六周
@@ -339,80 +404,6 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
-        <h2 class="post-title">
-            Shader合并与Variant
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
-
-
-Sahder Variant的概念
-
-
- ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十二周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-对于UGUI文字花屏问题，有什么推荐的解决方法吗？
-
-  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
-  关于UGUI字体花屏和乱码
-  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
-
-
-工具
-最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 23, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/16/LuaFramework&PureMVC/">
-        <h2 class="post-title">
-            LuaFramework&PureMVC
-        </h2>
-        
-        <div class="post-content-preview">
-            LuaFramework是GitHub上一个基于tolua的人更新案例，里面除了tolua的功能外还使用了PureMVC的部分功能。这个文章是对代码中PureMVC部分的一些理解。
-
-PureMVC
-Structure
-Model&amp;Proxy
-
-  Model保存对Proxy对象的引用，Proxy负责操作数据模型，与远程服务通信存取数据。这样保证了Model层的可移植性。
-
-
-Vie...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 16, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -471,7 +462,7 @@ Vie...
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="15">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             

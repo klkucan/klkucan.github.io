@@ -173,6 +173,99 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第二周
+        </h2>
+        
+        <div class="post-content-preview">
+            内存
+
+概述
+
+  内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。
+
+
+资源内存
+
+  大头在纹理，其次在网格、动画片段和音频。
+
+
+纹理
+
+从格式解决内存占用问题
+
+  选择正确的格式，比如Android上是ETC，ios的PVRTC，PC上DXT。
+
+
+不同格式可能出现的问题：
+
+
+  
+    因为ETC、PVRTC都是有损压缩因此可能出...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 7, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/">
+        <h2 class="post-title">
+            Lua学习笔记：高级概念
+        </h2>
+        
+        <div class="post-content-preview">
+            高级概念
+
+
+  这部分中会记录一些lua语言中的高级概念和技术。
+
+
+模块
+
+概念
+
+  从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。
+  一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。
+  具体实现看教程
+
+
+使用
+
+-- 创建一个叫Class...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 7, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第一周
+        </h2>
+        
+        <div class="post-content-preview">
+            初衷
+
+  首先UWA一直以来都是一个我很喜欢的网站，因为他们在unity的优化方面是非常专业的，而且他们对于技术的分享也是毫不吝啬的。在他们的网站上有很多的技术文章，很久以来都想系统的阅读一遍，但是一直没有去做。这周开始下定决心要从第一篇开始，把UWA所有的技术分享文章读完，这个系列的文章会对每周读到的技术做一个总结，但是因为文章涉及的方向比较杂，因此会简单的用技术进行一个分类。
+
+
+CP...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 29, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/07/29/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
         <h2 class="post-title">
             Lua学习笔记：基本语法
@@ -333,90 +426,6 @@ Resources系统的最佳实践
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：3、AssetBundle内部结构
-        </h2>
-        
-        <div class="post-content-preview">
-            本质
-
-  AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。
-
-
-Normal AssetBundle structure
-
-
-
-  对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：2、压缩
-        </h2>
-        
-        <div class="post-content-preview">
-            格式
-
-  
-    谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。
-  
-  LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。
-  LZ4：5.3以后才加入的一种压缩格式...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 20, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/03/16/%E6%88%91%E6%89%80%E4%BA%86%E8%A7%A3%E7%9A%84%E6%B3%95%E7%BA%BF%E8%B4%B4%E5%9B%BE/">
-        <h2 class="post-title">
-            我所了解的法线贴图
-        </h2>
-        
-        <div class="post-content-preview">
-            两篇文章
-
-  
-    本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。
-
-    凹凸映射
-
-    写给笨人的法线贴图原理
-  
-
-
-一些基本的概念
-
-1.法线贴图的定义
-
-顾名思义，法线贴图保存的是法线的信息贴图。
-
-2.用来干什么
-用来进行凹凸映射。
-
-
-  凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法不会真的改变模型的顶点...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 16, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -475,7 +484,7 @@ Normal AssetBundle structure
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="15">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             

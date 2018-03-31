@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>AssetBundle学习笔记：3、AssetBundle内部结构 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>Unity ECS：概述 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
+    <link rel="canonical" href="https://caihua.tech/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记">AssetBundle学习笔记</a>
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
                         
                     </div>
-                    <h1>AssetBundle学习笔记：3、AssetBundle内部结构</h1>
+                    <h1>Unity ECS：概述</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on April 4, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on March 22, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,31 +187,155 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="section">本质</h4>
+				<h4 id="section">前言</h4>
+
 <ul>
-  <li>AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。</li>
+  <li>看来unity已经认识到现在编写代码的一些问题了：OO的模型、mono所编译的糟糕的机器码、GC和单线程。emmm</li>
+  <li>ECS的推出就是为了解决上面的问题，同时使用ECS是为了能够利用C# Job System和Burst compiler。job system是支持多线程的（( Ĭ ^ Ĭ )）</li>
 </ul>
 
-<h4 id="normal-assetbundle-structure">Normal AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png" alt="image" /></p>
+<h4 id="componentsystem">ComponentSystem</h4>
 
 <ul>
-  <li>对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。<a href="https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html">具体代码参考引用的第二部分</a></li>
+  <li>在后面的文章中会说到ECS中的Component，这里简单说下，新的component模型只包含了数据，而ComponentSystem包含了行为。</li>
+  <li>一个ComponentSystem负责在每帧中对物体进行操作，这些物体必须匹配ComponentSystem所定义的一组component。有点类似后面讲到的的EntityArchetype。看下代码的例子：</li>
 </ul>
 
-<h4 id="streamed-scene-assetbundle-structure">Streamed scene AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureStreamedScene.png" alt="image" /></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>class Rotator : MonoBehaviour
+{
+    // The data - editable in the inspector
+    public float Speed;
+}
+
+class RotatorSystem : ComponentSystem
+{
+    struct Group
+    {
+        // Define what components are required for this 
+        // ComponentSystem to handle them.
+        Transform Transform;
+        Rotator   Rotator;
+    }
+    
+    override protected OnUpdate()
+    {
+        // We can immediately see a first optimization.
+        // We know delta time is the same between all rotators,
+        // so we can simply keep it in a local variable 
+        // to get better performance.
+        float deltaTime = Time.deltaTime;
+        
+        // ComponentSystem.GetEntities&lt;Group&gt; 
+        // lets us efficiently iterate over all GameObjects
+        // that have both a Transform &amp; Rotator component 
+        // (as defined above in Group struct).
+        foreach (var e in GetEntities&lt;Group&gt;())
+        {
+            e.Transform.rotation *= Quaternion.AxisAngle(e.Rotator.Speed * deltaTime, Vector3.up);
+        }
+    }
+}
+</code></pre>
+</div>
 
 <ul>
-  <li>虽然结构不同，但是是一样的压缩方式。</li>
+  <li>Rotator是现在系统中的一个MonoBehaviour，而RotatorSystem是一个ComponentSystem。后者包含了一个Group用于匹配GameObject，而OnUpdate方法则是处理行为的函数。</li>
+</ul>
+
+<h4 id="componentsystem-1">如何在现有的系统中使用ComponentSystem</h4>
+
+<ul>
+  <li>目前是需要在每个GameObject上挂一个GameObjectEntity脚本，它在OnEnable方法中会创建一个entity，挂上GameObject上的所有组件。然后就能被ComponentSystem使用了。</li>
   <li>
-    <h4 id="assetbundle-compression">AssetBundle compression</h4>
-    <p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleArchiveFileSystem.png" alt="image" /></p>
+    <p>这意味着你可以将所有的行为处理从MonoBehaviour.Updata中转移到 ComponentSystem.OnUpdate中，数据仍旧可以保持在MonoBehaviour中。</p>
   </li>
-  <li>
-    <p>LZ4（ chunk-based compression）将原始数据分隔后独立压缩，在解压的时候是随机读取的开销很小。而LZMA(stream-based compression)提供了高压缩比，但是解压时必须按照顺序读取。</p>
+  <li>这样做的优势
+    <ul>
+      <li>数据（MonoBehaviour）与行为（ComponentSystem）的分离</li>
+      <li>一些对象上的系统操作是批量的（应该是基于Job System），便于优化代码。比如上面代码中的deltaTime的使用。</li>
+      <li>可以继续使用现存的inspector、editor工具等。</li>
+    </ul>
   </li>
-  <li>总结:这篇的内容基本都是图，从normal bundle和scene bundle中可以看到些不同。它们都有一个主序列化文件，然后是</li>
+  <li>劣势
+    <ul>
+      <li>实例化时间没有改善</li>
+      <li>加载的时间没有改善</li>
+      <li>数据时随机访问的，非线性。线性数据访问的问题下面会说到。</li>
+      <li>非多核的</li>
+      <li>非<a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a></li>
+    </ul>
+  </li>
+  <li>总结来说这样的混合方案性能提升有限</li>
+</ul>
+
+<h4 id="pure-ecs">Pure ECS</h4>
+
+<ul>
+  <li>ECS不支持托管类型，支持struct和NativeContainer类型。所以只有IComponentData可以被C# Job安全的访问。</li>
+  <li>EntityManager（后面会提到）保证了线性的内存布局 ，这是性能提升很重要的部分。通过job和IComponentData可以做到。</li>
+  <li>目前想将ComponentData添加到GameObject上需要使用ComponentDataWrapper</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// The rotation speed component simply stores the Speed value
+[Serializable]
+public struct RotationSpeed : IComponentData
+{
+    public float Value;
+}
+
+// This wrapper component is currently necessary to add ComponentData to GameObjects.
+// In the future we want to make this wrapper component automatic.
+public class RotationSpeedComponent : ComponentDataWrapper&lt;RotationSpeed&gt; { } 
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// Using IJobProcessComponentData to iterate over all entities matching the required component types.
+// Processing of entities happens in parallel. The main thread only schedules jobs.
+public class RotationSpeedSystem : JobComponentSystem
+{
+    // IJobProcessComponentData is a simple way of iterating over all entities given the set of required compoenent types.
+    // It is also more efficient than IJobParallelFor and more convenient.
+    [ComputeJobOptimization]
+    struct RotationSpeedRotation : IJobProcessComponentData&lt;Rotation, RotationSpeed&gt;
+    {
+        public float dt;
+
+        public void Execute(ref Rotation rotation, [ReadOnly]ref RotationSpeed speed)
+        {
+            rotation.Value = math.mul(math.normalize(rotation.Value), math.axisAngle(math.up(), speed.Value * dt));
+        }
+    }
+
+    // We derive from JobComponentSystem, as a result the system proviides us 
+    // the required dependencies for our jobs automatically.
+    //
+    // IJobProcessComponentData declares that it will read RotationSpeed and write to Rotation.
+    //
+    // Because it is declared the JobComponentSystem can give us a Job dependency, which contains all previously scheduled
+    // jobs that write to any Rotation or RotationSpeed.
+    // We also have to return the dependency so that any job we schedule 
+    // will get registered against the types for the next System that might run.
+    // This approach means:
+    // * No waiting on main thread, just scheduling jobs with dependencies (Jobs only start when dependencies have completed)
+    // * Dependencies are figured out automatically for us, so we can write modular multithreaded code
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        var job = new RotationSpeedRotation() { dt = Time.deltaTime };
+        return job.Schedule(this, 64, inputDeps);
+    } 
+}
+</code></pre>
+</div>
+
+<ul>
+  <li>这段代码和ComponentSystem的部分有类似的结构，但是它结合了JobSystem，做到了并发执行。而且里面还有依赖注入的部分，下一篇在将ECS功能的时候会详细来说。</li>
+</ul>
+
+<h4 id="section-1">总结</h4>
+<ul>
+  <li>Unity ECS做到了数据与行为的分离，而且更加轻量级。</li>
+  <li>通过结合JobSystem实现了CPU多核的利用。</li>
+  <li>目前来看在已有系统结构上使用ECS有点累赘的感觉。</li>
 </ul>
 
 
@@ -224,17 +348,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：2、压缩">
+                        <a href="/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/" data-toggle="tooltip" data-placement="top" title="七周七并发模式：Actor">
                         Previous<br>
-                        <span>AssetBundle学习笔记：2、压缩</span>
+                        <span>七周七并发模式：Actor</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：4、AssetBundle的下载与asset的加载">
+                        <a href="/2018/03/23/Unity-ECS-C-Job-System/" data-toggle="tooltip" data-placement="top" title="Unity ECS：C# Job System">
                         Next<br>
-                        <span>AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</span>
+                        <span>Unity ECS：C# Job System</span>
                         </a>
                     </li>
                     

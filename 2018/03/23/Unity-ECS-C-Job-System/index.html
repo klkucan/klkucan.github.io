@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>AssetBundle学习笔记：3、AssetBundle内部结构 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>Unity ECS：C# Job System - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-3-AssetBundle%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84/">
+    <link rel="canonical" href="https://caihua.tech/2018/03/23/Unity-ECS-C-Job-System/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记">AssetBundle学习笔记</a>
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
                         
                     </div>
-                    <h1>AssetBundle学习笔记：3、AssetBundle内部结构</h1>
+                    <h1>Unity ECS：C# Job System</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on April 4, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on March 23, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,33 +187,176 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h4 id="section">本质</h4>
+				<h3 id="job-system">Job system</h3>
+<h4 id="job-system-1">Job system解决了什么问题</h4>
 <ul>
-  <li>AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。</li>
+  <li>unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。</li>
 </ul>
 
-<h4 id="normal-assetbundle-structure">Normal AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png" alt="image" /></p>
-
+<h4 id="job-system-2">Job System如何工作</h4>
 <ul>
-  <li>对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。<a href="https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html">具体代码参考引用的第二部分</a></li>
+  <li>在这个系统中真正发挥作用的是job单元，它类似方法的调用，包含了参数和数据。job被填入Job Queue中，然后work thread负责调用它。</li>
+  <li>job system中有dependency（依赖）的概念，如果job A依赖于job B，那么系统会保证B在A执行前完成。</li>
+  <li>job system不是现存的任何C#线程模型中的一种。</li>
+  <li>它被集成在引擎内部，这意味着我们开发者所编写的代码会让unity引擎共享work thread，这样才能避免对于CPU的竟态使用。</li>
+  <li>PS: 我很怀疑是否代码写的很糟糕的情况下，会影响引擎本身的效率。</li>
 </ul>
 
-<h4 id="streamed-scene-assetbundle-structure">Streamed scene AssetBundle structure</h4>
-<p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureStreamedScene.png" alt="image" /></p>
-
+<h4 id="job-system-3">Job System如何避免竟态</h4>
 <ul>
-  <li>虽然结构不同，但是是一样的压缩方式。</li>
-  <li>
-    <h4 id="assetbundle-compression">AssetBundle compression</h4>
-    <p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleArchiveFileSystem.png" alt="image" /></p>
+  <li>我觉得文档想描述的很大程度上是数据原子性的问题</li>
+  <li>job system会检查所有潜在的竟态。</li>
+  <li>让所有的job操作同一份数据拷贝</li>
+  <li>job只能访问blittable data(这种数据在托管和非托管中具有相同的内存结构)，而不是managed types。</li>
+  <li>鉴于上面提到的数据拷贝的就行，为了解决现实世界复杂的问题，提供了NativeContainers：
+    <ul>
+      <li>类型包括：NativeArray, NativeList, NativeHashMap, and NativeQueue.</li>
+      <li>这些类型能够被unity追踪，谁在读写它们。比如两个job同时写入时需要使用Schedule来安排执行顺序，安全系统会抛出一个明确的异常来说明这些。</li>
+      <li>多个job同时读取一个数据时是并发的</li>
+      <li>读写的限制同样适用于main thread</li>
+      <li>一些container有特殊的规则，以便适应来自<code class="highlighter-rouge">ParallelFor jobs</code>的安全、明确的写入访问。比如<code class="highlighter-rouge">NativeHashMap.Concurrent</code>允许使用<code class="highlighter-rouge">IJobParallelFor</code>并发的添加item。</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="job">调度job</h4>
+<ul>
+  <li>job system依赖blittable data和NativeContainer</li>
+  <li>实现步骤：
+    <ul>
+      <li>定一个实现了IJob接口的struct</li>
+      <li>创建struct对象，填充数据，调用Schedule方法。</li>
+      <li>调用方法后得到一个job handle对象。它可以做为其它job的依赖对象；也可以等待它完成工作。如果说需要在主线程访问传入job的NativeContainer，那就等待这个handle完成。这部分具体看代码比较好理解。</li>
+      <li>需要注意的是在主线程想要访问NativeContainers数据之前，需要让所有的 job依赖都完成，此时只用JobHandle.IsDone来判断是不够的，需要手动调用 JobHandle.Complete方法。Complete方法还会清空jobs debugger中的状态。</li>
+      <li>如果每一帧都调用一个新的job，这个job还依赖于上一帧的job的话，会出现内存泄漏。</li>
+    </ul>
   </li>
   <li>
-    <p>LZ4（ chunk-based compression）将原始数据分隔后独立压缩，在解压的时候是随机读取的开销很小。而LZMA(stream-based compression)提供了高压缩比，但是解压时必须按照顺序读取。</p>
+    <p>从下面的代码可以看出，一个job就是一个实现了IJob的struct。</p>
   </li>
-  <li>总结:这篇的内容基本都是图，从normal bundle和scene bundle中可以看到些不同。它们都有一个主序列化文件，然后是</li>
+  <li>定义struct：</li>
 </ul>
 
+<div class="highlighter-rouge"><pre class="highlight"><code>// Job adding two floating point values together
+public struct MyJob : IJob
+{
+    public float a;
+    public float b;
+    NativeArray&lt;float&gt; result;
+    public void Execute()
+    {
+        result[0] = a + b;
+    }
+}
+
+public struct AddOneJob : IJob
+{
+    public NativeArray&lt;float&gt; result;
+    public void Execute()
+    {
+        result[0] = result[0] + 1;
+    }
+}
+
+</code></pre>
+</div>
+
+<ul>
+  <li>创建单个job实例，进行调用：</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// Create a native array of a single float to store the result in. This example will wait for the job to complete, which means we can use Allocator.Temp
+NativeArray&lt;float&gt; result = new NativeArray&lt;float&gt;(1, Allocator.Temp);
+// Setup the job data
+MyJob jobData = new MyJob();
+jobData.a = 10;
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job
+JobHandle handle = jobData.Schedule();
+// Wait for the job to complete
+handle.Complete();
+// All copies of the NativeArray point to the same memory, we can access the result in "our" copy of the NativeArray
+float aPlusB = result[0];
+// Free the memory allocated by the result array
+result.Dispose();
+</code></pre>
+</div>
+
+<ul>
+  <li>使用schedule调用多个job</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>NativeArray&lt;float&gt; result = new NativeArray&lt;float&gt;(1, Allocator.Temp);
+// Setup the job data
+MyJob jobData = new MyJob();
+jobData.a = 10;
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job
+JobHandle firstHandle = jobData.Schedule();
+AddOneJob incJobData = new AddOneJob();
+incJobData.result = result;
+JobHandle handle = incJobData.Schedule(firstHandle);
+// Wait for the job to complete
+handle.Complete();
+// All copies of the NativeArray point to the same memory, we can access the result in "our" copy of the NativeArray
+float aPlusB = result[0];
+// Free the memory allocated by the result array
+result.Dispose();
+</code></pre>
+</div>
+
+<h4 id="parallelfor-jobs">ParallelFor jobs</h4>
+<ul>
+  <li>ParallelForJob适用于对于多个物体的并发操作，比如集合中的item。</li>
+  <li>并不是每个item对应一个job，而是每个CPU CORE对应一个job。这个也是上文说的为了保证减少上下文切换。</li>
+  <li>在使用ParallelForJob时需要传递两个参数：
+    <ul>
+      <li>数组的长度，这个数组应该是你要用来迭代的数组。</li>
+      <li>PS：实际上这部分文档上写的很奇怪，通过长度来区分数组？</li>
+      <li>一次批处理的个数，这个决定了job的个数。建议一开始使用的一个job然后慢慢的增加。直到性能提升的不明显了。</li>
+      <li>PS：其实在并行问题上，线程越多未必能够效率越高。以为还存在一个锁的问题。</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>// Job adding two floating point values together
+public struct MyParallelJob : IJobParallelFor
+{
+    [ReadOnly]
+    public NativeArray&lt;float&gt; a;
+    [Readonly]
+    public NativeArray&lt;float&gt; b;
+    public NativeArray&lt;float&gt; result;
+    public void Execute(int i)
+    {
+        result[i] = a[i] + b[i];
+    }
+}
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var jobData = new MyParallelJob();
+jobData.a = 10;  
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job with one Execute per index in the results array and only 1 item per processing batch
+JobHandle handle = jobData.Schedule(result.Length, 1);
+// Wait for the job to complete
+handle.Complete();
+</code></pre>
+</div>
+
+<h4 id="job-system-4">Job System还存在的问题</h4>
+<ul>
+  <li>无法访问static数据，这个功能后续应该会有。</li>
+</ul>
+
+<h3 id="section">参考</h3>
+<ul>
+  <li><a href="//docs.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types">Blittable and Non-Blittable Types</a></li>
+</ul>
 
 
                 <hr>
@@ -224,17 +367,17 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/03/20/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2-%E5%8E%8B%E7%BC%A9/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：2、压缩">
+                        <a href="/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/" data-toggle="tooltip" data-placement="top" title="Unity ECS：概述">
                         Previous<br>
-                        <span>AssetBundle学习笔记：2、压缩</span>
+                        <span>Unity ECS：概述</span>
                         </a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/" data-toggle="tooltip" data-placement="top" title="AssetBundle学习笔记：4、AssetBundle的下载与asset的加载">
+                        <a href="/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/" data-toggle="tooltip" data-placement="top" title="Unity ECS：基本组件和功能">
                         Next<br>
-                        <span>AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</span>
+                        <span>Unity ECS：基本组件和功能</span>
                         </a>
                     </li>
                     

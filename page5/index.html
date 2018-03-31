@@ -173,6 +173,89 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
+        <h2 class="post-title">
+            从零开始开发一款AR应用
+        </h2>
+        
+        <div class="post-content-preview">
+            Vuforia
+
+什么是vuforia
+
+  我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。
+
+
+怎么使用
+
+  进入Vuforia，右上角注册。
+  点击Develop进入下图
+
+
+
+
+
+  
+    License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuf...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第六周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+这是一个很长的问题：
+字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。
+
+请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 4, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/">
+        <h2 class="post-title">
+            游戏设计模式读书笔记：组件模式
+        </h2>
+        
+        <div class="post-content-preview">
+            为什么是组件
+意图
+
+  允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。
+
+
+实体-组件-系统(ECS)
+
+  组件模式在游戏中常见的体现就是ECS
+
+
+为什么是组件
+
+  在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。
+  将不同类型的功能切分成不同的组件，既是对结构的优化...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 28, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第五周
@@ -326,99 +409,6 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第二周
-        </h2>
-        
-        <div class="post-content-preview">
-            内存
-
-概述
-
-  内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。
-
-
-资源内存
-
-  大头在纹理，其次在网格、动画片段和音频。
-
-
-纹理
-
-从格式解决内存占用问题
-
-  选择正确的格式，比如Android上是ETC，ios的PVRTC，PC上DXT。
-
-
-不同格式可能出现的问题：
-
-
-  
-    因为ETC、PVRTC都是有损压缩因此可能出...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 7, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/07/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%AB%98%E7%BA%A7%E6%A6%82%E5%BF%B5/">
-        <h2 class="post-title">
-            Lua学习笔记：高级概念
-        </h2>
-        
-        <div class="post-content-preview">
-            高级概念
-
-
-  这部分中会记录一些lua语言中的高级概念和技术。
-
-
-模块
-
-概念
-
-  从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。
-  一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。
-  具体实现看教程
-
-
-使用
-
--- 创建一个叫Class...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 7, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/07/29/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%80%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第一周
-        </h2>
-        
-        <div class="post-content-preview">
-            初衷
-
-  首先UWA一直以来都是一个我很喜欢的网站，因为他们在unity的优化方面是非常专业的，而且他们对于技术的分享也是毫不吝啬的。在他们的网站上有很多的技术文章，很久以来都想系统的阅读一遍，但是一直没有去做。这周开始下定决心要从第一篇开始，把UWA所有的技术分享文章读完，这个系列的文章会对每周读到的技术做一个总结，但是因为文章涉及的方向比较杂，因此会简单的用技术进行一个分类。
-
-
-CP...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on July 29, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -477,7 +467,7 @@ CP...
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="15">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             

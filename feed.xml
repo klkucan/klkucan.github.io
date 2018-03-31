@@ -5,9 +5,481 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 17 Mar 2018 09:27:58 +0800</pubDate>
-    <lastBuildDate>Sat, 17 Mar 2018 09:27:58 +0800</lastBuildDate>
+    <pubDate>Sun, 01 Apr 2018 01:14:04 +0800</pubDate>
+    <lastBuildDate>Sun, 01 Apr 2018 01:14:04 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Unity ECS：基本组件和功能</title>
+        <description>&lt;h3 id=&quot;ecs&quot;&gt;ECS的组成&lt;/h3&gt;
+&lt;h4 id=&quot;entity&quot;&gt;Entity：&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;近似一个轻量级的GameObject对象。&lt;/li&gt;
+  &lt;li&gt;内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。&lt;/li&gt;
+  &lt;li&gt;可以添加和移除组件&lt;/li&gt;
+  &lt;li&gt;具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;icomponentdataisharedcomponentdata&quot;&gt;IComponentData和ISharedComponentData&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;前文说到过，ECS中的Component是一个结构体，里面只有数据。&lt;/li&gt;
+  &lt;li&gt;这个结构体可以继承IComponentData或ISharedComponentData，从源码看这两个接口是空的。&lt;/li&gt;
+  &lt;li&gt;IComponentData可以理解为不同entity之间不同的数据，而ISharedComponentData代表了相同的数据。其实从后者的名称上也可以看到一些蛛丝马迹。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;entityarchetype&quot;&gt;EntityArchetype&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实看到archetype（原型）这个词就大致明白这个类的作用了。&lt;/li&gt;
+  &lt;li&gt;EntityArchetype是一个具有唯一性的ComponentType数组，它可以在创建entity时被作为参数使用，一个entity具有什么能力，完全在于它上面挂了什么Component，而多个component组成了一个能力组，这个就是EntityArchetype了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Using typeof to create an EntityArchetype from a set of components
+EntityArchetype archetype = EntityManager.CreateArchetype(typeof(MyComponentData), typeof(MySharedComponent));
+
+// Same API but slightly more efficient
+EntityArchetype archetype = EntityManager.CreateArchetype(ComponentType.Create&amp;lt;MyComponentData&amp;gt;(), ComponentType.Create&amp;lt;MySharedComponent&amp;gt;());
+
+// Create an Entity from an EntityArchetype
+var entity = EntityManager.CreateEntity(archetype);
+
+// Implicitly create an EntityArchetype for convenience
+var entity = EntityManager.CreateEntity(typeof(MyComponentData), typeof(MySharedComponent));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;entitymanager&quot;&gt;EntityManager&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;一个管理所有EntityData、Archetype、SharedComponentData  和ComponentGroup的类。与ComponentSystems是同等地位的，看来unity ECS确实是一套新的系统。&lt;/li&gt;
+  &lt;li&gt;从下面的代码中可以看出，实际上所有的Entity的创建、添加组件、查询live状态等操作的API都在这个类里面。应该是核心类。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Create an Entity with no components on it
+var entity = EntityManager.CreateEntity();
+
+// Adding a component at runtime
+EntityManager.AddComponent(entity, new MyComponentData());
+
+// Get the ComponentData
+MyComponentData myData = EntityManager.GetComponentData&amp;lt;MyComponentData&amp;gt;(entity);
+
+// Set the ComponentData
+EntityManager.SetComponentData(entity, myData);
+
+// Removing a component at runtime
+EntityManager.RemoveComponent&amp;lt;MyComponentData&amp;gt;(entity);
+
+// Does the Entity exist and does it have the component?
+bool has = EntityManager.HasComponent&amp;lt;MyComponentData&amp;gt;(entity);
+
+// Is the Entity still alive?
+bool has = EntityManager.Exists(entity);
+
+// Instantiate the Entity
+var instance = EntityManager.Instantiate(entity);
+
+// Destroy the created instance
+EntityManager.DestroyEntity(instance);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// EntityManager also provides batch APIs
+// to create and destroy many Entities in one call. 
+// They are significantly faster 
+// and should be used where ever possible
+// for performance reasons.
+
+// Instantiate 500 Entities and write the resulting Entity IDs to the instances array
+var instances = new NativeArray&amp;lt;Entity&amp;gt;(500, Allocator.Temp);
+EntityManager.Instantiate(entity, instances);
+
+// Destroy all 500 entities
+EntityManager.DestroyEntity(instances);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;entity-1&quot;&gt;对entity的一个小总结&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;EntityManager在生成一个entity时实际使用的是EntityDataManager类中的方法，而EntityDataManager中Entity&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当一个entity添加或者移除一个component时，实际上改变了其archetype的结构，此时会创建（优先从已有的archetype集合中查询）一个新的archetype来赋值给entity。参考EntityManager源码中相关的代码。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;chunk&quot;&gt;Chunk&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;chunk是所有ComponentData存储的方式，或者说在内存中的排列方式。&lt;/li&gt;
+  &lt;li&gt;chunk连接着（或者说对应着）一个EntityArchetype。所有使用同一个EntityArchetype的entity都具有相同的内存布局，在内存中这些entity上的components的布局也比较奇特（原谅我用这个词）。它们（components）在存储时按照类型紧密排列的，。同一类型的component实例在内存中被连续的放在一起，后面是另一个类型的所有component实例。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;archetypechunk&quot;&gt;从内存角度看看archetype和chunk&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;从函数GetOrCreateArchetype可以看到每当新创建一个archetype时本质还是mallco一块内存，但是比较复杂的是一个archetype还包含了很多其它的数据，比如所有ISharedComponentData的类型。&lt;/li&gt;
+  &lt;li&gt;但是正如上面提到的，chunk对于着一个archetype，其实chunk不过是一个内存地址。ChunkAllocator中的m_LastChunk维护这一个chunk的链表。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;jobcomponentsystem&quot;&gt;JobComponentSystem&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;上一篇最后的代码中提到了JobComponentSystem，它主要是用于自动管理job的依赖。一个例子就是在多个job在操作同一个ComponentData时，如果前面几个是在并行的read数据，突然出现一个write数据的job，此时就要等已经执行的read全部结束后暂停其它的job，让write job完成后在执行其它的。这个东西本质上与.NET的Parallel API是一样的，而大多数并行操作都会采用这样的方式，比如一个典型的例子就是SQLit的操作。&lt;/li&gt;
+  &lt;li&gt;同时系统内部还使用Injection和ComponentGroup在管理依赖。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Tue, 27 Mar 2018 20:07:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity ECS：C# Job System</title>
+        <description>&lt;h3 id=&quot;job-system&quot;&gt;Job system&lt;/h3&gt;
+&lt;h4 id=&quot;job-system-1&quot;&gt;Job system解决了什么问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;job-system-2&quot;&gt;Job System如何工作&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在这个系统中真正发挥作用的是job单元，它类似方法的调用，包含了参数和数据。job被填入Job Queue中，然后work thread负责调用它。&lt;/li&gt;
+  &lt;li&gt;job system中有dependency（依赖）的概念，如果job A依赖于job B，那么系统会保证B在A执行前完成。&lt;/li&gt;
+  &lt;li&gt;job system不是现存的任何C#线程模型中的一种。&lt;/li&gt;
+  &lt;li&gt;它被集成在引擎内部，这意味着我们开发者所编写的代码会让unity引擎共享work thread，这样才能避免对于CPU的竟态使用。&lt;/li&gt;
+  &lt;li&gt;PS: 我很怀疑是否代码写的很糟糕的情况下，会影响引擎本身的效率。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;job-system-3&quot;&gt;Job System如何避免竟态&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;我觉得文档想描述的很大程度上是数据原子性的问题&lt;/li&gt;
+  &lt;li&gt;job system会检查所有潜在的竟态。&lt;/li&gt;
+  &lt;li&gt;让所有的job操作同一份数据拷贝&lt;/li&gt;
+  &lt;li&gt;job只能访问blittable data(这种数据在托管和非托管中具有相同的内存结构)，而不是managed types。&lt;/li&gt;
+  &lt;li&gt;鉴于上面提到的数据拷贝的就行，为了解决现实世界复杂的问题，提供了NativeContainers：
+    &lt;ul&gt;
+      &lt;li&gt;类型包括：NativeArray, NativeList, NativeHashMap, and NativeQueue.&lt;/li&gt;
+      &lt;li&gt;这些类型能够被unity追踪，谁在读写它们。比如两个job同时写入时需要使用Schedule来安排执行顺序，安全系统会抛出一个明确的异常来说明这些。&lt;/li&gt;
+      &lt;li&gt;多个job同时读取一个数据时是并发的&lt;/li&gt;
+      &lt;li&gt;读写的限制同样适用于main thread&lt;/li&gt;
+      &lt;li&gt;一些container有特殊的规则，以便适应来自&lt;code class=&quot;highlighter-rouge&quot;&gt;ParallelFor jobs&lt;/code&gt;的安全、明确的写入访问。比如&lt;code class=&quot;highlighter-rouge&quot;&gt;NativeHashMap.Concurrent&lt;/code&gt;允许使用&lt;code class=&quot;highlighter-rouge&quot;&gt;IJobParallelFor&lt;/code&gt;并发的添加item。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;job&quot;&gt;调度job&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;job system依赖blittable data和NativeContainer&lt;/li&gt;
+  &lt;li&gt;实现步骤：
+    &lt;ul&gt;
+      &lt;li&gt;定一个实现了IJob接口的struct&lt;/li&gt;
+      &lt;li&gt;创建struct对象，填充数据，调用Schedule方法。&lt;/li&gt;
+      &lt;li&gt;调用方法后得到一个job handle对象。它可以做为其它job的依赖对象；也可以等待它完成工作。如果说需要在主线程访问传入job的NativeContainer，那就等待这个handle完成。这部分具体看代码比较好理解。&lt;/li&gt;
+      &lt;li&gt;需要注意的是在主线程想要访问NativeContainers数据之前，需要让所有的 job依赖都完成，此时只用JobHandle.IsDone来判断是不够的，需要手动调用 JobHandle.Complete方法。Complete方法还会清空jobs debugger中的状态。&lt;/li&gt;
+      &lt;li&gt;如果每一帧都调用一个新的job，这个job还依赖于上一帧的job的话，会出现内存泄漏。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;从下面的代码可以看出，一个job就是一个实现了IJob的struct。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;定义struct：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Job adding two floating point values together
+public struct MyJob : IJob
+{
+    public float a;
+    public float b;
+    NativeArray&amp;lt;float&amp;gt; result;
+    public void Execute()
+    {
+        result[0] = a + b;
+    }
+}
+
+public struct AddOneJob : IJob
+{
+    public NativeArray&amp;lt;float&amp;gt; result;
+    public void Execute()
+    {
+        result[0] = result[0] + 1;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;创建单个job实例，进行调用：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Create a native array of a single float to store the result in. This example will wait for the job to complete, which means we can use Allocator.Temp
+NativeArray&amp;lt;float&amp;gt; result = new NativeArray&amp;lt;float&amp;gt;(1, Allocator.Temp);
+// Setup the job data
+MyJob jobData = new MyJob();
+jobData.a = 10;
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job
+JobHandle handle = jobData.Schedule();
+// Wait for the job to complete
+handle.Complete();
+// All copies of the NativeArray point to the same memory, we can access the result in &quot;our&quot; copy of the NativeArray
+float aPlusB = result[0];
+// Free the memory allocated by the result array
+result.Dispose();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用schedule调用多个job&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NativeArray&amp;lt;float&amp;gt; result = new NativeArray&amp;lt;float&amp;gt;(1, Allocator.Temp);
+// Setup the job data
+MyJob jobData = new MyJob();
+jobData.a = 10;
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job
+JobHandle firstHandle = jobData.Schedule();
+AddOneJob incJobData = new AddOneJob();
+incJobData.result = result;
+JobHandle handle = incJobData.Schedule(firstHandle);
+// Wait for the job to complete
+handle.Complete();
+// All copies of the NativeArray point to the same memory, we can access the result in &quot;our&quot; copy of the NativeArray
+float aPlusB = result[0];
+// Free the memory allocated by the result array
+result.Dispose();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;parallelfor-jobs&quot;&gt;ParallelFor jobs&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;ParallelForJob适用于对于多个物体的并发操作，比如集合中的item。&lt;/li&gt;
+  &lt;li&gt;并不是每个item对应一个job，而是每个CPU CORE对应一个job。这个也是上文说的为了保证减少上下文切换。&lt;/li&gt;
+  &lt;li&gt;在使用ParallelForJob时需要传递两个参数：
+    &lt;ul&gt;
+      &lt;li&gt;数组的长度，这个数组应该是你要用来迭代的数组。&lt;/li&gt;
+      &lt;li&gt;PS：实际上这部分文档上写的很奇怪，通过长度来区分数组？&lt;/li&gt;
+      &lt;li&gt;一次批处理的个数，这个决定了job的个数。建议一开始使用的一个job然后慢慢的增加。直到性能提升的不明显了。&lt;/li&gt;
+      &lt;li&gt;PS：其实在并行问题上，线程越多未必能够效率越高。以为还存在一个锁的问题。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Job adding two floating point values together
+public struct MyParallelJob : IJobParallelFor
+{
+    [ReadOnly]
+    public NativeArray&amp;lt;float&amp;gt; a;
+    [Readonly]
+    public NativeArray&amp;lt;float&amp;gt; b;
+    public NativeArray&amp;lt;float&amp;gt; result;
+    public void Execute(int i)
+    {
+        result[i] = a[i] + b[i];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var jobData = new MyParallelJob();
+jobData.a = 10;  
+jobData.b = 10;
+jobData.result = result;
+// Schedule the job with one Execute per index in the results array and only 1 item per processing batch
+JobHandle handle = jobData.Schedule(result.Length, 1);
+// Wait for the job to complete
+handle.Complete();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;job-system-4&quot;&gt;Job System还存在的问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;无法访问static数据，这个功能后续应该会有。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;//docs.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types&quot;&gt;Blittable and Non-Blittable Types&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 23 Mar 2018 16:07:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/03/23/Unity-ECS-C-Job-System/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/03/23/Unity-ECS-C-Job-System/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity ECS：概述</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;前言&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;看来unity已经认识到现在编写代码的一些问题了：OO的模型、mono所编译的糟糕的机器码、GC和单线程。emmm&lt;/li&gt;
+  &lt;li&gt;ECS的推出就是为了解决上面的问题，同时使用ECS是为了能够利用C# Job System和Burst compiler。job system是支持多线程的（( Ĭ ^ Ĭ )）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;componentsystem&quot;&gt;ComponentSystem&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在后面的文章中会说到ECS中的Component，这里简单说下，新的component模型只包含了数据，而ComponentSystem包含了行为。&lt;/li&gt;
+  &lt;li&gt;一个ComponentSystem负责在每帧中对物体进行操作，这些物体必须匹配ComponentSystem所定义的一组component。有点类似后面讲到的的EntityArchetype。看下代码的例子：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Rotator : MonoBehaviour
+{
+    // The data - editable in the inspector
+    public float Speed;
+}
+
+class RotatorSystem : ComponentSystem
+{
+    struct Group
+    {
+        // Define what components are required for this 
+        // ComponentSystem to handle them.
+        Transform Transform;
+        Rotator   Rotator;
+    }
+    
+    override protected OnUpdate()
+    {
+        // We can immediately see a first optimization.
+        // We know delta time is the same between all rotators,
+        // so we can simply keep it in a local variable 
+        // to get better performance.
+        float deltaTime = Time.deltaTime;
+        
+        // ComponentSystem.GetEntities&amp;lt;Group&amp;gt; 
+        // lets us efficiently iterate over all GameObjects
+        // that have both a Transform &amp;amp; Rotator component 
+        // (as defined above in Group struct).
+        foreach (var e in GetEntities&amp;lt;Group&amp;gt;())
+        {
+            e.Transform.rotation *= Quaternion.AxisAngle(e.Rotator.Speed * deltaTime, Vector3.up);
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Rotator是现在系统中的一个MonoBehaviour，而RotatorSystem是一个ComponentSystem。后者包含了一个Group用于匹配GameObject，而OnUpdate方法则是处理行为的函数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;componentsystem-1&quot;&gt;如何在现有的系统中使用ComponentSystem&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目前是需要在每个GameObject上挂一个GameObjectEntity脚本，它在OnEnable方法中会创建一个entity，挂上GameObject上的所有组件。然后就能被ComponentSystem使用了。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;这意味着你可以将所有的行为处理从MonoBehaviour.Updata中转移到 ComponentSystem.OnUpdate中，数据仍旧可以保持在MonoBehaviour中。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;这样做的优势
+    &lt;ul&gt;
+      &lt;li&gt;数据（MonoBehaviour）与行为（ComponentSystem）的分离&lt;/li&gt;
+      &lt;li&gt;一些对象上的系统操作是批量的（应该是基于Job System），便于优化代码。比如上面代码中的deltaTime的使用。&lt;/li&gt;
+      &lt;li&gt;可以继续使用现存的inspector、editor工具等。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;劣势
+    &lt;ul&gt;
+      &lt;li&gt;实例化时间没有改善&lt;/li&gt;
+      &lt;li&gt;加载的时间没有改善&lt;/li&gt;
+      &lt;li&gt;数据时随机访问的，非线性。线性数据访问的问题下面会说到。&lt;/li&gt;
+      &lt;li&gt;非多核的&lt;/li&gt;
+      &lt;li&gt;非&lt;a href=&quot;https://en.wikipedia.org/wiki/SIMD&quot;&gt;SIMD&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;总结来说这样的混合方案性能提升有限&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;pure-ecs&quot;&gt;Pure ECS&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ECS不支持托管类型，支持struct和NativeContainer类型。所以只有IComponentData可以被C# Job安全的访问。&lt;/li&gt;
+  &lt;li&gt;EntityManager（后面会提到）保证了线性的内存布局 ，这是性能提升很重要的部分。通过job和IComponentData可以做到。&lt;/li&gt;
+  &lt;li&gt;目前想将ComponentData添加到GameObject上需要使用ComponentDataWrapper&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// The rotation speed component simply stores the Speed value
+[Serializable]
+public struct RotationSpeed : IComponentData
+{
+    public float Value;
+}
+
+// This wrapper component is currently necessary to add ComponentData to GameObjects.
+// In the future we want to make this wrapper component automatic.
+public class RotationSpeedComponent : ComponentDataWrapper&amp;lt;RotationSpeed&amp;gt; { } 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Using IJobProcessComponentData to iterate over all entities matching the required component types.
+// Processing of entities happens in parallel. The main thread only schedules jobs.
+public class RotationSpeedSystem : JobComponentSystem
+{
+    // IJobProcessComponentData is a simple way of iterating over all entities given the set of required compoenent types.
+    // It is also more efficient than IJobParallelFor and more convenient.
+    [ComputeJobOptimization]
+    struct RotationSpeedRotation : IJobProcessComponentData&amp;lt;Rotation, RotationSpeed&amp;gt;
+    {
+        public float dt;
+
+        public void Execute(ref Rotation rotation, [ReadOnly]ref RotationSpeed speed)
+        {
+            rotation.Value = math.mul(math.normalize(rotation.Value), math.axisAngle(math.up(), speed.Value * dt));
+        }
+    }
+
+    // We derive from JobComponentSystem, as a result the system proviides us 
+    // the required dependencies for our jobs automatically.
+    //
+    // IJobProcessComponentData declares that it will read RotationSpeed and write to Rotation.
+    //
+    // Because it is declared the JobComponentSystem can give us a Job dependency, which contains all previously scheduled
+    // jobs that write to any Rotation or RotationSpeed.
+    // We also have to return the dependency so that any job we schedule 
+    // will get registered against the types for the next System that might run.
+    // This approach means:
+    // * No waiting on main thread, just scheduling jobs with dependencies (Jobs only start when dependencies have completed)
+    // * Dependencies are figured out automatically for us, so we can write modular multithreaded code
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        var job = new RotationSpeedRotation() { dt = Time.deltaTime };
+        return job.Schedule(this, 64, inputDeps);
+    } 
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这段代码和ComponentSystem的部分有类似的结构，但是它结合了JobSystem，做到了并发执行。而且里面还有依赖注入的部分，下一篇在将ECS功能的时候会详细来说。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;总结&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Unity ECS做到了数据与行为的分离，而且更加轻量级。&lt;/li&gt;
+  &lt;li&gt;通过结合JobSystem实现了CPU多核的利用。&lt;/li&gt;
+  &lt;li&gt;目前来看在已有系统结构上使用ECS有点累赘的感觉。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 22 Mar 2018 01:07:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
     
       <item>
         <title>七周七并发模式：Actor</title>
@@ -815,213 +1287,6 @@ void Func (Cls&amp;amp; a)
         <pubDate>Sun, 07 Jan 2018 23:45:30 +0800</pubDate>
         <link>https://caihua.tech/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/</link>
         <guid isPermaLink="true">https://caihua.tech/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/</guid>
-        
-        <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：偏特化</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;什么是偏特化&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;泛化（泛型）的反义&lt;/li&gt;
-  &lt;li&gt;分为个数的偏特化和范围的偏特化&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;数量偏特化&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template&amp;lt;typename T, typename U&amp;gt;
-class vector {}
-
-
-template&amp;lt;typename U&amp;gt;
-class vector&amp;lt;bool, U&amp;gt; {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;范围偏特化&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;说白了进一步约束泛型的类型。这个和C#中泛型的where约束有点像。&lt;/li&gt;
-  &lt;li&gt;对于下面的例子来说，第一个C约束几乎没有，但是第二个就约束为指针类型了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;template&amp;lt;typename T&amp;gt;
-class C {}
-
-
-template&amp;lt;typename U&amp;gt;
-class C&amp;lt;U*&amp;gt; {}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-        <pubDate>Tue, 02 Jan 2018 23:45:30 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/</guid>
-        
-        <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：类型转换</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;自己转换为别的类型&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;做法：使用&lt;code class=&quot;highlighter-rouge&quot;&gt;operator&lt;/code&gt;关键字，无需返回值，函数名称就是返回值。如有需要加上const修饰。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
-{
-Public:
-    A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    operator double() const
-    {
-        return (double)(x/y);
-    }
-    
-private:
-    int x;
-    int y;
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;non-explicit-one-argument-ctor&quot;&gt;non-explicit-one-argument ctor&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;本质是编译器将别的对象转化为我们定义的对象&lt;/li&gt;
-  &lt;li&gt;要求的自定义构造函数比较特殊&lt;/li&gt;
-  &lt;li&gt;在实例代码中编译器会把4装换为A，然后执行+ 操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
-{
-Public:
-    A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    A operator +(const A&amp;amp; a) 
-    {
-        return A(....);
-    }
-    
-private:
-    int x;
-    int y;
-}
-
-A a(2,3);
-double d = a + 4;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;编译器有时会不清楚&lt;/h4&gt;
-
-&lt;p&gt;-下面的代码中a+4时编译器发现可以用double操作，也可以用+操作，在这样的情况下编译器会不知道如何选择进而报错。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
-{
-Public:
-    A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    A operator +(const A&amp;amp; a) 
-    {
-        return A(....);
-    }
-    
-    operator double() const
-    {
-        return (double)(x/y);
-    }
-    
-private:
-    int x;
-    int y;
-}
-
-A a(2,3);
-double d = a + 4;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;explicit-one-argument-ctor&quot;&gt;explicit-one-argument ctor&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;explicit关键字几乎都是用到构造函数前面的，告诉编译器不要随便的把别的类型转换为我自定的类型。&lt;/li&gt;
-  &lt;li&gt;下面的例子中，编译器不会再把4转成A，因此这个表达式是错误的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Class A
-{
-Public:
-    explicit A(int arg1, int arg2) 
-     : x(arg1), y(arg2) {}
-    
-    A operator +(const A&amp;amp; a) 
-    {
-        return A(....);
-    }
-    
-private:
-    int x;
-    int y;
-}
-
-A a(2,3);
-double d = a + 4;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-        <pubDate>Tue, 02 Jan 2018 23:44:24 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</guid>
-        
-        <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：面向对象</title>
-        <description>&lt;h4 id=&quot;composition&quot;&gt;Composition&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;组合&lt;/li&gt;
-  &lt;li&gt;其实就是一个类（Container）中包含了另一个类的实例（Component），注意是实例。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;delegate&quot;&gt;delegate&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;组合的一种&lt;/li&gt;
-  &lt;li&gt;但是包含的是一个类的引用(reference)。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;组合的使用&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;用这样的方式可以做出adapter模式，比如A功能很多但是如果只要暴露出一部分，可以用B来包含A，然后只在B中定义一些方法，这些方法都是直接调用A的即可。&lt;/li&gt;
-  &lt;li&gt;还可以引申出面向接口编程。比如A中要调用某一类的功能，但是这些功能可以由B\C\D来提供，或者说不通的条件下使用不通的提供者，那么我们就可以为这些功能定义一个接口，然后让BCD实现接口，A中只要是一个对接口类型的引用即可。&lt;/li&gt;
-  &lt;li&gt;PS：目前我看到C++里面的接口是用虚函数实现的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;no-virtualvirtual&quot;&gt;no-virtual&amp;amp;virtual&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;C++的函数使用virtual关键字标记为虚函数。&lt;/li&gt;
-  &lt;li&gt;虚函数分为纯虚函数和虚函数，区别就是虚函数是有实现的，哪怕只是个空的函数体&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;&lt;/code&gt;。但是纯虚函数是没有实现的，定义方式为&lt;code class=&quot;highlighter-rouge&quot;&gt;virtual void Foo() = 0&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;虚函数不要求子对象一定实现override，但是纯虚函数要求一定实现。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 02 Jan 2018 23:42:45 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</guid>
         
         <category>CPP</category>
         
