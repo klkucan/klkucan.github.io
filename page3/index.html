@@ -173,6 +173,25 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十七周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。
+
+  原文较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个As...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 2, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
         <h2 class="post-title">
             Gamma校正与线性空间
@@ -385,25 +404,6 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十三周
-        </h2>
-        
-        <div class="post-content-preview">
-            Gameplay
-求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
-
-  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 30, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -516,7 +516,7 @@ AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             

@@ -173,6 +173,27 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/04/02/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E9%80%9A%E4%BF%A1%E9%A1%BA%E5%BA%8F%E8%BF%9B%E7%A8%8B/">
+        <h2 class="post-title">
+            七周七并发模式：通信顺序进程（CSP）
+        </h2>
+        
+        <div class="post-content-preview">
+            概念
+
+CSP
+
+
+  与actor模型类似，通信顺序进程（Communicating Sequential Processe，CSP）模型也是由独立的、并发执行的实体所组成，实体之间也是通过发送消息进行通信。但两种模型的重要差别是：CSP模型不关注发送消息的实体，而是关注发送消息时使用的channel（通道）。channel是第一类对象，它不像进程那样与信箱是紧耦合的，而是可以单独创建和读...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on April 2, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/">
         <h2 class="post-title">
             Unity ECS：基本组件和功能
@@ -427,43 +448,6 @@ pri...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/">
-        <h2 class="post-title">
-            侯捷C++学习笔记：Reference
-        </h2>
-        
-        <div class="post-content-preview">
-            本质
-
-  通过指针实现，所以本质就是指针
-
-
-意义
-
-  是某个变量的代表，因此下面的代码中，x的值为5。在给x赋值后i和x都是6。
-
-
-int i = 5;
-
-int&amp; x = i;
-
-x = 6;
-
-
-
-编译器的一些做法
-
-  以一下代码为例，如果有一个变量b是a的引用，那么有sizeof(a) == sizeof(b)而且&amp;a == &amp;b。
-  上面也说了引用...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on January 7, 2018
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -572,7 +556,7 @@ x = 6;
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             

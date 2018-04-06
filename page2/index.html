@@ -173,6 +173,43 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：Reference
+        </h2>
+        
+        <div class="post-content-preview">
+            本质
+
+  通过指针实现，所以本质就是指针
+
+
+意义
+
+  是某个变量的代表，因此下面的代码中，x的值为5。在给x赋值后i和x都是6。
+
+
+int i = 5;
+
+int&amp; x = i;
+
+x = 6;
+
+
+
+编译器的一些做法
+
+  以一下代码为例，如果有一个变量b是a的引用，那么有sizeof(a) == sizeof(b)而且&amp;a == &amp;b。
+  上面也说了引用...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 7, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/02/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%81%8F%E7%89%B9%E5%8C%96/">
         <h2 class="post-title">
             侯捷C++学习笔记：偏特化
@@ -400,25 +437,6 @@ delegate
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十七周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。
-
-  原文较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个As...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 2, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -531,7 +549,7 @@ delegate
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             

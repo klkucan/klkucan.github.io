@@ -173,6 +173,25 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第三周
+        </h2>
+        
+        <div class="post-content-preview">
+            内存
+资源复用
+
+  如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时Persistent...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/08/07/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%8C%E5%91%A8/">
         <h2 class="post-title">
             每天一点UWA：第二周
@@ -404,28 +423,6 @@ Resources系统的最佳实践
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/04/04/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-4-AssetBundle%E7%9A%84%E4%B8%8B%E8%BD%BD%E4%B8%8Easset%E7%9A%84%E5%8A%A0%E8%BD%BD/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：4、AssetBundle的下载与asset的加载
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle的下载
-下载AssetBundle
-
-
-  首先需要理解的是这个下载就是指的从网络下载。因此只有WWW和 WWW.LoadFromCacheOrDownload两个方法。
-  www是不带缓存的，而后者是带缓存的。
-  LoadFromCacheOrDownload的version参数，如果缓存中不存在，或者version低于指定的版本就会重新下载，否则直接从缓存拿数据...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 4, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -538,7 +535,7 @@ Resources系统的最佳实践
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             

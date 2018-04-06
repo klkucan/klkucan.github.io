@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>Unity特效学习：粒子 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/">
+    <link rel="canonical" href="https://caihua.tech/page10/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -142,295 +142,212 @@
 </script>
 
 
-    <!-- <img src="/img/home-bg-o.jpg" width="0" height="0"> -->
-
-<!-- Post Header -->
-<style type="text/css">
-    header.intro-header{
-        position: relative;
-        background-image: url('/img/home-bg-o.jpg')
-    }
-
-    
-</style>
-<header class="intro-header" >
-    <div class="header-mask"></div>
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
-                        
-                    </div>
-                    <h1>Unity特效学习：粒子</h1>
-                    
-                    
-                    <h2 class="subheading"></h2>
-                    
-                    <span class="meta">Posted by 蔡华的博客 on December 9, 2017</span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <!--<<h1>蔡华的博客</h1>>-->
+                    <!--<hr class="small">-->
+                    <span class="subheading"></span>
                 </div>
             </div>
         </div>
     </div>
 </header>
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-
-    <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-				<h4 id="section">参数</h4>
-<ul>
-  <li>只记录一些特别的参数</li>
-  <li>Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。</li>
-  <li>StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。</li>
-  <li>Color：
-    <ul>
-      <li>Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。</li>
-      <li>Random：粒子颜色从两个值随机取</li>
-      <li>还有梯度随机</li>
-      <li>纯粹随机：这个可以自定义N个颜色区间。</li>
-      <li>梯度编辑器很强大。注意：点击颜色条上沿添加的节点是调整alpha的，下沿是调整颜色的。藏的好深啊。</li>
-    </ul>
-  </li>
-  <li>Emission:
-    <ul>
-      <li>Rate over Distance:按照移动距离发射粒子。不动的情况下就不发射。可以用来模拟移动的汽车的尾气。动起来才有，不动就没有了。必须配合world模式。</li>
-    </ul>
-  </li>
-  <li>Shape:
-    <ul>
-      <li>发射器可以选择不同的形状。当选择了Emit from为Base shell，并且将start speed设置为0时粒子就会出现在外轮廓的固定位置。可以呈现比较特殊的粒子效果。尤其是圆形或者柱状时。
-<img src="http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiLythcEdyaE01eGtmc0RPdjltcXZYSTRyNm5veW9yd0JBPT0.jpg?imageView&amp;thumbnail=1809y511&amp;type=jpg&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></li>
-      <li>mesh:想做特殊形状的粒子需要这个，很特别，看下图。
-<img src="http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMGdNdDdZMkVPS25yYmdwRU1rVHVRYnVLV0ZBbjlKdzJRPT0.jpg?imageView&amp;thumbnail=1699y586&amp;type=jpg&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></li>
-    </ul>
-  </li>
-  <li>Velocity over lifetime: 简单来说就是在生命周期中给与一个3D方向的移动速度。比如我们只给x一个5的值，那么看上就是有粒子北风吹走的感觉了。目前想到的就是风吹的效果。</li>
-  <li>Limit Velocity over lifetime: 速度的衰减。speed为最终速度、dampen为删减的速度。基本上的公式应该是<code class="highlighter-rouge">speed = start speed - dampen * time</code>。只给可以配合Velocity over lifetime实现一个更为真实的风吹效果。</li>
-  <li>Rotation over left：这个主要是旋转粒子，材质球选择一个具体的纹理图后比较明显。现在看效果比较适合做技能特效。</li>
-  <li>
-    <p>External Force：配合风场更适合做各种风的效果。具体设置看Demo。</p>
-  </li>
-  <li>Sub Emitters:自发射器可以实现多个粒子的配合效果，最常用的就是烟花。
-    <ul>
-      <li>birth：主粒子产生时产生子粒子</li>
-      <li>collision：主粒子碰撞时产生子粒子</li>
-      <li>death：主粒子消失时产生子粒子</li>
-      <li>在death粒子如果想做出一次性的烟花效果需要注意：首先lifetime要短，其次总离子数量要小于rate over time，这样才能实现一次性发射所有的粒子。具体设置见demo。</li>
-    </ul>
-  </li>
-</ul>
-
-<p><img src="http://imglf6.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiNWJCd0ROTUNyb2lpeXhrZDRDMVQvakgxbGNQTVl3WEV3PT0.jpg?imageView&amp;thumbnail=1680x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
-
-<ul>
-  <li>Texture Sheet Animation：粒子序列帧动画。需要在材质球中配合特别的序列动画纹理图。最常见的就是做火焰。这个功能极其强大。
-    <ul>
-      <li>Tiles：动画纹理中动画的横轴纵轴的数量。我demo中的图是8x8的，所以这里也要设置成8x8。</li>
-    </ul>
-  </li>
-</ul>
-
-<p><img src="http://imglf3.nosdn.127.net/img/Nld0N0tacnNuUG41dzJIUXdRQVJiMEhQMGlNckU0WFJ1MWt4eldWQzlyYSsrbWE0OU1oeCtRPT0.jpg?imageView&amp;thumbnail=1680x0&amp;quality=96&amp;stripmeta=0&amp;type=jpg" alt="image" /></p>
-
-<h5 id="section-1">说明</h5>
-<ul>
-  <li>Demo的地址为https://github.com/klkucan/UnityEffect</li>
-</ul>
-
-
-                <hr>
-
-                
-
-
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第十八周">
-                        Previous<br>
-                        <span>每天一点UWA：第十八周</span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/" data-toggle="tooltip" data-placement="top" title="Unity特效学习：动画">
-                        Next<br>
-                        <span>Unity特效学习：动画</span>
-                        </a>
-                    </li>
-                    
-                </ul>
-
-
-                
-
-                
-
-            </div>  
-
-    <!-- Side Catalog Container -->
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
         
 
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    		<div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+    			
+<div class="post-preview">
+    <a href="/2016/09/16/01%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
+        <h2 class="post-title">
+            iOS学习笔记-01基本语法
+        </h2>
+        
+        <div class="post-content-preview">
+            1.基本语法
+
+  与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger
+
+
+#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64
+typ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 16, 2016
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    <li class="previous">
+        <a href="/page9">&larr; Newer Posts</a>
+    </li>
+    
+    
+</ul>
+
+
+    		</div>
     <!-- Sidebar Container -->
             <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
                 <!-- Featured Tags -->
                 
                 <section>
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-        				
+                        
                             
-                				<a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
+                                <a href="/tags/#iOS学习笔记" title="iOS学习笔记" rel="8">
                                     iOS学习笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#iOS" title="iOS" rel="1">
+                                <a href="/tags/#iOS" title="iOS" rel="1">
                                     iOS
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#杂记" title="杂记" rel="4">
+                                <a href="/tags/#杂记" title="杂记" rel="4">
                                     杂记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#VR/AR" title="VR/AR" rel="3">
+                                <a href="/tags/#VR/AR" title="VR/AR" rel="3">
                                     VR/AR
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#Unity3D" title="Unity3D" rel="18">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
                                     Unity3D
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#3D数学" title="3D数学" rel="1">
+                                <a href="/tags/#3D数学" title="3D数学" rel="1">
                                     3D数学
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
                                     游戏设计模式读书笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
+                                <a href="/tags/#Unity預計算即時GI笔记" title="Unity預計算即時GI笔记" rel="3">
                                     Unity預計算即時GI笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="6">
+                                <a href="/tags/#AssetBundle学习笔记" title="AssetBundle学习笔记" rel="6">
                                     AssetBundle学习笔记
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#Lua" title="Lua" rel="6">
+                                <a href="/tags/#Lua" title="Lua" rel="6">
                                     Lua
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#UWA" title="UWA" rel="25">
+                                <a href="/tags/#UWA" title="UWA" rel="25">
                                     UWA
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#PHP" title="PHP" rel="1">
+                                <a href="/tags/#PHP" title="PHP" rel="1">
                                     PHP
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#CPP" title="CPP" rel="7">
+                                <a href="/tags/#CPP" title="CPP" rel="7">
                                     CPP
                                 </a>
                             
-        				
+                        
                             
-                				<a href="/tags/#并发模型" title="并发模型" rel="4">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             
-        				
-        			</div>
+                        
+                    </div>
                 </section>
                 
 
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+                        
+                            <p>Be publicly useful and privately happy.</p>
+                        
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+                            
+                            
+                            
+                            <li>
+                                <a target="_blank" href="https://github.com/klkucan">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
                 <!-- Friends Blog -->
                 
-            </div>
-        </div>
-    </div>
-</article>
-
-
-
-
-
-
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'always',
-          placement: 'right',
-          icon: ''
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-<style>
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
-    }
-</style>
+    		</div>
+        
+	</div>
+</div>
 
 
     <!-- Footer -->

@@ -173,6 +173,29 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第七周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
+
+在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
+
+
+  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
+  建议，可以把Packi...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 10, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
         <h2 class="post-title">
             从零开始开发一款AR应用
@@ -390,25 +413,6 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/08/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第三周
-        </h2>
-        
-        <div class="post-content-preview">
-            内存
-资源复用
-
-  如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时Persistent...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -521,7 +525,7 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             

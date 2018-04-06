@@ -173,6 +173,25 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十三周
+        </h2>
+        
+        <div class="post-content-preview">
+            Gameplay
+求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
+
+  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
         <h2 class="post-title">
             Shader合并与Variant
@@ -383,29 +402,6 @@ UGUI参考的函数
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第七周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
-
-在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
-
-
-  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
-  建议，可以把Packi...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 10, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -518,7 +514,7 @@ NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="3">
+                                <a href="/tags/#并发模型" title="并发模型" rel="4">
                                     并发模型
                                 </a>
                             
