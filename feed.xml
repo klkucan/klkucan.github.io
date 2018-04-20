@@ -5,9 +5,225 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 06 Apr 2018 10:44:05 +0800</pubDate>
-    <lastBuildDate>Fri, 06 Apr 2018 10:44:05 +0800</lastBuildDate>
+    <pubDate>Fri, 20 Apr 2018 17:37:49 +0800</pubDate>
+    <lastBuildDate>Fri, 20 Apr 2018 17:37:49 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>七周七并发模式：Lambda架构</title>
+        <description>&lt;h3 id=&quot;lambda&quot;&gt;Lambda架构&lt;/h3&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;定义&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Lambda架构使用了可以进行大规模数据批处理的MapReduce技术，也使用了可以快速处理数据并及时反馈的流处理技术，这样的混搭能够为大数据问题提供扩展性、响应性和容错性都很优秀的解决方案。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Lambda架构是站在大规模场景的角度来解决问题的，它可以将数据和计算分布到几十台或几百台机器构成的集群上进行。这种技术不但解决了之前因为规模庞大而无法解决的难题，还可以构建出对硬件错误和人为错误进行容错的系统。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Lambda架构源自于它与函数式编程的相似性。从本质上说，Lambda架构是将计算函数施加于大量数据的一种通用方法。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;不变原始数据是Lambda架构的基础。对于不变的数据进行处理的时候，不在需要锁机制和事物机制。多个线程可以并行地访问数据，而不用担心相互之间的作用。我们可以对数据进行复制，再对副本进行操作，而不用担心数据过期，所以在集群中分布地处理数据就变得非常容易。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;传统数据系统的缺陷&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;扩展性：利用某些技术（比如复制、分片等）可以将传统数据库扩展到多台计算机上，但随着计算机数量和查询数量的增加，应用这种方案会变得越来越困难。超过一定程度，增加计算机资源将无法继续改善性能。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;维护成本：维护一个跨多台计算机的数据库的成本是比较高的。如果要求维护时不能停机，那么维护将变得更加困难——比如对数据库进行重新分片。随着数据量和查询数量的增加，容错、备份、确保数据一致性等工作的难度都会呈几何级数增长。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;复杂度：复制和分片通常要求应用层面提供一些支持——应用需要知道将查询发给哪一台计算机，以及应该更新哪一个数据分片（每个更新所对应的分片通常不一样，规则也比较复杂）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;人为错误&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;报表和分析：在独立的数据仓库中用另一种格式来维护历史数据。数据从业务数据库向数据仓库的迁移过程就是著名的萃取（extract）、转置（transform）、加载（load）（简称ETL）。这种方案不仅复杂，而且需要准确预测将来我们需要什么信息。有时会碰到这种情况：由于缺乏必要的信息或者信息格式不对，无法生成所需报表或进行某些分析。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;批处理视图（批处理层） &amp;amp; 服务层&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;如果能够准确预测出未来会对原始数据进行怎样的查询，就可以预计算出一个批处理视图，这个视图包含这些查询将要返回的衍生信息，或者那些可以计算出这些衍生信息的数据。Lambda架构的批处理层就是用来计算这些批处理视图的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;批处理视图可以包含衍生信息，比如：假设要用一系列编辑记录来构建Wikipedia的页面——批处理视图将只包含从页面的编辑记录中计算得来的页面内容。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;批处理视图也可以包含可以计算出衍生信息的数据，这类情况会稍微复杂一些。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;需要对生成的批处理视图进行索引，这样就可以对索引进行查询了。另外，还需要一个地方来存放程序逻辑（说明一个查询该如何合并批处理视图的逻辑）。这就是服务层的任务。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;总结来说利用不变数据利于并行的特显对海量数据进行加工（mapper + reducer），生成批处理视图。然后再通过简单的查询得到想要的结果。&lt;/li&gt;
+  &lt;li&gt;后面提到的Hadoop就是应用于批处理层&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;加速层&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;有新数据产生时，除了会将数据投入到原始数据还会进行扔给加速层生成实时视图，结合最新的批处理视图可以满足对于新数据的查询。&lt;/li&gt;
+  &lt;li&gt;当新的批处理视图产生后，实时视图就被丢弃了。&lt;/li&gt;
+  &lt;li&gt;这个东西的目的应该是为了快速响应新数据，在批处理层还没有出新版本时，临时使用实时视图+当前最新的批处理视图就组成了未来会出现的批处理视图。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;后面讲的Storm系统应用于加速层&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;最后放一张架构图&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://mmbiz.qpic.cn/mmbiz_jpg/Hiak8vv9WbJhL7pjGiaFVnTiadKXQrjsjrGQSJxEQo5ebHvmq6UDuBnfyhcUPe44QHPNjAiaVTG8UXkbU6aNZOQXkg/0?wx_fmt=jpeg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;mapreduce&quot;&gt;MapReduce&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;定义&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;MapReduce是一个多义的术语。其可以指代一类算法，这类算法分为两个步骤：对一个数据结构首先进行映射（map）操作，然后进行化简（reduce）操作。之前的词频统计的函数式版本正是这样的例子（frequencies就是用reduce函数实现的）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;MapReduce还可以指代一类系统——这类系统使用了上面的算法，将计算过程高效地分布到一个集群上。这类系统不仅可以将数据和数据处理分布到集群的多台计算机上，还可以在一台或多台计算机崩溃时继续正常运转。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;一个MapReduce任务由两种主要的组件构成：mapper和reducer。mapper负责将某种输入格式（通常是文本）映射为许多键值对。reducer负责将这些键值对转换成最终的输出格式（通常也是一系列键值对）。mapper和reducer可以分布在很多不同的计算机上（它们的数目不必相同）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;hadoop&quot;&gt;Hadoop&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一个包含了MapReduce的&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;输入通常由一个或多个大文本文件构成。Hadoop对这些文件进行分片（每一片的大小是可配置的，通常为64 MB），并将每个分片发送给一个mapper。mapper将输出一系列键值对，Hadoop再将这些键值对发送给reducer。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;一个mapper产生的键值对可以发送给多个reducer。键值对的键决定了哪个reducer会接受这个键值对——Hadoop确保具有相同键的键值对（无论是由哪个mapper产生的）都会发送给同一个reducer处理。这个阶段通常被称为洗牌阶段（shuffle phase）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Hadoop为每个键调用一次reducer，并传入所有与该键对应的值。reducer将这些值合并，再生成最终输出结果（通常是键值对，也可以不是）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;mapper--reducer&quot;&gt;mapper &amp;amp; reducer&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;书中demo的Map继承了Hadoop的Mapper类，其接受四个类型参数：输入的键类型、输入的值类型、输出的键类型、输出的值类型。它里面的方法本质是将一行文本进行拆分，输出一个键值对。&lt;/li&gt;
+  &lt;li&gt;对于每个键，都会调用一次reduce()方法，values是这个键对应的所有值的集合。reduce()方法对这些值进行求和，并产生描述某个单词出现总数的键值对。&lt;/li&gt;
+  &lt;li&gt;Hadoop在键值对传给reducer前会对键进行排序&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;driver&quot;&gt;Driver&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;从下面的代码看driver就是配置Hadoop。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;这里不需要设置输入的键类型和值类型，因为默认情况下Hadoop认为我们处理的是文本文件。也不需要分别设置mapper输出的键/值类型和reducer输入的键/值类型，因为默认情况下Hadoop认为mapper的输出和reducer的输入具有相同的键/值类型。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用setInputFormatClass()将XmlInputFormat设置为分片器，并且配置xmlinput.start和xmlinput.end来告诉分片器我们关注的是哪个标签。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;setCombinerClass()来设置combiner。combiner是一种优化手段，使键值对可以在发往reducer前进行合并。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class WordCount extends Configured implements Tool { 
+    public int run(String[] args) throws Exception { 
+        Configuration conf = getConf();
+        conf.set(&quot;xmlinput.start&quot;, &quot;&amp;lt;text&quot;);
+        conf.set(&quot;xmlinput.end&quot;, &quot;&amp;lt;/text&amp;gt;&quot;);
+        Job job = Job.getInstance(conf, &quot;wordcount&quot;);
+        job.setJarByClass(WordCount.class);
+        job.setInputFormatClass(XmlInputFormat.class);
+        job.setMapperClass(Map.class);
+        job.setCombinerClass(Reduce.class);
+        job.setReducerClass(Reduce.class);
+        job.setOutputKeyClass(Text.class);  job.setOutputValueClass(IntWritable.class);  FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        boolean success = job.waitForCompletion(true);
+        return success ? 0 : 1;    15  
+    } 
+    
+    public static void main(String[] args) throws Exception {
+        int res = ToolRunner.run(new Configuration(), new WordCount(), args);
+        System.exit(res);
+        
+    }   
+    
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;hadoop-1&quot;&gt;Hadoop的优势&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;可以在多台计算机上更快地处理海量的数据&lt;/li&gt;
+  &lt;li&gt;Hadoop天生就具有处理错误和从错误中恢复的能力，这点很好保证了在使用集群时的稳定性。&lt;/li&gt;
+  &lt;li&gt;与上一条相关，不仅要考虑将节点崩溃时正在处理的任务重新执行，还需要考虑当存储发生故障时如何保证数据不丢失。Hadoop默认使用Hadoop分布式文件系统（HDFS），这个有容错能力的分布式文件系统可以在多个节点之间冗余数据。&lt;/li&gt;
+  &lt;li&gt;涉及吉字节级别以上的数据时，就不能将所有中间数据或结果全部存放在内存中。Hadoop在处理过程中将键值对存储在HDFS中，这样就可以不受内存限制，完成数据量非常大的任务。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;storm&quot;&gt;Storm&lt;/h3&gt;
+
+&lt;h4 id=&quot;spoutbolttopology&quot;&gt;Spout、Bolt和Topology&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Storm系统处理的是元组（tuple）的流。Storm的元组类似于之前我们在第5章看到的actor模型的元组，但不同于Elixir的元组，Storm元组的元素是有名字的。&lt;/li&gt;
+  &lt;li&gt;元组由spout（出水管）组件创建，并由bolt（螺栓）组件进行处理，bolt也会输出元组。用流将spout和bolt连接在一起，就形成了topology（拓扑结构）。&lt;/li&gt;
+  &lt;li&gt;topology也可以很复杂——bolt可以消费多个流，而一个流也可以被多个bolt消费，构成一个有向无环图。spout和bolt都是并行化和分布式的。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;worker：spout和bolt不仅相互之间是并行的，而且其内部也都是并行的——每一个个体内部都是由很多worker实现的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;下图是一个topology&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://mmbiz.qpic.cn/mmbiz_png/Hiak8vv9WbJhL7pjGiaFVnTiadKXQrjsjrGmynzZ5p8YUL4CB2Pm97vOGyOTaVMz7zZialvEJS70D3cia7GoXhicAp9w/0?wx_fmt=gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;容错&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;将一个spout或bolt的多个worker分布在多台计算机上的主要原因是容错性。如果集群中的某一台计算机发生故障，topology可以将元组分发给仍存活的计算机，这样topology就可以继续运行。&lt;/li&gt;
+  &lt;li&gt;Storm会监视元组之间的依赖——如果某一个元组没能完成，Storm会将其依赖的spout元组置为失败并进行重试。这也就是说Storm默认使用的是“至少会执行一次”的处理策略。应用必须知道这个事实：元组可能会被重试，直到其结果正确。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;总结&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Lambda目前主要作为大数据平台的架构&lt;/li&gt;
+  &lt;li&gt;如果用Hadoop作为Batch Layer，而用Storm作为Speed Layer，那就需要维护两份使用不同技术的代码。所以目前有另外的一个解决方案是Apache Spark，它可以作为Lambda Architecture一体化的解决方案。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;引用&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/26568496&quot;&gt;与 Hadoop 对比，如何看待 Spark 技术？&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 20 Apr 2018 17:19:43 +0800</pubDate>
+        <link>https://caihua.tech/2018/04/20/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F-Lambda%E6%9E%B6%E6%9E%84/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/04/20/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F-Lambda%E6%9E%B6%E6%9E%84/</guid>
+        
+        <category>并发模型</category>
+        
+        
+      </item>
     
       <item>
         <title>七周七并发模式：通信顺序进程（CSP）</title>
@@ -1202,104 +1418,6 @@ readFile('./user.txt')
         <pubDate>Tue, 16 Jan 2018 23:49:53 +0800</pubDate>
         <link>https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</link>
         <guid isPermaLink="true">https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</guid>
-        
-        <category>CPP</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：Object Model</title>
-        <description>&lt;h4 id=&quot;composition--delegate--inherit-&quot;&gt;composition &amp;amp; delegate &amp;amp; inherit 的构造和析构顺序&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果有以下代码：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class A
-{
-public：
-    A();
-    ~A();
-    Foo();
-}
-
-class B
-{
-public：
-    B();
-    ~B();
-}
-
-class C:A
-{
-public：
-    C();
-    ~C();
-private:
-    B* b;
-}
-
-main()
-{
-    C c;
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在前面面向对象中讲过，B和C组成了composition &amp;amp; delegate，而A和C是继承关系。&lt;/li&gt;
-  &lt;li&gt;那么在内存使用的顺序上会先调用A的构造函数，然后调用B的构造函数。最后调用C的构造函数。&lt;/li&gt;
-  &lt;li&gt;在析构时的顺序是：先调用C的析构，在调用B的，最后调用A的。&lt;/li&gt;
-  &lt;li&gt;其顺序可以从代码层面这样的解释&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;C::C() ：A(), B() { // c在构造函数中要做的事情}
-
-C::~C()
-{
-    // c的析构
-    ~B();
-    ~C();
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;vptr--vtbl&quot;&gt;vptr &amp;amp; vtbl&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在C++中函数分为虚函数和非虚函数，对于非虚函数来说调用的时候编译器会编译为&lt;code class=&quot;highlighter-rouge&quot;&gt;call(method address)&lt;/code&gt;的形式，也就是说函数的地址是已知的，即使是继承下来的函数，等于也是调用了父类的函数的地址。这个被称为静态绑定。&lt;/li&gt;
-  &lt;li&gt;但是对于虚函数，因为有override的情况，所以C++中采用了虚机制，也可以说是动态绑定。&lt;/li&gt;
-  &lt;li&gt;虚机制的基础是虚指针和虚表。虚指针是对象中的一个指向虚表的指针，虚表是一个对象中所有的虚函数地址表。&lt;/li&gt;
-  &lt;li&gt;与C#方法列表进行比对： C#中方法列表包含了所有函数的地址，而C++的虚表中只是虚函数的。因为不知道子对象是否会override父类虚函数，所以这个虚表里面的函数可能指向了父类的虚函数，也可能指向了子类的虚函数，还有可能是子类override的虚函数。&lt;/li&gt;
-  &lt;li&gt;什么时候C++会使用动态绑定呢？
-    &lt;ul&gt;
-      &lt;li&gt;调用方法的对象是一个指针&lt;/li&gt;
-      &lt;li&gt;对象使用时是up cast，也就是协变。&lt;/li&gt;
-      &lt;li&gt;调用的是虚函数&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;本质：从下面的代码看*(p-&amp;gt;vptr)是虚指针指向的虚表，虚表中其实是函数地址的数组，调用某个函数就是去数组的值，然后传递参数。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;( *(p-&amp;gt;vptr) [n] )(...)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;PS：对于栈上的对象的方法调用，就不考虑虚机制。下面例子中B继承自A，AB中均有虚函数vFunc的情况下，结果是调用了A的虚函数，因为a不是指针。如果a是指针，那么走虚机制，应该执行的是B的vFunc。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;B b;
-
-A a = (A)b;
-
-a.vFunc();
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-</description>
-        <pubDate>Tue, 09 Jan 2018 23:48:28 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/</guid>
         
         <category>CPP</category>
         

@@ -173,6 +173,47 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：Object Model
+        </h2>
+        
+        <div class="post-content-preview">
+            composition &amp; delegate &amp; inherit 的构造和析构顺序
+
+  如果有以下代码：
+
+
+class A
+{
+public：
+    A();
+    ~A();
+    Foo();
+}
+
+class B
+{
+public：
+    B();
+    ~B();
+}
+
+class C:A
+{
+public：
+    C();
+    ~C();
+pri...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 9, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/07/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Reference/">
         <h2 class="post-title">
             侯捷C++学习笔记：Reference
@@ -420,23 +461,6 @@ delegate
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十八周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Uni...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 3, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -549,7 +573,7 @@ delegate
                             
                         
                             
-                                <a href="/tags/#并发模型" title="并发模型" rel="4">
+                                <a href="/tags/#并发模型" title="并发模型" rel="5">
                                     并发模型
                                 </a>
                             
