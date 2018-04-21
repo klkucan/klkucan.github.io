@@ -5,9 +5,138 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 20 Apr 2018 17:37:49 +0800</pubDate>
-    <lastBuildDate>Fri, 20 Apr 2018 17:37:49 +0800</lastBuildDate>
+    <pubDate>Sat, 21 Apr 2018 20:16:27 +0800</pubDate>
+    <lastBuildDate>Sat, 21 Apr 2018 20:16:27 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>游戏设计模式读书笔记：状态模式</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;解决了什么问题&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在游戏开发中状态是一种常见的用于描述游戏对象的方法，在状态比较简单的情况下可能通过多个标志位变量就可以组合出不同的状态。例如书中举得英雄行走、跳跃、蹲下等操作。但是一旦当对象的状态可是变得比较多，而且需要通过比较多的变量才能描述清楚时，只使用标志位变量的弊端就出现了：那就是过多的变量在代码编写时需要的条件语句会很多，而且变量的组合也不利于管理。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;switch&quot;&gt;使用switch管理状态&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;首先需要将状态从变量组合变为一个明确的字段，此时我们可以使用enum来实现这个。&lt;/li&gt;
+  &lt;li&gt;在switch中对于每个枚举状态开设分支。这样从一定程度上解决了大量变量带来的编程的复杂度。而且从逻辑上清晰的划分了状态。&lt;/li&gt;
+  &lt;li&gt;但是这个仍旧存在问题，用书中的例子来说，当你需要在某个状态中进行一个计时操作时。就需要在switch代码块和update代码块中修改功能，这说明功能没有能很好的封装，你需要修改两处才能实现功能的修改。如果我们在修改功能的时候只修改一个地方就能够避免一些麻烦，比如一次修改就要同时修改多处，万一遗漏了一个就可能造成bug。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;状态模式&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;允许一个对象在其内部状态发生变化时改变自己的行为，该对象看起来好像修改了它的类型。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这句话有点让人难以理解，实际上状态模式是这么干的：
+    &lt;ul&gt;
+      &lt;li&gt;定义状态接口&lt;/li&gt;
+      &lt;li&gt;让每个状态成为一个类并实现接口&lt;/li&gt;
+      &lt;li&gt;对象持有状态对象的引用，从而使得从外部看（实际就是获取对象的某些属性或者调用函数）这个对象具有不同的状态。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;对于一个状态的接口一般都包含如下的函数：Enter、Update、Exit。除此之外也可以根据实际情况设计一些函数，比如设计一个Init函数，它是在状态对象实例化时进行初始化用的。&lt;/li&gt;
+  &lt;li&gt;静态状态：如果一个状态它只有函数没有字段，也就是说它是对象无关的，那么完全可以使用静态类来定义状态，这样做可以节省内存，管理起来也比较简单。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;fsm&quot;&gt;有限状态机（FSM）&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;FSM我个人认为其作用在于专职的管理状态，比如状态的创建、切换、销毁等。&lt;/li&gt;
+  &lt;li&gt;对象持有的不在是一个具体的状态对象，而是一个FSM对象。而状态的切换也需要在FSM中实现，FSM中有一个所有状态的集合，同时保存当前的状态的引用。&lt;/li&gt;
+  &lt;li&gt;在切换状态时先要执行当前状态的Exit函数，然后执行下一个状态的Enter。&lt;/li&gt;
+  &lt;li&gt;在unity中对于不同的FSM一般使用一个专门的管理类来管理所有的FSM。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;并发状态机&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;并发状态机和下面谈到的另外两个其实都是在上面所说的基础上的扩展，用于不同的场景。&lt;/li&gt;
+  &lt;li&gt;顾名思义，并发状态机实际上就是对象同时拥有两种不同的状态。以书中的例子来说，就是英雄角色具有一个状态机，而英雄手中的武器也具有一个状态机。&lt;/li&gt;
+  &lt;li&gt;两个不同的状态机之间可能会有交互，为了完成这个，你也许会在状态的代码中做一些粗糙的if测试其他状态来协同，这不是最优雅的解决方案，但这可以搞定工作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;分层状态机&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;当不同状态具有某个共同点时使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;举个例子，我们的英雄也许有站立、行走、奔跑和滑铲状态。在这些状态中，按B跳，按下蹲。如果使用简单的状态机实现，我们在每个状态中的都重复了代码。如果我们能够实现一次，在多个状态间重用就好了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;状态可以有父状态（这让它变为子状态）。当一个事件进来，如果子状态没有处理，它就会交给链上的父状态。 换言之，它像重载的继承方法那样运作。事实上，如果我们使用状态模式实现FSM，我们可以使用继承来实现层次。 定义一个基类作为父状态：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class OnGroundState : public HeroineState
+{
+public:
+  virtual void handleInput(Heroine&amp;amp; heroine, Input input)
+  {
+    if (input == PRESS_B)
+    {
+      // 跳跃……
+    }
+    else if (input == PRESS_DOWN)
+    {
+      // 俯卧……
+    }
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class DuckingState : public OnGroundState
+{
+public:
+  virtual void handleInput(Heroine&amp;amp; heroine, Input input)
+  {
+    if (input == RELEASE_DOWN)
+    {
+      // 站起……
+    }
+    else
+    {
+      // 没有处理输入，返回上一层
+      OnGroundState::handleInput(heroine, input);
+    }
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;除了使用继承外，还可以显式的使用状态栈而不是单一状态来表示当前状态的父状态链。栈顶的状态是当前状态，在他下面是它的直接父状态，然后是那个父状态的父状态，以此类推。 当你需要状态的特定行为，你从栈的顶端开始，然后向下寻找，直到某一个状态处理了它。（如果到底也没找到，就无视它。）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;下推自动机&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;下推状态机解决的问题是有限状态机没有任何历史的概念。你记得正在什么状态中，但是不记得曾在什么状态。 没有简单的办法重回上一状态。&lt;/li&gt;
+  &lt;li&gt;有限状态机有一个指向状态的指针，下推自动机有一栈指针。 在FSM中，新状态代替了之前的那个状态。 下推自动机不仅能完成那个，还能给你两个额外操作：
+    &lt;ul&gt;
+      &lt;li&gt;你可以将新状态压入栈中。“当前的”状态总是在栈顶，所以你能转到新状态。 但它让之前的状态待在栈中而不是销毁它。&lt;/li&gt;
+      &lt;li&gt;你可以弹出最上面的状态。这个状态会被销毁，它下面的状态成为新状态。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;总结&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;状态模式在游戏开发中使用的最为广泛的就是FSM，它有效的将游戏对象的不同状态进行了封装，从而使得对象的操作更加简单。&lt;/li&gt;
+  &lt;li&gt;对于单个的游戏对象不同的状态中可能会有更多的操作，比如对象在行走状态下需要控制移动的方向、速度、对于碰撞体的处理等。这个就需要在状态机中进行功能编写了。&lt;/li&gt;
+  &lt;li&gt;对于FSM的实现推荐看下GameFramework中的&lt;a href=&quot;https://github.com/EllanJiang/GameFramework/tree/master/GameFramework/Fsm&quot;&gt;FSM&lt;/a&gt;部分。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 21 Apr 2018 20:15:35 +0800</pubDate>
+        <link>https://caihua.tech/2018/04/21/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/04/21/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</guid>
+        
+        <category>游戏设计模式读书笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>七周七并发模式：Lambda架构</title>
@@ -1336,90 +1465,6 @@ readFile('./user.txt')
         <guid isPermaLink="true">https://caihua.tech/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/</guid>
         
         <category>并发模型</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>侯捷C++学习笔记：对象的创建和销毁</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;概述&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;本文会记录CPP中对象的创建和销毁的过程中的细节&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;big-three&quot;&gt;big three函数&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;拷贝构造函数&lt;/li&gt;
-  &lt;li&gt;拷贝赋值函数&lt;/li&gt;
-  &lt;li&gt;析构函数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;用途：这三个函数是在类中包含了指针的情况下使用的。&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;当有一个成员变量是一个指针时，就有了给这个变量赋值的问题。如果这个赋值需要深拷贝，那么就需要申请内存空间。这样在析构函数中就需要对指针进行delete。&lt;/li&gt;
-  &lt;li&gt;这个成员变量可以是在对象构造函数中被赋值的，比如是个拷贝构造函数。也可以是在拷贝赋值函数中被赋值的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;对象创建&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;Complex c1(1,2)&lt;/code&gt;这样的形式还是&lt;code class=&quot;highlighter-rouge&quot;&gt;Complex* c2 = new Complex(1,2)&lt;/code&gt;这样的形式，都可以创建对象。&lt;/li&gt;
-  &lt;li&gt;构造函数不能直接被指针调用&lt;code class=&quot;highlighter-rouge&quot;&gt;p-&amp;gt;P::P()&lt;/code&gt;，这样写在某些编译器下可以通过编译但是某些不行。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;new&quot;&gt;new做了什么&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4670/40329065372_ff712bf4f9_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;生命周期&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;对于c1这样在栈上的，生命周期就是C1的作用域。&lt;/li&gt;
-  &lt;li&gt;对于C2这样指针的，生命周期也看C2的生命周期，比如C2是个函数的局部变量，那么在函数结束时因为要调用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete c2&lt;/code&gt;，此时对象也就被销毁了。&lt;/li&gt;
-  &lt;li&gt;如果一个c3是static的，那么按照C里面的约定这个变量的生命周期就是进程的生命周期，不管这个C3是全局还是局部。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;对象在内存中是什么样的布局&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4613/39477530815_26b8a6f5c4_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;section-5&quot;&gt;看图说话&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;图是VC中的内存布局，一个对象的大小必须是16字节的倍数。&lt;/li&gt;
-  &lt;li&gt;灰色部分是debug模式下才有的，用于debug。&lt;/li&gt;
-  &lt;li&gt;Release模式下一个对象包含上下hook共4*2=8个字节，对象本身的字节数（complex那个例子下就是实部和虚部共2个double，即4*2=8字节）。如果不够16的倍数就会出现墨绿色部分的pad，也就是填补内存。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-6&quot;&gt;对象的销毁&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;生成的对象c1和c2都会在作用域结束后销毁。如果是c1那么它这个对象本身就在栈上保存，因此销毁后全部内存就释放掉了。但是指针的形式，因为对象是在堆上的，如果c2指针被销毁了，那么堆上这块内存就无法找到并销毁了（直到进程结束），造成了内存泄漏。&lt;/li&gt;
-  &lt;li&gt;因此对于指针形式的c2，在其使用完成后就可以直接调用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete c2&lt;/code&gt;来实现销毁。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-7&quot;&gt;析构函数&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果一个对象中动态的分配了内存，那么需要在析构函数找那个对分配的内存进行删除。&lt;/li&gt;
-  &lt;li&gt;如果不显式的去写析构函数编译器应该会生成一个，如果我没有记错的话。&lt;/li&gt;
-  &lt;li&gt;上面的c1中如果是在栈上的，那么变量离开作用域后会自动销毁并调用析构函数。&lt;/li&gt;
-  &lt;li&gt;构造函数执行两个步骤，第一个执行&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;delete&quot;&gt;delete做了什么&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4664/25502410297_0d908862e7_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-8&quot;&gt;数组删除&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;如果动态生产了数组内存，则在析构函数或者当需要删除对象时需要用&lt;code class=&quot;highlighter-rouge&quot;&gt;delete[]&lt;/code&gt;。在这个过程中具体干了什么呢？&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/5/4710/40329065432_911ca4b950_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;上面也说了，delete会先执行析构函数，其实对于一个对象来说，由于上下hook的存在因此析构函数可以完美的删除这个对象所占用的内存。所以图中左右两个delete都可以删除p所指向的数组，但是因为数组中是string的指针， 所以删除数组后string指针对指向的string对象本身并没有删除。而这个string对象本身其实就是char[]。这才是不用delete[]造成内存泄漏的本质。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 16 Jan 2018 23:49:53 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/</guid>
-        
-        <category>CPP</category>
         
         
       </item>

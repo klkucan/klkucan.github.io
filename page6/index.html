@@ -173,6 +173,25 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/">
+        <h2 class="post-title">
+            Lua学习笔记：迭代和闭包
+        </h2>
+        
+        <div class="post-content-preview">
+            关系
+
+  迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由闭包函数本身和一个创建该闭包函数的工厂函数组成。
+  以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on August 14, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%87%BD%E6%95%B0%E6%B7%B1%E5%85%A5/">
         <h2 class="post-title">
             Lua学习笔记：函数深入
@@ -400,29 +419,6 @@ Resources系统的最佳实践
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/07/09/5.6%E6%B7%B7%E5%90%88%E5%85%89%E7%85%A7/">
-        <h2 class="post-title">
-            5.6混合光照
-        </h2>
-        
-        <div class="post-content-preview">
-            原文地址
-原有混合光照的问题
-
-  5.6之前的光照存在一个严重的问题就是: 混合光照仅当只有一个定向光时才能正常工作。
-  这是什么个意思呢？
-    
-      首先说一下unity的GI一直以来都是依靠烘焙来做的，但是在unity5中加入了PRGI。
-      目前的unity在一个场景中可以混合使用烘焙光照和实时光照，一部分静态对象使用烘焙好的光照和影子，而一些非静态的对象可以继...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on July 9, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -493,7 +489,7 @@ Resources系统的最佳实践
                             
                         
                             
-                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="7">
                                     游戏设计模式读书笔记
                                 </a>
                             

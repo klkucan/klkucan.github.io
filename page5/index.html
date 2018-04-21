@@ -173,6 +173,27 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第八周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+打包AssetBundle的时候，我发现切换场景时，即使打同一个场景的AssetBundle，它们的Hash值都是不一样的，可能是什么原因造成的呢？
+
+
+  目前很可能是Shader Stripping造成的，其原理可见文档。
+  简单来说就是根据当前场景对Shader进行简化，因此如果打包时包含的场景的Lightmap或Fog设置不同，打出来的AssetBundle...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/">
         <h2 class="post-title">
             每天一点UWA：UI优化小结
@@ -403,25 +424,6 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/08/14/Lua%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E8%BF%AD%E4%BB%A3%E5%92%8C%E9%97%AD%E5%8C%85/">
-        <h2 class="post-title">
-            Lua学习笔记：迭代和闭包
-        </h2>
-        
-        <div class="post-content-preview">
-            关系
-
-  迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由闭包函数本身和一个创建该闭包函数的工厂函数组成。
-  以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 14, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -492,7 +494,7 @@ Resources.UnloadAsset仅能释放非GameObject和Component的资源，比如Text
                             
                         
                             
-                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="7">
                                     游戏设计模式读书笔记
                                 </a>
                             

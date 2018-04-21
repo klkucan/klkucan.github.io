@@ -173,6 +173,37 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/">
+        <h2 class="post-title">
+            侯捷C++学习笔记：对象的创建和销毁
+        </h2>
+        
+        <div class="post-content-preview">
+            概述
+
+  本文会记录CPP中对象的创建和销毁的过程中的细节
+
+
+big three函数
+
+  拷贝构造函数
+  拷贝赋值函数
+  析构函数
+
+
+用途：这三个函数是在类中包含了指针的情况下使用的。
+
+  当有一个成员变量是一个指针时，就有了给这个变量赋值的问题。如果这个赋值需要深拷贝，那么就需要申请内存空间。这样在析构函数中就需要对指针进行delete。
+  这个成员变量可以是在对象构造函数...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 16, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/09/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Object-Model/">
         <h2 class="post-title">
             侯捷C++学习笔记：Object Model
@@ -437,30 +468,6 @@ delegate
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/">
-        <h2 class="post-title">
-            Unity特效学习：粒子
-        </h2>
-        
-        <div class="post-content-preview">
-            参数
-
-  只记录一些特别的参数
-  Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。
-  StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。
-  Color：
-    
-      Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。
-  ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 9, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -531,7 +538,7 @@ delegate
                             
                         
                             
-                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="6">
+                                <a href="/tags/#游戏设计模式读书笔记" title="游戏设计模式读书笔记" rel="7">
                                     游戏设计模式读书笔记
                                 </a>
                             
