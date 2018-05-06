@@ -5,9 +5,198 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sat, 21 Apr 2018 21:05:52 +0800</pubDate>
-    <lastBuildDate>Sat, 21 Apr 2018 21:05:52 +0800</lastBuildDate>
+    <pubDate>Sun, 06 May 2018 15:19:39 +0800</pubDate>
+    <lastBuildDate>Sun, 06 May 2018 15:19:39 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>游戏设计模式读书笔记：游戏循环</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;游戏循环&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;游戏循环是一个游戏系统中最为关键的环节，可以说只要开发游戏就会用到这个模式，只不过它很多时候已经被集成到了引擎当中。在使用Unity引擎的过程中，可以体会到一个游戏中所有的表现都依赖于循环。&lt;/li&gt;
+  &lt;li&gt;不同于传统软件循环中只等待输入的情况，一个游戏循环在游玩中不断运行。每一次循环，它无阻塞地处理玩家输入，更新游戏状态，渲染游戏。它追踪时间的消耗并控制游戏的速度。&lt;/li&gt;
+  &lt;li&gt;有时候在某个平台开发游戏循环时，需要使用平台特有的事件循环。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;fps&quot;&gt;帧率（FPS）&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果我们用实际时间来测算游戏循环运行的速度，就得到了游戏的“帧率”(FPS)。 如果游戏循环的更快，FPS就更高，游戏运行得更流畅、更快。 如果循环得过慢，游戏看上去就像是慢动作电影。&lt;/li&gt;
+  &lt;li&gt;两个因素决定了帧率:
+    &lt;ul&gt;
+      &lt;li&gt;一个是每帧要做多少工作。复杂的物理，众多游戏对象，图形细节都让CPU和GPU繁忙，这决定了需要多久能完成一帧。&lt;/li&gt;
+      &lt;li&gt;另一个是底层平台的速度。 更快的芯片可以在同样的时间里执行更多的代码。 多核，GPU组，独立声卡，以及系统的调度都影响了在一次滴答中能够做多少东西。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;当前的游戏开发中，游戏循环的一个重要任务就是不管潜在的硬件条件，以固定速度运行游戏。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;循环的演化&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;跑，能跑多快跑多快&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;下面这个可以说是最简单的循环，它完全不控制帧率，可能在性能好的设备上运行的非常快，在不好的设备上运行缓慢。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;while (true)
+{
+  processInput();
+  update();
+  render();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;休息一下&lt;/h5&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;假设你想要你的游戏以60FPS运行。这样每帧大约16毫秒。 只要你用少于这个的时长进行游戏所有的处理和渲染，就可以以稳定的帧率运行。 你需要做的就是处理这一帧然后等待，直到处理下一帧的时候，就像这样：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/785/39792215050_f8590ba1b4_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;while (true)
+{
+  double start = getCurrentTime();
+  processInput();
+  update();
+  render();
+
+  sleep(start + MS_PER_FRAME - getCurrentTime());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;但是如果每帧超过了16ms，那么仍旧无法保障帧率。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;一小步，一大步&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;游戏循环中需要实现变化的时间间隔。如果说我们在每次更新中将游戏时间推动一个固定量，那么当每帧的真实执行时间超过这个固定量时，会导致游戏时间慢与实际时间。&lt;/li&gt;
+  &lt;li&gt;因此一般都会将上一帧的真实执行时间作为参考来决定这一帧游戏时间的推动量。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;double lastTime = getCurrentTime();
+while (true)
+{
+  double current = getCurrentTime();
+  double elapsed = current - lastTime;
+  processInput();
+  update(elapsed);
+  render();
+  lastTime = current;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;每一帧，我们计算上次游戏更新到现在有多少真实时间过去了（即变量elapsed）。 当我们更新游戏状态时将其传入。 然后游戏引擎让游戏世界推进一定的时间量。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;这样处理的问题：不同性能的设备会导致帧率不同，从而计算浮点型数据的结果在一秒内会有偏差。对于联机游戏来说就是问题了。现在很多的联机游戏已经是在服务器计算位置等数据了，避免了不同设备性能差异造成的错误。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;追逐时间&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;其本质是在固定时间间隔更新游戏。但是这个更新的内容却并非是游戏的全部内容，而是与物理、AI等相关的部分。用过unity的同学应该已经感觉有点熟悉了，这个在unity中就是FixedUpdate。&lt;/li&gt;
+  &lt;li&gt;对于render，因为它只是将某一个时间点的内容显示出来，因此并不受动态时间间隔的影响，只要保证每一帧都做一次就好。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/794/40708404425_cfb99f19ab_n.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;double previous = getCurrentTime();
+double lag = 0.0;
+while (true)
+{
+  double current = getCurrentTime();
+  double elapsed = current - previous;
+  previous = current;
+  lag += elapsed;
+
+  processInput();
+
+  while (lag &amp;gt;= MS_PER_UPDATE)
+  {
+    update();
+    lag -= MS_PER_UPDATE;
+  }
+
+  render();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上面的代码某种程度是也是unity内部的实现。而里面的update函数可以换做FixedUpdate，这也是为何在输出log的情况下，可能会发现一个Update中会穿插多个FixedUpdate。因为unity中默认是FixedUpdate是一秒执行50次，即0.02秒一次，但是如果说一帧的真实时间超过了0.02s，那么为了追赶时间一帧中会执行多次FixedUpdate。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;卡在中间&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;其实上面一步已经算是比较完善的循环过程，在固定的时间更新游戏，而在任意一个时刻渲染。但是这样也意味着某次渲染可能是在两次更新之间。如下图所示，在第三次渲染时刚好渲染的时间点处于更新的中间。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/903/40708404465_50b27abb1a_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个会造成什么问题呢？如果说是一颗子弹在运行，玩家在渲染的一瞬间期望看到的是子弹处于两个更新点之间的位置，但是因为下一个Update没有执行，所以真正看到的是子弹在左边的位置。也就是说期望与现实不符。其实人眼很可能根本看不到这么细微的差别，但是这个问题确实是存在的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/935/40708404125_3ac09fe94a_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;为了解决这个问题我们可以采用这样的一个方式&lt;code class=&quot;highlighter-rouge&quot;&gt;render(lag / MS_PER_UPDATE);&lt;/code&gt;， 在上面的代码中可以看出，lag经过计算后在render调用前的值为到下一帧的值。因此在渲染时考虑这个时间可以平滑的预计算物体的位置。但是这个位置并不一定是正确的，因为也许物体会碰撞发生位置的变化，但是这个必须要等下一帧中的update里面确认。&lt;/li&gt;
+  &lt;li&gt;PS：我并不确定这个操作是否有实际的意义。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;设计决策&lt;/h4&gt;
+&lt;h5 id=&quot;section-8&quot;&gt;拥有游戏循环的是你，还是平台？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;在使用循环的时候我们可能会遇到这样三种情况：
+    &lt;ul&gt;
+      &lt;li&gt;处于某个特定的平台，而这个平台有自己的循环，比如web browser上开发游戏就会受到浏览器本身的事件驱动机制阻碍。&lt;/li&gt;
+      &lt;li&gt;已经在使用某个游戏引擎了，比如说unity引擎，它就已经具备了内置的循环并且通过Update函数开放。&lt;/li&gt;
+      &lt;li&gt;编写自己的循环&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;以上三种情况各有利弊：
+    &lt;ul&gt;
+      &lt;li&gt;平台循环可以让你不必编写和优化自己的核心循环，但是你失去了对于时间的控制。&lt;/li&gt;
+      &lt;li&gt;游戏引擎循环与平台的情况基本一致。而且目前我们大多数开发都在使用商业引擎。&lt;/li&gt;
+      &lt;li&gt;自己编写当然最大的好处是完全可以自己控制，但是如果你在某个平台或者引擎上开发就需要考虑如何与其它循环协作的问题。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-9&quot;&gt;如何管理能量消耗？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;随着移动游戏时代的到来，越快越好的策略被舍弃，因为必须考虑手机设备的电量使用和CPU过度使用而造成的发热问题。&lt;/li&gt;
+  &lt;li&gt;移动游戏更加注意游戏的体验质量，而不是最大化图像画质。 很多这种游戏都会设置最大帧率（通常是30或60FPS）。 如果游戏循环在分配的时间片消耗完之前完成，剩余的时间它会休眠。这给了玩家“足够好的”游戏体验，也让电池轻松了一点。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-10&quot;&gt;你如何控制游戏速度？&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;固定时间步长，没有同步：也就是最开始的那套循环，完全依赖于硬件设备的性能。这个最大的弊端是影响游戏速度。&lt;/li&gt;
+  &lt;li&gt;固定时间步长，有同步：它的前提是游戏运行帧率很高，所以加了限制。这样可以节约电量，但是如果一旦帧率不够高其实也会造成游戏时间比现实时间慢的问题。&lt;/li&gt;
+  &lt;li&gt;动态时间步长：能适应并调整，避免运行得太快或者太慢。 如果游戏不能追上真实时间，它用越来越长的时间步长更新，直到追上。但是它也让游戏不确定而且不稳定。这是真正的问题，当然。在物理和网络部分使用动态时间步长会遇见更多的困难。&lt;/li&gt;
+  &lt;li&gt;固定更新时间步长，动态渲染：能适应并调整，避免运行得太快或者太慢。 只要能实时更新，游戏状态就不会落后于真实时间。如果玩家用高端的机器，它会回以更平滑的游戏体验。但是它更复杂。主要负面问题是需要在实现中写更多东西。 你需要将更新的时间步长调整得尽可能小来适应高端机，同时不至于在低端机上太慢。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;参考&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.unity3d.com/Manual/ExecutionOrder.html&quot;&gt;Unity中的循环&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.koonsolo.com/news/dewitters-gameloop/&quot;&gt;Game Loop&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gafferongames.com/post/fix_your_timestep/&quot;&gt;Fix Your Timestep!&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 06 May 2018 15:17:40 +0800</pubDate>
+        <link>https://caihua.tech/2018/05/06/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%B8%B8%E6%88%8F%E5%BE%AA%E7%8E%AF/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/05/06/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%B8%B8%E6%88%8F%E5%BE%AA%E7%8E%AF/</guid>
+        
+        <category>游戏设计模式读书笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>游戏设计模式读书笔记：状态模式</title>
@@ -1307,162 +1496,6 @@ readFile('./user.txt')
         <pubDate>Thu, 08 Feb 2018 20:52:19 +0800</pubDate>
         <link>https://caihua.tech/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</link>
         <guid isPermaLink="true">https://caihua.tech/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</guid>
-        
-        <category>并发模型</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>七周七并发模型：线程与锁</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;为何使用多线程和锁&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;为了能够并行的计算一些东西&lt;/li&gt;
-  &lt;li&gt;因为在多线程下，如果要修改同一个对象是值会出现竞态条件（即代码行为取决于各操作的时序）。它的表现可能是值的不对，甚至某些时候这个值的前半段是一个线程修改的，后半段是另一个线程修改的。因为这个对象可能不是原子的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;锁，或者说是并行控制的进化&lt;/h2&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;第一阶段：锁与同步方法&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;基础的锁&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;从代码层面看就是一个lock函数&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;同步方法&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在java或者C#中可以通过attribute来让方法同步执行，但是这个的效率是很低的。&lt;/li&gt;
-  &lt;li&gt;同时还引出了另外一个问题，当同时使用多个锁的时候不但效率会进一步降低，而且容易产生死锁。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;基础锁带来的问题&lt;/h4&gt;
-
-&lt;h5 id=&quot;section-6&quot;&gt;死锁&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;当出现多个锁的时候，因为执行顺的问题，导致多个对象都持有一个锁，同时在等待其他人释放锁。例子就是哲学家进餐问题。&lt;/li&gt;
-  &lt;li&gt;哲学家进餐问题的解决方法就是:
-    &lt;blockquote&gt;
-      &lt;p&gt;一个线程想使用多把锁时，就需要考虑死锁的可能。幸运的是，有一个简单的规则可以避开死锁——总是按照一个全局的固定的顺序获取多把锁。&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-7&quot;&gt;外星方法问题&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;所谓外星方法指的是在锁的block中调用了一个外部的方法，但是这个方法中可能会要求获得当前锁的权限，但是因为这个锁正在被使用，导致了代码出现死锁。&lt;/li&gt;
-  &lt;li&gt;解决方案：
-    &lt;ul&gt;
-      &lt;li&gt;唯一的解决思路是避免持有锁时调用外星方法；&lt;/li&gt;
-      &lt;li&gt;一种方法是在遍历之前对listeners进行保护性复制（defensive copy），再针对这份副本进行遍历；&lt;/li&gt;
-      &lt;li&gt;PS：但是我的理解是这个情况只有当数据是并发read时，如果是并发的write想来就有问题了。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-8&quot;&gt;第二阶段： 进击的锁&lt;/h3&gt;
-&lt;h4 id=&quot;section-9&quot;&gt;中断死锁&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;死锁问题是很让人沮丧的，而且也是很多时候都会遇到的。在我们的C#代码中使用lock来做锁，如果遇到死锁，我们是没有办法终止这个被锁的线程的。但是好在还有办法可以结束锁，在java中就是书中说的&lt;code class=&quot;highlighter-rouge&quot;&gt;ReentrantLock &lt;/code&gt;，对应的在C#中是&lt;code class=&quot;highlighter-rouge&quot;&gt;Monitor&lt;/code&gt;。&lt;/li&gt;
-  &lt;li&gt;PS：java的部分可以看下&lt;a href=&quot;http://blog.csdn.net/lipeng_bigdata/article/details/52154637&quot;&gt;这篇文章&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;PS2：两个类的功能基本是一致的，都包含了超时的功能。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-10&quot;&gt;问题是否得到了解决？&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;虽然tryLock()方案避免了无尽地死锁，但这并不是一个足够好的方案。首先，这个方案并不能避免死锁——它只是提供了从死锁中恢复的手段。其次，这个方案会受到活锁现象的影响——如果所有死锁线程同时超时，它们极有可能再次陷入死锁。虽然死锁没有永远持续下去，但对资源的争夺状况却没有得到任何改善。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有一些方法可以减小活锁的几率。比如为每个线程设置不同的超时时间，来减少所有线程同时超时的几率。但通过设置超时来处理死锁不能说是一个好的方案——以后我们还可以做得更好。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-11&quot;&gt;条件变量&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;C#中的Monitor有wait、Pulse和PulseAll，对应了ReentrantLock的&lt;code class=&quot;highlighter-rouge&quot;&gt;reachSixCondition&lt;/code&gt;对应。用法参考&lt;a href=&quot;https://msdn.microsoft.com/en-us/library/system.threading.monitor.pulse.aspx&quot;&gt;这里&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;该方法可以显著调高并发度&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-12&quot;&gt;原子变量&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;C#中可以使用Interlocked.Increment来做计算，这个是原子性的。在计数类的场景比较实用。&lt;/li&gt;
-  &lt;li&gt;这个是为了解决基础锁使用过程中对于数据的操作比较繁琐的问题。比如对于计数类的变量，需要保证其get\set都有锁的保护，这样写的方法就比较多了。&lt;/li&gt;
-  &lt;li&gt;原子变量是无锁（lock-free）非阻塞（non-blocking）算法的基础，这种算法可以不用锁和阻塞来达到同步的目的。无锁的代码比起有锁的代码更为复杂。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-13&quot;&gt;第三阶段：终极形态&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;书中以一个大数据的单词解析为例。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-14&quot;&gt;线程池&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;好处就是可以节约线程数，因此往往不能无限制的使用多线程。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;影响线程池最优大小的因素有很多，例如硬件的性能、线程任务是CPU密集型还是IO密集型、是否有其他任务在同时运行。还有很多其他原因也会产生影响。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;话虽如此，但也存在经验法则：对于CPU密集型的任务，线程池大小应接近于可用核数；对于IO密集型的任务，线程池可以设置得更大些。
-当然，最佳的方法是建立一个真实环境下的压力测试来衡量性能&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-15&quot;&gt;解决方案的进化&lt;/h4&gt;
-
-&lt;h5 id=&quot;section-16&quot;&gt;生产者消费者模式&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;将数据的解析与计算分割为生产者与消费者。从而分析出性能的瓶颈在消费者（统计单词量）这边。&lt;/li&gt;
-  &lt;li&gt;使用多线程分别进行生产和消费。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;关键在于生产者和消费者可能不会（几乎肯定不会）保持相同的速度。比如，当生产者的速度快于消费者的速度时，队列会越来越大。Wikipedia的dump差不多有40 GiB，很容易就让队列大小超过内存容量。
-相比之下，阻塞队列只允许生产者的速度在一定程度上超过消费者的速度，但不会超过很多。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;section-17&quot;&gt;消费者端的并发执行&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;将解析出来的数据放入到一个HashMap中&lt;/li&gt;
-  &lt;li&gt;在计算上，使用多线程来对HashMap进行统计，但是真正的计算方法本身采样lock。&lt;/li&gt;
-  &lt;li&gt;问题是从结果统计看并没有提高效率。其原因为：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;答案是因为过度竞争——过多的线程尝试同时使用一个共享资源。在我们的程序中，消费者花费大量时间等待被其他消费者锁住的counts，它们的等待时间比实际运算时间还要长，最终导致惨烈的性能下降。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h5 id=&quot;concurrenthashmap&quot;&gt;使用ConcurrentHashMap来解决共享资源的并发访问&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;C#中对应的是&lt;code class=&quot;highlighter-rouge&quot;&gt;ConcurrentDictionary&amp;lt;TKey, TValue&amp;gt;.AddOrUpdate Method (TKey, TValue, Func&amp;lt;TKey, TValue, TValue&amp;gt;)&lt;/code&gt;。也就是并发集合，依赖于内置的并发集合来提高并发的访问。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;concurrenthashmap-1&quot;&gt;使用多个ConcurrentHashMap&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;使用ConcurrentHashMap并没有完全的释放多核的威力。&lt;/li&gt;
-  &lt;li&gt;对原来的数据进一步拆分，进而分配给不同的线程来统计，极大的利用了多核。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section-18&quot;&gt;优缺点&lt;/h2&gt;
-&lt;h4 id=&quot;section-19&quot;&gt;优点&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;线程与锁模型的最大优点是其适用面很广。它是其他许多技术的基础，适用于解决很多类型的问题。同时，线程与锁模型更接近于“本质”——近似于对硬件工作方式的形式化——正确使用时，其效率很高。这也意味着它能够解决从小到大不同粒度的问题。&lt;/li&gt;
-  &lt;li&gt;另外，这个模型可以被轻松地集成到大多数编程语言中。语言设计者们可以轻易让一门指令式语言或面向对象语言支持线程与锁模型。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-20&quot;&gt;缺点&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;线程与锁模型没有为并行提供直接的支持。&lt;/li&gt;
-  &lt;li&gt;线程与锁模型仅支持共享内存模型。如果要支持分布式内存模型（无论是地理分布型或者容错型），就需要寻求其他技术的帮助。这也意味着线程与锁模型不适用于单个系统无力解决的问题。&lt;/li&gt;
-  &lt;li&gt;多线程的难点不在于难以编程，而在于难以测试。&lt;/li&gt;
-  &lt;li&gt;我们要全程保证所有对象的同步都是正确的、必须按照顺序来获取多把锁、持有锁时不调用外星方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 17 Jan 2018 00:01:05 +0800</pubDate>
-        <link>https://caihua.tech/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/</guid>
         
         <category>并发模型</category>
         
