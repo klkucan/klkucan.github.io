@@ -173,6 +173,35 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/07/20/%E5%BC%80%E5%8F%91ECS-style%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%80%9D%E8%80%83/">
+        <h2 class="post-title">
+            开发ECS style项目的思考
+        </h2>
+        
+        <div class="post-content-preview">
+            概述
+
+  这篇文章是近期在学习Entitas时对于ECS的进一步思考
+  其中会包含在使用ECS时需要注意的一些重要原则
+  这些原则在使用Entitas时如何实现
+  这篇文章不会讲Entitas的具体代码和功能，这需要每个使用者自己去看源码和demo。
+
+
+ECS的使用原则
+
+数据驱动一切
+
+
+  ECS的目的就是将数据与行为进行解耦，而ECS中行为（System）的执行是依赖于数据（...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 20, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/05/06/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%B8%B8%E6%88%8F%E5%BE%AA%E7%8E%AF/">
         <h2 class="post-title">
             游戏设计模式读书笔记：游戏循环
@@ -386,30 +415,6 @@ ComponentSystem
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2018/02/08/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/">
-        <h2 class="post-title">
-            七周七并发模型：函数式编程
-        </h2>
-        
-        <div class="post-content-preview">
-            概念
-
-  命令式编程的代码由一系列改变全局状态的语句构成，而函数式编程则是将计算过程抽象成表达式求值。
-  这些表达式由纯数学函数构成，而这些数学函数是第一类对象（我们可以像操作数值一样操作第一类对象）并且没有副作用。由于没有副作用，函数式编程可以更容易做到线程安全，因此特别适合于并发编程。
-
-
-为什么在并发和并行问题时会用到函数式编程
-
-  有关锁的一些规则，都是针对于线程之间共享的可变...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on February 8, 2018
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -520,6 +525,12 @@ ComponentSystem
                             
                                 <a href="/tags/#并发模型" title="并发模型" rel="5">
                                     并发模型
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#ECS" title="ECS" rel="1">
+                                    ECS
                                 </a>
                             
                         

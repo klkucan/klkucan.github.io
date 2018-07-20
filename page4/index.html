@@ -173,6 +173,23 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/11/13/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%94%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十五周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 13, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/11/08/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A8%E7%94%BB%E9%87%8D%E5%AE%9A%E5%90%91%E7%AC%94%E8%AE%B0/">
         <h2 class="post-title">
             每天一点UWA：动画重定向笔记
@@ -392,26 +409,6 @@ AddSearcher(StaticLuaCallbacks.LoadFromCustomLoaders, 3...
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/10/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-AssetBundle中的脚本
-
-  首先，需要说明的是，脚本本身的内容是不会被打包到AssetBundle文件中的，AssetBundle文件储存的仅是脚本的索引信息。因此，即便有多个AssetBundle中都存在UIAtlas这一脚本索引，对堆内存也几乎是不产生影响的，且不会产生冗余问题。
-  其次，脚本被当做资源且会产生依赖这一现象，仅在Unity 4.x版本中...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 5, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -526,6 +523,12 @@ AssetBundle中的脚本
                             
                                 <a href="/tags/#并发模型" title="并发模型" rel="5">
                                     并发模型
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#ECS" title="ECS" rel="1">
+                                    ECS
                                 </a>
                             
                         

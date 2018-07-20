@@ -173,6 +173,25 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/03/08/SendMessage%E6%B5%8B%E8%AF%95/">
+        <h2 class="post-title">
+            SendMessage测试
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.
+  obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。
+  如果Foo的参数不对，会提...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on March 8, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/03/05/%E5%85%B3%E4%BA%8EAssetBundle%E8%A7%A3%E5%8E%8B%E7%9A%84%E8%AE%A8%E8%AE%BA%E7%BB%93%E6%9E%9C/">
         <h2 class="post-title">
             关于AssetBundle解压的讨论结果
@@ -414,25 +433,6 @@ Clusters
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2016/11/12/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90AnimatorController/">
-        <h2 class="post-title">
-            代码生成AnimatorController
-        </h2>
-        
-        <div class="post-content-preview">
-            0.出发点
-
-  
-    现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 12, 2016
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -547,6 +547,12 @@ Clusters
                             
                                 <a href="/tags/#并发模型" title="并发模型" rel="5">
                                     并发模型
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#ECS" title="ECS" rel="1">
+                                    ECS
                                 </a>
                             
                         
