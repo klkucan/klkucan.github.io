@@ -173,6 +173,33 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/07/23/Unity%E8%BF%94%E5%9B%9EValue%E7%9A%84%E5%8D%8F%E7%A8%8B/">
+        <h2 class="post-title">
+            Unity返回Value的协程
+        </h2>
+        
+        <div class="post-content-preview">
+            起因
+
+  其实一直以来就有个想法，希望能让unity中的coroutine返回一个具体的数值，比如int，比如string或者一个GameObject。最近也查了些资料，然后总结一下这个功能如何实现。
+
+
+回调函数实现
+
+
+  这个算是一个取巧的办法，在调用协程时传递一个回调函数，在执行过程中根据情况调用回调即可。不废话，直接上代码：
+
+
+ IEnumerator CoroutineWit...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on July 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/07/23/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-Resources%E6%96%87%E4%BB%B6%E5%A4%B9/">
         <h2 class="post-title">
             AssetBundle学习笔记：Resources文件夹
@@ -397,37 +424,6 @@ Normal AssetBundle structure
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/03/14/AssetBundle%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1-%E6%A6%82%E8%BF%B0%E5%92%8C%E5%88%9B%E5%BB%BA/">
-        <h2 class="post-title">
-            AssetBundle学习笔记：1、概述和创建
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。
-
-
-概述
-
-
-  AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。
-
-
-AB流程
-
-
-
-  Editor编辑，...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 14, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -486,7 +482,7 @@ AB流程
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="18">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="19">
                                     Unity3D
                                 </a>
                             

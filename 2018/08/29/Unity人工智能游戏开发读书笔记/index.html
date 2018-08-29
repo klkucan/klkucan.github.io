@@ -10,9 +10,9 @@
     <meta name="keywords"  content="博客, 个人网站, 游戏开发，互联网, Unity3D, iOS, 蔡华, Unity, Unity3D, iOS, Lua, lua, VR, AR, vr, ar, UWA, hotfix">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>bat学习 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
+    <title>Unity人工智能游戏开发笔记 - 蔡华的博客, 游戏开发，Unity3D, iOS, Lua, VR, AR</title>
 
-    <link rel="canonical" href="https://caihua.tech/2017/08/27/bat%E5%AD%A6%E4%B9%A0/">
+    <link rel="canonical" href="https://caihua.tech/2018/08/29/Unity%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -161,15 +161,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#杂记" title="杂记">杂记</a>
+                        <a class="tag" href="/tags/#Unity3D" title="Unity3D">Unity3D</a>
                         
                     </div>
-                    <h1>bat学习</h1>
+                    <h1>Unity人工智能游戏开发笔记</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by 蔡华的博客 on August 27, 2017</span>
+                    <span class="meta">Posted by 蔡华的博客 on August 29, 2018</span>
                 </div>
             </div>
         </div>
@@ -187,183 +187,107 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h3 id="section">概念</h3>
+				<h3 id="section">前言</h3>
 <ul>
-  <li>批处理的本质，是一堆DOS和cmd命令按一定顺序排列而形成的集合。</li>
-  <li>熟悉DOS语法，然后按照正确的顺序来进行指令的运行。</li>
+  <li>本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。</li>
+  <li>但是本书关于模糊逻辑部分非常坑，令人发指。</li>
 </ul>
 
-<h3 id="section-1">系统教程</h3>
+<h3 id="section-1">概要内容</h3>
+
+<h5 id="fsm">FSM</h5>
 <ul>
-  <li>使用/?查看if的功能，使用与很多指令，<code class="highlighter-rouge">%</code>似乎不行。</li>
+  <li>有限状态机算是最简单的一种AI的实现，它的核心是状态，逻辑运算的结果表现为状态的变化。主要包含三个要点：
+    <ul>
+      <li>转换：状态间的关系</li>
+      <li>规则：触发某一状态转换</li>
+      <li>事件：触发规则检查</li>
+    </ul>
+  </li>
+  <li>关于FSM我之前有写过，包括网上也有很多教程。</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>if /?
-pause
-
---------------------------------------------
-
-C:\Users\Administrator\Desktop&gt;
-执行批处理程序中的条件处理。
-
-IF [NOT] ERRORLEVEL number command
-IF [NOT] string1==string2 command
-IF [NOT] EXIST filename command
-
-  NOT               指定只有条件为 false 的情况下，Windows 才
-                    应该执行该命令。
-
-  ERRORLEVEL number 如果最后运行的程序返回一个等于或大于
-                    指定数字的退出代码，指定条件为 true。
-
-  string1==string2  如果指定的文字字符串匹配，指定条件为 true。
-
-  EXIST filename    如果指定的文件名存在，指定条件为 true。
-
-  command           如果符合条件，指定要执行的命令。如果指定的
-                    条件为 FALSE，命令后可跟 ELSE 命令，该命令将
-                    在 ELSE 关键字之后执行该命令。
-
-ELSE 子句必须出现在同一行上的 IF 之后。例如:
-
-    IF EXIST filename. (
-请按任意键继续. . .
-</code></pre>
-</div>
-
-<h3 id="demo">从一个demo中学习</h3>
-
+<h5 id="section-2">感知系统</h5>
 <ul>
-  <li>这个demo的作用是用来更新游戏客户端的。一般来说我们的端游客户端会有一个launcher来启动真正的游戏，它还要负责来更新游戏。同时，它还要更新自己，以前WOW中的做法是有个专门的update.exe来做更新（不过现在是靠battle.net来更新了），我觉得bat文件一样可以做，因此写了这个demo。下面代码中TL代表launcher，TC代码client。</li>
+  <li>重要概念：
+    <ul>
+      <li>Entity：包含玩家主体对象和环境对象</li>
+      <li>Aspect：标记卡。这个用于让AI判断检测到的物体是不是搜索的目标。</li>
+      <li>Sense</li>
+    </ul>
+  </li>
+  <li>Sense：字面翻译过来就是个感知，它包含了视觉、听觉、触觉、嗅觉和超自然的感知（忽悠人的^_^）。</li>
+  <li>实现：以下罗列出unity引擎中的实现
+    <ul>
+      <li>视觉：通常用于表达AI是否看到，unity用可以使用多条射线来制作。在视觉中也有FOV的概念，这个在制作射线的时候可以作为因素考虑进去。</li>
+      <li>听觉、触觉、嗅觉：球体实现。触觉用碰撞体其实是比较好理解，听觉和嗅觉有点抽象，但是本质还是不同的碰撞体检测不同的layer。</li>
+      <li>超自然的感知：直接通过获取系统数据来实现感知，作弊的行为。</li>
+    </ul>
+  </li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>@echo on
-cls
-
-:: 当前程序所在目录
-set LocalPath=%~dp0
-:: TL更新包完全路径名,不带后缀，同时也是解压缩后的文件夹名称
-set  TLZipFile=%~dp0TLUpgradeData\TL_%1
-:: TL更新包解压路径
-set  TLDecompressPath=%~dp0TLUpgradeData\
-
-echo 执行更新，请稍后...
-
-echo ----1.关闭客户端进程----
-tasklist /nh|find /i "TL.exe"
-if ERRORLEVEL 1 (echo TL客户端进程已经结束) else (taskkill /f /im TL.exe)
-tasklist /nh|find /i "TC.exe"
-if ERRORLEVEL 1 (echo TC客户端进程已经结束) else (taskkill /f /im TC.exe)
-
-echo ----2.开始解压缩安装包----
-if exist %TLZipFile%.zip   %LocalPath%7z x %TLZipFile%.zip -o%TLDecompressPath% -aoa
-
-echo ----3.开始复制文件----
-xcopy %TLZipFile%  %LocalPath% /e /f /k /y
-:: xcopy switch说明：
-:: /E           复制目录和子目录，包括空目录。
-:: /F           复制时显示完整的源文件名和目标文件名。
-:: /K           复制属性。一般的 Xcopy 会重置只读属性。
-:: /Y           取消提示以确认要覆盖
-
-echo ----4.删除临时文件----
-del %TLZipFile%.zip
-rmdir %TLZipFile% /s /q
-:: 删除当文件夹和里面的所有文件，/s 表示包含子文件夹，/q 表示不需要确实提示 
-pause
-
-</code></pre>
-</div>
-
-<h4 id="section-2"><code class="highlighter-rouge">@</code></h4>
+<h5 id="section-3">寻路</h5>
 <ul>
-  <li>它的作用是让执行窗口中不显示它后面这一行的命令本身。行首有了它的话，这一行的命令就不显示了。首行的@echo off中，@的作用就是让脚本在执行时不显示后面的echo off部分。</li>
+  <li>寻路是游戏中很重要的AI行为，书中提到了A star，也用到了unity的NavMesh组件，在这里就不具体说了。</li>
 </ul>
 
-<h4 id="section-3"><code class="highlighter-rouge">::</code> -双冒号</h4>
+<h5 id="section-4">集群行为</h5>
 <ul>
-  <li>类似注释符号</li>
+  <li>三个基本的概念：
+    <ul>
+      <li>分离性：个体之间保持固定距离</li>
+      <li>排列的整齐性：整体间相同的方向和速度</li>
+      <li>内聚性：个体与集群中心位置进保持最小距离</li>
+    </ul>
+  </li>
+  <li>书中实现了多个不同的算法，也利用unity引擎的一些内置功能俩实现。</li>
 </ul>
 
-<h4 id="section-4"><code class="highlighter-rouge">&gt;</code>和<code class="highlighter-rouge">&gt;&gt;</code></h4>
-
+<h5 id="section-5">行为树</h5>
 <ul>
-  <li><code class="highlighter-rouge">&gt;</code>指示将内容写入某个文件</li>
-  <li><code class="highlighter-rouge">&gt;&gt;</code>的作用，和&gt;的相同，区别是把结果追加到前一行得出的结果的后面，类似写文件时的append。</li>
+  <li>
+    <p>行为树体现为任务节点。在行为树中有很多功能不同的节点，有完成基础任务的叶子节点，也有用于逻辑的复合节点和修饰节点。</p>
+  </li>
+  <li>
+    <p>节点的状态一般分为三种：成功、失败、运行状态（等待）</p>
+  </li>
 </ul>
 
-<h4 id="echo"><code class="highlighter-rouge">echo</code>的三个用法</h4>
+<h5 id="section-6">复合节点</h5>
 <ul>
-  <li>命令显示与否的开关，有off和on两个选项。设置为off后，后续所有的命令都不会显示命令本身，只显示命令的结果。</li>
-  <li>类似于print，用于输出信息。</li>
-  <li>可以直接编辑文本文件。</li>
+  <li>序列（Sequence）：逐个执行node，当出现失败时返回失败；否则一直执行完。node之间是and关系。</li>
+  <li>选择器（Selector）：只要一个node成功就返回成功，如果运行完了都没有成功的则为false。node之间是or关系。</li>
+  <li>注意，节点之间的and、or的关系是可以自己控制的。</li>
 </ul>
 
-<h4 id="pause-"><code class="highlighter-rouge">pause </code></h4>
+<h5 id="section-7">修饰节点</h5>
 <ul>
-  <li>就是字面意思</li>
+  <li>定义：
+    <ul>
+      <li>修饰节点只包含一个子节点，接受子节点返回的状态。</li>
+      <li>可以自由组合使用</li>
+      <li>根据自身的参数估算子节点结果，可以根据设置重新得到一个子节点结果（反相器）或者设置子节点频率（重复器、限制器）。</li>
+    </ul>
+  </li>
+  <li>反相器：NOT标识符，接受与其子节点返回状态相反的结果。</li>
+  <li>重复器：重复估算子节点特定的次数，直至满足修饰节点定义的条件。</li>
+  <li>限制器：限制子节点估算次数。</li>
 </ul>
 
-<h4 id="goto"><code class="highlighter-rouge">:</code>和<code class="highlighter-rouge">goto</code></h4>
+<h5 id="section-8">模糊逻辑</h5>
 <ul>
-  <li>goto用于与其它语言是一样的，就是跳转到一个指定的标签</li>
-  <li><code class="highlighter-rouge">:</code>是定义一个标签</li>
+  <li>
+    <p>在以往的二元逻辑中，基本只有true和false。但是在模糊逻辑中，数值是<code class="highlighter-rouge">[0,1]</code>，在这个区间内的值代表着一种模糊的状态。</p>
+  </li>
+  <li>三个步骤
+    <ul>
+      <li>模糊化：根据隶属度函数从具体的输入得到对模糊集隶属度的过程。</li>
+      <li>推理方法：从模糊规则和输入对相关模糊集的隶属度得到模糊结论的方法。</li>
+      <li>去模糊化：将模糊结论转化为具体的、精确的输出的过程。</li>
+    </ul>
+  </li>
+  <li>这部分的内容请移步<a href="https://blog.csdn.net/Jurbo/article/details/75949360">游戏开发中的人工智能（十）：模糊逻辑</a> 。 本书模糊逻辑部分根本就是不完整的，内容质量非常的差。</li>
 </ul>
-
-<h4 id="if"><code class="highlighter-rouge">if</code></h4>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>@echo off
-
-if "%1" == "1" goto goto1
-if "%1" == "2" goto goto2
-
-:goto1
-echo 参数是goto1
-
-:goto2
-echo 参数是goto2
-pause
-exit
-</code></pre>
-</div>
-
-<ul>
-  <li>就是条件判断，只不过跟着不同的命令产生不同的功能</li>
-  <li>if exist判定存在</li>
-  <li>结果判断</li>
-  <li>if not 否定判定</li>
-</ul>
-
-<h4 id="section-5">变量</h4>
-<ul>
-  <li>使用set来进行变量设置，set还有几个switch。当变量的来源是输入内容时用<code class="highlighter-rouge">set /p</code>。</li>
-  <li><code class="highlighter-rouge">set variable=value</code>注意这个语句中等号前后没有空格，我发现有空格的话变量赋值有问题。</li>
-  <li>使用变量时用<code class="highlighter-rouge">%variable%</code>的形式，即两个百分号夹住变量名。</li>
-  <li>与传统的编程语言不同，bat中变量不能连接使用，比如下面这样是不行的。</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>set a=1
-set b=%a%2
-</code></pre>
-</div>
-
-<h4 id="section-6">外部参数</h4>
-<ul>
-  <li>%（0-9）来表示参数，其中%0代表自己，demo中只有一个参数是当前最新的版本号，用的是%1。</li>
-  <li>bat中参数有很多用法，具体不描述了。</li>
-</ul>
-
-<h4 id="cmd">其它的cmd命令</h4>
-<ul>
-  <li>demo中还是有tasklist、taskkill、del、rmdir这样的命令，这些就不一一解释了。其实这些全部都是cmd的命令，这样验证了开始时说的，其实bat就是顺序执行一些dos和cmd命令。</li>
-</ul>
-
-<h3 id="section-7">资源</h3>
-<ul>
-  <li>这个demo的完整资源在GitHub的<a href="https://github.com/klkucan/UpgradeByBat">这个</a>位置。</li>
-  <li>另外推荐一篇<a href="http://www.cnblogs.com/s1ihome/archive/2009/01/15/batTutorial.html">bat学习的文章</a>，写的很不错。</li>
-</ul>
-
 
 
                 <hr>
@@ -374,19 +298,12 @@ set b=%a%2
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：加载模块深度解析">
+                        <a href="/2018/07/20/%E5%BC%80%E5%8F%91ECS-style%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%80%9D%E8%80%83/" data-toggle="tooltip" data-placement="top" title="开发ECS style项目的思考">
                         Previous<br>
-                        <span>每天一点UWA：加载模块深度解析</span>
+                        <span>开发ECS style项目的思考</span>
                         </a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/" data-toggle="tooltip" data-placement="top" title="每天一点UWA：第五周">
-                        Next<br>
-                        <span>每天一点UWA：第五周</span>
-                        </a>
-                    </li>
                     
                 </ul>
 

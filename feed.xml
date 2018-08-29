@@ -5,9 +5,122 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 20 Jul 2018 15:58:11 +0800</pubDate>
-    <lastBuildDate>Fri, 20 Jul 2018 15:58:11 +0800</lastBuildDate>
+    <pubDate>Wed, 29 Aug 2018 21:27:12 +0800</pubDate>
+    <lastBuildDate>Wed, 29 Aug 2018 21:27:12 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>Unity人工智能游戏开发笔记</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;前言&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。&lt;/li&gt;
+  &lt;li&gt;但是本书关于模糊逻辑部分非常坑，令人发指。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;概要内容&lt;/h3&gt;
+
+&lt;h5 id=&quot;fsm&quot;&gt;FSM&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;有限状态机算是最简单的一种AI的实现，它的核心是状态，逻辑运算的结果表现为状态的变化。主要包含三个要点：
+    &lt;ul&gt;
+      &lt;li&gt;转换：状态间的关系&lt;/li&gt;
+      &lt;li&gt;规则：触发某一状态转换&lt;/li&gt;
+      &lt;li&gt;事件：触发规则检查&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;关于FSM我之前有写过，包括网上也有很多教程。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;感知系统&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;重要概念：
+    &lt;ul&gt;
+      &lt;li&gt;Entity：包含玩家主体对象和环境对象&lt;/li&gt;
+      &lt;li&gt;Aspect：标记卡。这个用于让AI判断检测到的物体是不是搜索的目标。&lt;/li&gt;
+      &lt;li&gt;Sense&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Sense：字面翻译过来就是个感知，它包含了视觉、听觉、触觉、嗅觉和超自然的感知（忽悠人的^_^）。&lt;/li&gt;
+  &lt;li&gt;实现：以下罗列出unity引擎中的实现
+    &lt;ul&gt;
+      &lt;li&gt;视觉：通常用于表达AI是否看到，unity用可以使用多条射线来制作。在视觉中也有FOV的概念，这个在制作射线的时候可以作为因素考虑进去。&lt;/li&gt;
+      &lt;li&gt;听觉、触觉、嗅觉：球体实现。触觉用碰撞体其实是比较好理解，听觉和嗅觉有点抽象，但是本质还是不同的碰撞体检测不同的layer。&lt;/li&gt;
+      &lt;li&gt;超自然的感知：直接通过获取系统数据来实现感知，作弊的行为。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;寻路&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;寻路是游戏中很重要的AI行为，书中提到了A star，也用到了unity的NavMesh组件，在这里就不具体说了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;集群行为&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;三个基本的概念：
+    &lt;ul&gt;
+      &lt;li&gt;分离性：个体之间保持固定距离&lt;/li&gt;
+      &lt;li&gt;排列的整齐性：整体间相同的方向和速度&lt;/li&gt;
+      &lt;li&gt;内聚性：个体与集群中心位置进保持最小距离&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;书中实现了多个不同的算法，也利用unity引擎的一些内置功能俩实现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;行为树&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;行为树体现为任务节点。在行为树中有很多功能不同的节点，有完成基础任务的叶子节点，也有用于逻辑的复合节点和修饰节点。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;节点的状态一般分为三种：成功、失败、运行状态（等待）&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;复合节点&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;序列（Sequence）：逐个执行node，当出现失败时返回失败；否则一直执行完。node之间是and关系。&lt;/li&gt;
+  &lt;li&gt;选择器（Selector）：只要一个node成功就返回成功，如果运行完了都没有成功的则为false。node之间是or关系。&lt;/li&gt;
+  &lt;li&gt;注意，节点之间的and、or的关系是可以自己控制的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-7&quot;&gt;修饰节点&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;定义：
+    &lt;ul&gt;
+      &lt;li&gt;修饰节点只包含一个子节点，接受子节点返回的状态。&lt;/li&gt;
+      &lt;li&gt;可以自由组合使用&lt;/li&gt;
+      &lt;li&gt;根据自身的参数估算子节点结果，可以根据设置重新得到一个子节点结果（反相器）或者设置子节点频率（重复器、限制器）。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;反相器：NOT标识符，接受与其子节点返回状态相反的结果。&lt;/li&gt;
+  &lt;li&gt;重复器：重复估算子节点特定的次数，直至满足修饰节点定义的条件。&lt;/li&gt;
+  &lt;li&gt;限制器：限制子节点估算次数。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-8&quot;&gt;模糊逻辑&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;在以往的二元逻辑中，基本只有true和false。但是在模糊逻辑中，数值是&lt;code class=&quot;highlighter-rouge&quot;&gt;[0,1]&lt;/code&gt;，在这个区间内的值代表着一种模糊的状态。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;三个步骤
+    &lt;ul&gt;
+      &lt;li&gt;模糊化：根据隶属度函数从具体的输入得到对模糊集隶属度的过程。&lt;/li&gt;
+      &lt;li&gt;推理方法：从模糊规则和输入对相关模糊集的隶属度得到模糊结论的方法。&lt;/li&gt;
+      &lt;li&gt;去模糊化：将模糊结论转化为具体的、精确的输出的过程。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;这部分的内容请移步&lt;a href=&quot;https://blog.csdn.net/Jurbo/article/details/75949360&quot;&gt;游戏开发中的人工智能（十）：模糊逻辑&lt;/a&gt; 。 本书模糊逻辑部分根本就是不完整的，内容质量非常的差。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 29 Aug 2018 21:07:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/08/29/Unity%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/08/29/Unity%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
     
       <item>
         <title>开发ECS style项目的思考</title>
@@ -1318,101 +1431,6 @@ public class RotationSpeedSystem : JobComponentSystem
         <guid isPermaLink="true">https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/</guid>
         
         <category>并发模型</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>使用整体性学习方法来提高学习效率</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;前言&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;这篇文章可以说是一篇读书笔记，内容来自《如何高效学习：1年完成MIT4年33门课程的整体性学习法》这本书。&lt;/li&gt;
-  &lt;li&gt;实际上看到书名的时候我的第一反应这是本讲费曼技巧的书，因为在很多年前我看到过一篇&lt;a href=&quot;https://kb.cnblogs.com/page/162480/&quot;&gt;文章&lt;/a&gt;，标题和这个非常类似，直到我重新翻出来后发现文中所讲的那个人正是这本书的作者。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;书的内容&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;在这里我不打算过多的写书中的内容，只是简单的把一些核心的内容列出来。实际上如果没有时间看书，我觉得看上面链接中的那篇文章是一样的。因为这本书的观点比较简单，大部分内容是来证明这些观点，并且列出了一些如何实践的方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;结构、模型和高速公路&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;这本书虽然叫做如何高效学习，但实际上主要讲的是整体性学习方法。作者一上来先讲了三个主要的观点：结构、模型和高速公路。&lt;/li&gt;
-  &lt;li&gt;结构：理解是结构高度发达完善的结果，结构是学习新知识时与其它知识建立联系。&lt;/li&gt;
-  &lt;li&gt;模型：
-    &lt;ul&gt;
-      &lt;li&gt;简化的结构、结构的快照&lt;/li&gt;
-      &lt;li&gt;模型的目的是压缩信息&lt;/li&gt;
-      &lt;li&gt;核心概念联系在一起创建模型&lt;/li&gt;
-      &lt;li&gt;模型是逐渐调整和更新的&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;高速公路：结构之间的联系&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;实际上这三点是整体性学习的核心内容或者说是最终形态。在我的理解中所谓的整体性学习更像是用类比的方式来快速对新知识进行学习，而在类比的过程中对于已有的知识需要一个结构或者模型，在这个基础上通过联想、类比等方法来进行学习。不同的知识之间是有相似性或者本身就是有联系的，这就是高速公路。&lt;/li&gt;
-  &lt;li&gt;以学习编程语言为例，我们知道目前的编程语言会分成不同的范式，比如有面向对象的、面向过程的、函数式的、命令式的等等。现代的编程语言往往包含了多个范式，以C#为例它是面向对象的，也是命令式和函数式都有的。在学会了C#之后，对于java这样的编程的语言在学习上会很快，因为他们几乎在编程范式是一样的，在语法上的差异和API的时候在使用的过程中再慢慢熟悉即可。但是在赋值、条件判断、循环、多线程、文件操作、lambda等等上都非常的接近，这样就可以通过类比的当时来快速的学习。&lt;/li&gt;
-  &lt;li&gt;对于lua、python或者JavaScript这样的脚本语言来说，其在赋值、条件判断、循环这些基本操作上也是一样的，再加上函数式编程的范式使得学习起来也会有一种熟悉的感觉。这也是为啥工作了几年的人在学习一门新的编程语言时会比较快，因为会有一种熟悉感、进而进行类比的学习。快速掌握共同点、重点学习不同点和API就可以很快的掌握。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;五个信息类型&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;书中列出了五种信息类型，也是知识类型。分别是：
-    &lt;ul&gt;
-      &lt;li&gt;随意信息&lt;/li&gt;
-      &lt;li&gt;观点信息&lt;/li&gt;
-      &lt;li&gt;过程信息&lt;/li&gt;
-      &lt;li&gt;具体信息&lt;/li&gt;
-      &lt;li&gt;抽象信息&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;其中随意信息是最难以记忆的，因为它们往往是一些事实，比如历史中的事件的时间，这些东西往往就是枯燥的记忆内容，没有什么很好的类比方式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;学习的顺序&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;文中还列出了一个学习的顺序，实际上就是一种知识的学习过程：
-    &lt;ul&gt;
-      &lt;li&gt;获取：快速阅读和笔记法&lt;/li&gt;
-      &lt;li&gt;理解：使用内在化、类比、比喻等技巧。所谓内在化更像是观想法，也就是把知识具现化。&lt;/li&gt;
-      &lt;li&gt;拓展：同上&lt;/li&gt;
-      &lt;li&gt;纠错&lt;/li&gt;
-      &lt;li&gt;应用&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;这个没什么特别的地方，基本上就是一个获取知识的过程。实际上，这本书中很多的内容对于天朝读了十几年书的人来说都是没什么新意。&lt;/li&gt;
-  &lt;li&gt;书中用了很大的篇幅来描述着5个过程，比如获取就介绍了快速阅读和笔记法。在这里快速阅读推荐指读法，也就是用手指的移动来带动阅读，这样可以让人的注意力集中在手指所在的地方。而笔记法，推荐使用康奈尔笔记法或者与其接近的黄金三分法来做笔记。&lt;/li&gt;
-  &lt;li&gt;对于理解和拓展，就是内在化、图表法等。&lt;/li&gt;
-  &lt;li&gt;对于随意信息的记忆推荐联想法、信息压缩技术。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-5&quot;&gt;真正的干货 - 费曼技巧&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;费曼技巧的过程：
-    &lt;ul&gt;
-      &lt;li&gt;选择要学习的概念&lt;/li&gt;
-      &lt;li&gt;设想你是老师，正在试图教会一名新生这个知识点&lt;/li&gt;
-      &lt;li&gt;当你感到疑惑时，回过头来，重新阅读参考材料、听讲座或找老师解答，直到你觉得搞懂了为止，然后把解释记到纸上。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;总结来说就是小学老师告诉我们的，如果你能给你的同学讲明白一个知识点你就是真的懂了这个知识点。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-6&quot;&gt;我所总结出来的学习方法&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;在学习一个新的知识点的时候尽可能的联系已经学过的知识，通过知识的连接和类比来快速掌握知识。&lt;/li&gt;
-  &lt;li&gt;实际上费曼技巧是很实用而且也比较容易实施的方法，费曼技巧的根本理论在于找出自己没有真正掌握的知识，从而查漏补缺。&lt;/li&gt;
-  &lt;li&gt;使用思维导图来做联想、类比和内在化。书中很多方法都提到了联想、内在化、图表法等，在我看来都可以总结为思维导图。思维导图的制作本身就是一个查漏补缺和思维拓展的过程。&lt;/li&gt;
-  &lt;li&gt;使用方格笔记和黄金三分法，这个技巧也是有人专门写过书的，个人认为还是很有用的。&lt;/li&gt;
-  &lt;li&gt;最后这本书的笔记可以看&lt;a href=&quot;https://www.flickr.com/photos/142765619@N07/40075301272/in/dateposted-public/&quot;&gt;这里&lt;/a&gt;
-&lt;img src=&quot;https://c1.staticflickr.com/5/4602/40075301272_eb0642788d_b.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sun, 18 Feb 2018 01:49:43 +0800</pubDate>
-        <link>https://caihua.tech/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/02/18/%E4%BD%BF%E7%94%A8%E6%95%B4%E4%BD%93%E6%80%A7%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E6%9D%A5%E6%8F%90%E9%AB%98%E5%AD%A6%E4%B9%A0%E6%95%88%E7%8E%87/</guid>
-        
-        <category>杂记</category>
         
         
       </item>
