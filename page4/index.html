@@ -173,6 +173,153 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E7%B2%92%E5%AD%90/">
+        <h2 class="post-title">
+            Unity特效学习：粒子
+        </h2>
+        
+        <div class="post-content-preview">
+            参数
+
+  只记录一些特别的参数
+  Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。
+  StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。
+  Color：
+    
+      Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。
+  ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 9, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/03/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AB%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十八周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Uni...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 3, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/12/02/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%83%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十七周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。
+
+  原文较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个As...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on December 2, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/30/Gamma%E6%A0%A1%E6%AD%A3%E4%B8%8E%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/">
+        <h2 class="post-title">
+            Gamma校正与线性空间
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  近期看了一篇文章，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。
+
+
+Gamma校正的由来和计算方式
+
+  所谓Gamma校正指的是在传统的拍摄相机中会对照片中的亮度进行修正，计算公式为Lout = pow(Lin, 0.45)  ，说白了就是如果某个像素的亮度为0.5，那么保存后的照片的亮度就是0.5的0.45次方，即0.73...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/20/Unity-Android%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91%E7%BB%8F(%E8%A1%80)%E9%AA%8C(%E6%B3%AA)%E8%B0%88(%E5%8F%B2)/">
+        <h2 class="post-title">
+            Unity Android二次开发经(血)验(泪)谈(史)
+        </h2>
+        
+        <div class="post-content-preview">
+            主要参考的是这篇文章，不过在这个期间遇到了各种的问题，在这里写出来，希望看到的人能够少走弯路。
+
+准备工作
+
+  安装Android Studio（以下用AS代替），然后通过它下载Android SDK和tools。
+  AS目前已经是3.0版本，在3之前不支持java8，也就是说没有lambda和一些新的特性。
+  从AS上可以下载到的build-tool是27，但是最新的tools是un...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 20, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/19/PHP%E7%9A%84OOP/">
+        <h2 class="post-title">
+            PHP的OOP
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  在类中可以使用public（公有），protected（受保护）或 private（私有）来修饰属性和方法。如果不修饰默认是public。
+  类中用var定义变量，var $name，使用方式$this-&gt;name
+  构造函数function __construct()，析构函数function __destruct()
+  继承class Child_Site extend...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 19, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/19/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%85%AD%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十六周
+        </h2>
+        
+        <div class="post-content-preview">
+            Texture
+
+如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？
+
+  使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；
+  当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；
+  在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 19, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/11/14/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E5%8D%A1%E9%80%9A%E6%B8%B2%E6%9F%93%E7%AC%94%E8%AE%B0/">
         <h2 class="post-title">
             每天一点UWA：卡通渲染笔记
@@ -243,175 +390,6 @@ shell method
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十四周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
-
-  加载IO次数过多，从而增大了硬件设备耗能和发热的压力；
-  Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 5, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/">
-        <h2 class="post-title">
-            浅析Timeline结构
-        </h2>
-        
-        <div class="post-content-preview">
-            结构
-
-
-   
-      PlayableDirector
-      Timeline
-   
-   
-      PlayableGraph
-      Graph
-   
-   
-      …
-      TrackGroup
-      TrackGroup
-   
-   
-      TrackAsset
-      AnimationTrack
-      Playable...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on November 2, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十三周
-        </h2>
-        
-        <div class="post-content-preview">
-            Gameplay
-求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
-
-  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 30, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
-        <h2 class="post-title">
-            Shader合并与Variant
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
-
-
-Sahder Variant的概念
-
-
- ...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十二周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-对于UGUI文字花屏问题，有什么推荐的解决方法吗？
-
-  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
-  关于UGUI字体花屏和乱码
-  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
-
-
-工具
-最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 23, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/16/LuaFramework&PureMVC/">
-        <h2 class="post-title">
-            LuaFramework&PureMVC
-        </h2>
-        
-        <div class="post-content-preview">
-            LuaFramework是GitHub上一个基于tolua的人更新案例，里面除了tolua的功能外还使用了PureMVC的部分功能。这个文章是对代码中PureMVC部分的一些理解。
-
-PureMVC
-Structure
-Model&amp;Proxy
-
-  Model保存对Proxy对象的引用，Proxy负责操作数据模型，与远程服务通信存取数据。这样保证了Model层的可移植性。
-
-
-Vie...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 16, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第十一周
-        </h2>
-        
-        <div class="post-content-preview">
-            字体
-优化字体资源
-
-方向：内存和数量峰值
-
-  主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on October 16, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -470,7 +448,7 @@ Vie...
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="19">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="20">
                                     Unity3D
                                 </a>
                             
@@ -532,6 +510,12 @@ Vie...
                             
                                 <a href="/tags/#ECS" title="ECS" rel="1">
                                     ECS
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#组成原理" title="组成原理" rel="6">
+                                    组成原理
                                 </a>
                             
                         

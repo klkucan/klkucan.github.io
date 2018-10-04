@@ -5,9 +5,1318 @@
     <description>Be publicly useful and privately happy.</description>
     <link>https://caihua.tech/</link>
     <atom:link href="https://caihua.tech/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 29 Aug 2018 21:27:12 +0800</pubDate>
-    <lastBuildDate>Wed, 29 Aug 2018 21:27:12 +0800</lastBuildDate>
+    <pubDate>Thu, 04 Oct 2018 16:25:03 +0800</pubDate>
+    <lastBuildDate>Thu, 04 Oct 2018 16:25:03 +0800</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
+    
+      <item>
+        <title>计算机组成原理：6、高速缓冲存储器</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;概述&lt;/h2&gt;
+&lt;h4 id=&quot;cache&quot;&gt;为何使用Cache&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;CPU速度太快了&lt;/li&gt;
+  &lt;li&gt;解决CPU空等问题，但是需要保证的是大多数的数据和指令都在cache中。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;程序访问局部性原理&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;时间局部性：当前正在使用的指令和数据，在不久的将来还会被使用。那么这些数据和指令需要放到cache。&lt;/li&gt;
+  &lt;li&gt;空间局部性：当前正在使用的指令或者数据的相邻的指令或者数据在不久的将来会被使用，那么把当前使用的和相邻的数据和指令放到cache。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cache-1&quot;&gt;Cache工作原理&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;主存和缓存的编址&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%B8%BB%E5%AD%98%E5%92%8C%E7%BC%93%E5%AD%98%E7%9A%84%E7%BC%96%E5%9D%80.png?raw=true&quot; alt=&quot;主存和缓存的编址&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;图中主存和cache中块的大小一样，主存分成M个块、cache分成C个，显然C远小于M。&lt;/li&gt;
+  &lt;li&gt;标记：主存块和cache块之间的对应关系，如果一个主存块被调入cache，那么主存块号写入到标记中。当CPU想要访问主存时，根据主存块号先去cache中与标记对比。如果找到，那么说明想要在内存中获取的数据已经在cache中了。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：cache-主存这个结构中是按块进行存储和传输的。块的大小和块内地址（本质是偏移量）是完全相同的。在有标记的情况下cache是不需要特别编址的。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;命中与未命中&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;定义：CPU使用主存块时，如果块已经调入缓存则命中；如果没有则是未命中。如果命中那么主存中某些块与缓冲块建立了对于关系（标记）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;cache-2&quot;&gt;Cache的命中率&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;CPU欲访问的信息在Cache中的比率&lt;/li&gt;
+  &lt;li&gt;简单来说和cache的容量和块长有关&lt;/li&gt;
+  &lt;li&gt;一般每块取4-8个字，块长取一个周期内从主存调出的信息长，与前面的低位交叉相关。如果是4体交叉，块长就是4个存储字长。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;cache-&quot;&gt;Cache-主存系统的效率&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Cache-%E4%B8%BB%E5%AD%98%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%95%88%E7%8E%87.png?raw=true&quot; alt=&quot;Cache-主存系统的效率&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;cache-3&quot;&gt;Cache的基本机构&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Cache%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84.png?raw=true&quot; alt=&quot;Cache基本结构&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上图的流程中其实包含了cache读取的流程。&lt;/li&gt;
+  &lt;li&gt;最下面主存和CPU之间是有数据总线的，当cache未命中时主存先把数据送入CPU，同时与cache进行数据交换。&lt;/li&gt;
+  &lt;li&gt;地址映射：给出一个规则，主存当中的块如果要放入cache，它可以放入哪一个或哪几个块中。&lt;/li&gt;
+  &lt;li&gt;地址变换：主存块号或地址转换成cache块号或地址。&lt;/li&gt;
+  &lt;li&gt;替换结构：通过替换算法来决定哪些块从cache退出&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：图中&lt;code class=&quot;highlighter-rouge&quot;&gt;可装进&lt;/code&gt;的判断不是以整个cache为基础的，而是以地址映射的结果为基础。e.g: 未命中发生，经过映射计算后主存的块要进入add1，此时如果add1已经有数据了，就要替换；但是此时cache可能并不满，而只是add1有数据。而且这个还要和具体的映射方式有关，见下面内容。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cache-4&quot;&gt;Cache的读写操作&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;读操作&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;参考上图，因为读操作的特点是不会改变主存和cache的内容，所以相对比较简单。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;写操作&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;是否实时同步cache和主存就是写操作要关注点了。有两个方法：&lt;/li&gt;
+  &lt;li&gt;写直达法（Write-through）：
+    &lt;ul&gt;
+      &lt;li&gt;写操作时数据既写入cache也写入主存&lt;/li&gt;
+      &lt;li&gt;写操作时间就是访问主存时间&lt;/li&gt;
+      &lt;li&gt;cache退出块时不需要对主存进行写操作，更新策略比较简单。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;写回法（Write-back）
+    &lt;ul&gt;
+      &lt;li&gt;写操作只把数据写入cache而不写入主存&lt;/li&gt;
+      &lt;li&gt;当cache数据被替换出去时才学会主存&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;比较：
+    &lt;ul&gt;
+      &lt;li&gt;显然写操作从逻辑上简单，但是操作步骤太多。尤其是做循环加法这样的操作时，我们只关注结果，中间数值没必要写入主存。这点上写回法就好很多，它只写最后的结果。&lt;/li&gt;
+      &lt;li&gt;但是写回法在多处理器时就会出现数据一致性问题，并发计算时主存块在多个CPU cache中都有副本，很难保证同步。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cache-5&quot;&gt;Cache的改进&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;增加cache的级数：
+    &lt;ul&gt;
+      &lt;li&gt;离CPU比较近或者离CPU中的core比较近的cache直接做入到CPU内部（片载cache），CPU内部接着做多级。现代多核CPU每个core都有自己的cache，core之间还有共享的cache，所以至少都有三级的cache。&lt;/li&gt;
+      &lt;li&gt;主板上做大容量cache，片外cache。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;统一缓存和分立缓存：指令和数据分开放（分立缓存）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;cache--1&quot;&gt;Cache-主存的地址映射&lt;/h2&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;直接映射&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E7%9B%B4%E6%8E%A5%E6%98%A0%E5%B0%84.png?raw=true&quot; alt=&quot;直接映射&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;对主存分区，每个区的第0块就放到cache的第0块。从图中可以看到cache的0块可能是任何一个区的第0块。&lt;/li&gt;
+  &lt;li&gt;主存区号就是cache的标记，因为只要区号和标记一致，那么主存区中的块和cache的块就能一一对应，同样字块内地址也是一一对应的。&lt;/li&gt;
+  &lt;li&gt;弊端：对于cache的使用有浪费，比如一个区只有一个块被用到了，但是如果出现代码的调转等操作导致需要加载新的cache，只能整块的替换。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;全相联映射&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%85%A8%E7%9B%B8%E8%81%94%E6%98%A0%E5%B0%84.png?raw=true&quot; alt=&quot;全相联映射&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;主存中任何一个块可以放入cache中任何一个块。&lt;/li&gt;
+  &lt;li&gt;弊端：因为是随便放的，所以CPU使用数据时要把主存地址和cache标记一一对比，导致效率低，线路也会比较复杂。同时cache标记记录的是区号+块号，位数比较多，比较器长度比较长。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;组相联映射&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BB%84%E7%9B%B8%E8%81%94.png?raw=true&quot; alt=&quot;组相联&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;cache分成多少组，主存储器中每个区就包含了多少块。&lt;/li&gt;
+  &lt;li&gt;主存在往cache放块的时候，只要计算出这个块是该区的第i个，那么就会放入到cache中第i组中。&lt;/li&gt;
+  &lt;li&gt;主存的块只能放到指定的组（体现了直接相连），但是这个主存块可以在组的任何位置（体现了全相连）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;总结&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;直接映射：某一主存块只能固定映射到某一缓冲块，速度快但是不灵活。&lt;/li&gt;
+  &lt;li&gt;全相联映射：某一主存块能映射到任一缓冲块，速度慢但cache利用率高。&lt;/li&gt;
+  &lt;li&gt;组相联：某一主存块能映射到某一缓存组中的任一缓冲块中。实际上如果每组都只有一块就等于是全相连，而如果只有一组那就是直接相联。&lt;strong&gt;优点就是兼顾速度与利用率。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;不同的相联模式在多层cache中分别使用：靠近CPU的cache要求高速度，可以用直接映射或者路数比较少的组相联映射；中间层次可以组相联（比如：两路组相联、四路组相联等）；越远的可以用全相连，因为远的对速度要求低，对利用率要求高。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-10&quot;&gt;替换算法&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;先进先出（FIFO）算法：不能很好的体现程序的局部访问原理&lt;/li&gt;
+  &lt;li&gt;近期最少使用（LRU）算法：希望替换cache块中CPU不再用，或者距离下次CPU读写这个块时间最长的块。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-11&quot;&gt;一点感悟：&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;学到现在从组成原理的设计上学到一个很好的思路，在解决一个问题的时候如果有明显的两个极端的方案，那么可以在局部采用一个方案，而在整体采用另外一个方案。这个就能很好的融合两者的优点，而尽量较少弊端带来的影响。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Wed, 03 Oct 2018 18:33:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/10/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-6-%E9%AB%98%E9%80%9F%E7%BC%93%E5%86%B2%E5%AD%98%E5%82%A8%E5%99%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/10/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-6-%E9%AB%98%E9%80%9F%E7%BC%93%E5%86%B2%E5%AD%98%E5%82%A8%E5%99%A8/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>计算机组成原理：5、主存储器</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;一、概述&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;1、基本构成&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%B8%BB%E5%AD%98%E7%BB%93%E6%9E%84.png?raw=true&quot; alt=&quot;主存构成&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;结合上图总结一下之前的数据读取的操作
+    &lt;ul&gt;
+      &lt;li&gt;CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。&lt;/li&gt;
+      &lt;li&gt;MAR收到后，经过译码器得到指定的存储单元。&lt;/li&gt;
+      &lt;li&gt;CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器&lt;/li&gt;
+      &lt;li&gt;控制电路根据信令来操作读写电路&lt;/li&gt;
+      &lt;li&gt;将之前得到主存储器地址中的数据写入MDR&lt;/li&gt;
+      &lt;li&gt;通过数据总线讲MDR中的数据送入到IR或者ACC&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;cpu&quot;&gt;2、主存与CPU之间的联系&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/CPU-%E4%B8%BB%E5%AD%98.png?raw=true&quot; alt=&quot;CPU-主存&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CPU和主存之间主要是三个总线：地址、数据、命令&lt;/li&gt;
+  &lt;li&gt;数据总线是双向的，而地址是单向&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;3、主存中存储单元地址的分配&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%8D%95%E5%85%83%E5%9C%B0%E5%9D%80%E5%88%86%E9%85%8D.png?raw=true&quot; alt=&quot;存储单元地址分配&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;数据在存储器中存储主要有两个方式，大端和小端。&lt;/li&gt;
+  &lt;li&gt;图中高位字节指的是0x12345678中的12，其中从左到右为从高高低&lt;/li&gt;
+  &lt;li&gt;但是在存储器中，地址小的为低位&lt;/li&gt;
+  &lt;li&gt;所以大端中就是高位的12存在了低位，小端就是低位的78存在了低位。&lt;/li&gt;
+  &lt;li&gt;关于按字节寻址和按字寻址详见延展阅读，&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;二、半导体存储芯片&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;1、基本结构&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8D%8A%E5%AF%BC%E4%BD%93%E5%AD%98%E5%82%A8%E8%8A%AF%E7%89%87%E7%BB%93%E6%9E%84.png?raw=true&quot; alt=&quot;半导体存储芯片结构&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;芯片容量计算：2^(地址线数量) * 数据线带宽，e.g 地址线10跟，数据线 4bit，那么容量就是 2^10 * 4 = 1k * 4bit&lt;/li&gt;
+  &lt;li&gt;片选线：
+    &lt;ul&gt;
+      &lt;li&gt;片选线的作用是来标记一次数据存储过程中，数据是否存在于一个存储芯片中。&lt;/li&gt;
+      &lt;li&gt;两周标识方式:CS\CE，上面的线表示低电平。也就是说如果管脚是低电平就说明这次要访问的是这个芯片。&lt;/li&gt;
+      &lt;li&gt;比如内存条上有很多存储芯片，那么一次可能用到的数据在一个或者多个芯片上。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;读写控制线：可以使用一根或者两个线来表示&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;2、片选线的作用&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8D%8A%E5%AF%BC%E4%BD%93%E5%AD%98%E5%82%A8%E8%8A%AF%E7%89%87%E7%89%87%E9%80%89%E7%BA%BF.png?raw=true&quot; alt=&quot;半导体存储芯片片选线&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上图展示了一个使用片选线的demo&lt;/li&gt;
+  &lt;li&gt;每个芯片16K x 1bit，当计算机需要64K x 8bit时需要32个芯片来实现。&lt;/li&gt;
+  &lt;li&gt;8个芯片串行，用之前大楼的概念来看，就是整个楼有2^16个房间，每个房间8个床位，但是注意这8个床位其实是跨房间的（或者说是跨楼的）。如果要住8个人（8bit数据），那么并不是全住在第一个房间，而是住在8个楼（一组串行芯片）的编号相同房间中编号相同的床位上（图中每个房间其实只有一个床位）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;3、译码驱动&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;地址总线传到存储器的地址需要进行译码，然后才能得到在存储器对应的地址。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-7&quot;&gt;线选法&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BA%BF%E9%80%89%E6%B3%95%E8%AF%91%E7%A0%81%E9%A9%B1%E5%8A%A8.png?raw=true&quot; alt=&quot;线选法译码驱动&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;线选法图中有4根地址线，因此存储单元有 2^4 = 16个，对应字线0-15。&lt;/li&gt;
+  &lt;li&gt;根据4根线上的数据得到具体的字线后，字线上的数据读写到MDR。&lt;/li&gt;
+  &lt;li&gt;弊端是如果想要一个1M*8大小的存储器，那么地址线需要20条，而字线需要1M条，对于芯片来说很难。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-8&quot;&gt;重合法&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%87%8D%E5%90%88%E6%B3%95%E8%AF%91%E7%A0%81%E9%A9%B1%E5%8A%A8.png?raw=true&quot; alt=&quot;重合法译码驱动&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;相当于笛卡尔坐标系&lt;/li&gt;
+  &lt;li&gt;10条地址线可以表达出 32 * 32个位置，每个位置是1bit&lt;/li&gt;
+  &lt;li&gt;与线选法比较，1M*8的空间 = 2^20 * 2^3 = 2^23bit , 用重合法可以做 2^12 * 2^11 这样一个矩阵，也就是 4k + 2k = 6k条字线。&lt;/li&gt;
+  &lt;li&gt;最初看到这里的时候有个疑惑，就是根据重合法每次只能拿到一个bit，但是看到后面的Intel 2114 RAM矩阵后就知道了如何使用重合法一次获得多个bit。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ram-&quot;&gt;三、随机存取机器（RAM）→ 内存&lt;/h3&gt;
+
+&lt;h4 id=&quot;ramsram&quot;&gt;1、静态RAM(SRAM)&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-9&quot;&gt;保存0和1的原理&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;双稳态触发器&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-10&quot;&gt;基本单元电路如何构成&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF.png?raw=true&quot; alt=&quot;静态RAM基本电路&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;ram&quot;&gt;静态RAM芯片如何读写&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF%E8%AF%BB%E6%93%8D%E4%BD%9C.png?raw=true&quot; alt=&quot;静态RAM基本电路读操作&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF%E5%86%99%E6%93%8D%E4%BD%9C.png?raw=true&quot; alt=&quot;静态RAM基本电路写操作&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;intel-2114-ram-&quot;&gt;Intel 2114 RAM 矩阵&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Inter2114%20%E8%AF%BB.png?raw=true&quot; alt=&quot;Inter2114 读&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;上图很好的解释了在使用重合法时如何一次读取多个bit数据。&lt;/li&gt;
+  &lt;li&gt;行地址译码6位，所以范围是0-63，也就是说字线有64条。 列地址译码有4位，也就是说有16个。&lt;/li&gt;
+  &lt;li&gt;字长为64bit，将64分成4组，每组是16bit（对应列地址位数）。&lt;/li&gt;
+  &lt;li&gt;当行地址是0，列地址也是0时，其实取的是四组中第0位的数据，这样就实现了重合法一次取出多位。&lt;/li&gt;
+  &lt;li&gt;写操作基本相同。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;ramdram&quot;&gt;2、动态RAM(DRAM)&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-11&quot;&gt;保存0和1的原理&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;电容，充电是1，没充电是0。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-12&quot;&gt;基本单元电路如何构成&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E5%8D%95%E5%85%83%E7%94%B5%E8%B7%AF.png?raw=true&quot; alt=&quot;动态RAM基本单元电路&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;左边3管动态RAM，右边单管。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;ram-1&quot;&gt;动态RAM芯片如何读写&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Inter1103%20%E8%AF%BB.png?raw=true&quot; alt=&quot;Inter1103 读&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;行地址译码器这里参加译码的不止是地址还有读写选择线。&lt;/li&gt;
+  &lt;li&gt;三角形是刷新放大器。作用：电容存储电荷的原理，电容会漏掉，经过一段时间电容上信号消失。刷新放大器对电容中保持的信息进行重现。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;ram-2&quot;&gt;动态RAM刷新&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;只和行地址有关，与列地址无关。一次刷新刷的就是一行所有的基本单元电路。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-13&quot;&gt;刷新方式&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;集中式&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E9%9B%86%E4%B8%AD%E5%88%B7%E6%96%B0.png?raw=true&quot; alt=&quot;动态RAM集中刷新&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;可以看到2毫秒按照存取周期0.5微秒分成了4000份，其中128个周期是用来刷新的。&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在死区时间内CPU和IO设备如果想访问动态RAM只能等待。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;分散式&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%88%86%E6%95%A3%E5%88%B7%E6%96%B0.png?raw=true&quot; alt=&quot;动态RAM分散刷新&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;本来每个存取周期是0.5微秒，但是为了刷新又加了0.5，导致一个存取周期变为了1微秒。&lt;/li&gt;
+  &lt;li&gt;没有了死区&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;和集中式比较，2毫秒内每行要刷新15.6次，存在过度刷新的问题。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;异步式&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%BC%82%E6%AD%A5%E5%88%B7%E6%96%B0.png?raw=true&quot; alt=&quot;动态RAM异步刷新&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在15.6微秒中可以认为是集中式，在2毫秒的周期内看是分散式的。&lt;/li&gt;
+  &lt;li&gt;确实在安排好的情况下不会出现死区。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;sramdram&quot;&gt;3、SRAM和DRAM的比较&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/SRAM%E5%92%8CDRAM%E7%9A%84%E6%AF%94%E8%BE%83.png?raw=true&quot; alt=&quot;SRAM和DRAM的比较&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;注意引脚数，DRAM行地址和列地址可以分开传输，所以少。但是这样在速度上慢。&lt;/li&gt;
+  &lt;li&gt;而且DRAM电容充放电比较慢，所以读取速度慢。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;rom&quot;&gt;四、只读存储器 ROM&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;基本都是电子元器件的内容&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/PROM.png?raw=true&quot; alt=&quot;PROM&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/EPROM.png?raw=true&quot; alt=&quot;EPROM&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cpu-1&quot;&gt;五、存储器与CPU的连接&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-14&quot;&gt;存储器扩展&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;位扩展&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E4%BD%8D%E6%89%A9%E5%B1%95.png?raw=true&quot; alt=&quot;存储器位扩展&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;位扩展利用两个芯片的数据线放到数据总线上不同的线上&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;字扩展&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E5%AD%97%E6%89%A9%E5%B1%95.png?raw=true&quot; alt=&quot;存储器位扩展&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;利用多出来的一条地址线作为片选线，从而实现两个芯片逻辑上的串联。扩展地址线长度。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;位和字扩展&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E5%AD%97%E5%92%8C%E4%BD%8D%E6%89%A9%E5%B1%95.png?raw=true&quot; alt=&quot;存储器字和位扩展&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;多出两根地址线，形成一个范围从0-3的可变数字。&lt;/li&gt;
+  &lt;li&gt;将8个芯片分成4组，刚好对应上面的数字。通过地址线A11 A10加不同的电来实现片选译码。&lt;/li&gt;
+  &lt;li&gt;对于每组2个芯片正常的位扩展。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-15&quot;&gt;一个连接的练习&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/CPU%E4%B8%8E%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E8%BF%9E%E6%8E%A5.png?raw=true&quot; alt=&quot;CPU与存储器的连接&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;开始学位和字的扩展时觉得很奇怪，但是当会后讲到一个如何设计CPU与存储芯片连接的题时就明白了一个核心：因为CPU的地址线和数据线数量与芯片的不同，因此需要进行位的扩展来适应CPU的数据线，需要合理的设计地址线来做片选译码和地址译码。&lt;/li&gt;
+  &lt;li&gt;通常地址线的高位做片选译码，低位做地址译码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-16&quot;&gt;六、提高访存速度的措施&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;高位交叉，高位交叉中很大概率是M0被频繁访问，而后面的不会。因为数据或者指令总是按照内存地址的顺序被使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%AB%98%E4%BD%8D%E4%BA%A4%E5%8F%89.png?raw=true&quot; alt=&quot;高位交叉&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;低位交叉&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%BD%8E%E4%BD%8D%E4%BA%A4%E5%8F%89.png?raw=true&quot; alt=&quot;低位交叉&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这样的地址布局可以使得M0-3这四个存储体可以依次的被CPU使用。如果报错的是代码指令，就是先调用M0的0000位置，然后是M1的0000位置，依次使用。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%BD%8E%E4%BD%8D%E4%BA%A4%E5%8F%89%E4%BD%BF%E7%94%A8%E7%9A%84%E6%97%B6%E9%97%B4.png?raw=true&quot; alt=&quot;低位交叉使用的时间&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;低位交叉被并发的访问，将一个存储周期分成4份。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-17&quot;&gt;延展阅读&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-18&quot;&gt;1、关于按字寻址和按字节寻址的理解&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;设有一个1MB容量的存储器，字长32位，问：按字节编址，字编址的寻址范围以及各自的寻址范围大小?&lt;/p&gt;
+
+  &lt;p&gt;如果按字节编址，则&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1MB = 2^20B 
+
+1字节=1B=8bit 
+
+2^20B/1B = 2^20 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;地址范围为0~(2^20)-1,也就是说需要二十根地址线才能完成对1MB空间的编码，所以地址寄存器为20位,寻址范围大小为 2^20 = 1M&lt;/p&gt;
+
+  &lt;p&gt;如果按字编址，则&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1MB=2^20B
+
+1字=32bit=4B
+
+2^20B/4B = 2^18   
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;地址范围为0~2^18-1，也就是说我们至少要用18根地址线才能完成对1MB空间的编码。因此按字编址的寻址范围是 2^18&lt;/p&gt;
+
+  &lt;p&gt;以上题目注意几点：&lt;/p&gt;
+
+  &lt;p&gt;1.区分寻址空间与寻址范围两个不同的概念，寻址范围仅仅是一个数字范围，不带有单位。而寻址范围的大小很明显是一个数，指寻址区间的大小。而寻址空间指能够寻址最大容量，单位一般用MB、B来表示；本题中寻址范围为0~(2^20)-1,寻址空间为1MB。&lt;/p&gt;
+
+  &lt;p&gt;2.按字节寻址，指的是存储空间的最小编址单位是字节，按字编址，是指存储空间的最小编址单位是字，以上题为例，总的存储器容量是一定的，按字编址和按字节编址所需要的编码数量是不同的，按字编址由于编址单位比较大（1字=32bit=4B），从而编码较少，而按字节编址由于编码单位较小（1字节=1B=8bit），从而编码较多。&lt;/p&gt;
+
+  &lt;p&gt;3.区别M和MB。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;M为数量单位。1024=1K，1024K=1M
+
+MB指容量大小。1024B=1KB，1024KB=1MB.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-19&quot;&gt;参考&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://blog.csdn.net/lishuhuakai/article/details/8934540&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 30 Sep 2018 13:59:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/30/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-5-%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/30/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-5-%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Unity ECS：C# Job System文档总结</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;背景、初衷、目标&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;出现的背景、初衷就是：天下苦无多线程久已&lt;/li&gt;
+  &lt;li&gt;当然这个说法要进一步的约束，首先unity中可以编写多线程代码，但是最大的问题是多线程中无法使用unity API，当然也无法修改component中的数据了。&lt;/li&gt;
+  &lt;li&gt;目前来看似乎这个技术就是为了能够让开发者使用multithread来操作unity API和component 数据。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;优势和劣势&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;多线程就是优势&lt;/li&gt;
+  &lt;li&gt;可操作的数据类型限制比较大，目前只能是blittable data type&lt;/li&gt;
+  &lt;li&gt;这个多线程是和unity引擎共享work thread，所以变相的侵占了引擎层的性能。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;组成部分和关键点&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;组成&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;job system
+    &lt;ul&gt;
+      &lt;li&gt;job system管理一组worker thread，通常每个逻辑上的CPU的核（core）可以跑一个worker。这是为了避免上下文切换带来的性能问题。&lt;/li&gt;
+      &lt;li&gt;job system会把一些job放入一个队列，然后worker thread从队列中取出job进行执行。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;job：最小工作单元，接受参数和操作作为数据。job是可以自足的，也可以依赖其他的job。&lt;/li&gt;
+  &lt;li&gt;NativeContainer：
+    &lt;ul&gt;
+      &lt;li&gt;一个托管的值类型，对native memory提供安全的C#的包装器。&lt;/li&gt;
+      &lt;li&gt;包含一个指向非托管内存地址的指针&lt;/li&gt;
+      &lt;li&gt;job system中NativeContainer允许job和主线程共享数据，而不是copy的数据。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;关键点&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;保障执行顺序和数据竟态&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;job system管理job之间的依赖，保证执行的正确。&lt;/li&gt;
+  &lt;li&gt;job system通过深拷贝（memcpy）数据来解决竟态问题，带来的问题就是只能访问blittable data type。&lt;/li&gt;
+  &lt;li&gt;job system在托管和native之间传递copy的data，调度job时使用memcpy将数据放到native memory，然后在job执行时给托管代码这边访问数据的能力。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;nativecontainer&quot;&gt;NativeContainer&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;safety system的缺点是因为采用了copy数据的方式，所以数据结果在job之间是独立的。可以想象对于有执行顺序依赖的job，这样的结果是错误的。NativeContainer就是以为了解决这个问题。&lt;/li&gt;
+  &lt;li&gt;NativeContainer包含的数据结果：
+    &lt;ul&gt;
+      &lt;li&gt;NativeList - a resizable NativeArray.&lt;/li&gt;
+      &lt;li&gt;NativeHashMap - key and value pairs.&lt;/li&gt;
+      &lt;li&gt;NativeMultiHashMap - multiple values per key.&lt;/li&gt;
+      &lt;li&gt;NativeQueue - a first in, first out (FIFO) queue.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Allocator：分配器，不同的分配器区别主要在对于NativeContainer对象lifetime的影响。
+    &lt;ul&gt;
+      &lt;li&gt;Allocator.Temp：NativeContainer的lifespan只在一帧内，不能将这样的NativeContainer传递给job。而且要在某个使用了它的函数结束前调研Dispose方法来销毁NativeContainer。内存分配的速度很快（怀疑是在一个已经分配好的shared memory中）。&lt;/li&gt;
+      &lt;li&gt;Allocator.TempJob：中速，lifespan 4帧，线程安全。多数比较小的job都使用这个。如果4帧后没有销毁，会有一个来自native code的警告输出。&lt;/li&gt;
+      &lt;li&gt;Allocator.Persistent：最慢，NativeContainer长存。本身是malloc的包装器。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;nativecontainersafety-system&quot;&gt;NativeContainer中的safety system&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;注意：所有NativeContainer中的安全监测只在Editor和Play Mode有效。也就是真机无需。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;DisposeSentinel：发现内存泄漏，然后给出error。&lt;/li&gt;
+  &lt;li&gt;AtomicSafetyHandle：转移NativeContainer的控制权。这个有效需要使用宏：ENABLE_UNITY_COLLECTIONS_CHECKS&lt;/li&gt;
+  &lt;li&gt;不管是主线程还是job对于NativeContainer的访问仍旧是同一时间只允许一个写操作，但是支持并发读操作。&lt;/li&gt;
+  &lt;li&gt;如果NativeContainer被设计为只读的可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;[ReadOnly]&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：job中访问静态数据绕过了所有的保护系统，可能引起unitycrash。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;job&quot;&gt;创建job&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;创建一个inherit IJob的struct&lt;/li&gt;
+  &lt;li&gt;添加成员变量，只能是NativeContainer或者blittable types&lt;/li&gt;
+  &lt;li&gt;创建Execute函数，job运行时Execute函数在CPU core中会执行一次。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;注意：job中操作的数据除了NativeContainer的外都是一份拷贝。job中访问主线程中数据的唯一方式就是用操作NativeContainer类型的数据。（调用job的代码中很好的体现了这个）&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;代码参考原文文档&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;job-1&quot;&gt;使用job&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;直接调用job的Schedule方法&lt;/li&gt;
+  &lt;li&gt;调用Schedule方法将job放到一个队列中，一旦放入就不能中断。&lt;/li&gt;
+  &lt;li&gt;Schedule方法只能在主线程调用。&lt;/li&gt;
+  &lt;li&gt;注意源码最后释放了NativeArray类型的result，因为它的分配器是TempJob。&lt;/li&gt;
+  &lt;li&gt;代码参考原文文档&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;jobhandle&quot;&gt;JobHandle和依赖&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;JobHandle是Schedule函数的返回值&lt;/li&gt;
+  &lt;li&gt;在job存在依赖时利用它来设置依赖&lt;/li&gt;
+  &lt;li&gt;多依赖时使用CombineDependencies&lt;/li&gt;
+  &lt;li&gt;当在主线程需要等待job完成，可以使用Complete方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;parallelfor-jobs&quot;&gt;ParallelFor jobs&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;利用多和并发执行job&lt;/li&gt;
+  &lt;li&gt;可以通过这种参数决定在native层有多少个batch&lt;/li&gt;
+  &lt;li&gt;参数中的lenght应该是作为输出结果的NativeContainer的lenght，它告诉job system有多少execute函数要执行。&lt;/li&gt;
+  &lt;li&gt;innerloopBatchCount从字面看应该是batch中有多少个job，从下面代码的注释看也是这个意思。 &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;// Schedule the job with one Execute per index in the results array and only 1 item per processing batch&lt;/code&gt;   &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;JobHandle handle = jobData.Schedule(result.Length, 1);&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://docs.unity3d.com/uploads/Main/jobsystem_parallelfor_job_batches.svg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;底层原理和关键实现&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;底层实现全部被封装到了DLL中，SHIT!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;对比&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;对比C#中的Thread类
+    &lt;ul&gt;
+      &lt;li&gt;Thread使用的是从系统申请来的现场，而job system是与引擎共享的线程，在没有源码的情况下姑且认为是有不同的。&lt;/li&gt;
+      &lt;li&gt;对于可操作对象的不同，Thread只能操作非引擎的对象，而job system是操作的引擎对象，虽然是受限的。&lt;/li&gt;
+      &lt;li&gt;从管理上也不一样，Thread需要自己控制执行的顺序但是job system的顺序是通过设置后引擎来管理的。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;对比协程
+    &lt;ul&gt;
+      &lt;li&gt;单线程与多线程的差异&lt;/li&gt;
+      &lt;li&gt;但是协程是可以控制所有的unityengine对象的，例如物理、动画等。这些job system还做不到，只能依赖MonoBehaviour。&lt;/li&gt;
+      &lt;li&gt;因此在大规模计算的数据是NativeContainer或者blittable types的时候在性能上肯定是碾压协程的。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;原文&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.unity3d.com/Manual/JobSystemOverview.html&quot;&gt;C# Job System&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Wed, 26 Sep 2018 10:32:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/26/Unity-ECS-C-Job-System%E6%96%87%E6%A1%A3%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/26/Unity-ECS-C-Job-System%E6%96%87%E6%A1%A3%E6%80%BB%E7%BB%93/</guid>
+        
+        <category>Unity3D</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>计算机组成原理：4、存储器概述</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;分类&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;按照介质&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;按照存取方式
+    &lt;ul&gt;
+      &lt;li&gt;存取时间与物理地址无关（随机访问）
+        &lt;ul&gt;
+          &lt;li&gt;随机存储器（RAM）: 在程序执行过程中可以读写&lt;/li&gt;
+          &lt;li&gt;制度存储器（ROM）：在程序执行过程中只能读&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;存取时间与物理地址有关（串行访问）
+        &lt;ul&gt;
+          &lt;li&gt;顺序存取存储器：磁带&lt;/li&gt;
+          &lt;li&gt;直接存取存储器：磁盘&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;按照作用
+    &lt;ul&gt;
+      &lt;li&gt;主存储器
+        &lt;ul&gt;
+          &lt;li&gt;RAM
+            &lt;ul&gt;
+              &lt;li&gt;静态RAM（cache）&lt;/li&gt;
+              &lt;li&gt;动态RAM（内存芯片）&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;ROM（只读，但是不同的）（BIOS ROM）
+            &lt;ul&gt;
+              &lt;li&gt;MROM：Mask Read-Only Memory，中文全称“掩模式只读存储器”。掩模式只读存储器的内容是由半导体制造厂按用户提出的要求在芯片的生产过程中直接写入的，写入之后任何人都无法改变其内容。&lt;/li&gt;
+              &lt;li&gt;PROM：可编程ROM&lt;/li&gt;
+              &lt;li&gt;EPROM：可擦除可编程ROM，是一种断电后仍能保留数据的计算机储存芯片。一旦编程完成后，EPROM只能用强紫外线照射来擦除。&lt;/li&gt;
+              &lt;li&gt;EEPROM：EEPROM（带电可擦写可编程读写存储器）是用户可更改的只读存储器
+（ROM），其可通过高于普通电压的作用来擦除和重编程（重写）。不像EPROM芯片，EEPROM不需从计算机中取出即可修改。&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;Flash Memory → SSD&lt;/li&gt;
+      &lt;li&gt;高速缓存存储器（Cache）&lt;/li&gt;
+      &lt;li&gt;辅助存储器&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;存储器层次&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png?raw=true&quot; alt=&quot;层次结构&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;寄存器并非只存在于CPU，IO端口中也有。&lt;/li&gt;
+  &lt;li&gt;对于指令能够操作的寄存器叫体系结构寄存器，对应的指令无法操作的register就是非体系结构寄存器。&lt;/li&gt;
+  &lt;li&gt;早期CPU中是没有cache的，随着发展一部分cache进入到了CPU。cache的作用是做CPU与主存的中间层，因为cache的访问速度更快，可以更CPU更好的配合。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;缓存-主存层次与主存-辅存层次&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BC%93%E5%AD%98-%E4%B8%BB%E5%AD%98-%E8%BE%85%E5%AD%98.png?raw=true&quot; alt=&quot;缓存-主存-辅存&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;缓存-主存是为了速度，由硬件连接&lt;/li&gt;
+  &lt;li&gt;主存和辅存是为了容量，有软硬件连接&lt;/li&gt;
+  &lt;li&gt;主存和辅存构成虚拟存储器，在程序使用时识别的是虚拟地址（逻辑地址），所以我们写程序的时候往往看到的初始内存地址为0。当程序被装入内存或指令要执行的时候，由特定的机构把逻辑地址转化为内存中的物理地址。&lt;/li&gt;
+  &lt;li&gt;缓存和主存使用的地址是主存的实地址（物理地址）&lt;/li&gt;
+  &lt;li&gt;缓存按内容查找&lt;/li&gt;
+  &lt;li&gt;缓存中保存的指令中的地址码保存的是主存的地址，把这个主存地址转化成缓存中的块号和块内偏移地址。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://baike.baidu.com/item/MROM&lt;/li&gt;
+  &lt;li&gt;https://baike.baidu.com/item/EEPROM&lt;/li&gt;
+  &lt;li&gt;https://baike.baidu.com/item/EPROM&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 21 Sep 2018 20:48:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-4-%E5%AD%98%E5%82%A8%E5%99%A8%E6%A6%82%E8%BF%B0/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-4-%E5%AD%98%E5%82%A8%E5%99%A8%E6%A6%82%E8%BF%B0/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>计算机组成原理：3、总线</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;概要&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;总线（bus）：是连接各个部件的信息传输线，是各个部件共享的传输介质。&lt;/li&gt;
+  &lt;li&gt;一条总线是总是主模块向从模块发出地址和命令，但是在分离式通信时是没有从模块的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;总线解决的是什么问题？&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;计算机的不同模块需要用线连接起来，如果采用分散连接（两两连接）那么需要的线路太多，都设计在电路板上难度太大，而且设备的连接接口太多。&lt;/li&gt;
+  &lt;li&gt;分散连接还存在一个扩展困难的问题，如果新加一个接口就要将这个接口与已存在的接口相连。&lt;/li&gt;
+  &lt;li&gt;计算机总线使用有限的线路数量将所有的部件连接起来，解决了上面两个问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;劣势是什么&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;因为总线是共享的，在一个时刻只能有一对（两个）部件进行数据的传输，因此会成为系统的瓶颈。e.g IO与主存在数据传输时，CPU与主存就无法传输了。因此在传输周期上设计了分离式的传输方式，用于解决总线被占用期间出现无效的等待。&lt;/li&gt;
+  &lt;li&gt;总线并行传输在线路比较长时会出现信号干扰，所以一般并行都是在PC机箱内。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;多总线&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;为了解决同一时刻只能一对部件使用总线的问题，引入了多路的总线。&lt;/li&gt;
+  &lt;li&gt;其中一种是：以主存作为中心，一条存储总线，一条系统总线。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;总线分类&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;芯片内总线：芯片内部&lt;/li&gt;
+  &lt;li&gt;系统总线：计算机各部件之间的信息传输线。根据传输信号类型的不同分为：
+    &lt;ul&gt;
+      &lt;li&gt;数据总线：
+        &lt;ul&gt;
+          &lt;li&gt;双向；&lt;/li&gt;
+          &lt;li&gt;宽度通常小于等于机器字长、存储字长。&lt;/li&gt;
+          &lt;li&gt;e.g 64位计算器，数字总线可以是8位，要进行一次64位计算，需要传输64位的数据，那么就需要传输8次。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;地址总线：
+        &lt;ul&gt;
+          &lt;li&gt;通过地址才能找到存储单元和设备。&lt;/li&gt;
+          &lt;li&gt;通常单向：CPU到IO和主存；&lt;/li&gt;
+          &lt;li&gt;与存储地址、IO地址有关。&lt;/li&gt;
+          &lt;li&gt;地址总线的条数与地址单元个数相关。在本书中地址总线宽度和MAR寄存器宽度一样。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;控制总线：
+        &lt;ul&gt;
+          &lt;li&gt;向系统各个部件传递控制信号；&lt;/li&gt;
+          &lt;li&gt;或者各个部件向外传递状态信号。&lt;/li&gt;
+          &lt;li&gt;e.g : 存储器的读写、总线使用的许可、中断确认。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;通信总线：
+    &lt;ul&gt;
+      &lt;li&gt;计算机之间或者与其它设备的连接。&lt;/li&gt;
+      &lt;li&gt;串行&lt;/li&gt;
+      &lt;li&gt;并行&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;总线的特效&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;机械特性：尺寸、形状、管脚数、排列顺序&lt;/li&gt;
+  &lt;li&gt;电器特性：传输方向（上面的单双向），有效电平范围&lt;/li&gt;
+  &lt;li&gt;功能特性：地址、数据、控制&lt;/li&gt;
+  &lt;li&gt;时间特性：信号的时序关系&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-6&quot;&gt;性能指标&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;总线宽度：数据线的根数&lt;/li&gt;
+  &lt;li&gt;标准传输率：每秒传输的最大字节数 MBps&lt;/li&gt;
+  &lt;li&gt;时钟同步/异步：同步、不同步&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;总线复用：地址线与数据线的复用，这个复用其实是共享使用。这样设计是为了减少CPU管脚数。e.g 8086CPU，20个地址线中16跟还作为数据线使用。&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;信号线数：地址线、数据线、控制箱总和&lt;/li&gt;
+  &lt;li&gt;总线控制方式：突发、自动、仲裁、逻辑、计算&lt;/li&gt;
+  &lt;li&gt;其他指标：负载&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;总线结构&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;总结结构有很多，不同的硬件的设计也不同，但是总结来看有几个原则:
+    &lt;ul&gt;
+      &lt;li&gt;CPU与主存之间总是有一条专门的总线，或者CPU与cache与主存之间。&lt;/li&gt;
+      &lt;li&gt;高速设备与低俗设备使用不同的总线。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;四总线结构&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E5%9B%9B%E6%80%BB%E7%BA%BF%E7%BB%93%E6%9E%84.png?raw=true&quot; alt=&quot;四总线结构&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;总线占有控制&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;前面说了总线在同一时刻只能由一对部件来使用，那么当多个部件同时请求使用时是如何来控制的呢？这个就是总线判优的问题了。&lt;/li&gt;
+  &lt;li&gt;总线判优有两种主要方式集中式和分布式。集中式只指优先度是总线控制部件来决定的，它分为三种方式：
+    &lt;ul&gt;
+      &lt;li&gt;链式查询方式&lt;/li&gt;
+      &lt;li&gt;计数器定时查询&lt;/li&gt;
+      &lt;li&gt;独立请求方式&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;链式查询方式&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E9%93%BE%E5%BC%8F%E6%9F%A5%E8%AF%A2.png?raw=true&quot; alt=&quot;链式查询&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;链式查询实际上是从接口0开始逐个的去询问是谁申请了总线的使用。如果1和N都申请了，但是因为先询问的1所以1就会占有总线。&lt;/li&gt;
+  &lt;li&gt;优先级由接口的顺序来决定，比较死板。&lt;/li&gt;
+  &lt;li&gt;弊端是如果BG上有线路的损坏后续就询问就无法继续了。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;计数器定时查询&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E8%AE%A1%E6%97%B6%E5%99%A8%E5%AE%9A%E6%97%B6%E6%9F%A5%E8%AF%A2.png?raw=true&quot; alt=&quot;计数器定时查询&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;总线控制器中有个计数器&lt;/li&gt;
+  &lt;li&gt;多了一条设备地址，这条线是用来将计数器的值向外输出的。&lt;/li&gt;
+  &lt;li&gt;当有多个IO接口申请总线时走的还是BR，总线控制器收到申请后如果判断可以交出总线的权限就会将当前的计数器的值通过设备地址线传递出去。&lt;/li&gt;
+  &lt;li&gt;e.g 一开始计数器的值是0，当1和N申请总线时，就会对IO接口0进行查询是否申请了。如果IO接口0没有申请，那么计数器+1，然后开始对接口1进行查询。&lt;/li&gt;
+  &lt;li&gt;这种方式的优势：因为计数器是可以设置的，所以优先级是可以设定的。&lt;/li&gt;
+  &lt;li&gt;设备地址线宽度与设备数量相关&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;独立请求方式&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E7%8B%AC%E7%AB%8B%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F.png?raw=true&quot; alt=&quot;独立请求方式&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这个方式在效率上是最高的，因为每个部件都有自己的BR，因此总线控制器在同意后可以很明确的用BG来返回。&lt;/li&gt;
+  &lt;li&gt;缺点是线路太多&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-12&quot;&gt;总线通信&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;总线在一段时间内被一对主从设备占用，总线通信的目的是为了解决通信双方协调配合问题。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-13&quot;&gt;总线传输周期&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;申请分配阶段：主模块申请，总线仲裁决定&lt;/li&gt;
+  &lt;li&gt;寻址阶段：主模块通过地址找到从模块，并给出命令。&lt;/li&gt;
+  &lt;li&gt;传数阶段：主模块和从模块数据交换。&lt;/li&gt;
+  &lt;li&gt;结束阶段：主、从模块撤销相关信息。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-14&quot;&gt;总线通信的方式&lt;/h4&gt;
+&lt;h5 id=&quot;section-15&quot;&gt;同步通信：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;由统一定宽定距的时标控制数据传输，主从模块强制同步，在同一个时限内完成规定的操作。&lt;/li&gt;
+  &lt;li&gt;对于速度不同的模块要选择速度最慢的模块作为统一的时标，对于高速模块来说没有发挥它的作用。&lt;/li&gt;
+  &lt;li&gt;同步通信的使用场景是总线比较短，并且各个模块存取时间比较一致的情况。&lt;/li&gt;
+  &lt;li&gt;下面举例说明一下同步式的数据读取（输入）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1%E6%95%B0%E6%8D%AE%E8%BE%93%E5%85%A5.png?raw=true&quot; alt=&quot;同步通信输入&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;T1时钟上升沿主设备CPU要给出地址信号&lt;/li&gt;
+  &lt;li&gt;T2时钟上升沿要给出读命令信号，告诉从设备CPU要读取数据&lt;/li&gt;
+  &lt;li&gt;T3时钟上升沿之前从设备要给出数据信号&lt;/li&gt;
+  &lt;li&gt;T4时钟上升沿之前数据信号和读信号（控制信号）  撤销&lt;/li&gt;
+  &lt;li&gt;T4结束地址信号撤销&lt;/li&gt;
+  &lt;li&gt;NOTE：上图中每一行的空白区域是对应的信号的存在时间&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-16&quot;&gt;异步通信：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;采用应答方式，没有公共时钟标准。&lt;/li&gt;
+  &lt;li&gt;在通信控制过程中分为不互锁、半互锁和全互锁。&lt;/li&gt;
+  &lt;li&gt;按照下图所展示的进行说明：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E5%BC%82%E6%AD%A5%E9%80%9A%E4%BF%A1.png?raw=true&quot; alt=&quot;异步通信&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;不互锁：指的是主设备发出请求信号后从设备发应答信号，然后主设备和从设备依次退出信号。过程中主设备不管是否接收到了应答信号，经过一定延迟后都会撤销请求信号，而从设备也不管主设备是否接受到了应答信号，经过一段时间后就撤销信号。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;半互锁：主设备发出请求信号，从设备发应答信号。区别在于主设备的请求信号只有在收到应答信号后才撤销，而从设备仍旧经过一段时间后就撤销了信号。造成的问题就是可能从设备一直不回复，那么主设备就一直等待。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;全互锁：本质和TCP三次握手一样。主设备发请求、从设备应答，主设备只有收到应答后才撤销，而从设备只有请求信号撤销后才撤销应答信号。在传输期间发生错误的话，主设备可以要求从设备重新发送或者接受数据。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-17&quot;&gt;半同步通信：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;同步异步结合，解决两个不同速度的设备交换数据。&lt;/li&gt;
+  &lt;li&gt;同步方面：发送方用系统时钟前沿发信号，接收方用系统时钟后沿判断、识别。&lt;/li&gt;
+  &lt;li&gt;异步方面：运行不同速度的模块和谐工作，增加一条“等待”响应信号”WAIT”，信号线。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E6%80%BB%E7%BA%BF/%E5%8D%8A%E5%90%8C%E6%AD%A5%E9%80%9A%E4%BF%A1%E6%95%B0%E6%8D%AE%E8%BE%93%E5%85%A5.png?raw=true&quot; alt=&quot;半同步通信&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;从上图可以看出前面在T1和T2都和同步通信是一致的，但是在T3前，如果从设备没有能够准备好数据的传输那么久会发出TW信号。主设备检查到TW存在时就会等待一个时钟周期，然后每过一个时钟周期就检查一下TW是否在低位。知道从设备准备好数据传输了，然后TW变成高电位。然后就继续T3、T4。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-18&quot;&gt;前三种小总结&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;主模块发地址、命令→占用总线&lt;/li&gt;
+  &lt;li&gt;从模块准备数据→不占用总线，总线空闲&lt;/li&gt;
+  &lt;li&gt;从模块想主模块发数据→占用总线&lt;/li&gt;
+  &lt;li&gt;在准备数据时是有总线浪费的，所以有了分离式的通信。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-19&quot;&gt;分离式通信：&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;充分挖掘系统总线每个瞬间的潜力。&lt;/li&gt;
+  &lt;li&gt;本质上分离式通信是讲一个原来的总线传输周期分割成多个子周期
+    &lt;ul&gt;
+      &lt;li&gt;子周期1：主模块申请占用总线，使用完后放弃总线控制权&lt;/li&gt;
+      &lt;li&gt;子周期2：从模块申请占用总线，讲各种信息送到总线上&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;特点：
+    &lt;ul&gt;
+      &lt;li&gt;各模块都有权申请占用总线，所以都是主模块。&lt;/li&gt;
+      &lt;li&gt;采用同步方式通信，不等对方回答。&lt;/li&gt;
+      &lt;li&gt;各模块准备数据时不占用总线&lt;/li&gt;
+      &lt;li&gt;总线被占用时无空闲（这不是废话么）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-20&quot;&gt;延伸阅读&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-21&quot;&gt;总线频率&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1.主频：主频也叫时钟频率，单位是MHz，用来表示CPU的运算速度。主频由外频和倍频决定，其计算公式
+为 主频＝外频 * 倍频。外频就是系统总线的工作频率；而倍频则是指CPU外频与主频相差的倍数。如
+Intel Pentium4 3.06GHz处理器的外频为133，倍频23，则主频＝133*23＝3.06Ghz&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;2.外频：外频是CPU的基准频率，单位也是MHz。外频是CPU与主板之间同步运行的速度，而且目前的绝大
+部分电脑系统中，外频也是内存与主板之间的同步运行的速度，在这种方式下，可以理解为CPU的外频直接
+与内存相连通，实现两者间的同步运行状态。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;3.前端总线：前端总线频率直接影响CPU与内存直接数据的交换速度。由于数据传输最大带宽取决于所有同
+时传输的数据的宽度和传输频率，即数据传输量＝（总线频率&lt;em&gt;数据带宽）/8。外频与前端总线频率的区别：
+前端总线的速度指的是数据传输的速度，外频是CPU与主板之间同步运行的速度。比如说，100MHz外频特
+指数字脉冲信号在每秒钟震荡一千万次：而100MHz前端总线指的是每秒钟CPU可接受的数据传输量是
+100MHz&lt;/em&gt;64bit/（8Byte/bit）＝800MB/s。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;4.倍频系数：倍频系数是指CPU主频与外频之间的相对比例关系。在相同的外频下，倍频越高CPU的频率也
+越高。但实际上，在相同外频的前提下，倍频高的CPU本身意义并不大。这是因为CPU与系统之间数据传
+输速度是有限的，一味追求高倍频而得到高主频的CPU就会出现明显的“瓶颈”效应——CPU从系统得到数据
+的极限速度不能满足CPU运算的速度。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;5.内存总线速度：CPU处理的数据来自存储器，而主存储器就是内存。一般放在外存（磁盘或者各种存储介
+质）上面的数据都要通过内存，再进入CPU进行处理。所以CPU与内存之间的通道的内存总线速度对整个
+系统性能就显得很重要。由于内存和CPU之间的运行速度或多或少会有差异，因此便出现了二级缓存，来协
+调两者之间的差异，而内存总线速度就是指CPU与二级高速缓存和内存之间的通信速度。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;6.扩展总线速度：扩展总线指的是安装在计算机系统上的局部总线如VESA或PCI总线，我们打开电脑的时候
+会看见一些插槽般的东西，这些就是扩展槽，而扩展总线就是CPU联系这些外部设备的桥梁。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;section-22&quot;&gt;时钟周期&lt;/h4&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;时钟周期也称为振荡周期，定义为时钟频率的倒数。时钟周期是计算机中最基本的、最小的时间单位。在一个时钟周期内，CPU仅完成一个最基本的动作。时钟周期是一个时间的量。时钟周期表示了SDRAM所能运行的最高频率。更小的时钟周期就意味着更高的工作频率。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-23&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://blog.csdn.net/commandow/article/details/5844617&lt;/li&gt;
+  &lt;li&gt;https://baike.baidu.com/item/%E6%97%B6%E9%92%9F%E5%91%A8%E6%9C%9F&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 20 Sep 2018 20:48:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-3-%E6%80%BB%E7%BA%BF/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-3-%E6%80%BB%E7%BA%BF/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>计算机组成原理：2、基本组成</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;冯·诺依曼计算机基本概念&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;本文中的内存结构只是课程中用到的一个特定的机器的设计，并非所有的计算机都是这样的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;现在的计算机都是程序存储计算机，也就是冯诺依曼计算机。&lt;/li&gt;
+  &lt;li&gt;特点：
+    &lt;ul&gt;
+      &lt;li&gt;计算机有五大部件组成：输入、输出、控制器（CU）、运算器(ALU)、存储器(主存、辅存)&lt;/li&gt;
+      &lt;li&gt;指令和数据以同等地位存于存储器中，按地址寻访。&lt;/li&gt;
+      &lt;li&gt;指令和数据按照二进制保存&lt;/li&gt;
+      &lt;li&gt;指令由操作码和地址码组成（e.g 0001 00001000，0001代表读取，00001000代表要读取 数据在内存（寄存器）中的位置）。&lt;/li&gt;
+      &lt;li&gt;存储程序，存储在存储器中。&lt;/li&gt;
+      &lt;li&gt;以运算器为中心。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;现代计算机：
+    &lt;ul&gt;
+      &lt;li&gt;ALU + CU = CPU&lt;/li&gt;
+      &lt;li&gt;CPU + 主存（RAM\ROM\Cache（inter上cache有L1\L2\L3）） = 主机&lt;/li&gt;
+      &lt;li&gt;输入 + 输出 + 辅存 = IO设备&lt;/li&gt;
+      &lt;li&gt;主机 + IO = 计算机系统硬件&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;CU控制数据的读取+写入，操作的是存储器，还可以控制指令的执行顺序操作的是运算器。&lt;/li&gt;
+  &lt;li&gt;如果以运算器为中心进行硬件设计会是的运算器成为系统的瓶颈（overhead）。所以改进成以存储器为中心，这样可以是的IO设备直接和存储器关联。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;计算机解决问题的步骤：&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;建立数学模型&lt;/li&gt;
+  &lt;li&gt;确定计算方法&lt;/li&gt;
+  &lt;li&gt;编制程序：程序就是运算的全部步骤，指令就是每一个步骤。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E7%A8%8B%E5%BA%8F%E6%B8%85%E5%8D%95.png?raw=true&quot; alt=&quot;程序清单&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;计算机主要组成&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;存储器&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;存储器的组成由以下：
+    &lt;ul&gt;
+      &lt;li&gt;存储体:  大楼-&amp;gt;若干房间-&amp;gt;如果床位
+        &lt;ul&gt;
+          &lt;li&gt;存储单元：房间
+            &lt;ul&gt;
+              &lt;li&gt;存储原件：床位，本质就是0/1了&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+          &lt;li&gt;存储单元：存放一串二进制代码&lt;/li&gt;
+          &lt;li&gt;存储字：存储单元中二进制代码的组合&lt;/li&gt;
+          &lt;li&gt;存储字长：存储单元中二进制代码的位数&lt;/li&gt;
+          &lt;li&gt;每一个存储单元都有一个地址，通过地址进行访问。存储单元保存的可以是数据，也可以是指令。&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;MAR：存储器地址寄存器，保存存储单元地址或编号。反应存储单元个数。&lt;/li&gt;
+      &lt;li&gt;MDR：存储器数据寄存器，要保持到存储体的数据，或者刚刚从存储体取出的数据。反应了存储字长。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;硬件结构&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E5%AD%98%E5%82%A8%E4%BD%93.png?raw=true&quot; alt=&quot;存储体&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;运算器&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;在我理解中运算器是真正进行数据计算的地方，都是采用二级制的加减乘除。具体实现应该是数字电路方面的知识了。&lt;/li&gt;
+  &lt;li&gt;对于不同的运算，在指令执行过程中使用到的寄存器数量不同。比如加减法是不需要MQ（乘商寄存器，multiplication &amp;amp; quotient的缩写）的。&lt;/li&gt;
+  &lt;li&gt;ALU：运算器核心&lt;/li&gt;
+  &lt;li&gt;ACC：累加寄存器&lt;/li&gt;
+  &lt;li&gt;X：保存数据的寄存器&lt;/li&gt;
+  &lt;li&gt;MQ：乘商寄存器&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E5%8A%A0%E6%B3%95.png?raw=true&quot; alt=&quot;加&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E5%87%8F%E6%B3%95.png?raw=true&quot; alt=&quot;减&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E4%B9%98%E6%B3%95.png?raw=true&quot; alt=&quot;乘&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E9%99%A4%E6%B3%95.png?raw=true&quot; alt=&quot;除&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E8%BF%90%E7%AE%97%E5%99%A8%E6%93%8D%E4%BD%9C.png?raw=true&quot; alt=&quot;运算器操作&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;控制器&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;功能：
+    &lt;ul&gt;
+      &lt;li&gt;解释指令&lt;/li&gt;
+      &lt;li&gt;保证指令的按序执行&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;解释指令过程，也是一个指令的执行过程：
+    &lt;ul&gt;
+      &lt;li&gt;取指令：从内存单元中取指令。→ PC&lt;/li&gt;
+      &lt;li&gt;分析指令：把操作码部分送到控制单元进行分析 → IR&lt;/li&gt;
+      &lt;li&gt;执行指令：控制单元控制相应的执行部件来执行操作 → CU&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;硬件结构
+    &lt;ul&gt;
+      &lt;li&gt;PC：程序计数器：寄存器，存放当中要执行的指令的地址，具有计数功能（PC）+ 1-&amp;gt; PC，（类似指针操作）&lt;/li&gt;
+      &lt;li&gt;IR：指令寄存器，存放当前要执行的指令。控制单元从IR中取出操作码进行分析。&lt;/li&gt;
+      &lt;li&gt;CU：发出控制信号&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E6%8E%A7%E5%88%B6%E5%99%A8.png?raw=true&quot; alt=&quot;控制器&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;所以控制器的执行顺序是：CU（不确定，因为没有讲清楚）从PC取当前要执行指令的地址，根据地址找到指令后存到IR，CU分析指令后得到操作码，然后执行。PC++后就是到了下一条指令的地址，然后继续之前的操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;存储器、运算器和控制器是如何协作的&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;取数例子&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E5%8F%96%E6%95%B0.png?raw=true&quot; alt=&quot;取数&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;PC中保存着指令的地址，将地址放入MAR。&lt;/li&gt;
+  &lt;li&gt;用MAR中的地址从存储体中得到指令（操作码+操作数据地址码）&lt;/li&gt;
+  &lt;li&gt;将得到的指令放到MDR&lt;/li&gt;
+  &lt;li&gt;将指令从MDR放到IR
+    &lt;blockquote&gt;
+      &lt;p&gt;——————–取指令结束——————–&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;IR将操作码送到CU，CU译码，开始操作元器件。&lt;/li&gt;
+  &lt;li&gt;IR中地址码送到MAR，这个地址码就是我们真正要操作的数据。&lt;/li&gt;
+  &lt;li&gt;MAR从存储体取到数据&lt;/li&gt;
+  &lt;li&gt;数据保存到MDR&lt;/li&gt;
+  &lt;li&gt;MDR讲输入送到ACC
+    &lt;blockquote&gt;
+      &lt;p&gt;——————–整个操作结束——————&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NOTE: 在这个图中没有体现的是如何将最初的取值指令地址放到PC中&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;存数例子&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E5%AD%98%E6%95%B0.png?raw=true&quot; alt=&quot;存数&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;PC中保存着指令的地址，将地址放入MAR。&lt;/li&gt;
+  &lt;li&gt;用MAR中的地址从存储体中得到指令（操作码+操作数据地址码）&lt;/li&gt;
+  &lt;li&gt;将得到的指令放到MDR&lt;/li&gt;
+  &lt;li&gt;将指令从MDR放到IR
+    &lt;blockquote&gt;
+      &lt;p&gt;——————–取指令结束——————–&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;IR将操作码送到CU，CU译码，开始操作元器件。&lt;/li&gt;
+  &lt;li&gt;IR中地址码送到MAR，这个地址码就是我们真正要操作的数据。&lt;/li&gt;
+  &lt;li&gt;MAR将地址告诉存储体，这个数据要存起来&lt;/li&gt;
+  &lt;li&gt;ACC中的数据保存到MDR&lt;/li&gt;
+  &lt;li&gt;MDR将数据放到存储体
+    &lt;blockquote&gt;
+      &lt;p&gt;——————–整个操作结束——————&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;计算机执行程序的过程&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C.png?raw=true&quot; alt=&quot;程序执行&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;这里就回答了之前的问题，在程序被输入到计算机的内存后，第一个指令的地址会被放入到PC中。在指令执行的过程中，PC+1操作使得能够不断的执行新的指令。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-10&quot;&gt;延展阅读&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-11&quot;&gt;主存、副存、内存、外存&lt;/h4&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;存储器是计算机的重要组成部分，用于存储程序与数据，可分为：计算机内部的存储器（内存储器，简称内存）、计算机外部的存储器（外存储器，简称外存）&lt;/p&gt;
+
+  &lt;p&gt;一般来说，主存指的是内存；但是在一些专业性较强的场合，主存与内存还是有一定区别的。内存储存器还有其他形式。而外存指的是辅存，比如硬盘、U盘、光盘及软盘等。&lt;/p&gt;
+
+  &lt;p&gt;cpu中的存储器和主存是两个概念。处理器需要自己的内存储器，它们以寄存器的形式存在。&lt;/p&gt;
+
+  &lt;p&gt;内存：&lt;/p&gt;
+
+  &lt;p&gt;内存又称主存，是CPU能直接寻址的存储空间，它的特点是存取速率快。内存是电脑中主要部件，它是相对于外存来说。&lt;/p&gt;
+
+  &lt;p&gt;内存一般采用半导体存储单元，包括随机存储器（RAM）、只读存储器（ROM）和高级缓存（Cache）。&lt;/p&gt;
+
+  &lt;p&gt;RAM（Random Access Memory）：&lt;/p&gt;
+
+  &lt;p&gt;高速存取，支持读写数据，读写时间相等，且与地址无关，但是断电后其中的数据会丢失。&lt;/p&gt;
+
+  &lt;p&gt;ROM（Read Only Memory）：&lt;/p&gt;
+
+  &lt;p&gt;断电后信息不丢失，如计算机启动用的BIOS芯片。存取速度很低，（较RAM而言）且不能改写。由于不能改写信息，不能升级，现已很少使用。&lt;/p&gt;
+
+  &lt;p&gt;Cache：&lt;/p&gt;
+
+  &lt;p&gt;介于CPU与内存之间，常用有一级缓存（L1）、二级缓存（L2）、三级缓存（L3）（一般存在于Intel系列）。它的读写速度比内存还快，当CPU在内存中读取或写入数据时，数据会被保存在高级缓冲存储器中，当下次访问该数据时，CPU直接读取高级缓冲存储器，而不是更慢的内存。&lt;/p&gt;
+
+  &lt;p&gt;外存：&lt;/p&gt;
+
+  &lt;p&gt;外储存器是指除计算机内存及CPU缓存以外的储存器，此类储存器一般断电后仍然能保存数据。外存需要通过I/O系统与之交换数据，又称为辅助存储器。常见的外储存器有硬盘、软盘、光盘、U盘等&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-12&quot;&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://blog.csdn.net/lewky_liu/article/details/78147842&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 19 Sep 2018 20:47:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-2-%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-2-%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>计算机组成原理：1、组成原理到底研究的什么</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;这是对哈尔滨工业大学网络课程《计算机组成原理》的笔记&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;计算机系统层次从程序的角度看分为下面5层：
+    &lt;ul&gt;
+      &lt;li&gt;高级语言层：Java、C、C++、C#等，需要编程成机器语言&lt;/li&gt;
+      &lt;li&gt;汇编层：也需要编译成机器语言，符号语言和机器语言的指令基本是一一对应的。&lt;/li&gt;
+      &lt;li&gt;操作系统：提供机器语言与编程语言的&lt;/li&gt;
+      &lt;li&gt;机器语言：就是计算机所提供的语言了，根据地址从存储器读取-&amp;gt;送往控制器译码-&amp;gt;计算器。操作有顺序要求，并非全部是并发。&lt;/li&gt;
+      &lt;li&gt;微指令系统：机器指令的细化，在某个时间点上可以执行的操作放到一个微指令当中，执行上有先后顺序的放到不同的微指令中。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;从下往上看这个层级：
+    &lt;ul&gt;
+      &lt;li&gt;多个微指令构成一个微程序，&lt;strong&gt;微指令是由硬件直接执行的。&lt;/strong&gt;&lt;/li&gt;
+      &lt;li&gt;一个微程序对应一个机器指令，用微指令解释机器指令。&lt;/li&gt;
+      &lt;li&gt;用机器指令解释操作系统&lt;/li&gt;
+      &lt;li&gt;————软硬件分割线—————&lt;/li&gt;
+      &lt;li&gt;用汇编程序翻译成机器语言程序&lt;/li&gt;
+      &lt;li&gt;用编译程序翻译成汇编语言程序&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;实际上OS除了管理硬件、软件外。从编程的角度看OS提供了编程语言与机器语言的接口。&lt;/li&gt;
+  &lt;li&gt;对于在机器上编写程序的人来说，计算机组成在设计上就要提供一套微指令集给程序员，并且要定义哪些指令可以操作什么类型的数据（数据表示）。实际上在机器指令集设计的时候对于不同数据类型的相同操作可能会有不同的指令（e.g 整数和浮点数的加法运算）&lt;/li&gt;
+  &lt;li&gt;计算机组成原理所研究是就是硬件部分的设计，需要实现计算机体系结构所体现的属性。比如：当程序员询问有没有乘法指令？这个指令能对什么类型的数据操作？长度限制是多少？那种做计算机组成设计的人就要负责具体指令的实现。&lt;strong&gt;（从纯软件编程的角度说，计算机组成可以理解为一个lib，在设计的时候要确定有什么接口，接口的实现要怎么做，里面有哪些定义的数据，这些数据哪些接口理由操作、怎么操作等问题）&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 19 Sep 2018 20:46:00 +0800</pubDate>
+        <link>https://caihua.tech/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-1-%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E5%88%B0%E5%BA%95%E7%A0%94%E7%A9%B6%E7%9A%84%E4%BB%80%E4%B9%88/</link>
+        <guid isPermaLink="true">https://caihua.tech/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-1-%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E5%88%B0%E5%BA%95%E7%A0%94%E7%A9%B6%E7%9A%84%E4%BB%80%E4%B9%88/</guid>
+        
+        <category>组成原理</category>
+        
+        
+      </item>
     
       <item>
         <title>Unity人工智能游戏开发笔记</title>
@@ -407,1030 +1716,6 @@ while (true)
         <guid isPermaLink="true">https://caihua.tech/2018/05/06/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E6%B8%B8%E6%88%8F%E5%BE%AA%E7%8E%AF/</guid>
         
         <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>游戏设计模式读书笔记：状态模式</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;解决了什么问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在游戏开发中状态是一种常见的用于描述游戏对象的方法，在状态比较简单的情况下可能通过多个标志位变量就可以组合出不同的状态。例如书中举得英雄行走、跳跃、蹲下等操作。但是一旦当对象的状态可是变得比较多，而且需要通过比较多的变量才能描述清楚时，只使用标志位变量的弊端就出现了：那就是过多的变量在代码编写时需要的条件语句会很多，而且变量的组合也不利于管理。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;switch&quot;&gt;使用switch管理状态&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;首先需要将状态从变量组合变为一个明确的字段，此时我们可以使用enum来实现这个。&lt;/li&gt;
-  &lt;li&gt;在switch中对于每个枚举状态开设分支。这样从一定程度上解决了大量变量带来的编程的复杂度。而且从逻辑上清晰的划分了状态。&lt;/li&gt;
-  &lt;li&gt;但是这个仍旧存在问题，用书中的例子来说，当你需要在某个状态中进行一个计时操作时。就需要在switch代码块和update代码块中修改功能，这说明功能没有能很好的封装，你需要修改两处才能实现功能的修改。如果我们在修改功能的时候只修改一个地方就能够避免一些麻烦，比如一次修改就要同时修改多处，万一遗漏了一个就可能造成bug。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;状态模式&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;允许一个对象在其内部状态发生变化时改变自己的行为，该对象看起来好像修改了它的类型。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这句话有点让人难以理解，实际上状态模式是这么干的：
-    &lt;ul&gt;
-      &lt;li&gt;定义状态接口&lt;/li&gt;
-      &lt;li&gt;让每个状态成为一个类并实现接口&lt;/li&gt;
-      &lt;li&gt;对象持有状态对象的引用，从而使得从外部看（实际就是获取对象的某些属性或者调用函数）这个对象具有不同的状态。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;对于一个状态的接口一般都包含如下的函数：Enter、Update、Exit。除此之外也可以根据实际情况设计一些函数，比如设计一个Init函数，它是在状态对象实例化时进行初始化用的。&lt;/li&gt;
-  &lt;li&gt;静态状态：如果一个状态它只有函数没有字段，也就是说它是对象无关的，那么完全可以使用静态类来定义状态，这样做可以节省内存，管理起来也比较简单。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;fsm&quot;&gt;有限状态机（FSM）&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;FSM我个人认为其作用在于专职的管理状态，比如状态的创建、切换、销毁等。&lt;/li&gt;
-  &lt;li&gt;对象持有的不在是一个具体的状态对象，而是一个FSM对象。而状态的切换也需要在FSM中实现，FSM中有一个所有状态的集合，同时保存当前的状态的引用。&lt;/li&gt;
-  &lt;li&gt;在切换状态时先要执行当前状态的Exit函数，然后执行下一个状态的Enter。&lt;/li&gt;
-  &lt;li&gt;在unity中对于不同的FSM一般使用一个专门的管理类来管理所有的FSM。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;并发状态机&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;并发状态机和下面谈到的另外两个其实都是在上面所说的基础上的扩展，用于不同的场景。&lt;/li&gt;
-  &lt;li&gt;顾名思义，并发状态机实际上就是对象同时拥有两种不同的状态。以书中的例子来说，就是英雄角色具有一个状态机，而英雄手中的武器也具有一个状态机。&lt;/li&gt;
-  &lt;li&gt;两个不同的状态机之间可能会有交互，为了完成这个，你也许会在状态的代码中做一些粗糙的if测试其他状态来协同，这不是最优雅的解决方案，但这可以搞定工作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;分层状态机&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;当不同状态具有某个共同点时使用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;举个例子，我们的英雄也许有站立、行走、奔跑和滑铲状态。在这些状态中，按B跳，按下蹲。如果使用简单的状态机实现，我们在每个状态中的都重复了代码。如果我们能够实现一次，在多个状态间重用就好了。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;状态可以有父状态（这让它变为子状态）。当一个事件进来，如果子状态没有处理，它就会交给链上的父状态。 换言之，它像重载的继承方法那样运作。事实上，如果我们使用状态模式实现FSM，我们可以使用继承来实现层次。 定义一个基类作为父状态：&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class OnGroundState : public HeroineState
-{
-public:
-  virtual void handleInput(Heroine&amp;amp; heroine, Input input)
-  {
-    if (input == PRESS_B)
-    {
-      // 跳跃……
-    }
-    else if (input == PRESS_DOWN)
-    {
-      // 俯卧……
-    }
-  }
-};
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class DuckingState : public OnGroundState
-{
-public:
-  virtual void handleInput(Heroine&amp;amp; heroine, Input input)
-  {
-    if (input == RELEASE_DOWN)
-    {
-      // 站起……
-    }
-    else
-    {
-      // 没有处理输入，返回上一层
-      OnGroundState::handleInput(heroine, input);
-    }
-  }
-};
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;除了使用继承外，还可以显式的使用状态栈而不是单一状态来表示当前状态的父状态链。栈顶的状态是当前状态，在他下面是它的直接父状态，然后是那个父状态的父状态，以此类推。 当你需要状态的特定行为，你从栈的顶端开始，然后向下寻找，直到某一个状态处理了它。（如果到底也没找到，就无视它。）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;下推自动机&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;下推状态机解决的问题是有限状态机没有任何历史的概念。你记得正在什么状态中，但是不记得曾在什么状态。 没有简单的办法重回上一状态。&lt;/li&gt;
-  &lt;li&gt;有限状态机有一个指向状态的指针，下推自动机有一栈指针。 在FSM中，新状态代替了之前的那个状态。 下推自动机不仅能完成那个，还能给你两个额外操作：
-    &lt;ul&gt;
-      &lt;li&gt;你可以将新状态压入栈中。“当前的”状态总是在栈顶，所以你能转到新状态。 但它让之前的状态待在栈中而不是销毁它。&lt;/li&gt;
-      &lt;li&gt;你可以弹出最上面的状态。这个状态会被销毁，它下面的状态成为新状态。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;总结&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;状态模式在游戏开发中使用的最为广泛的就是FSM，它有效的将游戏对象的不同状态进行了封装，从而使得对象的操作更加简单。&lt;/li&gt;
-  &lt;li&gt;对于单个的游戏对象不同的状态中可能会有更多的操作，比如对象在行走状态下需要控制移动的方向、速度、对于碰撞体的处理等。这个就需要在状态机中进行功能编写了。&lt;/li&gt;
-  &lt;li&gt;对于FSM的实现推荐看下GameFramework中的&lt;a href=&quot;https://github.com/EllanJiang/GameFramework/tree/master/GameFramework/Fsm&quot;&gt;FSM&lt;/a&gt;部分。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 21 Apr 2018 20:15:35 +0800</pubDate>
-        <link>https://caihua.tech/2018/04/21/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/04/21/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</guid>
-        
-        <category>游戏设计模式读书笔记</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>七周七并发模式：Lambda架构</title>
-        <description>&lt;h3 id=&quot;lambda&quot;&gt;Lambda架构&lt;/h3&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;定义&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lambda架构使用了可以进行大规模数据批处理的MapReduce技术，也使用了可以快速处理数据并及时反馈的流处理技术，这样的混搭能够为大数据问题提供扩展性、响应性和容错性都很优秀的解决方案。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lambda架构是站在大规模场景的角度来解决问题的，它可以将数据和计算分布到几十台或几百台机器构成的集群上进行。这种技术不但解决了之前因为规模庞大而无法解决的难题，还可以构建出对硬件错误和人为错误进行容错的系统。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Lambda架构源自于它与函数式编程的相似性。从本质上说，Lambda架构是将计算函数施加于大量数据的一种通用方法。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;不变原始数据是Lambda架构的基础。对于不变的数据进行处理的时候，不在需要锁机制和事物机制。多个线程可以并行地访问数据，而不用担心相互之间的作用。我们可以对数据进行复制，再对副本进行操作，而不用担心数据过期，所以在集群中分布地处理数据就变得非常容易。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;传统数据系统的缺陷&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;扩展性：利用某些技术（比如复制、分片等）可以将传统数据库扩展到多台计算机上，但随着计算机数量和查询数量的增加，应用这种方案会变得越来越困难。超过一定程度，增加计算机资源将无法继续改善性能。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;维护成本：维护一个跨多台计算机的数据库的成本是比较高的。如果要求维护时不能停机，那么维护将变得更加困难——比如对数据库进行重新分片。随着数据量和查询数量的增加，容错、备份、确保数据一致性等工作的难度都会呈几何级数增长。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;复杂度：复制和分片通常要求应用层面提供一些支持——应用需要知道将查询发给哪一台计算机，以及应该更新哪一个数据分片（每个更新所对应的分片通常不一样，规则也比较复杂）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;人为错误&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;报表和分析：在独立的数据仓库中用另一种格式来维护历史数据。数据从业务数据库向数据仓库的迁移过程就是著名的萃取（extract）、转置（transform）、加载（load）（简称ETL）。这种方案不仅复杂，而且需要准确预测将来我们需要什么信息。有时会碰到这种情况：由于缺乏必要的信息或者信息格式不对，无法生成所需报表或进行某些分析。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;批处理视图（批处理层） &amp;amp; 服务层&lt;/h4&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;如果能够准确预测出未来会对原始数据进行怎样的查询，就可以预计算出一个批处理视图，这个视图包含这些查询将要返回的衍生信息，或者那些可以计算出这些衍生信息的数据。Lambda架构的批处理层就是用来计算这些批处理视图的。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;批处理视图可以包含衍生信息，比如：假设要用一系列编辑记录来构建Wikipedia的页面——批处理视图将只包含从页面的编辑记录中计算得来的页面内容。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;批处理视图也可以包含可以计算出衍生信息的数据，这类情况会稍微复杂一些。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;需要对生成的批处理视图进行索引，这样就可以对索引进行查询了。另外，还需要一个地方来存放程序逻辑（说明一个查询该如何合并批处理视图的逻辑）。这就是服务层的任务。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;总结来说利用不变数据利于并行的特显对海量数据进行加工（mapper + reducer），生成批处理视图。然后再通过简单的查询得到想要的结果。&lt;/li&gt;
-  &lt;li&gt;后面提到的Hadoop就是应用于批处理层&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;加速层&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;有新数据产生时，除了会将数据投入到原始数据还会进行扔给加速层生成实时视图，结合最新的批处理视图可以满足对于新数据的查询。&lt;/li&gt;
-  &lt;li&gt;当新的批处理视图产生后，实时视图就被丢弃了。&lt;/li&gt;
-  &lt;li&gt;这个东西的目的应该是为了快速响应新数据，在批处理层还没有出新版本时，临时使用实时视图+当前最新的批处理视图就组成了未来会出现的批处理视图。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;后面讲的Storm系统应用于加速层&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;最后放一张架构图&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/890/39792443890_5335cc665b_c.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;mapreduce&quot;&gt;MapReduce&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;定义&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;MapReduce是一个多义的术语。其可以指代一类算法，这类算法分为两个步骤：对一个数据结构首先进行映射（map）操作，然后进行化简（reduce）操作。之前的词频统计的函数式版本正是这样的例子（frequencies就是用reduce函数实现的）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;MapReduce还可以指代一类系统——这类系统使用了上面的算法，将计算过程高效地分布到一个集群上。这类系统不仅可以将数据和数据处理分布到集群的多台计算机上，还可以在一台或多台计算机崩溃时继续正常运转。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;一个MapReduce任务由两种主要的组件构成：mapper和reducer。mapper负责将某种输入格式（通常是文本）映射为许多键值对。reducer负责将这些键值对转换成最终的输出格式（通常也是一系列键值对）。mapper和reducer可以分布在很多不同的计算机上（它们的数目不必相同）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;hadoop&quot;&gt;Hadoop&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;一个包含了MapReduce的&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;输入通常由一个或多个大文本文件构成。Hadoop对这些文件进行分片（每一片的大小是可配置的，通常为64 MB），并将每个分片发送给一个mapper。mapper将输出一系列键值对，Hadoop再将这些键值对发送给reducer。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;一个mapper产生的键值对可以发送给多个reducer。键值对的键决定了哪个reducer会接受这个键值对——Hadoop确保具有相同键的键值对（无论是由哪个mapper产生的）都会发送给同一个reducer处理。这个阶段通常被称为洗牌阶段（shuffle phase）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Hadoop为每个键调用一次reducer，并传入所有与该键对应的值。reducer将这些值合并，再生成最终输出结果（通常是键值对，也可以不是）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;mapper--reducer&quot;&gt;mapper &amp;amp; reducer&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;书中demo的Map继承了Hadoop的Mapper类，其接受四个类型参数：输入的键类型、输入的值类型、输出的键类型、输出的值类型。它里面的方法本质是将一行文本进行拆分，输出一个键值对。&lt;/li&gt;
-  &lt;li&gt;对于每个键，都会调用一次reduce()方法，values是这个键对应的所有值的集合。reduce()方法对这些值进行求和，并产生描述某个单词出现总数的键值对。&lt;/li&gt;
-  &lt;li&gt;Hadoop在键值对传给reducer前会对键进行排序&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;driver&quot;&gt;Driver&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从下面的代码看driver就是配置Hadoop。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;这里不需要设置输入的键类型和值类型，因为默认情况下Hadoop认为我们处理的是文本文件。也不需要分别设置mapper输出的键/值类型和reducer输入的键/值类型，因为默认情况下Hadoop认为mapper的输出和reducer的输入具有相同的键/值类型。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;使用setInputFormatClass()将XmlInputFormat设置为分片器，并且配置xmlinput.start和xmlinput.end来告诉分片器我们关注的是哪个标签。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;setCombinerClass()来设置combiner。combiner是一种优化手段，使键值对可以在发往reducer前进行合并。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;public class WordCount extends Configured implements Tool { 
-    public int run(String[] args) throws Exception { 
-        Configuration conf = getConf();
-        conf.set(&quot;xmlinput.start&quot;, &quot;&amp;lt;text&quot;);
-        conf.set(&quot;xmlinput.end&quot;, &quot;&amp;lt;/text&amp;gt;&quot;);
-        Job job = Job.getInstance(conf, &quot;wordcount&quot;);
-        job.setJarByClass(WordCount.class);
-        job.setInputFormatClass(XmlInputFormat.class);
-        job.setMapperClass(Map.class);
-        job.setCombinerClass(Reduce.class);
-        job.setReducerClass(Reduce.class);
-        job.setOutputKeyClass(Text.class);  job.setOutputValueClass(IntWritable.class);  FileInputFormat.addInputPath(job, new Path(args[0]));    FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        boolean success = job.waitForCompletion(true);
-        return success ? 0 : 1;    15  
-    } 
-    
-    public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCount(), args);
-        System.exit(res);
-        
-    }   
-    
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;hadoop-1&quot;&gt;Hadoop的优势&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;可以在多台计算机上更快地处理海量的数据&lt;/li&gt;
-  &lt;li&gt;Hadoop天生就具有处理错误和从错误中恢复的能力，这点很好保证了在使用集群时的稳定性。&lt;/li&gt;
-  &lt;li&gt;与上一条相关，不仅要考虑将节点崩溃时正在处理的任务重新执行，还需要考虑当存储发生故障时如何保证数据不丢失。Hadoop默认使用Hadoop分布式文件系统（HDFS），这个有容错能力的分布式文件系统可以在多个节点之间冗余数据。&lt;/li&gt;
-  &lt;li&gt;涉及吉字节级别以上的数据时，就不能将所有中间数据或结果全部存放在内存中。Hadoop在处理过程中将键值对存储在HDFS中，这样就可以不受内存限制，完成数据量非常大的任务。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;storm&quot;&gt;Storm&lt;/h3&gt;
-
-&lt;h4 id=&quot;spoutbolttopology&quot;&gt;Spout、Bolt和Topology&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Storm系统处理的是元组（tuple）的流。Storm的元组类似于之前我们在第5章看到的actor模型的元组，但不同于Elixir的元组，Storm元组的元素是有名字的。&lt;/li&gt;
-  &lt;li&gt;元组由spout（出水管）组件创建，并由bolt（螺栓）组件进行处理，bolt也会输出元组。用流将spout和bolt连接在一起，就形成了topology（拓扑结构）。&lt;/li&gt;
-  &lt;li&gt;topology也可以很复杂——bolt可以消费多个流，而一个流也可以被多个bolt消费，构成一个有向无环图。spout和bolt都是并行化和分布式的。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;worker：spout和bolt不仅相互之间是并行的，而且其内部也都是并行的——每一个个体内部都是由很多worker实现的。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;下图是一个topology&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/913/27731323968_ca81741161_z.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;容错&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;将一个spout或bolt的多个worker分布在多台计算机上的主要原因是容错性。如果集群中的某一台计算机发生故障，topology可以将元组分发给仍存活的计算机，这样topology就可以继续运行。&lt;/li&gt;
-  &lt;li&gt;Storm会监视元组之间的依赖——如果某一个元组没能完成，Storm会将其依赖的spout元组置为失败并进行重试。这也就是说Storm默认使用的是“至少会执行一次”的处理策略。应用必须知道这个事实：元组可能会被重试，直到其结果正确。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-6&quot;&gt;总结&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Lambda目前主要作为大数据平台的架构&lt;/li&gt;
-  &lt;li&gt;如果用Hadoop作为Batch Layer，而用Storm作为Speed Layer，那就需要维护两份使用不同技术的代码。所以目前有另外的一个解决方案是Apache Spark，它可以作为Lambda Architecture一体化的解决方案。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-7&quot;&gt;引用&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/26568496&quot;&gt;与 Hadoop 对比，如何看待 Spark 技术？&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Fri, 20 Apr 2018 17:19:43 +0800</pubDate>
-        <link>https://caihua.tech/2018/04/20/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F-Lambda%E6%9E%B6%E6%9E%84/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/04/20/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F-Lambda%E6%9E%B6%E6%9E%84/</guid>
-        
-        <category>并发模型</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>七周七并发模式：通信顺序进程（CSP）</title>
-        <description>&lt;h3 id=&quot;section&quot;&gt;概念&lt;/h3&gt;
-
-&lt;h4 id=&quot;csp&quot;&gt;CSP&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;与actor模型类似，通信顺序进程（Communicating Sequential Processe，CSP）模型也是由独立的、并发执行的实体所组成，实体之间也是通过发送消息进行通信。但两种模型的重要差别是：CSP模型不关注发送消息的实体，而是关注发送消息时使用的channel（通道）。channel是第一类对象，它不像进程那样与信箱是紧耦合的，而是可以单独创建和读写，并在进程之间传递。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从这段话可以看出CSP本质上也是独立运行的执行单元，但是它没有mailbox，那么它执行的数据来自哪里呢？来自于channel。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;channel&quot;&gt;Channel&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;一个channel就是一个线程安全的队列，任何任务只要持有channel的引用，就可以向一端添加消息，也可以从另一端删除消息。在actor模型中，消息是从指定的一个actor发往指定的另一个actor的；与之不同，使用channel发送消息时发送者并不知道谁是接收者，反之亦然。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;也就是说CSP更像是在不同的actor之间共享mailbox，但是这里mailbox编程了channel。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;默认情况下，channel是同步的（或称无缓存的）——一个任务向channel写入消息的操作会一直阻塞，直到另一个任务从channel中读出消息。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;emmm，阻塞了一个写入的线程。这样有些浪费线程，因此有了带&lt;code class=&quot;highlighter-rouge&quot;&gt;缓存区&lt;/code&gt;的channel。当channel的缓存区有足够空间时，向其中写入消息的操作会立刻完成，不会阻塞。&lt;/li&gt;
-  &lt;li&gt;对于有缓存的channel，一次性写入超过缓存区大小的数据时策略也是不同的，可以是只保留前面写入的（dropping），也可以是保留后面写入的(slide)，甚至是直接阻塞式的（blocking），这个一般都有语言级别的策略支持。&lt;/li&gt;
-  &lt;li&gt;PS：是否支持可扩展的buffer这个问题书中提到是不支持，不过可能也只是这个语言不支持。因为我还没有看过其它的编程语言中是如何处理buffer的。&lt;/li&gt;
-  &lt;li&gt;channel也可以被关闭，此时read/write的处理不同的语言可能会有不同的处理方式。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;go&quot;&gt;go块&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在说这个概念之前需要先看看在它之前的线程操作过程中遇到的问题，只有弄清楚了存在什么问题，我们才能理解为何会有go块，而它又是干什么的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;线程启动和运行时都有一定开销，这正是现在的程序都避免直接创建线程、转而使用线程池的原因。然而线程池并不总是适用。尤其是当程序阻塞时，使用线程池可能会造成麻烦。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;线程池技术是处理CPU密集型任务的利器——任务进行时会占用某个线程，任务结束后将线程返还给线程池，使线程可以被复用。但涉及线程通信时使用线程池是否仍然合适呢？如果线程被阻塞，那么它将无限期被占用，这就削弱了使用线程池技术的优势。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;这种问题是有一些解决方案的，但它们通常会对代码风格加以限制，使之变成事件驱动的形式。虽然这些方案都能解决问题，但它们破坏了控制流的自然的表达形式，让代码变得难以阅读和理解。更糟糕的是，这些方案还会大量使用全局状态，因为事件处理器需要保存一些数据，以便之后的事件处理器使用。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从上面的摘抄中已经可以看出来多线程、线程池其实是各种局限，而加入了事件驱动后也是有问题的。在这样的情况下，一个能够支持事件驱动，又可以保证代码在编写和阅读时看上去是顺序执行（这样比较符合人的阅读习惯和理解），同时还把状态数据封装起来的东西，emmm，此时我第一个反应就是unity中的Coroutine，而unity的coroutine本质是个状态机。这样一路的推导下来，我们也就明白了go块的本质就是一个状态机。而它的诞生也是为了解决上面说提到的种种问题。&lt;/li&gt;
-  &lt;li&gt;本书中对于go块的使用demo使用了Clojure这个语言，我觉得没必要细说具体实现，因为每个语言也不同。不过go块中需要强调一点，它是非阻塞的。当然如果是阻塞的并不是不能工作，但是又回到了线程大量使用而又阻塞的问题了。&lt;/li&gt;
-  &lt;li&gt;在书中提到go块的成本很低，这与线程不同，因为目前我所知道的语言中go块这样的概念都是基于协程的。golang中甚至没有线程的概念。而C#中task也是协程的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;csp-1&quot;&gt;使用CSP&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;实际上本章第二节的例子基本都是利用channel的同步性。比如超时处理就可以让一个定时器过一定时间后写入channel，在这之前另一个方法用来读取channel。&lt;/li&gt;
-  &lt;li&gt;还有一些异步操作也是利用了channel的同步性，在以前可能异步操作需要使用回调，但是这样的话不同函数就成了互相调用的情况，但是使用CSP可以让函数基于channel来执行。比如：A函数读取一个channel的数据，在channel被写入数据前，调用A的线程阻塞；在IO操作完成后将结果写入channel，这样A函数就可以读取IO的结果了，而且两个函数不需要知道对方的存在，完全依赖channel来通信。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;总结&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;首先与Actor比，CSP更加灵活。Actor负责通信的媒介（mailbox）与执行单元是紧耦合的，而CSP中channel可以被独立的创建、读写数据。从耦合性上将CSP更好。&lt;/li&gt;
-  &lt;li&gt;然后CSP的go块使得异步编程更加高效，比起写很长的回调式的代码，CSP的代码更简洁。&lt;/li&gt;
-  &lt;li&gt;至于书中提到的CSP的缺点：分布式和容错性支持的不够好，这个我个人觉得因语言而异，因为很少做相关的开发不好发表意见。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;参考&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;https://www.cnblogs.com/ants/p/8601947.html#_label1&quot;&gt;Golang的CSP很酷？其实.NET也可以轻松完成&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://www.voidcn.com/article/p-qrvdpmgk-bnw.html&quot;&gt;CSP与并发编程&lt;/a&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 02 Apr 2018 16:33:43 +0800</pubDate>
-        <link>https://caihua.tech/2018/04/02/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E9%80%9A%E4%BF%A1%E9%A1%BA%E5%BA%8F%E8%BF%9B%E7%A8%8B/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/04/02/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E9%80%9A%E4%BF%A1%E9%A1%BA%E5%BA%8F%E8%BF%9B%E7%A8%8B/</guid>
-        
-        <category>并发模型</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity ECS：基本组件和功能</title>
-        <description>&lt;h3 id=&quot;ecs&quot;&gt;ECS的组成&lt;/h3&gt;
-&lt;h4 id=&quot;entity&quot;&gt;Entity：&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;近似一个轻量级的GameObject对象。&lt;/li&gt;
-  &lt;li&gt;内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。&lt;/li&gt;
-  &lt;li&gt;可以添加和移除组件&lt;/li&gt;
-  &lt;li&gt;具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;icomponentdataisharedcomponentdata&quot;&gt;IComponentData和ISharedComponentData&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;前文说到过，ECS中的Component是一个结构体，里面只有数据。&lt;/li&gt;
-  &lt;li&gt;这个结构体可以继承IComponentData或ISharedComponentData，从源码看这两个接口是空的。&lt;/li&gt;
-  &lt;li&gt;IComponentData可以理解为不同entity之间不同的数据，而ISharedComponentData代表了相同的数据。其实从后者的名称上也可以看到一些蛛丝马迹。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;entityarchetype&quot;&gt;EntityArchetype&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;其实看到archetype（原型）这个词就大致明白这个类的作用了。&lt;/li&gt;
-  &lt;li&gt;EntityArchetype是一个具有唯一性的ComponentType数组，它可以在创建entity时被作为参数使用，一个entity具有什么能力，完全在于它上面挂了什么Component，而多个component组成了一个能力组，这个就是EntityArchetype了。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Using typeof to create an EntityArchetype from a set of components
-EntityArchetype archetype = EntityManager.CreateArchetype(typeof(MyComponentData), typeof(MySharedComponent));
-
-// Same API but slightly more efficient
-EntityArchetype archetype = EntityManager.CreateArchetype(ComponentType.Create&amp;lt;MyComponentData&amp;gt;(), ComponentType.Create&amp;lt;MySharedComponent&amp;gt;());
-
-// Create an Entity from an EntityArchetype
-var entity = EntityManager.CreateEntity(archetype);
-
-// Implicitly create an EntityArchetype for convenience
-var entity = EntityManager.CreateEntity(typeof(MyComponentData), typeof(MySharedComponent));
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;entitymanager&quot;&gt;EntityManager&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;一个管理所有EntityData、Archetype、SharedComponentData  和ComponentGroup的类。与ComponentSystems是同等地位的，看来unity ECS确实是一套新的系统。&lt;/li&gt;
-  &lt;li&gt;从下面的代码中可以看出，实际上所有的Entity的创建、添加组件、查询live状态等操作的API都在这个类里面。应该是核心类。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Create an Entity with no components on it
-var entity = EntityManager.CreateEntity();
-
-// Adding a component at runtime
-EntityManager.AddComponent(entity, new MyComponentData());
-
-// Get the ComponentData
-MyComponentData myData = EntityManager.GetComponentData&amp;lt;MyComponentData&amp;gt;(entity);
-
-// Set the ComponentData
-EntityManager.SetComponentData(entity, myData);
-
-// Removing a component at runtime
-EntityManager.RemoveComponent&amp;lt;MyComponentData&amp;gt;(entity);
-
-// Does the Entity exist and does it have the component?
-bool has = EntityManager.HasComponent&amp;lt;MyComponentData&amp;gt;(entity);
-
-// Is the Entity still alive?
-bool has = EntityManager.Exists(entity);
-
-// Instantiate the Entity
-var instance = EntityManager.Instantiate(entity);
-
-// Destroy the created instance
-EntityManager.DestroyEntity(instance);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// EntityManager also provides batch APIs
-// to create and destroy many Entities in one call. 
-// They are significantly faster 
-// and should be used where ever possible
-// for performance reasons.
-
-// Instantiate 500 Entities and write the resulting Entity IDs to the instances array
-var instances = new NativeArray&amp;lt;Entity&amp;gt;(500, Allocator.Temp);
-EntityManager.Instantiate(entity, instances);
-
-// Destroy all 500 entities
-EntityManager.DestroyEntity(instances);
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;entity-1&quot;&gt;对entity的一个小总结&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;EntityManager在生成一个entity时实际使用的是EntityDataManager类中的方法，而EntityDataManager中Entity&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;当一个entity添加或者移除一个component时，实际上改变了其archetype的结构，此时会创建（优先从已有的archetype集合中查询）一个新的archetype来赋值给entity。参考EntityManager源码中相关的代码。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;chunk&quot;&gt;Chunk&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;chunk是所有ComponentData存储的方式，或者说在内存中的排列方式。&lt;/li&gt;
-  &lt;li&gt;chunk连接着（或者说对应着）一个EntityArchetype。所有使用同一个EntityArchetype的entity都具有相同的内存布局，在内存中这些entity上的components的布局也比较奇特（原谅我用这个词）。它们（components）在存储时按照类型紧密排列的，。同一类型的component实例在内存中被连续的放在一起，后面是另一个类型的所有component实例。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;archetypechunk&quot;&gt;从内存角度看看archetype和chunk&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从函数GetOrCreateArchetype可以看到每当新创建一个archetype时本质还是mallco一块内存，但是比较复杂的是一个archetype还包含了很多其它的数据，比如所有ISharedComponentData的类型。&lt;/li&gt;
-  &lt;li&gt;但是正如上面提到的，chunk对于着一个archetype，其实chunk不过是一个内存地址。ChunkAllocator中的m_LastChunk维护这一个chunk的链表。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;jobcomponentsystem&quot;&gt;JobComponentSystem&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;上一篇最后的代码中提到了JobComponentSystem，它主要是用于自动管理job的依赖。一个例子就是在多个job在操作同一个ComponentData时，如果前面几个是在并行的read数据，突然出现一个write数据的job，此时就要等已经执行的read全部结束后暂停其它的job，让write job完成后在执行其它的。这个东西本质上与.NET的Parallel API是一样的，而大多数并行操作都会采用这样的方式，比如一个典型的例子就是SQLit的操作。&lt;/li&gt;
-  &lt;li&gt;同时系统内部还使用Injection和ComponentGroup在管理依赖。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Tue, 27 Mar 2018 20:07:00 +0800</pubDate>
-        <link>https://caihua.tech/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity ECS：C# Job System</title>
-        <description>&lt;h3 id=&quot;job-system&quot;&gt;Job system&lt;/h3&gt;
-&lt;h4 id=&quot;job-system-1&quot;&gt;Job system解决了什么问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;job-system-2&quot;&gt;Job System如何工作&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在这个系统中真正发挥作用的是job单元，它类似方法的调用，包含了参数和数据。job被填入Job Queue中，然后work thread负责调用它。&lt;/li&gt;
-  &lt;li&gt;job system中有dependency（依赖）的概念，如果job A依赖于job B，那么系统会保证B在A执行前完成。&lt;/li&gt;
-  &lt;li&gt;job system不是现存的任何C#线程模型中的一种。&lt;/li&gt;
-  &lt;li&gt;它被集成在引擎内部，这意味着我们开发者所编写的代码会让unity引擎共享work thread，这样才能避免对于CPU的竟态使用。&lt;/li&gt;
-  &lt;li&gt;PS: 我很怀疑是否代码写的很糟糕的情况下，会影响引擎本身的效率。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;job-system-3&quot;&gt;Job System如何避免竟态&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;我觉得文档想描述的很大程度上是数据原子性的问题&lt;/li&gt;
-  &lt;li&gt;job system会检查所有潜在的竟态。&lt;/li&gt;
-  &lt;li&gt;让所有的job操作同一份数据拷贝&lt;/li&gt;
-  &lt;li&gt;job只能访问blittable data(这种数据在托管和非托管中具有相同的内存结构)，而不是managed types。&lt;/li&gt;
-  &lt;li&gt;鉴于上面提到的数据拷贝的就行，为了解决现实世界复杂的问题，提供了NativeContainers：
-    &lt;ul&gt;
-      &lt;li&gt;类型包括：NativeArray, NativeList, NativeHashMap, and NativeQueue.&lt;/li&gt;
-      &lt;li&gt;这些类型能够被unity追踪，谁在读写它们。比如两个job同时写入时需要使用Schedule来安排执行顺序，安全系统会抛出一个明确的异常来说明这些。&lt;/li&gt;
-      &lt;li&gt;多个job同时读取一个数据时是并发的&lt;/li&gt;
-      &lt;li&gt;读写的限制同样适用于main thread&lt;/li&gt;
-      &lt;li&gt;一些container有特殊的规则，以便适应来自&lt;code class=&quot;highlighter-rouge&quot;&gt;ParallelFor jobs&lt;/code&gt;的安全、明确的写入访问。比如&lt;code class=&quot;highlighter-rouge&quot;&gt;NativeHashMap.Concurrent&lt;/code&gt;允许使用&lt;code class=&quot;highlighter-rouge&quot;&gt;IJobParallelFor&lt;/code&gt;并发的添加item。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;job&quot;&gt;调度job&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;job system依赖blittable data和NativeContainer&lt;/li&gt;
-  &lt;li&gt;实现步骤：
-    &lt;ul&gt;
-      &lt;li&gt;定一个实现了IJob接口的struct&lt;/li&gt;
-      &lt;li&gt;创建struct对象，填充数据，调用Schedule方法。&lt;/li&gt;
-      &lt;li&gt;调用方法后得到一个job handle对象。它可以做为其它job的依赖对象；也可以等待它完成工作。如果说需要在主线程访问传入job的NativeContainer，那就等待这个handle完成。这部分具体看代码比较好理解。&lt;/li&gt;
-      &lt;li&gt;需要注意的是在主线程想要访问NativeContainers数据之前，需要让所有的 job依赖都完成，此时只用JobHandle.IsDone来判断是不够的，需要手动调用 JobHandle.Complete方法。Complete方法还会清空jobs debugger中的状态。&lt;/li&gt;
-      &lt;li&gt;如果每一帧都调用一个新的job，这个job还依赖于上一帧的job的话，会出现内存泄漏。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;从下面的代码可以看出，一个job就是一个实现了IJob的struct。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;定义struct：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Job adding two floating point values together
-public struct MyJob : IJob
-{
-    public float a;
-    public float b;
-    NativeArray&amp;lt;float&amp;gt; result;
-    public void Execute()
-    {
-        result[0] = a + b;
-    }
-}
-
-public struct AddOneJob : IJob
-{
-    public NativeArray&amp;lt;float&amp;gt; result;
-    public void Execute()
-    {
-        result[0] = result[0] + 1;
-    }
-}
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;创建单个job实例，进行调用：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Create a native array of a single float to store the result in. This example will wait for the job to complete, which means we can use Allocator.Temp
-NativeArray&amp;lt;float&amp;gt; result = new NativeArray&amp;lt;float&amp;gt;(1, Allocator.Temp);
-// Setup the job data
-MyJob jobData = new MyJob();
-jobData.a = 10;
-jobData.b = 10;
-jobData.result = result;
-// Schedule the job
-JobHandle handle = jobData.Schedule();
-// Wait for the job to complete
-handle.Complete();
-// All copies of the NativeArray point to the same memory, we can access the result in &quot;our&quot; copy of the NativeArray
-float aPlusB = result[0];
-// Free the memory allocated by the result array
-result.Dispose();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;使用schedule调用多个job&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NativeArray&amp;lt;float&amp;gt; result = new NativeArray&amp;lt;float&amp;gt;(1, Allocator.Temp);
-// Setup the job data
-MyJob jobData = new MyJob();
-jobData.a = 10;
-jobData.b = 10;
-jobData.result = result;
-// Schedule the job
-JobHandle firstHandle = jobData.Schedule();
-AddOneJob incJobData = new AddOneJob();
-incJobData.result = result;
-JobHandle handle = incJobData.Schedule(firstHandle);
-// Wait for the job to complete
-handle.Complete();
-// All copies of the NativeArray point to the same memory, we can access the result in &quot;our&quot; copy of the NativeArray
-float aPlusB = result[0];
-// Free the memory allocated by the result array
-result.Dispose();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;parallelfor-jobs&quot;&gt;ParallelFor jobs&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;ParallelForJob适用于对于多个物体的并发操作，比如集合中的item。&lt;/li&gt;
-  &lt;li&gt;并不是每个item对应一个job，而是每个CPU CORE对应一个job。这个也是上文说的为了保证减少上下文切换。&lt;/li&gt;
-  &lt;li&gt;在使用ParallelForJob时需要传递两个参数：
-    &lt;ul&gt;
-      &lt;li&gt;数组的长度，这个数组应该是你要用来迭代的数组。&lt;/li&gt;
-      &lt;li&gt;PS：实际上这部分文档上写的很奇怪，通过长度来区分数组？&lt;/li&gt;
-      &lt;li&gt;一次批处理的个数，这个决定了job的个数。建议一开始使用的一个job然后慢慢的增加。直到性能提升的不明显了。&lt;/li&gt;
-      &lt;li&gt;PS：其实在并行问题上，线程越多未必能够效率越高。以为还存在一个锁的问题。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Job adding two floating point values together
-public struct MyParallelJob : IJobParallelFor
-{
-    [ReadOnly]
-    public NativeArray&amp;lt;float&amp;gt; a;
-    [Readonly]
-    public NativeArray&amp;lt;float&amp;gt; b;
-    public NativeArray&amp;lt;float&amp;gt; result;
-    public void Execute(int i)
-    {
-        result[i] = a[i] + b[i];
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var jobData = new MyParallelJob();
-jobData.a = 10;  
-jobData.b = 10;
-jobData.result = result;
-// Schedule the job with one Execute per index in the results array and only 1 item per processing batch
-JobHandle handle = jobData.Schedule(result.Length, 1);
-// Wait for the job to complete
-handle.Complete();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;h4 id=&quot;job-system-4&quot;&gt;Job System还存在的问题&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;无法访问static数据，这个功能后续应该会有。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;参考&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;//docs.microsoft.com/en-us/dotnet/framework/interop/blittable-and-non-blittable-types&quot;&gt;Blittable and Non-Blittable Types&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Fri, 23 Mar 2018 16:07:00 +0800</pubDate>
-        <link>https://caihua.tech/2018/03/23/Unity-ECS-C-Job-System/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/03/23/Unity-ECS-C-Job-System/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Unity ECS：概述</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;前言&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;看来unity已经认识到现在编写代码的一些问题了：OO的模型、mono所编译的糟糕的机器码、GC和单线程。emmm&lt;/li&gt;
-  &lt;li&gt;ECS的推出就是为了解决上面的问题，同时使用ECS是为了能够利用C# Job System和Burst compiler。job system是支持多线程的（( Ĭ ^ Ĭ )）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;componentsystem&quot;&gt;ComponentSystem&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在后面的文章中会说到ECS中的Component，这里简单说下，新的component模型只包含了数据，而ComponentSystem包含了行为。&lt;/li&gt;
-  &lt;li&gt;一个ComponentSystem负责在每帧中对物体进行操作，这些物体必须匹配ComponentSystem所定义的一组component。有点类似后面讲到的的EntityArchetype。看下代码的例子：&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class Rotator : MonoBehaviour
-{
-    // The data - editable in the inspector
-    public float Speed;
-}
-
-class RotatorSystem : ComponentSystem
-{
-    struct Group
-    {
-        // Define what components are required for this 
-        // ComponentSystem to handle them.
-        Transform Transform;
-        Rotator   Rotator;
-    }
-    
-    override protected OnUpdate()
-    {
-        // We can immediately see a first optimization.
-        // We know delta time is the same between all rotators,
-        // so we can simply keep it in a local variable 
-        // to get better performance.
-        float deltaTime = Time.deltaTime;
-        
-        // ComponentSystem.GetEntities&amp;lt;Group&amp;gt; 
-        // lets us efficiently iterate over all GameObjects
-        // that have both a Transform &amp;amp; Rotator component 
-        // (as defined above in Group struct).
-        foreach (var e in GetEntities&amp;lt;Group&amp;gt;())
-        {
-            e.Transform.rotation *= Quaternion.AxisAngle(e.Rotator.Speed * deltaTime, Vector3.up);
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Rotator是现在系统中的一个MonoBehaviour，而RotatorSystem是一个ComponentSystem。后者包含了一个Group用于匹配GameObject，而OnUpdate方法则是处理行为的函数。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;componentsystem-1&quot;&gt;如何在现有的系统中使用ComponentSystem&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;目前是需要在每个GameObject上挂一个GameObjectEntity脚本，它在OnEnable方法中会创建一个entity，挂上GameObject上的所有组件。然后就能被ComponentSystem使用了。&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;这意味着你可以将所有的行为处理从MonoBehaviour.Updata中转移到 ComponentSystem.OnUpdate中，数据仍旧可以保持在MonoBehaviour中。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;这样做的优势
-    &lt;ul&gt;
-      &lt;li&gt;数据（MonoBehaviour）与行为（ComponentSystem）的分离&lt;/li&gt;
-      &lt;li&gt;一些对象上的系统操作是批量的（应该是基于Job System），便于优化代码。比如上面代码中的deltaTime的使用。&lt;/li&gt;
-      &lt;li&gt;可以继续使用现存的inspector、editor工具等。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;劣势
-    &lt;ul&gt;
-      &lt;li&gt;实例化时间没有改善&lt;/li&gt;
-      &lt;li&gt;加载的时间没有改善&lt;/li&gt;
-      &lt;li&gt;数据时随机访问的，非线性。线性数据访问的问题下面会说到。&lt;/li&gt;
-      &lt;li&gt;非多核的&lt;/li&gt;
-      &lt;li&gt;非&lt;a href=&quot;https://en.wikipedia.org/wiki/SIMD&quot;&gt;SIMD&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;总结来说这样的混合方案性能提升有限&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;pure-ecs&quot;&gt;Pure ECS&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ECS不支持托管类型，支持struct和NativeContainer类型。所以只有IComponentData可以被C# Job安全的访问。&lt;/li&gt;
-  &lt;li&gt;EntityManager（后面会提到）保证了线性的内存布局 ，这是性能提升很重要的部分。通过job和IComponentData可以做到。&lt;/li&gt;
-  &lt;li&gt;目前想将ComponentData添加到GameObject上需要使用ComponentDataWrapper&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// The rotation speed component simply stores the Speed value
-[Serializable]
-public struct RotationSpeed : IComponentData
-{
-    public float Value;
-}
-
-// This wrapper component is currently necessary to add ComponentData to GameObjects.
-// In the future we want to make this wrapper component automatic.
-public class RotationSpeedComponent : ComponentDataWrapper&amp;lt;RotationSpeed&amp;gt; { } 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Using IJobProcessComponentData to iterate over all entities matching the required component types.
-// Processing of entities happens in parallel. The main thread only schedules jobs.
-public class RotationSpeedSystem : JobComponentSystem
-{
-    // IJobProcessComponentData is a simple way of iterating over all entities given the set of required compoenent types.
-    // It is also more efficient than IJobParallelFor and more convenient.
-    [ComputeJobOptimization]
-    struct RotationSpeedRotation : IJobProcessComponentData&amp;lt;Rotation, RotationSpeed&amp;gt;
-    {
-        public float dt;
-
-        public void Execute(ref Rotation rotation, [ReadOnly]ref RotationSpeed speed)
-        {
-            rotation.Value = math.mul(math.normalize(rotation.Value), math.axisAngle(math.up(), speed.Value * dt));
-        }
-    }
-
-    // We derive from JobComponentSystem, as a result the system proviides us 
-    // the required dependencies for our jobs automatically.
-    //
-    // IJobProcessComponentData declares that it will read RotationSpeed and write to Rotation.
-    //
-    // Because it is declared the JobComponentSystem can give us a Job dependency, which contains all previously scheduled
-    // jobs that write to any Rotation or RotationSpeed.
-    // We also have to return the dependency so that any job we schedule 
-    // will get registered against the types for the next System that might run.
-    // This approach means:
-    // * No waiting on main thread, just scheduling jobs with dependencies (Jobs only start when dependencies have completed)
-    // * Dependencies are figured out automatically for us, so we can write modular multithreaded code
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
-    {
-        var job = new RotationSpeedRotation() { dt = Time.deltaTime };
-        return job.Schedule(this, 64, inputDeps);
-    } 
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这段代码和ComponentSystem的部分有类似的结构，但是它结合了JobSystem，做到了并发执行。而且里面还有依赖注入的部分，下一篇在将ECS功能的时候会详细来说。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;总结&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Unity ECS做到了数据与行为的分离，而且更加轻量级。&lt;/li&gt;
-  &lt;li&gt;通过结合JobSystem实现了CPU多核的利用。&lt;/li&gt;
-  &lt;li&gt;目前来看在已有系统结构上使用ECS有点累赘的感觉。&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 22 Mar 2018 01:07:00 +0800</pubDate>
-        <link>https://caihua.tech/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/</guid>
-        
-        <category>Unity3D</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>七周七并发模式：Actor</title>
-        <description>&lt;h4 id=&quot;actor&quot;&gt;什么是Actor&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;在本书提到的观点中，认为Actor是一个线程或者进程。在这个线程或者进程中执行了一段代码（函数)，这个代码可以包含状态（数据）也可以不包含。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;所谓Actor模型是Sequential Processes和Functions transforming data values两者的结合，可以理解为是综合了过程式计算和函数式计算的一个计算模型。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;一个Actor会把接收到的消息映射为三个部分，传给其他Actor的消息，一个新的行为（用来处理下一个消息），和创造一些新的Actors。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;actor-1&quot;&gt;为什么会出现Actor&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;在本书的第二章谈到了线程和锁，其中提到了这个并发模式存在的一些问题，比如竞争共享资源所导致的阻塞、多重锁导致的死锁等问题。&lt;/li&gt;
-  &lt;li&gt;Actor正是为了解决这些问题而产生的。从定义看actor就是多线程，只不过它避免了对于共享资源的并发调用。一个actor只使用自己的资源，而不是直接使用共享资源，它作用单一，顺序执行。不同的Actor之间使用message来传递数据。&lt;/li&gt;
-  &lt;li&gt;PS：这里实际上并不存在真的不使用锁。只要存在多个actor共同访问一个数据对象就存在锁的问题，只不过可能无需开发者自己去写相关的代码。因此书中在提到actor缺点时也提到了可能出现死锁的问题。&lt;/li&gt;
-  &lt;li&gt;PS2：在书中最后使用Actor来统计wiki的例子里，实际上是将wiki的页面进行拆分，然后不同的page用不同的Actor开统计。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;消息和信箱&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;因为actor模型没有提供直接回复消息的机制，所以将发送进程的标识符包含在消息中。通过这个机制，消息的接收者可以回复消息。&lt;/li&gt;
-  &lt;li&gt;异步地发送消息是用actor模型编程的重要特性之一。消息并不是直接发送到一个actor，而是发送到一个信箱（mailbox）。&lt;/li&gt;
-  &lt;li&gt;每个Actor都有一个信箱&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;分布式&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;与其说Actor是为了并发，不如说Actor是为了分布式。&lt;/li&gt;
-  &lt;li&gt;书中使用Elixir语言进行了demo的编写。在不同的设备或者操作系统中（这里可以是一个设备上有多个不同的虚拟机，也就是逻辑意义上的一个主机），不同的Actor可以进行通信，可以协作来处理一些数据。整个过程是异步的，每个Actor因为都看上去是无状态的，或者说即使有状态也是内部的。所以每个Actor的运行并不会影响其它Actor。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;actor-2&quot;&gt;Actor的实现&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这个是我比较郁闷的地方，因为书中使用了Elixir这个我完全不熟悉的语言，因此我对于代码也是看个大概，具体某些语法和函数为什么这么写也是一知半解。&lt;/li&gt;
-  &lt;li&gt;但是从demo code来看，也是创建纤程（这个概念个人认为和golang里面的应该是一样的）来实现actor，而一个actor本质就是一个module，里面包含了一些函数用于处理逻辑，收发消息。&lt;/li&gt;
-  &lt;li&gt;对于Actor可以使用缓存机制来统一进行管理。这样的好处还有可以控制错误的处理。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;actor-3&quot;&gt;Actor的错误处理&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;书中对于Actor的错误处理有这样一个观点：任其崩溃。&lt;/li&gt;
-  &lt;li&gt;这个观点得益于Actor的独立性，在一个Actor出现异常后，以为它对于某些消息的处理是失败的，因此消息队列或者信箱可以将没有处理的消息交给其它的Actor来处理。&lt;/li&gt;
-  &lt;li&gt;出现异常的Actor什么我们可以不做任何的处理。&lt;/li&gt;
-  &lt;li&gt;不过如果出现Actor一启动就崩溃了，那么也不能无限制的创建新的Actor。因此书中提到了Actor创建频率的问题，过高的时候就要考虑错误的问题了。&lt;/li&gt;
-  &lt;li&gt;对于Actor的错误处理建议的做法是创建一个错误处理内核，这就有一个要求了：&lt;strong&gt;&lt;em&gt;那么该系统正确运行的前提是其错误处理内核必须正确运行&lt;/em&gt;&lt;/strong&gt;。&lt;/li&gt;
-  &lt;li&gt;如何保证错误处理内核正确运行呢？这需要内核是&lt;code class=&quot;highlighter-rouge&quot;&gt;顶层的管理者&lt;/code&gt;，书中是使用actor的缓存来实现的。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://c1.staticflickr.com/1/791/39040480120_d12837240a_z.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;同时在错误处理时还要保证消息的必达性：
-    &lt;ul&gt;
-      &lt;li&gt;没有异常发生，消息一定能被送达并被处理&lt;/li&gt;
-      &lt;li&gt;如果某个环节出现异常，异常一定会通知到使用者（假设使用者已经连接到或正在管理发生异常的进程）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;actor-4&quot;&gt;Actor的优势和缺点&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;从前面的讲述来看，其优点是：
-    &lt;ul&gt;
-      &lt;li&gt;消息的传输和封装性很好&lt;/li&gt;
-      &lt;li&gt;容错能力比较好&lt;/li&gt;
-      &lt;li&gt;天然支持分布式。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;而缺点是：
-    &lt;ul&gt;
-      &lt;li&gt;同样有死锁问题&lt;/li&gt;
-      &lt;li&gt;信箱溢出（这个可能是指的actor如果处理不够及时，mailbox可能会数据量过大)&lt;/li&gt;
-      &lt;li&gt;actor本身没有直接提供并发，需要通过并发技术来构造并发方案。&lt;/li&gt;
-      &lt;li&gt;由于多个actor并不共享状态，仅通过消息传递来进行交流，所以不太适合实施细粒度的并行。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;吐槽&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;这本书是好书，不过其使用的编程语言确实比较丰富，导致我看代码时很痛苦。&lt;/li&gt;
-  &lt;li&gt;像是OTP部分完全是依赖于某个编程语言来写的，对于其真正的机制我觉得描述的不够清楚。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;参考&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/37792465/answer/73537924&quot;&gt;为什么我觉得 Actor很难用？&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.zhihu.com/question/266384753&quot;&gt;如果理解并行计算中的参与者模式（Actor Model）？&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;PS：在这里说下C#的进程间通信实现，可以通过pipe来实现。可以参考：https://gist.github.com/klkucan/b76c85c77fdfcde51aa4eeb1c6f7cd0b&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 15 Mar 2018 22:47:43 +0800</pubDate>
-        <link>https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/</link>
-        <guid isPermaLink="true">https://caihua.tech/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/</guid>
-        
-        <category>并发模型</category>
         
         
       </item>

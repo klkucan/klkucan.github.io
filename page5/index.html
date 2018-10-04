@@ -173,6 +173,175 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2017/11/05/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E5%9B%9B%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十四周
+        </h2>
+        
+        <div class="post-content-preview">
+            AssetBundle
+AssetBundle划分过细的问题，比如每个资源都是AssetBundle。
+
+  加载IO次数过多，从而增大了硬件设备耗能和发热的压力；
+  Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 5, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/11/02/%E6%B5%85%E6%9E%90Timeline%E7%BB%93%E6%9E%84/">
+        <h2 class="post-title">
+            浅析Timeline结构
+        </h2>
+        
+        <div class="post-content-preview">
+            结构
+
+
+   
+      PlayableDirector
+      Timeline
+   
+   
+      PlayableGraph
+      Graph
+   
+   
+      …
+      TrackGroup
+      TrackGroup
+   
+   
+      TrackAsset
+      AnimationTrack
+      Playable...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on November 2, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/30/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%89%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十三周
+        </h2>
+        
+        <div class="post-content-preview">
+            Gameplay
+求教一个屏幕后处理的问题。我们期望角色不受屏幕后处理影响，所以目前采用双相机的方案，根据Layer划分，但是这种情况下角色的影子也就没有办法投影到地表上，请问这种需求有什么好的实现方式？
+
+  可以尝试根据地表模型的局部细节来动态生成接受阴影的网格（比如Fast Shadow Receiver插件），这样既可以保证地表模型进行屏幕后处理操作，同时也可以生成相关角色的动态阴影...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 30, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/25/Shader%E5%90%88%E5%B9%B6%E4%B8%8EVariant/">
+        <h2 class="post-title">
+            Shader合并与Variant
+        </h2>
+        
+        <div class="post-content-preview">
+            前言
+
+  写这个的起因是因为看了唐建伟大佬在UWA上发表的文章合并Shader系列_如何合并渲染状态。看完后受益良多，但是也对文中这样合并shader会不会产生shader的变种（shader variant）有所担心，因此在UWA的问答上提出了问题，最后唐建伟也做出了回答，经过大佬授权在这里根据回答进行一些总结，想看原文的可以直接点击链接。
+
+
+Sahder Variant的概念
+
+
+ ...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 25, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/23/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%BA%8C%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十二周
+        </h2>
+        
+        <div class="post-content-preview">
+            UI
+对于UGUI文字花屏问题，有什么推荐的解决方法吗？
+
+  对于UGUI字体花屏的现象， 很有可能是字体的UV不准确导致。
+  关于UGUI字体花屏和乱码
+  UGUI研究院之Text字体花屏（二十二）：http://www.xuanyusong.com/archives/4259
+
+
+工具
+最近用Deep Profiler发现项目里有一个直接调用Color != Color的接口耗时很...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 23, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/16/LuaFramework&PureMVC/">
+        <h2 class="post-title">
+            LuaFramework&PureMVC
+        </h2>
+        
+        <div class="post-content-preview">
+            LuaFramework是GitHub上一个基于tolua的人更新案例，里面除了tolua的功能外还使用了PureMVC的部分功能。这个文章是对代码中PureMVC部分的一些理解。
+
+PureMVC
+Structure
+Model&amp;Proxy
+
+  Model保存对Proxy对象的引用，Proxy负责操作数据模型，与远程服务通信存取数据。这样保证了Model层的可移植性。
+
+
+Vie...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2017/10/16/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%8D%81%E4%B8%80%E5%91%A8/">
+        <h2 class="post-title">
+            每天一点UWA：第十一周
+        </h2>
+        
+        <div class="post-content-preview">
+            字体
+优化字体资源
+
+方向：内存和数量峰值
+
+  主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 16, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2017/10/05/Xlua%E6%91%98%E8%A6%81/">
         <h2 class="post-title">
             Xlua摘要
@@ -238,182 +407,6 @@ AssetBundle中的脚本
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/09/25/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AB%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第八周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-打包AssetBundle的时候，我发现切换场景时，即使打同一个场景的AssetBundle，它们的Hash值都是不一样的，可能是什么原因造成的呢？
-
-
-  目前很可能是Shader Stripping造成的，其原理可见文档。
-  简单来说就是根据当前场景对Shader进行简化，因此如果打包时包含的场景的Lightmap或Fog设置不同，打出来的AssetBundle...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 25, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-UI%E4%BC%98%E5%8C%96%E5%B0%8F%E7%BB%93/">
-        <h2 class="post-title">
-            每天一点UWA：UI优化小结
-        </h2>
-        
-        <div class="post-content-preview">
-            说明
-
-  经过一个半月的学习，对UI的优化有了一些心得，同时也希望把零散的知识点总结到一起，因此有了这个专题。
-
-
-那些需要关注的性能指标函数
-UGUI参考的函数
-
-  
-    1、Canvas.SendWillRenderCanvases()
-该API为UI元素自身发生变化（比如被Enable或者被缩放，移动并不算）时所产生的调用。发生在canvas被渲染之前。
-  
-  
-    2...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 10, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/10/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%B8%83%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第七周
-        </h2>
-        
-        <div class="post-content-preview">
-            UI
-NPOT采用 ToLarger 的模式拉成POT，如果是UI界面（开启Pixel Perfect）的话，可能显示时会有较大视觉损失。
-
-在Unity 5.x版本下，我们在用UGUI的过程中发现它把图集都打进了包里，这样就不能自动更新了，请问图集怎么做自动更新呢？
-
-
-  在Unity 5.x中UGUI使用的Atlas确实是不可见的，因此无法直接将其独立打包。
-  建议，可以把Packi...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 10, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/09/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91%E4%B8%80%E6%AC%BEAR%E5%BA%94%E7%94%A8/">
-        <h2 class="post-title">
-            从零开始开发一款AR应用
-        </h2>
-        
-        <div class="post-content-preview">
-            Vuforia
-
-什么是vuforia
-
-  我没有自己看过它的概念，但是在使用的过程中它的作用实现图片、模型的识别，识别后就可以显示我们预设好的内容了。
-
-
-怎么使用
-
-  进入Vuforia，右上角注册。
-  点击Develop进入下图
-
-
-
-
-
-  
-    License Manager：管理你的授权，其实和其它一些SDK一样就是管理一下APP key（就是一串字符串）。在使用vuf...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 9, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/09/04/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E5%85%AD%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第六周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-这是一个很长的问题：
-字体作为多个资源的依赖包，会在游戏中被加载多次。我们现在有个问题，AssetBundle A资源依赖于这个字体，加载A的时候加载了一份字体，然后B资源也依赖这字体，而后加载B的时候我们没有去重复加载字体，这时候发现B资源上出现了字体丢失的现象。
-
-请问加载资源的时候，Unity会自动去识别内存里是否有它的资源依赖包吗？如果有的话，为什么B加载的时...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on September 4, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/28/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%BB%84%E4%BB%B6%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：组件模式
-        </h2>
-        
-        <div class="post-content-preview">
-            为什么是组件
-意图
-
-  允许单一的实体跨越多个领域而不会导致这些领域彼此耦合。
-
-
-实体-组件-系统(ECS)
-
-  组件模式在游戏中常见的体现就是ECS
-
-
-为什么是组件
-
-  在游戏开发中一个实体会有多个不同的功能，比如音频的播放、动画功能、渲染、物理、输入等等，如果所有的功能都按照类的形式写到一个类文件中会非常的庞大且不易维护。
-  将不同类型的功能切分成不同的组件，既是对结构的优化...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 28, 2017
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2017/08/27/%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%82%B9UWA-%E7%AC%AC%E4%BA%94%E5%91%A8/">
-        <h2 class="post-title">
-            每天一点UWA：第五周
-        </h2>
-        
-        <div class="post-content-preview">
-            AssetBundle
-shader加载
-
-  首先 Shader. WarmupAllShaders 并不影响 Shader 的加载，因为该函数的作用是将所有已加载的 Shader 都做一次快速渲染(渲染单个像素，GPU 在首次使用某一个 Shader 时会有额外开销，Warm 相当于是将这部分开销提前)。
-  可以通过AssetBundle.LoadAll等接口预加载 AssetBund...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on August 27, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -472,7 +465,7 @@ shader加载
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="19">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="20">
                                     Unity3D
                                 </a>
                             
@@ -534,6 +527,12 @@ shader加载
                             
                                 <a href="/tags/#ECS" title="ECS" rel="1">
                                     ECS
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#组成原理" title="组成原理" rel="6">
+                                    组成原理
                                 </a>
                             
                         

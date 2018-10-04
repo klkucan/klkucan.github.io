@@ -173,6 +173,198 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/10/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-6-%E9%AB%98%E9%80%9F%E7%BC%93%E5%86%B2%E5%AD%98%E5%82%A8%E5%99%A8/">
+        <h2 class="post-title">
+            计算机组成原理：6、高速缓冲存储器
+        </h2>
+        
+        <div class="post-content-preview">
+            概述
+为何使用Cache
+
+  CPU速度太快了
+  解决CPU空等问题，但是需要保证的是大多数的数据和指令都在cache中。
+
+
+程序访问局部性原理
+
+  时间局部性：当前正在使用的指令和数据，在不久的将来还会被使用。那么这些数据和指令需要放到cache。
+  空间局部性：当前正在使用的指令或者数据的相邻的指令或者数据在不久的将来会被使用，那么把当前使用的和相邻的数据和指令放到cache。...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on October 3, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/30/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-5-%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8/">
+        <h2 class="post-title">
+            计算机组成原理：5、主存储器
+        </h2>
+        
+        <div class="post-content-preview">
+            一、概述
+
+1、基本构成
+
+
+
+
+  结合上图总结一下之前的数据读取的操作
+    
+      CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。
+      MAR收到后，经过译码器得到指定的存储单元。
+      CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器
+      控制电路根据信令来操作读写电路
+      将之前得到主存储器地址...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 30, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/26/Unity-ECS-C-Job-System%E6%96%87%E6%A1%A3%E6%80%BB%E7%BB%93/">
+        <h2 class="post-title">
+            Unity ECS：C# Job System文档总结
+        </h2>
+        
+        <div class="post-content-preview">
+            背景、初衷、目标
+
+  出现的背景、初衷就是：天下苦无多线程久已
+  当然这个说法要进一步的约束，首先unity中可以编写多线程代码，但是最大的问题是多线程中无法使用unity API，当然也无法修改component中的数据了。
+  目前来看似乎这个技术就是为了能够让开发者使用multithread来操作unity API和component 数据。
+
+
+优势和劣势
+
+  多线程就是优势
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 26, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/21/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-4-%E5%AD%98%E5%82%A8%E5%99%A8%E6%A6%82%E8%BF%B0/">
+        <h2 class="post-title">
+            计算机组成原理：4、存储器概述
+        </h2>
+        
+        <div class="post-content-preview">
+            分类
+
+
+  
+    按照介质
+  
+  按照存取方式
+    
+      存取时间与物理地址无关（随机访问）
+        
+          随机存储器（RAM）: 在程序执行过程中可以读写
+          制度存储器（ROM）：在程序执行过程中只能读
+        
+      
+      存取时间与物理地址有关（串行访问）
+        
+          顺序存...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 21, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-3-%E6%80%BB%E7%BA%BF/">
+        <h2 class="post-title">
+            计算机组成原理：3、总线
+        </h2>
+        
+        <div class="post-content-preview">
+            概要
+
+  总线（bus）：是连接各个部件的信息传输线，是各个部件共享的传输介质。
+  一条总线是总是主模块向从模块发出地址和命令，但是在分离式通信时是没有从模块的。
+
+
+总线解决的是什么问题？
+
+  计算机的不同模块需要用线连接起来，如果采用分散连接（两两连接）那么需要的线路太多，都设计在电路板上难度太大，而且设备的连接接口太多。
+  分散连接还存在一个扩展困难的问题，如果新加一个接口就要...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 20, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-2-%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90/">
+        <h2 class="post-title">
+            计算机组成原理：2、基本组成
+        </h2>
+        
+        <div class="post-content-preview">
+            冯·诺依曼计算机基本概念
+
+
+  本文中的内存结构只是课程中用到的一个特定的机器的设计，并非所有的计算机都是这样的。
+
+
+
+  现在的计算机都是程序存储计算机，也就是冯诺依曼计算机。
+  特点：
+    
+      计算机有五大部件组成：输入、输出、控制器（CU）、运算器(ALU)、存储器(主存、辅存)
+      指令和数据以同等地位存于存储器中，按地址寻访。
+      指令和数据按照...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 19, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2018/09/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86-1-%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86%E5%88%B0%E5%BA%95%E7%A0%94%E7%A9%B6%E7%9A%84%E4%BB%80%E4%B9%88/">
+        <h2 class="post-title">
+            计算机组成原理：1、组成原理到底研究的什么
+        </h2>
+        
+        <div class="post-content-preview">
+            
+  这是对哈尔滨工业大学网络课程《计算机组成原理》的笔记
+
+
+
+  计算机系统层次从程序的角度看分为下面5层：
+    
+      高级语言层：Java、C、C++、C#等，需要编程成机器语言
+      汇编层：也需要编译成机器语言，符号语言和机器语言的指令基本是一一对应的。
+      操作系统：提供机器语言与编程语言的
+      机器语言：就是计算机所提供的语言了，根据地址从存储...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on September 19, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/08/29/Unity%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
         <h2 class="post-title">
             Unity人工智能游戏开发笔记
@@ -251,176 +443,6 @@ ECS的使用原则
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2018/04/21/%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">
-        <h2 class="post-title">
-            游戏设计模式读书笔记：状态模式
-        </h2>
-        
-        <div class="post-content-preview">
-            解决了什么问题
-
-  在游戏开发中状态是一种常见的用于描述游戏对象的方法，在状态比较简单的情况下可能通过多个标志位变量就可以组合出不同的状态。例如书中举得英雄行走、跳跃、蹲下等操作。但是一旦当对象的状态可是变得比较多，而且需要通过比较多的变量才能描述清楚时，只使用标志位变量的弊端就出现了：那就是过多的变量在代码编写时需要的条件语句会很多，而且变量的组合也不利于管理。
-
-
-使用switch管理...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 21, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/04/20/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%BC%8F-Lambda%E6%9E%B6%E6%9E%84/">
-        <h2 class="post-title">
-            七周七并发模式：Lambda架构
-        </h2>
-        
-        <div class="post-content-preview">
-            Lambda架构
-
-定义
-
-
-  Lambda架构使用了可以进行大规模数据批处理的MapReduce技术，也使用了可以快速处理数据并及时反馈的流处理技术，这样的混搭能够为大数据问题提供扩展性、响应性和容错性都很优秀的解决方案。
-
-
-
-  Lambda架构是站在大规模场景的角度来解决问题的，它可以将数据和计算分布到几十台或几百台机器构成的集群上进行。这种技术不但解决了之前因为规模庞大而无法解决...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 20, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/04/02/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E9%80%9A%E4%BF%A1%E9%A1%BA%E5%BA%8F%E8%BF%9B%E7%A8%8B/">
-        <h2 class="post-title">
-            七周七并发模式：通信顺序进程（CSP）
-        </h2>
-        
-        <div class="post-content-preview">
-            概念
-
-CSP
-
-
-  与actor模型类似，通信顺序进程（Communicating Sequential Processe，CSP）模型也是由独立的、并发执行的实体所组成，实体之间也是通过发送消息进行通信。但两种模型的重要差别是：CSP模型不关注发送消息的实体，而是关注发送消息时使用的channel（通道）。channel是第一类对象，它不像进程那样与信箱是紧耦合的，而是可以单独创建和读...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on April 2, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/03/27/Unity-ECS-%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6%E5%92%8C%E5%8A%9F%E8%83%BD/">
-        <h2 class="post-title">
-            Unity ECS：基本组件和功能
-        </h2>
-        
-        <div class="post-content-preview">
-            ECS的组成
-Entity：
-
-  近似一个轻量级的GameObject对象。
-  内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。
-  可以添加和移除组件
-  具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。
-
-
-IComponentData和ISharedComponentData
-
-  前文说到过...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 27, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/03/23/Unity-ECS-C-Job-System/">
-        <h2 class="post-title">
-            Unity ECS：C# Job System
-        </h2>
-        
-        <div class="post-content-preview">
-            Job system
-Job system解决了什么问题
-
-  unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。
-
-
-Job System如何工作
-
-  在这个系统中真正...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 23, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/03/22/Unity-ECS-%E6%A6%82%E8%BF%B0/">
-        <h2 class="post-title">
-            Unity ECS：概述
-        </h2>
-        
-        <div class="post-content-preview">
-            前言
-
-
-  看来unity已经认识到现在编写代码的一些问题了：OO的模型、mono所编译的糟糕的机器码、GC和单线程。emmm
-  ECS的推出就是为了解决上面的问题，同时使用ECS是为了能够利用C# Job System和Burst compiler。job system是支持多线程的（( Ĭ ^ Ĭ )）
-
-
-ComponentSystem
-
-
-  在后面的文章中会说到ECS中的Com...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 22, 2018
-    </p>
-</div>
-<hr>
-
-<div class="post-preview">
-    <a href="/2018/03/15/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-Actor/">
-        <h2 class="post-title">
-            七周七并发模式：Actor
-        </h2>
-        
-        <div class="post-content-preview">
-            什么是Actor
-
-  在本书提到的观点中，认为Actor是一个线程或者进程。在这个线程或者进程中执行了一段代码（函数)，这个代码可以包含状态（数据）也可以不包含。
-
-
-
-  所谓Actor模型是Sequential Processes和Functions transforming data values两者的结合，可以理解为是综合了过程式计算和函数式计算的一个计算模型。
-
-
-
-  一个Ac...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on March 15, 2018
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -475,7 +497,7 @@ ComponentSystem
                             
                         
                             
-                                <a href="/tags/#Unity3D" title="Unity3D" rel="19">
+                                <a href="/tags/#Unity3D" title="Unity3D" rel="20">
                                     Unity3D
                                 </a>
                             
@@ -537,6 +559,12 @@ ComponentSystem
                             
                                 <a href="/tags/#ECS" title="ECS" rel="1">
                                     ECS
+                                </a>
+                            
+                        
+                            
+                                <a href="/tags/#组成原理" title="组成原理" rel="6">
+                                    组成原理
                                 </a>
                             
                         
