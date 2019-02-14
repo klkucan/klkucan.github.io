@@ -173,6 +173,38 @@
             ">
     			
 <div class="post-preview">
+    <a href="/2018/01/17/%E4%B8%83%E5%91%A8%E4%B8%83%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B-%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%94%81/">
+        <h2 class="post-title">
+            七周七并发模型：线程与锁
+        </h2>
+        
+        <div class="post-content-preview">
+            为何使用多线程和锁
+
+  为了能够并行的计算一些东西
+  因为在多线程下，如果要修改同一个对象是值会出现竞态条件（即代码行为取决于各操作的时序）。它的表现可能是值的不对，甚至某些时候这个值的前半段是一个线程修改的，后半段是另一个线程修改的。因为这个对象可能不是原子的。
+
+
+锁，或者说是并行控制的进化
+
+第一阶段：锁与同步方法
+
+基础的锁
+
+  从代码层面看就是一个lock函数
+
+
+同步方法
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 蔡华的博客 on January 17, 2018
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/2018/01/16/%E4%BE%AF%E6%8D%B7C++%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8C%E9%94%80%E6%AF%81/">
         <h2 class="post-title">
             侯捷C++学习笔记：对象的创建和销毁
@@ -446,28 +478,6 @@ delegate
 </div>
 <hr>
 
-<div class="post-preview">
-    <a href="/2017/12/09/Unity%E7%89%B9%E6%95%88%E5%AD%A6%E4%B9%A0-%E5%8A%A8%E7%94%BB/">
-        <h2 class="post-title">
-            Unity特效学习：动画
-        </h2>
-        
-        <div class="post-content-preview">
-            Unity动画创建
-
-  
-    选中物体后按Ctrl+6可以开启动画编辑器。
-
-  
-  点击Add Property可以选中你要编辑的物体对象上的属性。可以看到几乎物体上所有组件的可编辑的属性都可以通过动画来编辑。这也意味着很多东西不需要编码来完成，比如你要做物体transform的变化、要做shader属性的变化等。以往可能需要进行代码编辑，在update或者某个corroutine...
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by 蔡华的博客 on December 9, 2017
-    </p>
-</div>
-<hr>
-
 
 <!-- Pager -->
 
@@ -586,7 +596,7 @@ delegate
                             
                         
                             
-                                <a href="/tags/#ECS" title="ECS" rel="1">
+                                <a href="/tags/#ECS" title="ECS" rel="2">
                                     ECS
                                 </a>
                             
@@ -668,7 +678,7 @@ delegate
                     
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; 蔡华的博客 2018
+                    Copyright &copy; 蔡华的博客 2019
                     <!-- <br>
                     Theme by <a href="http://huangxuan.me">Hux</a> |
                     <iframe
