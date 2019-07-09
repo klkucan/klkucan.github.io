@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>计算机组成原理：5、主存储器 - 蔡华的博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="一、概述1、基本构成  结合上图总结一下之前的数据读取的操作 CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。 MAR收到后，经过译码器得到指定的存储单元。 CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器 控制电路根据信令来操作读写电路 将之前得到主存储器地址中的数据写入MDR 通过数据总线讲MDR中的数据送入到IR或者ACC">
+<meta name="keywords" content="组成原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机组成原理：5、主存储器">
+<meta property="og:url" content="https://caihua.tech/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/index.html">
+<meta property="og:site_name" content="蔡华的博客">
+<meta property="og:description" content="一、概述1、基本构成  结合上图总结一下之前的数据读取的操作 CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。 MAR收到后，经过译码器得到指定的存储单元。 CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器 控制电路根据信令来操作读写电路 将之前得到主存储器地址中的数据写入MDR 通过数据总线讲MDR中的数据送入到IR或者ACC">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://caihua.tech/images/og_image.png">
+<meta property="og:updated_time" content="2019-07-09T16:53:14.630Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机组成原理：5、主存储器">
+<meta name="twitter:description" content="一、概述1、基本构成  结合上图总结一下之前的数据读取的操作 CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。 MAR收到后，经过译码器得到指定的存储单元。 CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器 控制电路根据信令来操作读写电路 将之前得到主存储器地址中的数据写入MDR 通过数据总线讲MDR中的数据送入到IR或者ACC">
+<meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/log.png">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/idea.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86194707-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86194707-1');
+</script>
+
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="计算机组成原理：5、主存储器" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                计算机组成原理：5、主存储器
+            
+        </h1>
+        <div class="content">
+            <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><h4 id="1、基本构成"><a href="#1、基本构成" class="headerlink" title="1、基本构成"></a>1、基本构成</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%B8%BB%E5%AD%98%E7%BB%93%E6%9E%84.png?raw=true" alt="主存构成"></p>
+<ul>
+<li>结合上图总结一下之前的数据读取的操作<ul>
+<li>CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。</li>
+<li>MAR收到后，经过译码器得到指定的存储单元。</li>
+<li>CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器</li>
+<li>控制电路根据信令来操作读写电路</li>
+<li>将之前得到主存储器地址中的数据写入MDR</li>
+<li>通过数据总线讲MDR中的数据送入到IR或者ACC</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<h4 id="2、主存与CPU之间的联系"><a href="#2、主存与CPU之间的联系" class="headerlink" title="2、主存与CPU之间的联系"></a>2、主存与CPU之间的联系</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/CPU-%E4%B8%BB%E5%AD%98.png?raw=true" alt="CPU-主存"></p>
+<ul>
+<li>CPU和主存之间主要是三个总线：地址、数据、命令</li>
+<li>数据总线是双向的，而地址是单向</li>
+</ul>
+<h4 id="3、主存中存储单元地址的分配"><a href="#3、主存中存储单元地址的分配" class="headerlink" title="3、主存中存储单元地址的分配"></a>3、主存中存储单元地址的分配</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%8D%95%E5%85%83%E5%9C%B0%E5%9D%80%E5%88%86%E9%85%8D.png?raw=true" alt="存储单元地址分配"></p>
+<ul>
+<li>数据在存储器中存储主要有两个方式，大端和小端。</li>
+<li>图中高位字节指的是0x12345678中的12，其中从左到右为从高高低</li>
+<li>但是在存储器中，地址小的为低位</li>
+<li>所以大端中就是高位的12存在了低位，小端就是低位的78存在了低位。</li>
+<li>关于按字节寻址和按字寻址详见延展阅读，</li>
+</ul>
+<h3 id="二、半导体存储芯片"><a href="#二、半导体存储芯片" class="headerlink" title="二、半导体存储芯片"></a>二、半导体存储芯片</h3><h4 id="1、基本结构"><a href="#1、基本结构" class="headerlink" title="1、基本结构"></a>1、基本结构</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8D%8A%E5%AF%BC%E4%BD%93%E5%AD%98%E5%82%A8%E8%8A%AF%E7%89%87%E7%BB%93%E6%9E%84.png?raw=true" alt="半导体存储芯片结构"></p>
+<ul>
+<li>芯片容量计算：2^(地址线数量) * 数据线带宽，e.g 地址线10跟，数据线 4bit，那么容量就是 2^10 * 4 = 1k * 4bit</li>
+<li>片选线：<ul>
+<li>片选线的作用是来标记一次数据存储过程中，数据是否存在于一个存储芯片中。</li>
+<li>两周标识方式:CS\CE，上面的线表示低电平。也就是说如果管脚是低电平就说明这次要访问的是这个芯片。</li>
+<li>比如内存条上有很多存储芯片，那么一次可能用到的数据在一个或者多个芯片上。</li>
+</ul>
+</li>
+<li>读写控制线：可以使用一根或者两个线来表示</li>
+</ul>
+<h4 id="2、片选线的作用"><a href="#2、片选线的作用" class="headerlink" title="2、片选线的作用"></a>2、片选线的作用</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8D%8A%E5%AF%BC%E4%BD%93%E5%AD%98%E5%82%A8%E8%8A%AF%E7%89%87%E7%89%87%E9%80%89%E7%BA%BF.png?raw=true" alt="半导体存储芯片片选线"></p>
+<ul>
+<li>上图展示了一个使用片选线的demo</li>
+<li>每个芯片16K x 1bit，当计算机需要64K x 8bit时需要32个芯片来实现。</li>
+<li>8个芯片串行，用之前大楼的概念来看，就是整个楼有2^16个房间，每个房间8个床位，但是注意这8个床位其实是跨房间的（或者说是跨楼的）。如果要住8个人（8bit数据），那么并不是全住在第一个房间，而是住在8个楼（一组串行芯片）的编号相同房间中编号相同的床位上（图中每个房间其实只有一个床位）。</li>
+</ul>
+<h4 id="3、译码驱动"><a href="#3、译码驱动" class="headerlink" title="3、译码驱动"></a>3、译码驱动</h4><ul>
+<li>地址总线传到存储器的地址需要进行译码，然后才能得到在存储器对应的地址。</li>
+</ul>
+<h5 id="线选法"><a href="#线选法" class="headerlink" title="线选法"></a>线选法</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E7%BA%BF%E9%80%89%E6%B3%95%E8%AF%91%E7%A0%81%E9%A9%B1%E5%8A%A8.png?raw=true" alt="线选法译码驱动"></p>
+<ul>
+<li>线选法图中有4根地址线，因此存储单元有 2^4 = 16个，对应字线0-15。</li>
+<li>根据4根线上的数据得到具体的字线后，字线上的数据读写到MDR。</li>
+<li>弊端是如果想要一个1M*8大小的存储器，那么地址线需要20条，而字线需要1M条，对于芯片来说很难。</li>
+</ul>
+<h5 id="重合法"><a href="#重合法" class="headerlink" title="重合法"></a>重合法</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%87%8D%E5%90%88%E6%B3%95%E8%AF%91%E7%A0%81%E9%A9%B1%E5%8A%A8.png?raw=true" alt="重合法译码驱动"></p>
+<ul>
+<li>相当于笛卡尔坐标系</li>
+<li>10条地址线可以表达出 32 * 32个位置，每个位置是1bit</li>
+<li>与线选法比较，1M*8的空间 = 2^20 * 2^3 = 2^23bit , 用重合法可以做 2^12 * 2^11 这样一个矩阵，也就是 4k + 2k = 6k条字线。</li>
+<li>最初看到这里的时候有个疑惑，就是根据重合法每次只能拿到一个bit，但是看到后面的Intel 2114 RAM矩阵后就知道了如何使用重合法一次获得多个bit。</li>
+</ul>
+<h3 id="三、随机存取机器（RAM）→-内存"><a href="#三、随机存取机器（RAM）→-内存" class="headerlink" title="三、随机存取机器（RAM）→ 内存"></a>三、随机存取机器（RAM）→ 内存</h3><h4 id="1、静态RAM-SRAM"><a href="#1、静态RAM-SRAM" class="headerlink" title="1、静态RAM(SRAM)"></a>1、静态RAM(SRAM)</h4><h5 id="保存0和1的原理"><a href="#保存0和1的原理" class="headerlink" title="保存0和1的原理"></a>保存0和1的原理</h5><ul>
+<li>双稳态触发器</li>
+</ul>
+<h5 id="基本单元电路如何构成"><a href="#基本单元电路如何构成" class="headerlink" title="基本单元电路如何构成"></a>基本单元电路如何构成</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF.png?raw=true" alt="静态RAM基本电路"></p>
+<h5 id="静态RAM芯片如何读写"><a href="#静态RAM芯片如何读写" class="headerlink" title="静态RAM芯片如何读写"></a>静态RAM芯片如何读写</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF%E8%AF%BB%E6%93%8D%E4%BD%9C.png?raw=true" alt="静态RAM基本电路读操作"></p>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%9D%99%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E7%94%B5%E8%B7%AF%E5%86%99%E6%93%8D%E4%BD%9C.png?raw=true" alt="静态RAM基本电路写操作"></p>
+<h5 id="Intel-2114-RAM-矩阵"><a href="#Intel-2114-RAM-矩阵" class="headerlink" title="Intel 2114 RAM 矩阵"></a>Intel 2114 RAM 矩阵</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Inter2114%20%E8%AF%BB.png?raw=true" alt="Inter2114 读"></p>
+<ul>
+<li>上图很好的解释了在使用重合法时如何一次读取多个bit数据。</li>
+<li>行地址译码6位，所以范围是0-63，也就是说字线有64条。 列地址译码有4位，也就是说有16个。</li>
+<li>字长为64bit，将64分成4组，每组是16bit（对应列地址位数）。</li>
+<li>当行地址是0，列地址也是0时，其实取的是四组中第0位的数据，这样就实现了重合法一次取出多位。</li>
+<li>写操作基本相同。</li>
+</ul>
+<h4 id="2、动态RAM-DRAM"><a href="#2、动态RAM-DRAM" class="headerlink" title="2、动态RAM(DRAM)"></a>2、动态RAM(DRAM)</h4><h5 id="保存0和1的原理-1"><a href="#保存0和1的原理-1" class="headerlink" title="保存0和1的原理"></a>保存0和1的原理</h5><ul>
+<li>电容，充电是1，没充电是0。</li>
+</ul>
+<h5 id="基本单元电路如何构成-1"><a href="#基本单元电路如何构成-1" class="headerlink" title="基本单元电路如何构成"></a>基本单元电路如何构成</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%9F%BA%E6%9C%AC%E5%8D%95%E5%85%83%E7%94%B5%E8%B7%AF.png?raw=true" alt="动态RAM基本单元电路"></p>
+<ul>
+<li>左边3管动态RAM，右边单管。</li>
+</ul>
+<h5 id="动态RAM芯片如何读写"><a href="#动态RAM芯片如何读写" class="headerlink" title="动态RAM芯片如何读写"></a>动态RAM芯片如何读写</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/Inter1103%20%E8%AF%BB.png?raw=true" alt="Inter1103 读"></p>
+<ul>
+<li>行地址译码器这里参加译码的不止是地址还有读写选择线。</li>
+<li>三角形是刷新放大器。作用：电容存储电荷的原理，电容会漏掉，经过一段时间电容上信号消失。刷新放大器对电容中保持的信息进行重现。</li>
+</ul>
+<h5 id="动态RAM刷新"><a href="#动态RAM刷新" class="headerlink" title="动态RAM刷新"></a>动态RAM刷新</h5><ul>
+<li>只和行地址有关，与列地址无关。一次刷新刷的就是一行所有的基本单元电路。</li>
+</ul>
+<h5 id="刷新方式"><a href="#刷新方式" class="headerlink" title="刷新方式"></a>刷新方式</h5><ul>
+<li><strong>集中式</strong></li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E9%9B%86%E4%B8%AD%E5%88%B7%E6%96%B0.png?raw=true" alt="动态RAM集中刷新"></p>
+<ul>
+<li><p>可以看到2毫秒按照存取周期0.5微秒分成了4000份，其中128个周期是用来刷新的。</p>
+</li>
+<li><p>在死区时间内CPU和IO设备如果想访问动态RAM只能等待。</p>
+</li>
+<li><p><strong>分散式</strong></p>
+</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%88%86%E6%95%A3%E5%88%B7%E6%96%B0.png?raw=true" alt="动态RAM分散刷新"></p>
+<ul>
+<li><p>本来每个存取周期是0.5微秒，但是为了刷新又加了0.5，导致一个存取周期变为了1微秒。</p>
+</li>
+<li><p>没有了死区</p>
+</li>
+<li><p>和集中式比较，2毫秒内每行要刷新15.6次，存在过度刷新的问题。</p>
+</li>
+<li><p><strong>异步式</strong></p>
+</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%8A%A8%E6%80%81RAM%E5%BC%82%E6%AD%A5%E5%88%B7%E6%96%B0.png?raw=true" alt="动态RAM异步刷新"></p>
+<ul>
+<li>在15.6微秒中可以认为是集中式，在2毫秒的周期内看是分散式的。</li>
+<li>确实在安排好的情况下不会出现死区。</li>
+</ul>
+<h4 id="3、SRAM和DRAM的比较"><a href="#3、SRAM和DRAM的比较" class="headerlink" title="3、SRAM和DRAM的比较"></a>3、SRAM和DRAM的比较</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/SRAM%E5%92%8CDRAM%E7%9A%84%E6%AF%94%E8%BE%83.png?raw=true" alt="SRAM和DRAM的比较"></p>
+<ul>
+<li>注意引脚数，DRAM行地址和列地址可以分开传输，所以少。但是这样在速度上慢。</li>
+<li>而且DRAM电容充放电比较慢，所以读取速度慢。</li>
+</ul>
+<h3 id="四、只读存储器-ROM"><a href="#四、只读存储器-ROM" class="headerlink" title="四、只读存储器 ROM"></a>四、只读存储器 ROM</h3><ul>
+<li>基本都是电子元器件的内容</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/PROM.png?raw=true" alt="PROM"></p>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/EPROM.png?raw=true" alt="EPROM"></p>
+<h3 id="五、存储器与CPU的连接"><a href="#五、存储器与CPU的连接" class="headerlink" title="五、存储器与CPU的连接"></a>五、存储器与CPU的连接</h3><h4 id="存储器扩展"><a href="#存储器扩展" class="headerlink" title="存储器扩展"></a>存储器扩展</h4><ul>
+<li>位扩展</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E4%BD%8D%E6%89%A9%E5%B1%95.png?raw=true" alt="存储器位扩展"> </p>
+<ul>
+<li><p>位扩展利用两个芯片的数据线放到数据总线上不同的线上</p>
+</li>
+<li><p>字扩展</p>
+</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E5%AD%97%E6%89%A9%E5%B1%95.png?raw=true" alt="存储器位扩展"> </p>
+<ul>
+<li><p>利用多出来的一条地址线作为片选线，从而实现两个芯片逻辑上的串联。扩展地址线长度。</p>
+</li>
+<li><p>位和字扩展</p>
+</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E5%AD%98%E5%82%A8%E5%99%A8%E5%AD%97%E5%92%8C%E4%BD%8D%E6%89%A9%E5%B1%95.png?raw=true" alt="存储器字和位扩展"></p>
+<ul>
+<li>多出两根地址线，形成一个范围从0-3的可变数字。</li>
+<li>将8个芯片分成4组，刚好对应上面的数字。通过地址线A11 A10加不同的电来实现片选译码。</li>
+<li>对于每组2个芯片正常的位扩展。</li>
+</ul>
+<h5 id="一个连接的练习"><a href="#一个连接的练习" class="headerlink" title="一个连接的练习"></a>一个连接的练习</h5><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/CPU%E4%B8%8E%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E8%BF%9E%E6%8E%A5.png?raw=true" alt="CPU与存储器的连接"></p>
+<ul>
+<li>开始学位和字的扩展时觉得很奇怪，但是当会后讲到一个如何设计CPU与存储芯片连接的题时就明白了一个核心：因为CPU的地址线和数据线数量与芯片的不同，因此需要进行位的扩展来适应CPU的数据线，需要合理的设计地址线来做片选译码和地址译码。</li>
+<li>通常地址线的高位做片选译码，低位做地址译码。</li>
+</ul>
+<h3 id="六、提高访存速度的措施"><a href="#六、提高访存速度的措施" class="headerlink" title="六、提高访存速度的措施"></a>六、提高访存速度的措施</h3><ul>
+<li>高位交叉，高位交叉中很大概率是M0被频繁访问，而后面的不会。因为数据或者指令总是按照内存地址的顺序被使用。</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E9%AB%98%E4%BD%8D%E4%BA%A4%E5%8F%89.png?raw=true" alt="高位交叉"></p>
+<ul>
+<li>低位交叉</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%BD%8E%E4%BD%8D%E4%BA%A4%E5%8F%89.png?raw=true" alt="低位交叉"></p>
+<ul>
+<li>这样的地址布局可以使得M0-3这四个存储体可以依次的被CPU使用。如果报错的是代码指令，就是先调用M0的0000位置，然后是M1的0000位置，依次使用。</li>
+</ul>
+<p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%BD%8E%E4%BD%8D%E4%BA%A4%E5%8F%89%E4%BD%BF%E7%94%A8%E7%9A%84%E6%97%B6%E9%97%B4.png?raw=true" alt="低位交叉使用的时间"></p>
+<ul>
+<li>低位交叉被并发的访问，将一个存储周期分成4份。</li>
+</ul>
+<h3 id="延展阅读"><a href="#延展阅读" class="headerlink" title="延展阅读"></a>延展阅读</h3><h4 id="1、关于按字寻址和按字节寻址的理解"><a href="#1、关于按字寻址和按字节寻址的理解" class="headerlink" title="1、关于按字寻址和按字节寻址的理解"></a>1、关于按字寻址和按字节寻址的理解</h4><blockquote>
+<p>设有一个1MB容量的存储器，字长32位，问：按字节编址，字编址的寻址范围以及各自的寻址范围大小? </p>
+<p>如果按字节编址，则 </p>
+</blockquote>
+<pre><code>1MB = 2^20B 
+
+1字节=1B=8bit 
+
+2^20B/1B = 2^20 </code></pre><blockquote>
+<p>地址范围为0~(2^20)-1,也就是说需要二十根地址线才能完成对1MB空间的编码，所以地址寄存器为20位,寻址范围大小为 2^20 = 1M</p>
+<p>如果按字编址，则</p>
+</blockquote>
+<pre><code>1MB=2^20B
+
+1字=32bit=4B
+
+2^20B/4B = 2^18   </code></pre><blockquote>
+<p>地址范围为0~2^18-1，也就是说我们至少要用18根地址线才能完成对1MB空间的编码。因此按字编址的寻址范围是 2^18</p>
+<p>以上题目注意几点：</p>
+<p>1.区分寻址空间与寻址范围两个不同的概念，寻址范围仅仅是一个数字范围，不带有单位。而寻址范围的大小很明显是一个数，指寻址区间的大小。而寻址空间指能够寻址最大容量，单位一般用MB、B来表示；本题中寻址范围为0~(2^20)-1,寻址空间为1MB。</p>
+<p>2.按字节寻址，指的是存储空间的最小编址单位是字节，按字编址，是指存储空间的最小编址单位是字，以上题为例，总的存储器容量是一定的，按字编址和按字节编址所需要的编码数量是不同的，按字编址由于编址单位比较大（1字=32bit=4B），从而编码较少，而按字节编址由于编码单位较小（1字节=1B=8bit），从而编码较多。</p>
+<p>3.区别M和MB。</p>
+</blockquote>
+<pre><code>M为数量单位。1024=1K，1024K=1M
+
+MB指容量大小。1024B=1KB，1024KB=1MB.</code></pre><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://blog.csdn.net/lishuhuakai/article/details/8934540" target="_blank" rel="noopener">https://blog.csdn.net/lishuhuakai/article/details/8934540</a></li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/组成原理/">组成原理</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">计算机组成原理：6、高速缓冲存储器</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/">
+                <span class="level-item">Unity ECS：C# Job System文档总结</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/avatar.png" alt="蔡华">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        蔡华
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        游戏开发者
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Xi&#39;an China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        104
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        13
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/klkucan" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/klkucan">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/杂记/">
+            <span class="level-start">
+                <span class="level-item">杂记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/游戏开发/">
+            <span class="level-start">
+                <span class="level-item">游戏开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">66</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/移动开发/">
+            <span class="level-start">
+                <span class="level-item">移动开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/编程语言/">
+            <span class="level-start">
+                <span class="level-item">编程语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/计算机基础/">
+            <span class="level-start">
+                <span class="level-item">计算机基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件设计/">
+            <span class="level-start">
+                <span class="level-item">软件设计</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="计算机组成原理：5、主存储器" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 蔡华&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

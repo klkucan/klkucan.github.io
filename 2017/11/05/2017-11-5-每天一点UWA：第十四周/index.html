@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>每天一点UWA：第十四周 - 蔡华的博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="AssetBundleAssetBundle划分过细的问题，比如每个资源都是AssetBundle。 加载IO次数过多，从而增大了硬件设备耗能和发热的压力； Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBund">
+<meta name="keywords" content="UWA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="每天一点UWA：第十四周">
+<meta property="og:url" content="https://caihua.tech/2017/11/05/2017-11-5-每天一点UWA：第十四周/index.html">
+<meta property="og:site_name" content="蔡华的博客">
+<meta property="og:description" content="AssetBundleAssetBundle划分过细的问题，比如每个资源都是AssetBundle。 加载IO次数过多，从而增大了硬件设备耗能和发热的压力； Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBund">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://caihua.tech/images/og_image.png">
+<meta property="og:updated_time" content="2019-07-09T16:57:52.775Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="每天一点UWA：第十四周">
+<meta name="twitter:description" content="AssetBundleAssetBundle划分过细的问题，比如每个资源都是AssetBundle。 加载IO次数过多，从而增大了硬件设备耗能和发热的压力； Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBund">
+<meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/log.png">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/idea.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86194707-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86194707-1');
+</script>
+
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="每天一点UWA：第十四周" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-11-05T02:07:00.000Z">2017-11-05</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                每天一点UWA：第十四周
+            
+        </h1>
+        <div class="content">
+            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="AssetBundle划分过细的问题，比如每个资源都是AssetBundle。"><a href="#AssetBundle划分过细的问题，比如每个资源都是AssetBundle。" class="headerlink" title="AssetBundle划分过细的问题，比如每个资源都是AssetBundle。"></a>AssetBundle划分过细的问题，比如每个资源都是AssetBundle。</h4><ul>
+<li>加载IO次数过多，从而增大了硬件设备耗能和发热的压力；</li>
+<li>Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBundle时，其SerializedFile的内存占用将会非常巨大。</li>
+</ul>
+<a id="more"></a>
+
+<h4 id="BuildAssetBundleOptions-DisableWriteTypeTree这个选项的实际用处是什么？"><a href="#BuildAssetBundleOptions-DisableWriteTypeTree这个选项的实际用处是什么？" class="headerlink" title="BuildAssetBundleOptions.DisableWriteTypeTree这个选项的实际用处是什么？"></a>BuildAssetBundleOptions.DisableWriteTypeTree这个选项的实际用处是什么？</h4><ul>
+<li>在Unity 5.x版本中，AssetBundle在制作时会默认写入TypeTree信息，这样做的好处是可以保证AssetBundle文件的向下兼容性，即高版本可以支持以前低版本制作的AssetBundle文件。</li>
+<li>所以，如果开启DisableWriteTypeTree选项，则可能造成AssetBundle对Unity版本的兼容问题，虽然关闭TypeTree会使Bundle更小，但我们一般都不建议研发团队在制作AssetBundle文件时开启该选项。</li>
+</ul>
+<h4 id="我们项目做AssetBundle打包时，发现如果资源所依赖的C-Script的Public成员变量有变化时，用新代码加载旧的AssetBundle就会不兼容。有没有什么方法能判断这些Script在变化时是否需要重新打AssetBundle呢？目前我们使用-CS文件的MD5来判断是否需要重新打包，但其实这样应该有很多不必要的重复打包，对吗？"><a href="#我们项目做AssetBundle打包时，发现如果资源所依赖的C-Script的Public成员变量有变化时，用新代码加载旧的AssetBundle就会不兼容。有没有什么方法能判断这些Script在变化时是否需要重新打AssetBundle呢？目前我们使用-CS文件的MD5来判断是否需要重新打包，但其实这样应该有很多不必要的重复打包，对吗？" class="headerlink" title="我们项目做AssetBundle打包时，发现如果资源所依赖的C#Script的Public成员变量有变化时，用新代码加载旧的AssetBundle就会不兼容。有没有什么方法能判断这些Script在变化时是否需要重新打AssetBundle呢？目前我们使用.CS文件的MD5来判断是否需要重新打包，但其实这样应该有很多不必要的重复打包，对吗？"></a>我们项目做AssetBundle打包时，发现如果资源所依赖的C#Script的Public成员变量有变化时，用新代码加载旧的AssetBundle就会不兼容。有没有什么方法能判断这些Script在变化时是否需要重新打AssetBundle呢？目前我们使用.CS文件的MD5来判断是否需要重新打包，但其实这样应该有很多不必要的重复打包，对吗？</h4><ul>
+<li>该问题的本质原因是新代码的序列化信息变化所致。建议研发团队使用Unity 5的新的AssetBundle打包方式，默认情况下，Unity 5引擎会自动检测其脚本的序列化信息是否进行改变，从而自动进行增量打包。</li>
+<li>PS: 虽然已经可以通过升级来解决，但是这个是个需要关注的点。</li>
+</ul>
+<h4 id="AssetBundle颗粒度问题"><a href="#AssetBundle颗粒度问题" class="headerlink" title="AssetBundle颗粒度问题"></a>AssetBundle颗粒度问题</h4><ul>
+<li>详见<a href="https://blog.uwa4d.com/archives/TechSharing_59.html" target="_blank" rel="noopener">https://blog.uwa4d.com/archives/TechSharing_59.html</a> 第一个问题</li>
+<li>总结一下：<ul>
+<li>不要一个资源一个AssetBundle，因为Android上面一个serializedFile有512k,但是5.6后应该是32k。不过实际测试的情况是不一定是32K。WTF。。</li>
+<li>对于AssetBundle小于1MB的限制在5.4后没意义，之前是因为www走webstream，会导致内存中占用AssetBundle大小4-5倍的空间。但是LZ4后基于其Chunk的加载特点，AB加载很快，且内存占用要比之前小很多。</li>
+<li>仍旧需要注意的：</li>
+<li>对于需要热更新的AB，也如问答中其他朋友的所言，要考虑实际情况控制AB的大小；- PS:可能是考虑网络下载的问题，以为过大的文件如果不做断点续传会是恶梦。</li>
+<li>即便是LZ4的AB，其加载方式不同，加载效率也可能完全不一致。</li>
+<li>对于AB的打包，尽可能把逻辑上同时出现（一个Prefab中非Share的Asset）、小而细碎的资源（Shader、Material、粒子系统等）尽可能打包在一起，并通过LoadAll来进行加载，因为这样会带来更好的加载效率。</li>
+</ul>
+</li>
+</ul>
+<h4 id="使用LoadFromCacheOrDownload时如果用version参数，缓存的资源如何清除。"><a href="#使用LoadFromCacheOrDownload时如果用version参数，缓存的资源如何清除。" class="headerlink" title="使用LoadFromCacheOrDownload时如果用version参数，缓存的资源如何清除。"></a>使用LoadFromCacheOrDownload时如果用version参数，缓存的资源如何清除。</h4><ul>
+<li>AssetBundle，其Version版本号变化时，新的解压Data是不会覆盖旧的解压Data的。清除旧的解压Data主要有三种方式：<ul>
+<li>设置缓存的过期日期，默认情况下是150天；</li>
+<li>调用Caching.CleanCache来全部清空缓存；</li>
+<li>当本地Cache已满时，Unity会从最早的AssetBundle来进行自动清理。</li>
+</ul>
+</li>
+</ul>
+<h4 id="WWW-LoadFromCacheOrDownload-System-String-url-Int32-version-这个接口加载资源，如果是Unity-4-x的版本，会有500个资源的数量限制，如果超过这个限制，Unity会删除之前缓存的每个资源，是这样吗？那在Unity-5-x-版本上是否还存在这样的问题呢？"><a href="#WWW-LoadFromCacheOrDownload-System-String-url-Int32-version-这个接口加载资源，如果是Unity-4-x的版本，会有500个资源的数量限制，如果超过这个限制，Unity会删除之前缓存的每个资源，是这样吗？那在Unity-5-x-版本上是否还存在这样的问题呢？" class="headerlink" title="WWW.LoadFromCacheOrDownload(System.String url, Int32 version)这个接口加载资源，如果是Unity 4.x的版本，会有500个资源的数量限制，如果超过这个限制，Unity会删除之前缓存的每个资源，是这样吗？那在Unity 5.x 版本上是否还存在这样的问题呢？"></a><a href="WWW.LoadFromCacheOrDownload">WWW.LoadFromCacheOrDownload</a>(System.String url, Int32 version)这个接口加载资源，如果是Unity 4.x的版本，会有500个资源的数量限制，如果超过这个限制，Unity会删除之前缓存的每个资源，是这样吗？那在Unity 5.x 版本上是否还存在这样的问题呢？</h4><ul>
+<li>在Unity 4.x的版本中，如果通过LoadFromCacheOrDownload来加载AssetBundle，那么有两种情况需要考虑：<br>  -内存中加载的AssetBundle数量。在iOS平台上，通过该接口加载、同时存在于内存中的AssetBundle数量确实是有限的，接近300个，这是由于iOS上文件句柄数的限制导致。而该限制在Unity 5.0以后则被完善了，因为Unity 5引入了虚拟文件系统，所以不再有这个限制；在Android平台上，则没有这个限制，或者说数量限制值非常大，基本可以忽略。<ul>
+<li>本地Cache中缓存的AsseBundle数量。无论是iOS、Android还是PC版本，都没有500的数量限制，而是有一个硬盘占用大小限制。具体来说，在WebPlayer平台上，有50MB的缓存限制，而在其他平台上，则是4GB的缓存限制。所以只要硬盘占用大小不超过限定值即可。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Font"><a href="#Font" class="headerlink" title="Font"></a>Font</h2><h4 id="我们在内存优化时发现一个问题，编辑器版本-Unity-5-3-4p6，使用UGUI，场景A中一个Text控件使用自定义字体资源，然后把该控件Text属性勾选为空（disable），再Load一个空场景，看场景A卸载后在内存中的残留，发现有一份引用是-ManagedStaticRefrences（）的-Font-内存。如果不是把Text属性disable，则场景A卸载后内存里不会再残留被引用的Font内存，请问可能是什么原因造成的呢？"><a href="#我们在内存优化时发现一个问题，编辑器版本-Unity-5-3-4p6，使用UGUI，场景A中一个Text控件使用自定义字体资源，然后把该控件Text属性勾选为空（disable），再Load一个空场景，看场景A卸载后在内存中的残留，发现有一份引用是-ManagedStaticRefrences（）的-Font-内存。如果不是把Text属性disable，则场景A卸载后内存里不会再残留被引用的Font内存，请问可能是什么原因造成的呢？" class="headerlink" title="我们在内存优化时发现一个问题，编辑器版本 Unity 5.3.4p6，使用UGUI，场景A中一个Text控件使用自定义字体资源，然后把该控件Text属性勾选为空（disable），再Load一个空场景，看场景A卸载后在内存中的残留，发现有一份引用是 ManagedStaticRefrences（）的 Font 内存。如果不是把Text属性disable，则场景A卸载后内存里不会再残留被引用的Font内存，请问可能是什么原因造成的呢？"></a>我们在内存优化时发现一个问题，编辑器版本 Unity 5.3.4p6，使用UGUI，场景A中一个Text控件使用自定义字体资源，然后把该控件Text属性勾选为空（disable），再Load一个空场景，看场景A卸载后在内存中的残留，发现有一份引用是 ManagedStaticRefrences（）的 Font 内存。如果不是把Text属性disable，则场景A卸载后内存里不会再残留被引用的Font内存，请问可能是什么原因造成的呢？</h4><ul>
+<li>UWA对于该例子进行了检测，的确能够在 Editor 复现。查了下 UGUI 代码，能对 Font 产生引用的，主要是这个函数 FontUpdateTracker.TrackText(Text)，其中会把 t.font 引用起来；而对应的解引用的函数为 FontUpdateTracker.UntrackText。因此，如果出现了两者的调用不匹配，就有可能造成 font 的 ManagedStaticRefrences 引用。</li>
+<li>进一步查看后，可以看到在定义了 UNITY_EDITOR 宏时，UI 元素会增加一个名为 OnValidate 的函数，Text 组件则在其中进行了 TrackText 的操作。<br>而最关键的是，该函数在 Text 组件以“未激活”的状态被实例化时同样会被触发，同时，如果这样的 Text 组件在后续没有被激活过就被销毁，其 OnDestroy 和 OnDisable 函数是不会被调用的，参见文档中的这句话：OnDestroy will only be called on game objects that have previously been active.<br>而 OnDisable 中才会调用 Untrack 解引用，所以造成了不匹配，导致了 font 的 ManagedStaticRefrences。</li>
+<li>但是，OnValidate 函数只在 Editor 上才有，真机上不会发生上面说到的不匹配的情况。所以建议研发团队先在真机上测试下是否还有这种情况，如果确实没有，那么就忽略该问题即可。</li>
+<li>PS:Mark</li>
+</ul>
+<h2 id="Gameplay"><a href="#Gameplay" class="headerlink" title="Gameplay"></a>Gameplay</h2><h4 id="我想了解如何使用顶点色Mask控制明暗关系，才能达到类似崩坏琪亚娜效果？"><a href="#我想了解如何使用顶点色Mask控制明暗关系，才能达到类似崩坏琪亚娜效果？" class="headerlink" title="我想了解如何使用顶点色Mask控制明暗关系，才能达到类似崩坏琪亚娜效果？"></a>我想了解如何使用顶点色Mask控制明暗关系，才能达到类似崩坏琪亚娜效果？</h4><ul>
+<li><a href="https://blog.uwa4d.com/archives/TechSharing_60.html" target="_blank" rel="noopener">https://blog.uwa4d.com/archives/TechSharing_60.html</a> 第五个问题，NB</li>
+</ul>
+<h2 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h2><h4 id="我们游戏中用到NGUI的HUD，单位主要是一个进度条和一个倒计时文本-持续更新-，同屏数量达600左右，单位本身在持续移动。现已将这些设置为独立Panel，且只有2个DrawCall-进度条所在图集和文本-，但还是卡顿得很厉害，请问是否有优化的方法？"><a href="#我们游戏中用到NGUI的HUD，单位主要是一个进度条和一个倒计时文本-持续更新-，同屏数量达600左右，单位本身在持续移动。现已将这些设置为独立Panel，且只有2个DrawCall-进度条所在图集和文本-，但还是卡顿得很厉害，请问是否有优化的方法？" class="headerlink" title="我们游戏中用到NGUI的HUD，单位主要是一个进度条和一个倒计时文本(持续更新)，同屏数量达600左右，单位本身在持续移动。现已将这些设置为独立Panel，且只有2个DrawCall(进度条所在图集和文本)，但还是卡顿得很厉害，请问是否有优化的方法？"></a>我们游戏中用到NGUI的HUD，单位主要是一个进度条和一个倒计时文本(持续更新)，同屏数量达600左右，单位本身在持续移动。现已将这些设置为独立Panel，且只有2个DrawCall(进度条所在图集和文本)，但还是卡顿得很厉害，请问是否有优化的方法？</h4><ul>
+<li>简化元素的几何：进度条中的元素尽量避免Sliced 模式（改Simple）；倒计时部分如果使用了Outline或者Shadow，将其转为“图片字”；</li>
+<li>降低更新频率：如倒计时按“秒”统一更新；进度条按1%甚至5%的间隔更新一次；移动速度较慢时可以尝试隔帧更新位置等；</li>
+<li>拆分子UIPanel：尽可能将更新频率相同的UI元素放在一个UIPanel中，从而降低每次更新时涉及到的UI元素数量。具体的拆分数量，则可能要通过较多的测试来确定。需要说明的是，此处即使增加10到20个DrawCall，对渲染上的影响并不大。</li>
+</ul>
+<h2 id="粒子"><a href="#粒子" class="headerlink" title="粒子"></a>粒子</h2><h4 id="我们项目中有大量的特效，一个特效Prefab可能包含100-200个GameObject，每个GameObject上都挂有一个粒子系统，但是实际上很多特效只有延时和坐标旋转之类的参数的区别。我看了Prefab文件后发现每个粒子系统分别记录了各自的信息，从而导致整体文件很大，内存占用也比较大。请问是否有优化的方法？"><a href="#我们项目中有大量的特效，一个特效Prefab可能包含100-200个GameObject，每个GameObject上都挂有一个粒子系统，但是实际上很多特效只有延时和坐标旋转之类的参数的区别。我看了Prefab文件后发现每个粒子系统分别记录了各自的信息，从而导致整体文件很大，内存占用也比较大。请问是否有优化的方法？" class="headerlink" title="我们项目中有大量的特效，一个特效Prefab可能包含100-200个GameObject，每个GameObject上都挂有一个粒子系统，但是实际上很多特效只有延时和坐标旋转之类的参数的区别。我看了Prefab文件后发现每个粒子系统分别记录了各自的信息，从而导致整体文件很大，内存占用也比较大。请问是否有优化的方法？"></a>我们项目中有大量的特效，一个特效Prefab可能包含100-200个GameObject，每个GameObject上都挂有一个粒子系统，但是实际上很多特效只有延时和坐标旋转之类的参数的区别。我看了Prefab文件后发现每个粒子系统分别记录了各自的信息，从而导致整体文件很大，内存占用也比较大。请问是否有优化的方法？</h4><ul>
+<li>如果开发的是一个手游项目，那么一个Prefab下含有100-200个粒子系统是非常不足取的，主要会造成以下几种问题：<ul>
+<li>同时播放100个以上的ParticleSystem，其ParticleSystem.Update本身的CPU占用会很高。下图为一款游戏在华为6Plus上的表现。可以看到Active Particle数量还没有达到100，其Update耗时就已经占到了5ms；</li>
+<li>ParticleSystem.ScheduleGeometryJobs开销会很高。其耗时主要体现在渲染模块中的Culling阶段，与粒子系统的数量相关，场景中Active粒子系统的数量越多，其开销越高；</li>
+<li>子线程中的渲染压力较大。Unity5.3版本以后，粒子系统的渲染虽然在主线程中占用很小，但并不意味它没有耗时，其耗时在渲染线程中，当渲染线程压力过大时，主线程同样会出现等待（Gfx.WaitForPresent），因此同样可能对帧率产生影响；</li>
+<li>GPU的渲染压力较高。同屏中渲染的粒子系统越多，其屏幕每帧的填充率越高，从而更加容易造成设备的发热；</li>
+<li>内存压力较高。如果一个Prefab上有100-200个粒子系统，并且如果场景中有10个以上这样的Prefab存在，那么其内存占用将在10~25MB内存区间内。就目前而言，粒子系统仍然是以Clone的形式存在，所以虽然粒子系统可能仅仅是某些参数不同，但其仍然是多个不同的粒子系统。因此，我们在UWA报告中会显示粒子系统在项目运行时的具体显示数量，以方便研发团队对粒子系统进行关注。如下图所示，一般来说，每帧中粒子系统的数量建议在400以下。</li>
+</ul>
+</li>
+</ul>
+<h2 id="模型-amp-动画"><a href="#模型-amp-动画" class="headerlink" title="模型&amp;动画"></a>模型&amp;动画</h2><h4 id="网格模型FBX文件在不开启Read-Write选项时，-如果通过StaticBatchingUtility的CombineMesh来合批的话，内存会增加么？"><a href="#网格模型FBX文件在不开启Read-Write选项时，-如果通过StaticBatchingUtility的CombineMesh来合批的话，内存会增加么？" class="headerlink" title="网格模型FBX文件在不开启Read/Write选项时， 如果通过StaticBatchingUtility的CombineMesh来合批的话，内存会增加么？"></a>网格模型FBX文件在不开启Read/Write选项时， 如果通过StaticBatchingUtility的CombineMesh来合批的话，内存会增加么？</h4><ul>
+<li>增加内存，主要表现在内存中CombinedMesh的增加以及一定量堆内存的增加。</li>
+<li>该API使用的前提必须是网格Fbx模型开启Read/Write，如果不开启，则无法读到网格数据，进而不能完成网格的拼合操作。</li>
+</ul>
+<h4 id="如下图，请问这几个参数的单位是什么？"><a href="#如下图，请问这几个参数的单位是什么？" class="headerlink" title="如下图，请问这几个参数的单位是什么？"></a>如下图，请问这几个参数的单位是什么？</h4><p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_58/2.png" alt="image"></p>
+<ul>
+<li>Rotation Error使用角度（degree）作为单位。Position和Scale是距离偏差的百分比（曲线调节前后的距离偏差与某距离值之比，取决于Unity内部实现），取值范围1~100，但实际可以高于100，并有作用。<br>我们建议研发团队在调节该误差时，将调节前后的动画效果进行对比，使文件体积压缩得尽量小，同时使动画效果在视觉上偏差不会太大。</li>
+<li>PS:没找到，可能是动画导入的选项。</li>
+</ul>
+<h4 id="如下图，这个ResampleCurves选项的作用，以及是否和对内存性能的影响？"><a href="#如下图，这个ResampleCurves选项的作用，以及是否和对内存性能的影响？" class="headerlink" title="如下图，这个ResampleCurves选项的作用，以及是否和对内存性能的影响？"></a>如下图，这个ResampleCurves选项的作用，以及是否和对内存性能的影响？</h4><p><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog/TechSharing_58/1.png" alt="image"></p>
+<ul>
+<li>ResampleCurves选项是在Unity 5.3版本后加入的，在之前的版本中是隐藏并且默认勾选的。该选项会改变Unity动画数据的存储方式。</li>
+<li>动画文件在导入到Unity之前，其关键帧的数据通常是以欧拉角（Euler format）的方式存储。在勾选该选项时导入，Unity会将欧拉角转换为四元数（Quaternion）表示，并且会生成逐帧的数据（不只是关键帧）。新生成的逐帧数据是为了解决四元数插值问题。关闭该选项会使动画文件保持欧拉角表示，但在应用于GameObject时仍会转换为四元数。</li>
+<li>建议保持默认勾选该选项，只有当发现Unity中的动画播放效果与在动画编辑工具中的效果出现较大偏差时，尝试取消该选项，查看是否是该选项的原因导致动画偏差。我们在测试中发现该选项对运行性能影响并不明显。在内存方面，勾选该选项会使动画文件略微增加。</li>
+</ul>
+<h4 id="动画提出scale"><a href="#动画提出scale" class="headerlink" title="动画提出scale"></a>动画提出scale</h4><ul>
+<li>参见<a href="https://blog.uwa4d.com/archives/TechSharing_58.html第五个。" target="_blank" rel="noopener">https://blog.uwa4d.com/archives/TechSharing_58.html第五个。</a></li>
+<li>PS:很不错。</li>
+</ul>
+<h4 id="动画模块中，Animators-ProcessAnimationsJob和Animators-WriteJob的CPU占用较高，这些与什么因素有关？"><a href="#动画模块中，Animators-ProcessAnimationsJob和Animators-WriteJob的CPU占用较高，这些与什么因素有关？" class="headerlink" title="动画模块中，Animators.ProcessAnimationsJob和Animators.WriteJob的CPU占用较高，这些与什么因素有关？"></a>动画模块中，Animators.ProcessAnimationsJob和Animators.WriteJob的CPU占用较高，这些与什么因素有关？</h4><ul>
+<li>Animators.WriteJob受模型骨骼数目影响较大（受animation curves影响不明显），骨骼数目越多，该函数耗时越大。同时，开启Optimize GameObject选项能够降低该函数耗时。Animators.ProcessAnimationsJob 同样受骨骼数目影响较大，同时也受animation curves数目影响，二者数目越多，该函数耗时越大。</li>
+</ul>
+<h2 id="性能综合"><a href="#性能综合" class="headerlink" title="性能综合"></a>性能综合</h2><h4 id="在整体的性能消耗上，CPU和GPU各占一半合理吗？如果不是，各占多少为好？还是说需要根据机型来看？其次，我如何知道游戏在手机上的GPU消耗？Profiler是看不到的，有工具推荐吗？"><a href="#在整体的性能消耗上，CPU和GPU各占一半合理吗？如果不是，各占多少为好？还是说需要根据机型来看？其次，我如何知道游戏在手机上的GPU消耗？Profiler是看不到的，有工具推荐吗？" class="headerlink" title="在整体的性能消耗上，CPU和GPU各占一半合理吗？如果不是，各占多少为好？还是说需要根据机型来看？其次，我如何知道游戏在手机上的GPU消耗？Profiler是看不到的，有工具推荐吗？"></a>在整体的性能消耗上，CPU和GPU各占一半合理吗？如果不是，各占多少为好？还是说需要根据机型来看？其次，我如何知道游戏在手机上的GPU消耗？Profiler是看不到的，有工具推荐吗？</h4><ul>
+<li>首先，CPU和GPU是并行的，也就是CPU在运算的时候GPU也在运算，一帧的结束时间是两者中比较晚结束的那个。因此，一般我们在考虑这个问题的时候，经常会说是CPU bound还是GPU bound，也就是GPU在等CPU还是CPU在等GPU。</li>
+<li>最理想的情况是两者都并行均衡，且都没有出现互相等待的情况。但在目前的大多数移动游戏中，都是CPU耗时为主要性能瓶颈。这也是为什么有多线程渲染的原因，多线程渲染就是利用CPU端的并行性，让CPU处理得更快，不拖后腿。</li>
+<li>对于GPU的压力分析，可以尝试用Intel GPA，Mali或者高通出的针对自家芯片的工具。</li>
+</ul>
+<h4 id="为什么Unity里实例化一个Prefab会产生那么多GC-Allocated"><a href="#为什么Unity里实例化一个Prefab会产生那么多GC-Allocated" class="headerlink" title="为什么Unity里实例化一个Prefab会产生那么多GC Allocated?"></a>为什么Unity里实例化一个Prefab会产生那么多GC Allocated?</h4><ul>
+<li>这是一个特例，但是从里面可以总结出一个问题，就是在Instantiate一个对象时会发生或者<strong>可能发生</strong>以下的事情<ul>
+<li>序列化和反序列化的处理，因为用prefab生成对象本身就是需要反序列化的。而直接clone一个对象可能还有先序列化在反序列化。</li>
+<li>可能的资源的加载，比如prefab上用到的mesh、贴图等。</li>
+<li>可能的shader编译，如果用了一个之前没有用过的shader就会实时的编译。</li>
+<li>对象身上脚本的初始化。如果实例化一个prefab发现很占用时间要注意是不是脚本里面在awake或者start里面的功能太多了。</li>
+<li>UI界面的Active和Deactive也会造成UI代码底层的一些相关OnEnable和OnDisable操作，同样会造成一定的堆内存分配。</li>
+</ul>
+</li>
+</ul>
+<h2 id="渲染"><a href="#渲染" class="headerlink" title="渲染"></a>渲染</h2><h4 id="Unity的材质的宏是有材质用到时才会被编译吗？还是说不手动Skip都会编译？"><a href="#Unity的材质的宏是有材质用到时才会被编译吗？还是说不手动Skip都会编译？" class="headerlink" title="Unity的材质的宏是有材质用到时才会被编译吗？还是说不手动Skip都会编译？"></a>Unity的材质的宏是有材质用到时才会被编译吗？还是说不手动Skip都会编译？</h4><ul>
+<li>在Unity中shader variant也包含两种类型，一种是通过 shader_feature 定义，一种是通过 multi_compile 定义。而只有通过 shader_feature 定义的 variant 在发布时会根据其使用情况来进行剥离。</li>
+<li>具体可见Unity官方的文档：<a href="https://docs.unity3d.com/Manual/SL-MultipleProgramVariants.html" target="_blank" rel="noopener">https://docs.unity3d.com/Manual/SL-MultipleProgramVariants.html</a></li>
+<li>需要注意的是，放在Always Included Shaders中的Shader，其包含的所有 variant 都不会被剥离，因此对于Standard Shader这类包含了大量 shader_feature的Shader，不推荐将其放入。</li>
+<li>PS:没有回答根本的问题：<ul>
+<li>Editor中：修改shader并保存时立即编译。<br>Runtime下，无论哪个平台，都是在进入场景时加载shader object内容到内存，但是首次实际调用渲染时才编译，编译完成之后会cache下来。<br>有两种优化方法：<br>调用Shader.WarmupAllShaders()，自动编译该场景中用到的所有shader。该方法在Unity5中已经废弃。<br>在项目设置的GraphicsSettings中，可以导出ShaderVariantCollection，并在Preloaded Shader中导入，这样的话就可以在载入场景时一并编译需要预加载的shader，这样的优化在移动平台上用得比较多。<br>具体见</li>
+</ul>
+</li>
+</ul>
+<h4 id="听说移动端开启多线程，把后期效果移动到渲染线程会节省后期的消耗。我测试了一下，虽然主线程中后期显示的CPU占用降低了，但是却多了Gfx-WaitForPresent的时间，最后两者相加基本还是一样的。那开启多线程这个功能，对后期到底有没有帮助呢？"><a href="#听说移动端开启多线程，把后期效果移动到渲染线程会节省后期的消耗。我测试了一下，虽然主线程中后期显示的CPU占用降低了，但是却多了Gfx-WaitForPresent的时间，最后两者相加基本还是一样的。那开启多线程这个功能，对后期到底有没有帮助呢？" class="headerlink" title="听说移动端开启多线程，把后期效果移动到渲染线程会节省后期的消耗。我测试了一下，虽然主线程中后期显示的CPU占用降低了，但是却多了Gfx.WaitForPresent的时间，最后两者相加基本还是一样的。那开启多线程这个功能，对后期到底有没有帮助呢？"></a>听说移动端开启多线程，把后期效果移动到渲染线程会节省后期的消耗。我测试了一下，虽然主线程中后期显示的CPU占用降低了，但是却多了Gfx.WaitForPresent的时间，最后两者相加基本还是一样的。那开启多线程这个功能，对后期到底有没有帮助呢？</h4><ul>
+<li>开启多线程渲染一般情况下会极大降低主线程的渲染耗时，但并不会降低其本身的总体计算量。因为这并不是底层算法或硬件上的提升，而是将部分计算从主线程搬到了子线程。所以，开启多线程的好处在于为主线程带来了大量空间来执行其他耗时模块（如代码逻辑等）。</li>
+<li>但这并不意味着开启多线程渲染就“万事大吉”。如果渲染模块本身开销就很高，那么子线程一样会很耗时，更有可能出现主线程等待子线程的现象，也就是WaitForPresent开销较高的情况。所以，开启多线程是会降低主线程的渲染压力，但其帧率未必会大幅提升，还需研发团队自行在自己项目中进行尝试和比较。</li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/UWA/">UWA</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2017/11/08/2017-11-8-每天一点UWA：动画重定向笔记/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">每天一点UWA：动画重定向笔记</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2017/11/02/2017-11-2-浅析Timeline结构/">
+                <span class="level-item">浅析Timeline结构</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/avatar.png" alt="蔡华">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        蔡华
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        游戏开发者
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Xi&#39;an China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        104
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        13
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/klkucan" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/klkucan">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/杂记/">
+            <span class="level-start">
+                <span class="level-item">杂记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/游戏开发/">
+            <span class="level-start">
+                <span class="level-item">游戏开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">66</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/移动开发/">
+            <span class="level-start">
+                <span class="level-item">移动开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/编程语言/">
+            <span class="level-start">
+                <span class="level-item">编程语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/计算机基础/">
+            <span class="level-start">
+                <span class="level-item">计算机基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件设计/">
+            <span class="level-start">
+                <span class="level-item">软件设计</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="每天一点UWA：第十四周" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 蔡华&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>How I build games with Entitas 摘要 - 蔡华的博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="这篇文章并不会讲解entitas的功能，作者在文章中主要谈了谈他如何利用entitas开发清晰、稳定和灵活的代码结构。这篇文章可以说是对于ECS的一种实践的总结，同时也是对于Entitas的使用总结。 文章会介绍如下的话题： 定义：数据、逻辑和视图层 维护它们彼此的独立 通过接口进行抽象 IOC 视图层抽象（视图和视图控制器）">
+<meta name="keywords" content="Unity3D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How I build games with Entitas 摘要">
+<meta property="og:url" content="https://caihua.tech/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/index.html">
+<meta property="og:site_name" content="蔡华的博客">
+<meta property="og:description" content="这篇文章并不会讲解entitas的功能，作者在文章中主要谈了谈他如何利用entitas开发清晰、稳定和灵活的代码结构。这篇文章可以说是对于ECS的一种实践的总结，同时也是对于Entitas的使用总结。 文章会介绍如下的话题： 定义：数据、逻辑和视图层 维护它们彼此的独立 通过接口进行抽象 IOC 视图层抽象（视图和视图控制器）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://caihua.tech/images/og_image.png">
+<meta property="og:updated_time" content="2019-07-09T16:53:01.870Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How I build games with Entitas 摘要">
+<meta name="twitter:description" content="这篇文章并不会讲解entitas的功能，作者在文章中主要谈了谈他如何利用entitas开发清晰、稳定和灵活的代码结构。这篇文章可以说是对于ECS的一种实践的总结，同时也是对于Entitas的使用总结。 文章会介绍如下的话题： 定义：数据、逻辑和视图层 维护它们彼此的独立 通过接口进行抽象 IOC 视图层抽象（视图和视图控制器）">
+<meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/log.png">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/idea.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86194707-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86194707-1');
+</script>
+
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="How I build games with Entitas 摘要" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                How I build games with Entitas 摘要
+            
+        </h1>
+        <div class="content">
+            <ul>
+<li><a href="https://github.com/sschmid/Entitas-CSharp/wiki/How-I-build-games-with-Entitas-%28FNGGames%29" target="_blank" rel="noopener">这篇文章</a>并不会讲解entitas的功能，作者在文章中主要谈了谈他如何利用entitas开发清晰、稳定和灵活的代码结构。这篇文章可以说是对于ECS的一种实践的总结，同时也是对于Entitas的使用总结。</li>
+<li>文章会介绍如下的话题：<ul>
+<li>定义：数据、逻辑和视图层</li>
+<li>维护它们彼此的独立</li>
+<li>通过接口进行抽象</li>
+<li>IOC</li>
+<li>视图层抽象（视图和视图控制器）</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><ul>
+<li><strong>数据 Data</strong>：游戏的 <strong><em>状态</em></strong> ，比如生命、存量、经验等。在entitas中这些数据存在于 <strong><em>Component</em></strong> 中。</li>
+<li><strong>逻辑 Logic</strong>：数据变化的规则，在我们的代码中可能就是一些常见的函数，这些函数在改变着数据。在entitas中表现为 <strong><em>Systems</em></strong>.</li>
+<li><strong>视图 View</strong>：实际上就是游戏状态的表现，比如渲染、动画、音频、UI等。在作者的example中就是 <em>GameObjects</em> 上的 <em>MonoBehaviours</em>。</li>
+<li><strong>服务 Service</strong>：ECS之外的功能，常见的就是寻路、物理、社会化分享等，在entitas的视角里面游戏引擎也是一种服务（entitas本质是与引擎无关的，这个需要对源码进行一些扩展，比如Math库就不能使用unity引擎相关的数据定义）。</li>
+<li><strong>输入Input</strong>：ECS外部的输入，比如键盘、鼠标、网络等。个人认为input对于ECS的影响是通过修改component数据来实现的，也就要求了外部是输入是可以操作部分system的，因为我们修改component是通过system。</li>
+</ul>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><ul>
+<li>任何游戏的核心只是CPU中的数值模拟。每一个游戏都只是数据集合（游戏状态）的周期性变化（游戏逻辑）。<em>逻辑</em> 规定了数据变化的规则。</li>
+<li>纯粹的数据模拟与游戏的却别在于，游戏中有外部的玩家，能够使用逻辑来改变游戏的状态。</li>
+<li>随之而来的需求是游戏数据与玩家的通信，或者说交互。而这个交互就是<strong>视图层</strong>，表现为渲染actor到屏幕、播放音频、更新UI等。</li>
+</ul>
+<ul>
+<li>以上是作者对于游戏中数据、逻辑的理解，可谓之醍醐灌顶。而下面的图可以说是对于ECS（Entitas）使用的最佳实践。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/klkucan/ImgLib/master/blog/EntitasCode.png?token=AC5fBlT3eFZWrd9UlHLjMabWRaNvEsIPks5cbtqmwA%3D%3D" alt="Architecture Diagram"></p>
+<h2 id="Action中的抽象"><a href="#Action中的抽象" class="headerlink" title="Action中的抽象"></a>Action中的抽象</h2><ul>
+<li><p>首先抽象是一个移除<strong>What you want to do</strong>和<strong>How you want to do</strong>之间耦合的过程。如何理解what和how，简单来说what就是interface，how就是implementation。</p>
+</li>
+<li><p>文章中使用了一个常见的例子，就是在开发中的使用log。当然一般来说我们会避免把<code>Debug.Log</code>方法在代码的各处使用，弊端显而易见。作者提出这个例子和角色控制器是为了提出一个很重要的思想 <strong><em>关注点分离（Separate your concerns）</em></strong>，这个也是ECS的一个重要的作用。</p>
+</li>
+<li><p>那么entitas是如何实现关注点分离的呢？一般会使用<code>LogMessageComponent (string message)</code>和一个 用于处理它的<code>ReactiveSystem</code>。代码如下，以后需要修改实现时只要修改这个system就行了。本质就是一个功能交给一个system，和之前定义一个专门负责log的函数或者类是一个概念。entitas中需要输出log只需要创建一个LogEntity就好了。</p>
+</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">using</span> UnityEngine;</span><br><span class="line"><span class="hljs-keyword">using</span> Entitias; </span><br><span class="line"><span class="hljs-keyword">using</span> System.Collections.Generic;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// debug message component</span></span><br><span class="line">[<span class="hljs-meta">Debug</span>] </span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">DebugLogComponent</span> : <span class="hljs-title">IComponent</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> message;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// reactive system to handle messages</span></span><br><span class="line">public class HandleDebugLogMessageSystem : ReactiveSystem&lt;DebugEntity&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// collector: Debug.Matcher.DebugLog</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// filter: entity.hasDebugLog</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span> (<span class="hljs-params">List&lt;DebugEntity&gt; entities</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> entities) &#123;</span><br><span class="line">            Debug.Log(e.debugLog.message);</span><br><span class="line">            e.isDestroyed = <span class="hljs-literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后上面代码的弊端是依赖了unity API debug，除此之外如果这里的log功能比较复杂比如json解析、网络发送等时，就会需要更多的依赖甚至关联。如果画出UML可能惨目忍睹。为了解决这个问题作者提出了使用接口。这块其实就没啥特别的了，面向接口编程本身也是OOP里面重要的概念，在上面的图里面，只要不是在虚线框内的代码多数情况是OOP的。而外部代码与ECS代码的交互是基于接口的。</li>
+</ul>
+<h2 id="Interfaces-by-example"><a href="#Interfaces-by-example" class="headerlink" title="Interfaces by example"></a>Interfaces by example</h2><ul>
+<li>在这部分中作者使用大量的例子来展示如何在entitas中使用接口来解耦。对于上面的log功能来说设计出来的接口可能只需要一个方法<code>LogMessage(string message)</code>。 代码如下：</li>
+<li>可以看出<code>UnityDebugLogService</code>和<code>JsonLogService</code>对应了不同的log需要。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// the interface </span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">ILogService</span> &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">LogMessage</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> message</span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// a class that implements the interface</span></span><br><span class="line"><span class="hljs-keyword">using</span> UnityEngine;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnityDebugLogService</span> : <span class="hljs-title">ILogService</span> &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LogMessage</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> message</span>)</span> &#123;</span><br><span class="line">        Debug.Log(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// another class that does things differently but still implements the interface</span></span><br><span class="line"><span class="hljs-keyword">using</span> SomeJsonLib;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">JsonLogService</span> : <span class="hljs-title">ILogService</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">string</span> filepath;</span><br><span class="line">    <span class="hljs-keyword">string</span> filename;</span><br><span class="line">    <span class="hljs-keyword">bool</span> prettyPrint;</span><br><span class="line">    <span class="hljs-comment">// etc...</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LogMessage</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> message</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-comment">// open file</span></span><br><span class="line">        <span class="hljs-comment">// parse contents</span></span><br><span class="line">        <span class="hljs-comment">// write new contents</span></span><br><span class="line">        <span class="hljs-comment">// close file</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面的代码展示了如何通过system的构造函数来注入interface，最后实现了system与interface的关联，但是不与具体实现产生依赖或关联。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// the previous reactive system becomes </span></span><br><span class="line">public class HandleDebugLogMessageSystem : ReactiveSystem&lt;DebugEntity&gt; &#123;</span><br><span class="line"></span><br><span class="line">    ILogService _logService;</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment">// contructor needs a new argument to get a reference to the log service</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">HandleDebugLogMessageSystem</span>(<span class="hljs-params">Contexts contexts, ILogService logService</span>)</span> &#123;</span><br><span class="line">         <span class="hljs-comment">// could be a UnityDebugLogService or a JsonLogService</span></span><br><span class="line">        _logService = logService; </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment">// collector: Debug.Matcher.DebugLog</span></span><br><span class="line">    <span class="hljs-comment">// filter: entity.hasDebugLog</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span> (<span class="hljs-params">List&lt;DebugEntity&gt; entities</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> entities) &#123;</span><br><span class="line">            _logService.LogMessage(e.DebugLog.message); <span class="hljs-comment">// using the interface to call the method</span></span><br><span class="line">            e.isDestroyed = <span class="hljs-literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面的例子是一个较为复杂的<code>IInputService</code>，可以看到是对unity api的一个封装。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// interface</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IInputService</span> &#123;</span><br><span class="line">    Vector2D leftStick &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    Vector2D rightStick &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    <span class="hljs-keyword">bool</span> action1WasPressed &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    <span class="hljs-keyword">bool</span> action1IsPressed &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    <span class="hljs-keyword">bool</span> action1WasReleased &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    <span class="hljs-keyword">float</span> action1PressedTime &#123;<span class="hljs-keyword">get</span>;&#125;</span><br><span class="line">    <span class="hljs-comment">// ... and a bunch more</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// (partial) unity implementation</span></span><br><span class="line"><span class="hljs-keyword">using</span> UnityEngine;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnityInputService</span> : <span class="hljs-title">IInputService</span> &#123;</span><br><span class="line">   <span class="hljs-comment">// thank god we can hide this ugly unity api in here</span></span><br><span class="line">   Vector2D leftStick &#123;<span class="hljs-keyword">get</span> &#123;<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Vector2D(Input.GetAxis(<span class="hljs-string">'horizontal'</span>), Input.GetAxis(<span class="hljs-string">'Vertical'</span>));&#125; &#125;</span><br><span class="line">   <span class="hljs-comment">// you must implement ALL properties from the interface</span></span><br><span class="line">   <span class="hljs-comment">// ... </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">EmitInputSystem</span> : <span class="hljs-title">IInitalizeSystem</span>, <span class="hljs-title">IExecuteSystem</span> &#123;    </span><br><span class="line">    Contexts _contexts;</span><br><span class="line">    IInputService _inputService; </span><br><span class="line">    InputEntity _inputEntity;</span><br><span class="line">    </span><br><span class="line">    <span class="hljs-comment">// contructor needs a new argument to get a reference to the log service</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">EmitInputSystem</span> (<span class="hljs-params">Contexts contexts, IInputService inputService</span>)</span> &#123;</span><br><span class="line">        _contexts = contexts;</span><br><span class="line">        _inputService= inputService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Initialize</span>(<span class="hljs-params"></span>)</span> &#123;</span><br><span class="line">        <span class="hljs-comment">// use unique flag component to create an entity to store input components        </span></span><br><span class="line">        _contexts.input.isInputManger = <span class="hljs-literal">true</span>;</span><br><span class="line">        _inputEntity = _contexts.input.inputEntity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// clean simple api, </span></span><br><span class="line">    <span class="hljs-comment">// descriptive, </span></span><br><span class="line">    <span class="hljs-comment">// obvious what it does</span></span><br><span class="line">    <span class="hljs-comment">// resistant to change</span></span><br><span class="line">    <span class="hljs-comment">// no using statements</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span> (<span class="hljs-params"></span>)</span> &#123;</span><br><span class="line">        inputEntity.isButtonAInput = _inputService.button1Pressed;</span><br><span class="line">        inputEntity.ReplaceLeftStickInput(_inputService.leftStick);</span><br><span class="line">        <span class="hljs-comment">// ... lots more queries</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Inversion-of-control-控制反转"><a href="#Inversion-of-control-控制反转" class="headerlink" title="Inversion of control 控制反转"></a>Inversion of control 控制反转</h2><ul>
+<li><p>这部分是对上面构造函数的进一步升级，无需在每个system的构造函数中注入服务实例，而是在entitas中使用一个helper类来引用每个服务实例。这个引入的时机最好是应用启动时。下面的例子是完整的过程。</p>
+</li>
+<li><p>可以看到下面是一个关联了很多service的类，通过构造函数注入实例。特别注意一下暴露出的全局变量都是只读的。</p>
+</li>
+</ul>
+<p><em>Services.cs</em></p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Services</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IViewService View;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IApplicationService Application;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> ITimeService Time;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IInputService Input;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IAiService Ai;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IConfigurationService Config;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> ICameraService Camera;</span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">readonly</span> IPhysicsService Physics;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Services</span>(<span class="hljs-params">IViewService view, IApplicationService application, ITimeService time, IInputService input, IAiService ai, IConfigurationService config, ICameraService camera, IPhysicsService physics</span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        View = view;</span><br><span class="line">        Application = application;</span><br><span class="line">        Time = time;</span><br><span class="line">        Input = input;</span><br><span class="line">        Ai = ai;</span><br><span class="line">        Config = config;</span><br><span class="line">        Camera = camera;</span><br><span class="line">        Physics = physics;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>实例化Services类</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> _services = <span class="hljs-keyword">new</span> Services(</span><br><span class="line">    <span class="hljs-keyword">new</span> UnityViewService(), <span class="hljs-comment">// responsible for creating gameobjects for views</span></span><br><span class="line">    <span class="hljs-keyword">new</span> UnityApplicationService(), <span class="hljs-comment">// gives app functionality like .Quit()</span></span><br><span class="line">    <span class="hljs-keyword">new</span> UnityTimeService(), <span class="hljs-comment">// gives .deltaTime, .fixedDeltaTime etc</span></span><br><span class="line">    <span class="hljs-keyword">new</span> InControlInputService(), <span class="hljs-comment">// provides user input</span></span><br><span class="line">    <span class="hljs-comment">// next two are monobehaviours attached to gamecontroller</span></span><br><span class="line">    GetComponent&lt;UnityAiService&gt;(), <span class="hljs-comment">// async steering calculations on MB</span></span><br><span class="line">    GetComponent&lt;UnityConfigurationService&gt;(), <span class="hljs-comment">// editor accessable global config</span></span><br><span class="line">    <span class="hljs-keyword">new</span> UnityCameraService(), <span class="hljs-comment">// camera bounds, zoom, fov, orthsize etc</span></span><br><span class="line">    <span class="hljs-keyword">new</span> UnityPhysicsService() <span class="hljs-comment">// raycast, checkcircle, checksphere etc.</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面的代码是一个不错的方法，使用一个特别的context（MetaContext）中的component中包含这些服务实例。注意这个component是单例的。</li>
+</ul>
+<p>In my <code>MetaContext</code> I have a set of unique components that hold instances of these interfaces. For example: </p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="hljs-meta">Meta, Unique</span>]</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">TimeServiceComponent</span> : <span class="hljs-title">IComponent</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">public</span> ITimeService instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面的两段代码演示了如何将services中包含各个实例引入到ecs系统中。<ul>
+<li>首先上面一步已经创建了一些负责持有这些service实例的component，并且是singleton的。</li>
+<li>使用 <code>Feature</code>来创建一些IInitializeSystem。<code>Feature</code>继承自system，但是从它包含了多个system。这个命名在我看来是极具深意的，因为只有多个system的协作才能形成一个特征（feature）。同时feature在执行顺序上非常靠前会先执行。</li>
+<li>在各个IInitializeSystem类中注入service</li>
+<li>在system会创建第一步中的component实例，并将service实例赋值进component的成员变量中。</li>
+</ul>
+</li>
+</ul>
+<p><em>ServiceRegistrationSystems.cs</em></p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ServiceRegistrationSystems</span> : <span class="hljs-title">Feature</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ServiceRegistrationSystems</span>(<span class="hljs-params">Contexts contexts, Services services</span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterViewServiceSystem(contexts, services.View));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterTimeServiceSystem(contexts, services.Time));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterApplicationServiceSystem(contexts, services.Application));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterInputServiceSystem(contexts, services.Input));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterAiServiceSystem(contexts, services.Ai));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterConfigurationServiceSystem(contexts, services.Config));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterCameraServiceSystem(contexts, services.Camera));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> RegisterPhysicsServiceSystem(contexts, services.Physics));</span><br><span class="line">        Add(<span class="hljs-keyword">new</span> ServiceRegistrationCompleteSystem(contexts));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>Example of one of the registration systems</em></p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">RegisterTimeServiceSystem</span> : <span class="hljs-title">IInitializeSystem</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> MetaContext _metaContext;</span><br><span class="line">    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ITimeService _timeService;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RegisterTimeServiceSystem</span>(<span class="hljs-params">Contexts contexts, ITimeService timeService</span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        _metaContext = contexts.meta;</span><br><span class="line">        _timeService = timeService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Initialize</span>(<span class="hljs-params"></span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        _metaContext.ReplaceTimeService(_timeService);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>下面的代码是entitas中ReplaceComponent的源码，可以看到如果没有某个component对象时会创建一个。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"><span class="hljs-doctag">///</span> Replaces an existing component at the specified index</span></span><br><span class="line"><span class="hljs-comment"><span class="hljs-doctag">///</span> or adds it if it doesn't exist yet.</span></span><br><span class="line"><span class="hljs-comment"><span class="hljs-doctag">///</span> The prefered way is to use the</span></span><br><span class="line"><span class="hljs-comment"><span class="hljs-doctag">///</span> generated methods from the code generator.</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ReplaceComponent</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> index, IComponent component</span>)</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> (!_isEnabled) &#123;</span><br><span class="line">        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> EntityIsNotEnabledException(</span><br><span class="line">            <span class="hljs-string">"Cannot replace component '"</span> +</span><br><span class="line">            _contextInfo.componentNames[index] + <span class="hljs-string">"' on "</span> + <span class="hljs-keyword">this</span> + <span class="hljs-string">"!"</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (HasComponent(index)) &#123;</span><br><span class="line">        replaceComponent(index, component);</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (component != <span class="hljs-literal">null</span>) &#123;</span><br><span class="line">        AddComponent(index, component);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>经过上面的处理，在system中使用<code>_contexts.meta.timeService.instance</code>就能够获得一个service的实例了。这些实例都是在service的构造函数中创建的，便于管理和替换。</li>
+<li>至于此处IOC的理解，可以回到上面的那个图。中间虚线框内可以认为是一个ECS framework，我们只向framework注入service实现，但是如何使用是framework内部的事情。这种把控制权交给一个framework的做法就是控制反转。</li>
+</ul>
+<h2 id="View-Layer-Abstraction-视图层抽象"><a href="#View-Layer-Abstraction-视图层抽象" class="headerlink" title="View Layer Abstraction 视图层抽象"></a>View Layer Abstraction 视图层抽象</h2><ul>
+<li><p>这部分是上面图中的右边部分，描述了如何将entitas系统与表现层结合一起。</p>
+</li>
+<li><p>需要注意的是，GameObject的实例是被一个ViewComponent持有的。这个和service是一样的，也就是说ECS系统之外的对象都可以让一个特别的component持有引用。不过需要通过使用interface，将entitas与引擎API进行了解耦。</p>
+</li>
+<li><p>在这里的View layer用于游戏状态的展示，可以是动画、音频、mesh、渲染器等等。当然也可以是GameObject，或者GameObject上的一个MonoBehaviour对象。</p>
+</li>
+<li><p>下面是这部分功能的代码，看起来比较零散，做了个UML的图可以便于理解。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/klkucan/ImgLib/master/blog/%E8%A7%86%E5%9B%BE%E5%B1%82%E6%8A%BD%E8%B1%A1uml.jpg?token=AC5fBuUCXFYdugcg2T_kWbcGM1fJnDkMks5casvGwA%3D%3D" alt="视图层抽象uml"></p>
+<ul>
+<li>UML图中左边是一个用于创建GameObject的service，中间是entity、system等entitas内容，右边是view层的实现。完美符合开始的那张图。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IViewController</span> &#123;</span><br><span class="line">    Vector2D Position &#123;<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;&#125;</span><br><span class="line">    Vector2D Scale &#123;<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;&#125;</span><br><span class="line">    <span class="hljs-keyword">bool</span> Active &#123;<span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>;&#125;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">InitializeView</span>(<span class="hljs-params">Contexts contexts, IEntity Entity</span>)</span>;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">DestroyView</span>(<span class="hljs-params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">- IViewController的unity实现:</span><br><span class="line"></span><br><span class="line">```csharp</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnityGameView</span> : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IViewController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> Contexts _contexts;</span><br><span class="line">    <span class="hljs-keyword">protected</span> GameEntity _entity;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">public</span> Vector2D Position &#123;</span><br><span class="line">        <span class="hljs-keyword">get</span> &#123;<span class="hljs-keyword">return</span> transform.position.ToVector2D();&#125; </span><br><span class="line">        <span class="hljs-keyword">set</span> &#123;transform.position = <span class="hljs-keyword">value</span>.ToVector2();&#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">public</span> Vector2D Scale <span class="hljs-comment">// as above but with tranform.localScale</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">bool</span> Active &#123;<span class="hljs-keyword">get</span> &#123;<span class="hljs-keyword">return</span> gameObject.activeSelf;&#125; <span class="hljs-keyword">set</span> &#123;gameObject.SetActive(<span class="hljs-keyword">value</span>);&#125; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">InitializeView</span>(<span class="hljs-params">Contexts contexts, IEntity Entity</span>)</span> &#123;</span><br><span class="line">        _contexts = contexts;</span><br><span class="line">        _entity = (GameEntity)entity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">DestroyView</span>(<span class="hljs-params"></span>)</span> &#123;</span><br><span class="line">        Object.Destroy(<span class="hljs-keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>持有viewController的component</p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="hljs-meta">Game</span>]</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">ViewComponent</span> : <span class="hljs-title">IComponent</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">public</span> IViewController instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>IViewService</code>来创建view，并且绑定到entitas</p>
+</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IViewService</span> &#123;   </span><br><span class="line">    <span class="hljs-comment">// create a view from a premade asset (e.g. a prefab)</span></span><br><span class="line">    <span class="hljs-function">IViewController <span class="hljs-title">LoadAsset</span>(<span class="hljs-params">Contexts contexts, IEntity entity, <span class="hljs-keyword">string</span> assetName</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>service的unity实现</p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnityViewService</span> : <span class="hljs-title">IViewService</span> &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> IViewController <span class="hljs-title">LoadAsset</span>(<span class="hljs-params">Contexts contexts, IEntity entity, <span class="hljs-keyword">string</span> assetName</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">var</span> viewGo = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(<span class="hljs-string">"Prefabs/"</span> + assetName));</span><br><span class="line">        <span class="hljs-keyword">if</span> (viewGo == <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;</span><br><span class="line">        <span class="hljs-keyword">var</span> viewController = viewGo.GetComponent&lt;IViewController&gt;();</span><br><span class="line">        <span class="hljs-keyword">if</span> (viewController != <span class="hljs-literal">null</span>) viewController.InitializeView(contexts, entity);</span><br><span class="line">        <span class="hljs-keyword">return</span> viewController;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>LoadAssetSystem用于加载资源（创建view）和绑定view到component</p>
+</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class LoadAssetSystem : ReactiveSystem&lt;GameEntity&gt;, IInitializeSystem &#123;</span><br><span class="line">    <span class="hljs-keyword">readonly</span> Contexts _contexts;</span><br><span class="line">    <span class="hljs-keyword">readonly</span> IViewService _viewService;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// collector: GameMatcher.Asset</span></span><br><span class="line">    <span class="hljs-comment">// filter: entity.hasAsset &amp;&amp; !entity.hasView</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Initialize</span>(<span class="hljs-params"></span>)</span> &#123;    </span><br><span class="line">        <span class="hljs-comment">// grab the view service instance from the meta context</span></span><br><span class="line">        _viewService = _contexts.meta.viewService.instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span>(<span class="hljs-params">List&lt;GameEntity&gt; entities</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> entities) &#123;</span><br><span class="line">            <span class="hljs-comment">// call the view service to make a new view</span></span><br><span class="line">            <span class="hljs-keyword">var</span> view = _viewService.LoadAsset(_contexts, e, e.asset.name); </span><br><span class="line">            <span class="hljs-keyword">if</span> (view != <span class="hljs-literal">null</span>) e.ReplaceView(view);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在其它的system中使用抽象的view实例。需要注意entitas中并不知道view对象到底是个什么，下面代码能够改变GameObject的position是因为IViewController中的定义。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class SetViewPositionSystem : ReactiveSystem&lt;GameEntity&gt; &#123;</span><br><span class="line">    <span class="hljs-comment">// collector: GameMatcher.Position;</span></span><br><span class="line">    <span class="hljs-comment">// filter: entity.hasPosition &amp;&amp; entity.hasView</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span>(<span class="hljs-params">List&lt;GameEntity&gt; entities</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> entities) &#123;</span><br><span class="line">            e.view.instance.Position = e.position.<span class="hljs-keyword">value</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>存在的问题</strong></p>
+<ul>
+<li>上面的最后一段代码中，当需要修改位置时是直接修改了view的position属性的，这与开始时描述的一个原则相违背。我们希望ECS中执行的就是数据与逻辑，不需要知道这些数据到底是如何表现出来的。但是现在我们在修改数据的同时也必须手动的修改view的position属性。下面的<strong>Event</strong>章节会来解决这个问题。</li>
+</ul>
+<h2 id="Events-事件"><a href="#Events-事件" class="headerlink" title="Events 事件"></a>Events 事件</h2><ul>
+<li>本质还是使用C#的事件功能</li>
+<li>view MonoBehaviours作为事件监听器</li>
+</ul>
+<h4 id="下面是修改后的代码"><a href="#下面是修改后的代码" class="headerlink" title="下面是修改后的代码"></a>下面是修改后的代码</h4><ul>
+<li>首先需要给要监听的数据（component）添加Event标签，这个标签会在代码生成中生成监听器和事件系统。下面的代码会生成<code>PositionListenerComponent</code> 和 <code>IPositionListener</code>。文章作者写了个<code>IEventListener</code>，用来将监听器与entity绑定起来。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// [Game, Event(true)] (Event(true) DEPRECATED as of Entitas 1.6.0) </span></span><br><span class="line">[<span class="hljs-meta">Game, Event(EventTarget.Self)</span>] <span class="hljs-comment">// generates events that are bound to the entities that raise them</span></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">sealed</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PositionComponent</span> : <span class="hljs-title">IComponent</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">public</span> Vector2D <span class="hljs-keyword">value</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IEventListener</span> &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">RegisterListeners</span>(<span class="hljs-params">IEntity entity</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>不在需要viewcomponent，同时LoadAsset方法不需要在有返回值。然后需要在UnityViewService中添加一些代码来确定和初始化事件监听器。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">using</span> Entitas;</span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title">IViewService</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// create a view from a premade asset (e.g. a prefab)</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">LoadAsset</span>(<span class="hljs-params"></span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">        Contexts contexts,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">        IEntity entity,</span></span></span><br><span class="line"><span class="hljs-function"><span class="hljs-params">        <span class="hljs-keyword">string</span> assetName</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更新后的IViewService实现，前面还是生成GameObject，但是后面认为GameObject默认要有个实现了IEventListener的MonoBehaviour（这里单独写一个MonoBehaviour或者直接写在继承了IViewController的那个脚本中都可以），同时将监听器和entity绑定到一起。 </li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">using</span> UnityEngine;</span><br><span class="line"><span class="hljs-keyword">using</span> Entitas;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">UnityViewService</span> : <span class="hljs-title">IViewService</span> &#123;</span><br><span class="line">    <span class="hljs-comment">// now returns void instead of IViewController</span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">LoadAsset</span>(<span class="hljs-params">Contexts contexts, IEntity entity, <span class="hljs-keyword">string</span> assetName</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">//Similar to before, but now we don't return anything. </span></span><br><span class="line">        <span class="hljs-keyword">var</span> viewGo = GameObject.Instantiate(Resources.Load&lt;GameObject&gt;(<span class="hljs-string">"Prefabs/"</span> + assetName));</span><br><span class="line">        <span class="hljs-keyword">if</span> (viewGo != <span class="hljs-literal">null</span>) &#123;</span><br><span class="line">            <span class="hljs-keyword">var</span> viewController = viewGo.GetComponent&lt;IViewController&gt;();</span><br><span class="line">            <span class="hljs-keyword">if</span>(viewController != <span class="hljs-literal">null</span>) &#123;</span><br><span class="line">                viewController.InitializeView(contexts, entity);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="hljs-comment">// except we add some lines to find and initialize any event listeners</span></span><br><span class="line">            <span class="hljs-keyword">var</span> eventListeners = viewGo.GetComponents&lt;IEventListener&gt;();</span><br><span class="line">            <span class="hljs-keyword">foreach</span>(<span class="hljs-keyword">var</span> listener <span class="hljs-keyword">in</span> eventListeners) &#123;</span><br><span class="line">                listener.RegisterListeners(entity);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在PositionListener中实现接口。此处可以看出来一个viewGo上可以监听了多个数据变化的事件，每个事件都要绑定一次entity。</li>
+<li>同时<code>_entity.AddPositionListener(this);</code>方法会把这个MonoBehaviour的引用交给_entity的PositionListenerComponent。当数据发送变化时，system会调用OnPosition方法，<strong>这些方法、接口都是添加了<code>[Event]</code>标签后自动生成的。</strong></li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PositionListener</span> : <span class="hljs-title">MonoBehaviour</span>, <span class="hljs-title">IEventListener</span>, <span class="hljs-title">IPositionListener</span> &#123;</span><br><span class="line">    </span><br><span class="line">    GameEntity _entity;</span><br><span class="line"> </span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">RegisterEventListeners</span>(<span class="hljs-params">IEntity entity</span>)</span> &#123;</span><br><span class="line">        _entity = (GameEntity)entity;</span><br><span class="line">        _entity.AddPositionListener(<span class="hljs-keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPosition</span>(<span class="hljs-params">GameEntity e, Vector2D newPosition</span>)</span> &#123;</span><br><span class="line">        transform.position = newPosition.ToVector2();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如此以来，GameObject的transform的改变就不需要system专门做什么处理了，view的position与ecs中的PositionComponent实现了解耦。</li>
+</ul>
+<h5 id="附加一些文中没有贴出来的代码，便于阅读"><a href="#附加一些文中没有贴出来的代码，便于阅读" class="headerlink" title="附加一些文中没有贴出来的代码，便于阅读"></a>附加一些文中没有贴出来的代码，便于阅读</h5><ul>
+<li><p>自动生成的PositionListener相关的代码</p>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">AddPositionListener</span>(<span class="hljs-params">IPositionListener <span class="hljs-keyword">value</span></span>)</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> listeners = hasPositionListener</span><br><span class="line">        ? positionListener.<span class="hljs-keyword">value</span></span><br><span class="line">        : <span class="hljs-keyword">new</span> System.Collections.Generic.List&lt;IPositionListener&gt;();</span><br><span class="line">    listeners.Add(<span class="hljs-keyword">value</span>);</span><br><span class="line">    ReplacePositionListener(listeners);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>AddPositionListener</code>是在PositionListener中调用的，但是最后它会调用ReplacePositionListener，然后在ECS中创建一个PositionListenerComponent对象。</p>
+</li>
+<li><p>同时生成了一个PositionEventSystem</p>
+</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public sealed class PositionEventSystem : Entitas.ReactiveSystem&lt;GameEntity&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">readonly</span> System.Collections.Generic.List&lt;IPositionListener&gt; _listenerBuffer;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">PositionEventSystem</span>(<span class="hljs-params">Contexts contexts</span>) : <span class="hljs-title">base</span>(<span class="hljs-params">contexts.game</span>)</span> &#123;</span><br><span class="line">        _listenerBuffer = <span class="hljs-keyword">new</span> System.Collections.Generic.List&lt;IPositionListener&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">override</span> Entitas.<span class="hljs-function">ICollector&lt;GameEntity&gt; <span class="hljs-title">GetTrigger</span>(<span class="hljs-params">Entitas.IContext&lt;GameEntity&gt; context</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> Entitas.CollectorContextExtension.CreateCollector(</span><br><span class="line">            context, Entitas.TriggerOnEventMatcherExtension.Added(GameMatcher.Position)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">Filter</span>(<span class="hljs-params">GameEntity entity</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> entity.hasPosition &amp;&amp; entity.hasPositionListener;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">override</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Execute</span>(<span class="hljs-params">System.Collections.Generic.List&lt;GameEntity&gt; entities</span>)</span> &#123;</span><br><span class="line">        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> e <span class="hljs-keyword">in</span> entities) &#123;</span><br><span class="line">            <span class="hljs-keyword">var</span> component = e.position;</span><br><span class="line">            _listenerBuffer.Clear();</span><br><span class="line">            _listenerBuffer.AddRange(e.positionListener.<span class="hljs-keyword">value</span>);</span><br><span class="line">            <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> listener <span class="hljs-keyword">in</span> _listenerBuffer) &#123;</span><br><span class="line">                listener.OnPosition(e, component.<span class="hljs-keyword">value</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="附一个Event的时序图"><a href="#附一个Event的时序图" class="headerlink" title="附一个Event的时序图"></a>附一个Event的时序图</h5><p><img src="https://raw.githubusercontent.com/klkucan/ImgLib/master/blog/PositionEvent.jpg?token=AC5fBknEmIHZGZpDRTltukY7BOMrjAVQks5cbUxMwA%3D%3D" alt="PositionEvent"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>entitas配合面向接口编程&amp;Event，实现了数据+逻辑与表现层的解耦，同时解耦ECS与引擎。</li>
+<li>需要注意的是，最开始的图是一个横向的，如果纵向的来看，Entitas是在底层，service和view是在上面的。也就是说后面两部分是可以直接持有entitas中的对象的，典型的就是Context、Entity等对象。而entitas则是通过interface、event等手段来操作service和view。</li>
+<li>当然，较真来说，entitas其实也是持有了后两者的对象。这个目前看来是无法避免的。</li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Unity3D/">Unity3D</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/">
+                <span class="level-item">计算机组成原理：6、高速缓冲存储器</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/avatar.png" alt="蔡华">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        蔡华
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        游戏开发者
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Xi&#39;an China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        104
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        13
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/klkucan" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/klkucan">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/杂记/">
+            <span class="level-start">
+                <span class="level-item">杂记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/游戏开发/">
+            <span class="level-start">
+                <span class="level-item">游戏开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">66</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/移动开发/">
+            <span class="level-start">
+                <span class="level-item">移动开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/编程语言/">
+            <span class="level-start">
+                <span class="level-item">编程语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">14</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/计算机基础/">
+            <span class="level-start">
+                <span class="level-item">计算机基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件设计/">
+            <span class="level-start">
+                <span class="level-item">软件设计</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
+                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
+                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
+                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
+                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
+                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">26</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="How I build games with Entitas 摘要" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 蔡华&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
