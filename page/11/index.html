@@ -141,6 +141,318 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-12T13:21:12.000Z">2016-10-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/12/Deepoon的相关设置以及如何玩steam游戏/">Deepoon的相关设置以及如何玩steam游戏</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><ul>
+<li>保证Deepoon助手、显卡驱动是最新的。</li>
+<li>安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。</li>
+</ul>
+<h3 id="DpnnGetLastError的处理"><a href="#DpnnGetLastError的处理" class="headerlink" title="DpnnGetLastError的处理"></a>DpnnGetLastError的处理</h3><ul>
+<li>目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。</li>
+<li>在setting→play中关闭VR support，这个东西在启动后会被steamVR开启（如果你的程序中用到了steamVR）。</li>
+<li>按照上述两部则应该不会出现DpnnGetLastError错误，并且只能通过头盔来看游戏内容。</li>
+</ul>
+<h3 id="玩steam"><a href="#玩steam" class="headerlink" title="玩steam"></a>玩steam</h3><ul>
+<li><p>在steam的安装目录下放置xxx\Steam\steamapps\common\SteamVR\drivers\deepoon。如果没有放置这个驱动可能导致steam下无法设置VR房间。设置完成后应该是<br><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161012092230578-1855749103.jpg" alt="image"></p>
+</li>
+<li><p>经过上面的设置就可以用大朋眼镜玩steam游戏了。</p>
+</li>
+</ul>
+<h3 id="开发相关"><a href="#开发相关" class="headerlink" title="开发相关"></a>开发相关</h3><ul>
+<li>目前发现如果用大朋眼镜可以玩steam，则在unity中是不需要使用DpnCameraRig的，而且也不需要开启大朋助手。</li>
+<li>从这些表现来看大朋应该用的是Oculus的底层。</li>
+</ul>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-09T15:47:35.000Z">2016-10-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/09/LOD初探/">LOD初探</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>LOD全称是Level of Detail，也就是细节层级。</li>
+<li>为什么会产生这个技术？根据官方教程的解释是因为在一个很大的场景中，需要进一步考虑性能问题。LOD就是一个很好的解决性能问题的方案，它根据物体与摄像机的距离来展示这个物体不同的mesh，从而使得物体较远是使用面数比较少的mesh，而距离近的时候使用面数多的mesh。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/10/09/LOD初探/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-09T13:59:00.000Z">2016-10-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/09/VR开发环境搭建/">VR开发环境搭建</a>
+            
+        </h1>
+        <div class="content">
+            <ul>
+<li><p>unity3d的安装</p>
+</li>
+<li><p>目前使用的Deepoon<br>1.安装大朋助手。<br>2.如果提示require DpnPlatform_x64.dll，则在大朋官网下载platform的sdk，并找到对应的平台的文件夹安装，有个bat文件可以安装。</p>
+</li>
+<li><p>安装steam和steamVR。对于steamVR来说正常安装完会显示能识别头盔，但是可能提示未准备好，需要进行房间设置。</p>
+</li>
+</ul>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-03T05:18:23.000Z">2016-10-03</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/杂记/">杂记</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/03/github page爬坑指南/">Github Page爬坑指南</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="1-jekyll的使用"><a href="#1-jekyll的使用" class="headerlink" title="1.jekyll的使用"></a>1.jekyll的使用</h4><ul>
+<li><p>jekyll的核心命令就几个</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jekyll new blog // 选好文件夹位置</span><br><span class="line">jekyll build    // 在_site文件夹下生成网站内容</span><br><span class="line">jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>模板，参考别人的模板进行了修改，<a href="https://github.com/Huxpro/huxpro.github.io" target="_blank" rel="noopener">地址</a>。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/10/03/github page爬坑指南/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-22T10:29:23.000Z">2016-09-22</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/09/22/解决JSONKit在macOS Sierra上crash的问题/">解决JSONKit在macOS Sierra上crash的问题</a>
+            
+        </h1>
+        <div class="content">
+            <p>按照如下方法修改代码即可<br><a href="https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309ccb982a9f1f21b63" target="_blank" rel="noopener">https://github.com/johnezang/JSONKit/pull/141/commits/ccc0565f0ae4a27371d18309ccb982a9f1f21b63</a></p>
+<p>懒得改的可以直接clone我修改过的<br><a href="https://github.com/klkucan/JSONKit" target="_blank" rel="noopener">https://github.com/klkucan/JSONKit</a></p>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/09/16/03UI/">iOS学习笔记-03UI</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="3-UI"><a href="#3-UI" class="headerlink" title="3.UI"></a>3.UI</h2><ul>
+<li>iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。</li>
+</ul>
+<h4 id="3-1-手动编写UI"><a href="#3-1-手动编写UI" class="headerlink" title="3.1 手动编写UI"></a>3.1 手动编写UI</h4><ul>
+<li>个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。</li>
+<li>手动编写的核心在于创建UI对象，设置frame及各种属性。</li>
+<li>当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/03UI/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
                 
                 <div class="level-item">
@@ -205,23 +517,25 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/04内存管理/">iOS学习笔记-04内存管理</a>
+                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
             
         </h1>
         <div class="content">
-            <h2 id="4-内存管理"><a href="#4-内存管理" class="headerlink" title="4.内存管理"></a>4.内存管理</h2><h4 id="4-1-手动管理"><a href="#4-1-手动管理" class="headerlink" title="4.1 手动管理"></a>4.1 手动管理</h4><ul>
-<li>自己生成的对象自己持有，可以调用<code>release</code>方法减少retain数量。</li>
-<li>非自己生成的对象也可以持有，通过调用<code>retain</code>方法可以持有对象，引用数+1。</li>
-<li>不再需要自己持有的对象要及时释放，注意类中的property要在<code>- (void)dealloc</code>方法中赋值nil，这样写相当于release了。</li>
+            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
+<li><p>创建plist文件及添加数值</p>
+<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
+</li>
+<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
+</li>
 </ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)dealloc</span><br><span class="line">&#123;</span><br><span class="line">    self.arr = nil;</span><br><span class="line">    [super dealloc];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/04内存管理/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -258,14 +572,29 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/08杂/">iOS学习笔记-08杂</a>
+                <a class="has-link-black-ter" href="/2016/09/16/02集合/">iOS学习笔记-02集合</a>
             
         </h1>
         <div class="content">
-            <h2 id="8-杂"><a href="#8-杂" class="headerlink" title="8.杂"></a>8.杂</h2><h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><p>表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。</p>
+            <h2 id="2-集合"><a href="#2-集合" class="headerlink" title="2.集合"></a>2.集合</h2><ul>
+<li><p>集合分为可变与不可变。</p>
+</li>
+<li><p>泛型，写法<code>NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];</code>和<code>NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</code>,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。</p>
+  <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</span><br><span class="line">[dic addEntriesFromDictionary:&lt;#(nonnull NSDictionary&lt;NSString *,NSNumber *&gt; *)#&gt;]</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
+<p><font color="red">目前来看类型只能是Objective-C object或者block。</font></p>
         </div>
         
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/02集合/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
         
         
     </div>
@@ -299,21 +628,28 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/01基本语法/">iOS学习笔记-01基本语法</a>
+                <a class="has-link-black-ter" href="/2016/09/16/07必要知识/">iOS学习笔记-07必要知识</a>
             
         </h1>
         <div class="content">
-            <h2 id="1-基本语法"><a href="#1-基本语法" class="headerlink" title="1.基本语法"></a>1.基本语法</h2><ul>
-<li>与其它编程语言一样有基本类型，比如int，bool，double，float等等。为了64位的问题需要使用OC中定义的类型，例如NSInteger</li>
+            <h2 id="7-必要知识"><a href="#7-必要知识" class="headerlink" title="7.必要知识"></a>7.必要知识</h2><h4 id="7-1-APNS"><a href="#7-1-APNS" class="headerlink" title="7.1 APNS"></a>7.1 APNS</h4><ul>
+<li><p>目前在8.0以后的推送需要以下几个步骤：</p>
+<p>1.使用registerUserNotificationSettings: &amp; registerForRemoteNotifications方法</p>
+ <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) &#123;</span><br><span class="line">     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil];</span><br><span class="line">     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings]; </span><br><span class="line">     [[UIApplication sharedApplication] registerForRemoteNotifications];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
 </ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#if __LP64__ || (TARGET_OS_EMBEDDED &amp;&amp; !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64</span><br><span class="line">typedef long NSInteger;</span><br><span class="line">typedef unsigned long NSUInteger;</span><br><span class="line">#else</span><br><span class="line">typedef int NSInteger;</span><br><span class="line">typedef unsigned int NSUInteger;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>  关于registerForRemoteNotifications方法有以下说明，它会需要实现两个delegate方法，并且方法能够被执行的条件是通过registerUserNotificationSettings:方法成功注册用户的notification，或者enabled for Background App Refresh。</p>
+<p>  // Calling this will result in either application:didRegisterForRemoteNotificationsWithDeviceToken: or application:didFailToRegisterForRemoteNotificationsWithError: to be called on the application delegate. Note: these callbacks will be made only if the application has successfully registered for user notifications with registerUserNotificationSettings:, or if it is enabled for Background App Refresh</p>
+<p> 2.实现delegate方法：每个APP都不同，就不写了。</p>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/01基本语法/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2016/09/16/07必要知识/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -338,7 +674,7 @@
         <div class="pagination-previous">
             <a class="is-flex-grow has-text-black-ter" href="/page/10/">上一页</a>
         </div>
-        <div class="pagination-next is-invisible is-hidden-mobile">
+        <div class="pagination-next">
             <a class="is-flex-grow has-text-black-ter" href="/page/12/">下一页</a>
         </div>
         <ul class="pagination-list is-hidden-mobile">
@@ -350,6 +686,8 @@
             <li><a class="pagination-link has-text-black-ter" href="/page/10/">10</a></li>
             
             <li><a class="pagination-link is-current" href="/page/11/">11</a></li>
+            
+            <li><a class="pagination-link has-text-black-ter" href="/page/12/">12</a></li>
             
         </ul>
     </nav>
@@ -397,7 +735,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        104
+                        113
                     </p>
                 </div>
             </div>
@@ -417,7 +755,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        13
+                        14
                     </p>
                 </div>
             </div>
@@ -485,7 +823,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">14</span>
+                <span class="level-item tag">23</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -515,7 +853,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -534,10 +872,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -547,10 +885,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -560,10 +898,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -573,10 +911,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -586,10 +924,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -606,6 +944,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -895,6 +1288,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
@@ -1002,10 +1402,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1015,10 +1415,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1028,10 +1428,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1041,10 +1441,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1054,10 +1454,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1074,6 +1474,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1363,6 +1818,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 

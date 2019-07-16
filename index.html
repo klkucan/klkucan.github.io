@@ -141,6 +141,495 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/">JVM学习笔记9：垃圾回收</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="引用计数法与可达性分析"><a href="#引用计数法与可达性分析" class="headerlink" title="引用计数法与可达性分析"></a>引用计数法与可达性分析</h2><ul>
+<li><p>引用计数没啥可说的，就是对堆中的对象记录有多少对象来持有它。在我的理解中最多的应该还是变量来引用，还有如果是与native的代码交互，可能还有指针来持有。</p>
+</li>
+<li><p>可达性是用来解决互相引用问题的，这个算法的实质在于将一系列 GC Roots 作为初始的存活对象合集（live set），然后从该合集出发，探索所有能够被该集合引用到的对象，并将其加入到该集合中，这个过程我们也称之为标记（mark）。最终，未被探索到的对象便是死亡的，是可以回收的。</p>
+</li>
+<li><p>那么什么是 GC Roots 呢？我们可以暂时理解为由堆外指向堆内的引用，一般而言，GC Roots 包括（但不限于）如下几种：</p>
+<ul>
+<li>Java 方法栈桢中的局部变量；</li>
+<li>已加载类的静态变量；</li>
+<li>JNI handles；</li>
+<li>已启动且未停止的 Java 线程。</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/">JVM学习笔记8：Java对象的内存布局</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="对象创建方式"><a href="#对象创建方式" class="headerlink" title="对象创建方式"></a>对象创建方式</h4><ul>
+<li>6种方法创建对象，但是不同的方法对于实例字段的初始化是不同的:<ul>
+<li>直接复制已有的数据到实例化字段：Object.clone 方法和反序列化</li>
+<li>没有初始化实例字段：Unsafe.allocateInstance</li>
+<li>通过调用构造器来初始化实例字段： new 语句和反射机制</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/">JVM学习笔记7：invokedynamic</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="问题的产生"><a href="#问题的产生" class="headerlink" title="问题的产生"></a>问题的产生</h2><ul>
+<li>在java中实现动态语言的能力</li>
+<li>Java 7 引入了一条新的指令 invokedynamic。该指令的调用机制抽象出调用点这一个概念，并允许应用程序将调用点链接至任意符合条件的方法上<br>作为 invokedynamic 的准备工作，Java 7 引入了更加底层、更加灵活的方法抽象 ：方法句柄（MethodHandle）。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/">JVM学习笔记6：反射</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="反射的实现"><a href="#反射的实现" class="headerlink" title="反射的实现"></a>反射的实现</h2><ul>
+<li>横向比对C#，几乎是是一样的</li>
+</ul>
+<h4 id="核心是invoke函数"><a href="#核心是invoke函数" class="headerlink" title="核心是invoke函数"></a>核心是invoke函数</h4><figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Method</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Executable</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">invoke</span><span class="hljs-params">(Object obj, Object... args)</span> <span class="hljs-keyword">throws</span> ... </span>&#123;</span><br><span class="line">    ... <span class="hljs-comment">// 权限检查</span></span><br><span class="line">    MethodAccessor ma = methodAccessor;</span><br><span class="line">    <span class="hljs-keyword">if</span> (ma == <span class="hljs-keyword">null</span>) &#123;</span><br><span class="line">      ma = acquireMethodAccessor();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> ma.invoke(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/">JVM学习笔记5：异常处理</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="异常的分类"><a href="#异常的分类" class="headerlink" title="异常的分类"></a>异常的分类</h4><ul>
+<li>显式：主体是应用程序，它指的是在程序中使用“throw”关键字，手动将异常实例抛出。</li>
+<li>隐式：主体则是 Java 虚拟机，它指的是 Java 虚拟机在执行过程中，碰到无法继续执行的异常状态，自动抛出异常。举例来说，Java 虚拟机在执行读取数组操作时，发现输入的索引值是负数，故而抛出数组索引越界异常（ArrayIndexOutOfBoundsException）。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-27T08:48:00.000Z">2019-04-27</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/">JVM学习笔记4：方法调用</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写"></a>重载与重写</h2><ul>
+<li><p>重载的方法在编译阶段完成识别，调用是根据参数<strong>声明类型</strong>选择重载方法。选择分三个阶段：</p>
+<ul>
+<li>在不考虑对基本类型自动装拆箱（auto-boxing，auto-unboxing），以及可变长参数的情况下选取重载方法；</li>
+<li>如果在第 1 个阶段中没有找到适配的方法，那么在允许自动装拆箱，但不允许可变长参数的情况下选取重载方法；</li>
+<li>如果在第 2 个阶段中没有找到适配的方法，那么在允许自动装拆箱以及可变长参数的情况下选取重载方法。 </li>
+</ul>
+</li>
+<li><p>如果 Java 编译器在同一个阶段中找到了多个适配的方法，那么它会在其中选择一个最为贴切的，而决定贴切程度的一个关键就是形式参数类型的继承关系。</p>
+</li>
+<li><p>下面代码中第一次调用会是函数2，因为null可以匹配object和string，但是因为string是Object的子类，所以编译器认为string合适。</p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-16T02:38:00.000Z">2019-04-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/16/2019-4-16-JVM学习笔记3：类加载/">JVM学习笔记3：类加载</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><ul>
+<li>基本步骤：经过加载、链接以及初始化三大步骤。其中，链接过程中同样需要验证；而内存中的类没有经过初始化，同样不能使用。</li>
+<li>引用类型与CLR基本一致，泛型会被编译为特定类型的代码。类和接口是字节码。数组类是由 Java 虚拟机直接生成的，这个似乎没有CLR中对标的东西。</li>
+<li>加载用的字节流可以来自java编译后的class，也可以是网络比如网页中内嵌的小程序 Java applet。字节流我理解就是IL，而且从结果看也确实就是这个东西。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/04/16/2019-4-16-JVM学习笔记3：类加载/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-03-15T10:27:00.000Z">2019-03-15</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/03/15/2019-3-15-JVM学习笔记2：类型/">JVM学习笔记2：类型</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="Boolean"><a href="#Boolean" class="headerlink" title="Boolean"></a>Boolean</h3><ul>
+<li><p>Java中的Boolean类型在JVM中映射为int类型。“true”被映射为整数 1，而“false”被映射为整数 0。因此，将原本声明为 boolean 类型的局部变量，赋值为除了 0、1 之外的整数值，在 Java 虚拟机看来是“合法”的。</p>
+</li>
+<li><p>对于存储 boolean 数组的字节码，Java 虚拟机需保证实际存入的值是整数 1 或者 0。</p>
+</li>
+<li><p>对于下面的代码来说，第一个if是true，第二个是false。因为第一个是在true是1的情况下，等于问的是“吃过几碗饭”，而第二个if是问“吃了一碗饭吗”。</p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/03/15/2019-3-15-JVM学习笔记2：类型/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-03-13T08:55:00.000Z">2019-03-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/03/13/2019-3-13-JVM学习笔记1：概述/">JVM学习笔记1：概述</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="JVM解决什么问题"><a href="#JVM解决什么问题" class="headerlink" title="JVM解决什么问题"></a>JVM解决什么问题</h2><ul>
+<li>JVM在我的理解与CLR是一回事，本身还是为了解决java代码无法直接编译为机器码。</li>
+<li>对标C#，类型的动态推导等功能是在运行时做的，因此无法做到AOT。就需要虚拟机来做这个事情了。</li>
+<li>如虚函数实现多态这样的情况，JVM中可以简单的获得当前应该调用哪个实现函数，从而优化代码的执行。</li>
+<li>最后，使用虚拟机可以做到代码不考虑具体在哪个平台运行的问题，实现跨平台使用。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/03/13/2019-3-13-JVM学习笔记1：概述/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time>
                 
                 <div class="level-item">
@@ -193,555 +682,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/">计算机组成原理：6、高速缓冲存储器</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h4 id="为何使用Cache"><a href="#为何使用Cache" class="headerlink" title="为何使用Cache"></a>为何使用Cache</h4><ul>
-<li>CPU速度太快了</li>
-<li>解决CPU空等问题，但是需要保证的是大多数的数据和指令都在cache中。</li>
-</ul>
-<h5 id="程序访问局部性原理"><a href="#程序访问局部性原理" class="headerlink" title="程序访问局部性原理"></a>程序访问局部性原理</h5><ul>
-<li>时间局部性：当前正在使用的指令和数据，在不久的将来还会被使用。那么这些数据和指令需要放到cache。</li>
-<li>空间局部性：当前正在使用的指令或者数据的相邻的指令或者数据在不久的将来会被使用，那么把当前使用的和相邻的数据和指令放到cache。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/">计算机组成原理：5、主存储器</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><h4 id="1、基本构成"><a href="#1、基本构成" class="headerlink" title="1、基本构成"></a>1、基本构成</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%B8%BB%E5%AD%98%E7%BB%93%E6%9E%84.png?raw=true" alt="主存构成"></p>
-<ul>
-<li>结合上图总结一下之前的数据读取的操作<ul>
-<li>CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。</li>
-<li>MAR收到后，经过译码器得到指定的存储单元。</li>
-<li>CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器</li>
-<li>控制电路根据信令来操作读写电路</li>
-<li>将之前得到主存储器地址中的数据写入MDR</li>
-<li>通过数据总线讲MDR中的数据送入到IR或者ACC</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/">Unity ECS：C# Job System文档总结</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="背景、初衷、目标"><a href="#背景、初衷、目标" class="headerlink" title="背景、初衷、目标"></a>背景、初衷、目标</h3><ul>
-<li>出现的背景、初衷就是：天下苦无多线程久已</li>
-<li>当然这个说法要进一步的约束，首先unity中可以编写多线程代码，但是最大的问题是多线程中无法使用unity API，当然也无法修改component中的数据了。</li>
-<li>目前来看似乎这个技术就是为了能够让开发者使用multithread来操作unity API和component 数据。</li>
-</ul>
-<h3 id="优势和劣势"><a href="#优势和劣势" class="headerlink" title="优势和劣势"></a>优势和劣势</h3><ul>
-<li>多线程就是优势</li>
-<li>可操作的数据类型限制比较大，目前只能是blittable data type</li>
-<li>这个多线程是和unity引擎共享work thread，所以变相的侵占了引擎层的性能。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/">计算机组成原理：4、存储器概述</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><ul>
-<li><p>按照介质</p>
-</li>
-<li><p>按照存取方式</p>
-<ul>
-<li>存取时间与物理地址无关（随机访问）<ul>
-<li>随机存储器（RAM）: 在程序执行过程中可以读写</li>
-<li>制度存储器（ROM）：在程序执行过程中只能读</li>
-</ul>
-</li>
-<li>存取时间与物理地址有关（串行访问）<ul>
-<li>顺序存取存储器：磁带</li>
-<li>直接存取存储器：磁盘</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>按照作用</p>
-<ul>
-<li>主存储器<ul>
-<li>RAM<ul>
-<li>静态RAM（cache）</li>
-<li>动态RAM（内存芯片）</li>
-</ul>
-</li>
-<li>ROM（只读，但是不同的）（BIOS ROM）<ul>
-<li>MROM：Mask Read-Only Memory，中文全称“掩模式只读存储器”。掩模式只读存储器的内容是由半导体制造厂按用户提出的要求在芯片的生产过程中直接写入的，写入之后任何人都无法改变其内容。</li>
-<li>PROM：可编程ROM</li>
-<li>EPROM：可擦除可编程ROM，是一种断电后仍能保留数据的计算机储存芯片。一旦编程完成后，EPROM只能用强紫外线照射来擦除。</li>
-<li>EEPROM：EEPROM（带电可擦写可编程读写存储器）是用户可更改的只读存储器<br>（ROM），其可通过高于普通电压的作用来擦除和重编程（重写）。不像EPROM芯片，EEPROM不需从计算机中取出即可修改。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Flash Memory → SSD</li>
-<li>高速缓存存储器（Cache）</li>
-<li>辅助存储器</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-20T12:48:00.000Z">2018-09-20</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/20/2018-9-20-计算机组成原理：3、总线/">计算机组成原理：3、总线</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><ul>
-<li>总线（bus）：是连接各个部件的信息传输线，是各个部件共享的传输介质。</li>
-<li>一条总线是总是主模块向从模块发出地址和命令，但是在分离式通信时是没有从模块的。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/20/2018-9-20-计算机组成原理：3、总线/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-19T12:47:00.000Z">2018-09-19</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/19/2018-9-19-计算机组成原理：2、基本组成/">计算机组成原理：2、基本组成</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="冯·诺依曼计算机基本概念"><a href="#冯·诺依曼计算机基本概念" class="headerlink" title="冯·诺依曼计算机基本概念"></a>冯·诺依曼计算机基本概念</h3><blockquote>
-<p>本文中的内存结构只是课程中用到的一个特定的机器的设计，并非所有的计算机都是这样的。</p>
-</blockquote>
-<ul>
-<li><p>现在的计算机都是程序存储计算机，也就是冯诺依曼计算机。</p>
-</li>
-<li><p>特点：</p>
-<ul>
-<li>计算机有五大部件组成：输入、输出、控制器（CU）、运算器(ALU)、存储器(主存、辅存)</li>
-<li>指令和数据以同等地位存于存储器中，按地址寻访。</li>
-<li>指令和数据按照二进制保存</li>
-<li>指令由操作码和地址码组成（e.g 0001 00001000，0001代表读取，00001000代表要读取 数据在内存（寄存器）中的位置）。</li>
-<li>存储程序，存储在存储器中。</li>
-<li>以运算器为中心。</li>
-</ul>
-</li>
-<li><p>现代计算机：</p>
-<ul>
-<li>ALU + CU = CPU</li>
-<li>CPU + 主存（RAM\ROM\Cache（inter上cache有L1\L2\L3）） = 主机</li>
-<li>输入 + 输出 + 辅存 = IO设备</li>
-<li>主机 + IO = 计算机系统硬件</li>
-</ul>
-</li>
-<li><p>CU控制数据的读取+写入，操作的是存储器，还可以控制指令的执行顺序操作的是运算器。</p>
-</li>
-<li><p>如果以运算器为中心进行硬件设计会是的运算器成为系统的瓶颈（overhead）。所以改进成以存储器为中心，这样可以是的IO设备直接和存储器关联。</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/19/2018-9-19-计算机组成原理：2、基本组成/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-19T12:46:00.000Z">2018-09-19</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/19/2018-9-19-计算机组成原理：1、组成原理到底研究的什么/">计算机组成原理：1、组成原理到底研究的什么</a>
-            
-        </h1>
-        <div class="content">
-            <blockquote>
-<p>这是对哈尔滨工业大学网络课程《计算机组成原理》的笔记</p>
-</blockquote>
-<ul>
-<li>计算机系统层次从程序的角度看分为下面5层：<ul>
-<li>高级语言层：Java、C、C++、C#等，需要编程成机器语言</li>
-<li>汇编层：也需要编译成机器语言，符号语言和机器语言的指令基本是一一对应的。</li>
-<li>操作系统：提供机器语言与编程语言的</li>
-<li>机器语言：就是计算机所提供的语言了，根据地址从存储器读取-&gt;送往控制器译码-&gt;计算器。操作有顺序要求，并非全部是并发。</li>
-<li>微指令系统：机器指令的细化，在某个时间点上可以执行的操作放到一个微指令当中，执行上有先后顺序的放到不同的微指令中。</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/19/2018-9-19-计算机组成原理：1、组成原理到底研究的什么/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-29T13:07:00.000Z">2018-08-29</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/08/29/2018-8-29-Unity人工智能游戏开发读书笔记/">Unity人工智能游戏开发笔记</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
-<li>本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。</li>
-<li>但是本书关于模糊逻辑部分非常坑，令人发指。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/08/29/2018-8-29-Unity人工智能游戏开发读书笔记/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-07-20T07:52:19.000Z">2018-07-20</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/07/20/2018-7-20-开发ECS-style项目的思考/">开发ECS style项目的思考</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li>这篇文章是近期在学习Entitas时对于ECS的进一步思考</li>
-<li>其中会包含在使用ECS时需要注意的一些重要原则</li>
-<li>这些原则在使用Entitas时如何实现</li>
-<li>这篇文章不会讲Entitas的具体代码和功能，这需要每个使用者自己去看源码和demo。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/07/20/2018-7-20-开发ECS-style项目的思考/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -760,7 +700,7 @@
             
             <li><span class="pagination-ellipsis has-text-black-ter">&hellip;</span></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/11/">11</a></li>
+            <li><a class="pagination-link has-text-black-ter" href="/page/12/">12</a></li>
             
         </ul>
     </nav>
@@ -808,7 +748,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        104
+                        113
                     </p>
                 </div>
             </div>
@@ -828,7 +768,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        13
+                        14
                     </p>
                 </div>
             </div>
@@ -896,7 +836,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">14</span>
+                <span class="level-item tag">23</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -926,7 +866,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -945,10 +885,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -958,10 +898,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -971,10 +911,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -984,10 +924,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -997,10 +937,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1017,6 +957,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1306,6 +1301,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
@@ -1413,10 +1415,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1426,10 +1428,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1439,10 +1441,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1452,10 +1454,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1465,10 +1467,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1485,6 +1487,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1774,6 +1831,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 

@@ -141,6 +141,483 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-08-14T14:57:15.000Z">2017-08-14</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/08/14/2017-8-14-Lua学习笔记：迭代和闭包/">Lua学习笔记：迭代和闭包</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><ul>
+<li>迭代是一种遍历一种集合中所有元素的机制，在遍历的过程中需要在每次成功之间保持一些状态，比如当前变量的index等。而闭包的机制恰好很适合迭代，因为闭包是一种可以访问外部嵌套环境中的变量的函数，而这个变量可以用来保持状态。在lua中闭包结构通常由<strong>闭包函数本身</strong>和一个<strong>创建该闭包函数的工厂函数</strong>组成。</li>
+<li>以下面代码为例，GetValue就是个工厂，它生产出一个闭包，这个闭包将状态保持在t和i这两个变量中。其实在我看来主要是i中。在循环中每次调用闭包（迭代器）都是在更新它的状态i。这段代码完美的展示了迭代器的概念，看完之后对于迭代的理解更近了一步。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/08/14/2017-8-14-Lua学习笔记：迭代和闭包/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-08-14T14:56:11.000Z">2017-08-14</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/08/14/2017-8-14-Lua学习笔记：函数深入/">Lua学习笔记：函数深入</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><ul>
+<li>lua中的函数都可以认为是闭包，只不过为了便于理解还是用了函数的概念。</li>
+<li>lua中函数的返回值可以是匿名函数，也就是闭包。以下面的代码为例，提出一个概念：非局部的变量。在下面的代码中，匿名函数访问了一个变量i，它对于newCount来说是局部变量，对于匿名函数来说是既不是局部变量也不是全局变量，在lua中这个称谓<em>非局部的变量</em>。</li>
+<li>在lua中一个闭包指的是一个函数和该函数所需要访问的非局部的变量。lua会把它们看做是一个整体，因此在下面的代码中多次允许c1和c2，会发现变量i是在递增的。这是因为<code>c1 = newCount()</code>这句代码相当于给c1赋值了一个闭包，它包含了i这个变量。因此多次执行相当于就是在反复执行一个对象，这样i就一直是原来那个i。          </li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/08/14/2017-8-14-Lua学习笔记：函数深入/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-08-14T14:54:29.000Z">2017-08-14</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/08/14/2017-8-14-每天一点UWA：第三周/">每天一点UWA：第三周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><h4 id="资源复用"><a href="#资源复用" class="headerlink" title="资源复用"></a>资源复用</h4><ul>
+<li>如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时PersistentManager会认为是一个新的对象。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/08/14/2017-8-14-每天一点UWA：第三周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-08-07T14:17:31.000Z">2017-08-07</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/08/07/2017-8-7-每天一点UWA：第二周/">每天一点UWA：第二周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ul>
+<li>内存的开销无外乎以下三大部分：1.资源内存占用；2.引擎模块自身内存占用；3.托管堆内存占用。</li>
+</ul>
+<h3 id="资源内存"><a href="#资源内存" class="headerlink" title="资源内存"></a>资源内存</h3><ul>
+<li>大头在纹理，其次在网格、动画片段和音频。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/08/07/2017-8-7-每天一点UWA：第二周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-08-07T14:10:24.000Z">2017-08-07</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/08/07/2017-8-7-Lua学习笔记：高级概念/">Lua学习笔记：高级概念</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="高级概念"><a href="#高级概念" class="headerlink" title="高级概念"></a>高级概念</h2><ul>
+<li>这部分中会记录一些lua语言中的高级概念和技术。</li>
+</ul>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><ul>
+<li>从我的理解看，模块更像是一个类。但是因为lua中没有类的概念，模块的实现是依赖于table。</li>
+<li>一些公共或者私有的变量+函数组成了模块的主体，最后一个return module完成了基本的构造。其实这个return就是返回了这个table。</li>
+<li>具体实现看教程</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/08/07/2017-8-7-Lua学习笔记：高级概念/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-07-29T15:18:54.000Z">2017-07-29</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/07/29/2017-7-29-每天一点UWA：第一周/">每天一点UWA：第一周</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="初衷"><a href="#初衷" class="headerlink" title="初衷"></a>初衷</h3><ul>
+<li>首先<a href="https://www.uwa4d.com" target="_blank" rel="noopener">UWA</a>一直以来都是一个我很喜欢的网站，因为他们在unity的优化方面是非常专业的，而且他们对于技术的分享也是毫不吝啬的。在他们的网站上有很多的技术文章，很久以来都想系统的阅读一遍，但是一直没有去做。这周开始下定决心要从第一篇开始，把UWA所有的技术分享文章读完，这个系列的文章会对每周读到的技术做一个总结，但是因为文章涉及的方向比较杂，因此会简单的用技术进行一个分类。</li>
+</ul>
+<h3 id="CPU方面的优化（很有用）"><a href="#CPU方面的优化（很有用）" class="headerlink" title="CPU方面的优化（很有用）"></a>CPU方面的优化（很有用）</h3><ul>
+<li>就目前的Unity移动游戏而言，CPU方面的性能开销主要可归结为两大类：引擎模块性能开销和自身代码性能开销。其中，引擎模块中又可细致划分为渲染模块、动画模块、物理模块、UI模块、粒子系统、加载模块和GC调用等等。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/07/29/2017-7-29-每天一点UWA：第一周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-07-29T15:15:54.000Z">2017-07-29</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/07/29/2017-7-29-Lua学习笔记：基本语法/">Lua学习笔记：基本语法</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="初步印象"><a href="#初步印象" class="headerlink" title="初步印象"></a>初步印象</h2><ul>
+<li>语法和python、js这些很像，解释型语言、弱类型等等。写着舒服是真的。</li>
+<li>while do\repeat until这样的语法其实真心不舒服，感觉在语法上有些累赘。大多数语言都是do while，但是它非要是repeat until，也是无语。</li>
+<li>我个人认为语法中的then和do设计的很混淆。比如if是和then，for是和do。从我对语言的理解上感觉可以统一用do或者then。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/07/29/2017-7-29-Lua学习笔记：基本语法/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-07-23T15:31:11.000Z">2017-07-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/07/23/2017-7-23-Unity返回Value的协程/">Unity返回Value的协程</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><ul>
+<li>其实一直以来就有个想法，希望能让unity中的coroutine返回一个具体的数值，比如int，比如string或者一个GameObject。最近也查了些资料，然后总结一下这个功能如何实现。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/07/23/2017-7-23-Unity返回Value的协程/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-07-23T15:28:45.000Z">2017-07-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/07/23/2017-7-23-AssetBundle学习笔记：Resources文件夹/">AssetBundle学习笔记：Resources文件夹</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="Resources文件夹"><a href="#Resources文件夹" class="headerlink" title="Resources文件夹"></a>Resources文件夹</h2><ul>
+<li>这个章节内容不多，但是也很有用。我们可以从这个章节中学习如何更合理的使用它。</li>
+</ul>
+<h3 id="Resources系统的最佳实践"><a href="#Resources系统的最佳实践" class="headerlink" title="Resources系统的最佳实践"></a>Resources系统的最佳实践</h3><blockquote>
+<p><strong>不要使用它</strong></p>
+</blockquote>
+<ul>
+<li>是的，不要使用它。因为它有以下问题：<ul>
+<li>使用 Resources 文件夹会让内存颗粒度管理变得更困难</li>
+<li>不正确的使用 Resources 文件夹会增加应用启动时间（因为要创建上一章讲的映射图）和包的大小，随着在 Resources 文件中的文件增加，管理这些文件会变得很困难。</li>
+<li>Resources系统降低了项目自定义分发内容到具体平台的能力，消除了增量更新的可能。AssetBundle 变体是 Unity 用来在不同设备上调整内容的基础。</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/07/23/2017-7-23-AssetBundle学习笔记：Resources文件夹/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-07-15T16:13:52.000Z">2017-07-16</time>
                 
                 <div class="level-item">
@@ -187,488 +664,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-07-09T15:51:01.000Z">2017-07-09</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/07/09/2017-7-9-5-6混合光照/">5.6混合光照</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="原文地址"><a href="#原文地址" class="headerlink" title="原文地址"></a><a href="http://forum.china.unity3d.com/thread-24402-1-1.html" target="_blank" rel="noopener">原文地址</a></h3><h3 id="原有混合光照的问题"><a href="#原有混合光照的问题" class="headerlink" title="原有混合光照的问题"></a>原有混合光照的问题</h3><ul>
-<li>5.6之前的光照存在一个严重的问题就是: <strong>混合光照仅当只有一个定向光时才能正常工作。</strong></li>
-<li>这是什么个意思呢？<ul>
-<li>首先说一下unity的GI一直以来都是依靠烘焙来做的，但是在unity5中加入了PRGI。</li>
-<li>目前的unity在一个场景中可以混合使用烘焙光照和实时光照，一部分静态对象使用烘焙好的光照和影子，而一些非静态的对象可以继续接受实时光照的影响。这个需要我们把Light Type设置为Mixed。</li>
-<li>不过静态对象会既受烘焙的影响又受实时光的影响，从而产生不好的效果。mixed模式就是为了解决这个问题而出现的，<code>理想情况下，混合模式会为你料理好一切，照亮相同平衡范围内的动、静态对象（从而保留了视觉逼真度与一致性）。</code>只是一切都不是那么的美好，事实上是动态物体不会从spotlight上产生阴影。</li>
-<li>需要特别声明一下，我自己的测试中完全没有发现上面的问题，目前不知道原因。</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/07/09/2017-7-9-5-6混合光照/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-06-04T13:44:23.000Z">2017-06-04</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/杂记/">杂记</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/06/04/2017-6-4-写点东西，证明我还在更新/">写点东西，证明我还在更新</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="最近的一些情况"><a href="#最近的一些情况" class="headerlink" title="最近的一些情况"></a>最近的一些情况</h4><ul>
-<li>很久没有更新博客了，从4月份开始为了项目赶进度开始了996模式，实在没有什么时间写东西。这个是公司也是我自己做的第一个VR旅游项目，可以说从零开始吧，毕竟与游戏开发不一样，期间学到了多东西，也走了不少的弯路。</li>
-<li>在项目期间很神奇的看了一大半冯乐乐写的《Shader入门精要》，在这给这本书打打广告，这是一本很适合入门的Shader书籍，而且紧密的结合了Unity5。对于我这样想要编写shader的人来说是很好的入门。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/06/04/2017-6-4-写点东西，证明我还在更新/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-04-04T04:06:27.000Z">2017-04-04</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/04/04/2017-4-4-AssetBundle学习笔记：4、AssetBundle的下载与asset的加载/">AssetBundle学习笔记：4、AssetBundle的下载与asset的加载</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle的下载"><a href="#AssetBundle的下载" class="headerlink" title="AssetBundle的下载"></a>AssetBundle的下载</h2><h4 id="下载AssetBundle"><a href="#下载AssetBundle" class="headerlink" title="下载AssetBundle"></a>下载AssetBundle</h4><ul>
-<li>首先需要理解的是这个下载就是指的从网络下载。因此只有WWW和 WWW.LoadFromCacheOrDownload两个方法。</li>
-<li>www是不带缓存的，而后者是带缓存的。</li>
-<li>LoadFromCacheOrDownload的version参数，如果缓存中不存在，或者version低于指定的版本就会重新下载，否则直接从缓存拿数据。<strong>缓存数据应该是始终在磁盘上的，而5.3以后缓存文件也压缩为LZ4(好像是可配置的)，所以读取cache的数据很可能与LoadFromFile是等效的。</strong></li>
-<li>如果多个AssetBundle使用WWW.LoadFromCacheOrDownload下载，每帧只能完成一个。</li>
-<li><a href="https://docs.unity3d.com/ScriptReference/WWW.LoadFromCacheOrDownload.html" target="_blank" rel="noopener">LoadFromCacheOrDownload</a>中如果发现缓存文件夹已经满了，会优先删除最近没有使用的cache，但是如果磁盘本身就满了或者说cache folder已经满了（这个东西是有容量限制的）那么会把AssetBundle数据直接按照stream的形式放到内存，这个和new WWW的做法完全一样。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/04/04/2017-4-4-AssetBundle学习笔记：4、AssetBundle的下载与asset的加载/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-04-04T04:04:45.000Z">2017-04-04</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/04/04/2017-4-4-AssetBundle学习笔记：3、AssetBundle内部结构/">AssetBundle学习笔记：3、AssetBundle内部结构</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="本质"><a href="#本质" class="headerlink" title="本质"></a>本质</h4><ul>
-<li>AssetBundle在本质上是一些被分组保存在一个序列化文件中的对象。被部署为一个数据文件，这些文件按照普通包和场景包的不同，在结构上有些差别。</li>
-</ul>
-<h4 id="Normal-AssetBundle-structure"><a href="#Normal-AssetBundle-structure" class="headerlink" title="Normal AssetBundle structure"></a>Normal AssetBundle structure</h4><p><img src="https://docs.unity3d.com/550/Documentation/uploads/Main/AssetBundleStructureNormal.png" alt="image"></p>
-<ul>
-<li>对于第一个块中的main serialized file应该是可以通过AssetBundle.mainAsset获取的，而谁是mainAsset呢？在build的时候第一个放置进去的资源就是mainAsset，所以可以采用将AssetBundle中所有的资源的名称写入一个文件，然后文件作为mainAsset来使用。<a href="https://docs.unity3d.com/560/Documentation/ScriptReference/BuildPipeline.BuildAssetBundles.html" target="_blank" rel="noopener">具体代码参考引用的第二部分</a></li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/04/04/2017-4-4-AssetBundle学习笔记：3、AssetBundle内部结构/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-20T10:00:00.000Z">2017-03-20</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/20/2017-3-14-AssetBundle学习笔记：2、压缩/">AssetBundle学习笔记：2、压缩</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h4><ul>
-<li><p>谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。</p>
-</li>
-<li><p>LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。</p>
-</li>
-<li><p>LZ4：5.3以后才加入的一种压缩格式，被unity自己大量使用。这是一种基于块的压缩方式，当一个对象从LZ4压缩的AssetBundle中加载时，会按照需要解压部分的块。这样的好处在于快速的加载对象，后面会提到一个最佳实践。当然，按照这个原理，你也可以想象如果一个LZ4AssetBundle中只包含了一个GameObject，那么也不存在什么按需加载了。当使用AssetBundle.LoadFromFile加载LZ4格式的文件时，其实不会将问价加载到内容，而是加载AssetBundle的Header。</p>
-</li>
-<li><p>AssetBundle也可以选择不压缩，这样体积最大但是加载最快。</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/20/2017-3-14-AssetBundle学习笔记：2、压缩/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-16T07:20:05.000Z">2017-03-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/16/2017-3-16-游戏设计模式读书笔记：原型模式/">游戏设计模式读书笔记：原型模式</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h2><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><ul>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">定义</a>：原型模式是创建型模式的一种,其特点在于通过“复制”一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的“原型”，这个原型是可定制的。<br>原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。</li>
-<li>看图<br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Prototype_UML.svg/678px-Prototype_UML.svg.png" alt="image"></li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/16/2017-3-16-游戏设计模式读书笔记：原型模式/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-16T07:20:05.000Z">2017-03-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/16/2017-3-20-我所了解的法线贴图/">我所了解的法线贴图</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="两篇文章"><a href="#两篇文章" class="headerlink" title="两篇文章"></a>两篇文章</h2><ul>
-<li><p>本文大多数内容来自这两篇文章，看完后基本明白了法线贴图的种种细节。</p>
-<p>  <a href="http://www.66acg.com/m/?post=468" target="_blank" rel="noopener">凹凸映射</a></p>
-<p>  <a href="http://www.cnblogs.com/flytrace/p/3387748.html" target="_blank" rel="noopener">写给笨人的法线贴图原理</a></p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/16/2017-3-20-我所了解的法线贴图/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-14T03:40:00.000Z">2017-03-14</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/14/2017-3-14-AssetBundle学习笔记：1、概述和创建/">AssetBundle学习笔记：1、概述和创建</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li>打算彻底搞清楚AssetBundle的原理和使用，目前计划刷完官方文档和最佳实践系列文章，而且笔记中的内容会大量是官方文档的内容。</li>
-</ul>
-<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
-<li>AssetBundle可以包含任意unity能识别的类型文件，甚至是一个场景。如果想包含自定义的二进制文件，需要文件后缀名是.bytes，unity会将这样的文件导入为TextAsset。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/14/2017-3-14-AssetBundle学习笔记：1、概述和创建/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-08T07:34:13.000Z">2017-03-08</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/08/2017-3-8-SendMessage测试/">SendMessage测试</a>
-            
-        </h1>
-        <div class="content">
-            <ul>
-<li>5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.</li>
-<li>obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。</li>
-<li>如果Foo的参数不对，会提示<code>MissingMethodException: The best match for method Foo has some invalid parameter.</code></li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/08/2017-3-8-SendMessage测试/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -691,9 +686,9 @@
             
             <li><a class="pagination-link has-text-black-ter" href="/page/9/">9</a></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/10/">10</a></li>
+            <li><span class="pagination-ellipsis has-text-black-ter">&hellip;</span></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/11/">11</a></li>
+            <li><a class="pagination-link has-text-black-ter" href="/page/12/">12</a></li>
             
         </ul>
     </nav>
@@ -741,7 +736,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        104
+                        113
                     </p>
                 </div>
             </div>
@@ -761,7 +756,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        13
+                        14
                     </p>
                 </div>
             </div>
@@ -829,7 +824,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">14</span>
+                <span class="level-item tag">23</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -859,7 +854,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17.78px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16.67px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -878,10 +873,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -891,10 +886,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -904,10 +899,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -917,10 +912,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -930,10 +925,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -950,6 +945,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1239,6 +1289,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
@@ -1346,10 +1403,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time></div>
-                    <a href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/" class="has-link-black-ter is-size-6">How I build games with Entitas 摘要</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
+                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1359,10 +1416,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time></div>
-                    <a href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/" class="has-link-black-ter is-size-6">计算机组成原理：6、高速缓冲存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
+                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1372,10 +1429,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time></div>
-                    <a href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/" class="has-link-black-ter is-size-6">计算机组成原理：5、主存储器</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
+                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1385,10 +1442,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time></div>
-                    <a href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/" class="has-link-black-ter is-size-6">Unity ECS：C# Job System文档总结</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1398,10 +1455,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time></div>
-                    <a href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/" class="has-link-black-ter is-size-6">计算机组成原理：4、存储器概述</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-06T06:32:00.000Z">2019-05-06</time></div>
+                    <a href="/2019/05/06/2019-5-6-JVM学习笔记5：异常处理/" class="has-link-black-ter is-size-6">JVM学习笔记5：异常处理</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
                     </p>
                 </div>
             </div>
@@ -1418,6 +1475,61 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/02/">
@@ -1707,6 +1819,13 @@
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
                         <span class="tag is-grey">7</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">9</span>
                     </a>
                 </div>
                 
