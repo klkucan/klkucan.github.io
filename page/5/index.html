@@ -141,6 +141,57 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-22T08:49:12.000Z">2017-12-22</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/22/每天一点UWA：第十九周/">每天一点UWA：第十九周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize-Mesh-Data，对网格文件使用范围比较多的资源有较好的优化效果。-然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize-Mesh-Data这一选项后，打出来包中Mesh上的顶点色会丢失。-请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？"><a href="#在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize-Mesh-Data，对网格文件使用范围比较多的资源有较好的优化效果。-然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize-Mesh-Data这一选项后，打出来包中Mesh上的顶点色会丢失。-请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？" class="headerlink" title="在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？"></a>在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？</h4><ul>
+<li>一般来说，开启“Optimize Mesh Data”选项，引擎会在发布时遍历所有的网格数据，去除其多余数据，从而降低其数据量大小。需要注意的是，这里的“多余”数据是指Mesh数据中包含了渲染时Shader中所不需要的数据，即如果Mesh数据中含有Position、UV、Normal、Color、Tangent等顶点数据，但其渲染所用的Shader中仅需要Position、UV和Normal，则Mesh数据中的Color和Tangent则为“多余”数据，引擎在发布游戏时，会将这些数据自动去除。</li>
+<li>开启这个选项是一把双刃剑。对于在Runtime情况下有更换Shader需求的Mesh，建议研发团队对其特别注意。如果Runtime时需要为某一个GameObject更换更为复杂、需要访问更多顶点属性的Shader，则建议先将这些Shader挂载在相应的Prefab上再进行发布，以免引擎去除Runtime时会使用到的网格数据。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/22/每天一点UWA：第十九周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-12-09T14:35:34.000Z">2017-12-09</time>
                 
                 <div class="level-item">
@@ -612,57 +663,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-13T01:22:09.000Z">2017-11-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/13/每天一点UWA：第十五周/">每天一点UWA：第十五周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"><a href="#我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）" class="headerlink" title="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"></a>我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）</h4><ul>
-<li>一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。</li>
-<li>PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/13/每天一点UWA：第十五周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -735,7 +735,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        114
+                        115
                     </p>
                 </div>
             </div>
@@ -823,7 +823,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">24</span>
+                <span class="level-item tag">25</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -867,6 +867,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -920,19 +933,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -944,6 +944,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1305,7 +1316,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1413,6 +1424,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
                     <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
                     <p class="is-size-7 is-uppercase">
@@ -1461,19 +1485,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1485,6 +1496,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1846,7 +1868,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 

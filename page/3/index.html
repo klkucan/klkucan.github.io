@@ -141,6 +141,59 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-07-20T07:52:19.000Z">2018-07-20</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/07/20/2018-7-20-开发ECS-style项目的思考/">开发ECS style项目的思考</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>这篇文章是近期在学习Entitas时对于ECS的进一步思考</li>
+<li>其中会包含在使用ECS时需要注意的一些重要原则</li>
+<li>这些原则在使用Entitas时如何实现</li>
+<li>这篇文章不会讲Entitas的具体代码和功能，这需要每个使用者自己去看源码和demo。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/07/20/2018-7-20-开发ECS-style项目的思考/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2018-05-06T07:17:40.000Z">2018-05-06</time>
                 
                 <div class="level-item">
@@ -604,64 +657,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-02-08T12:52:19.000Z">2018-02-08</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/软件设计/">软件设计</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/02/08/2018-2-8-七周七并发模型：函数式编程/">七周七并发模型：函数式编程</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><ul>
-<li>命令式编程的代码由一系列改变全局状态的语句构成，而函数式编程则是将计算过程抽象成表达式求值。</li>
-<li>这些表达式由纯数学函数构成，而这些数学函数是第一类对象（我们可以像操作数值一样操作第一类对象）并且没有副作用。由于没有副作用，函数式编程可以更容易做到线程安全，因此特别适合于并发编程。</li>
-</ul>
-<h4 id="为什么在并发和并行问题时会用到函数式编程"><a href="#为什么在并发和并行问题时会用到函数式编程" class="headerlink" title="为什么在并发和并行问题时会用到函数式编程"></a>为什么在并发和并行问题时会用到函数式编程</h4><ul>
-<li>有关锁的一些规则，都是针对于线程之间共享的可变的数据——换个说法就是共享可变状态。而对于不变的数据，多线程不使用锁就可以安全地进行访问。</li>
-<li>这就是为什么在解决并发和并行问题时函数式编程会如此引人注目——它没有可变状态，所以不会遇到由共享可变状态带来的种种问题。</li>
-<li><strong>纯粹的函数式语言中，函数都具有引用透明性——在任何调用函数的地方，都可以用函数运行的结果来替换函数的调用，而不会对程序产生副作用。这个特性也使得可以任意安排多个计算过程的求值顺序，包括让它们并行<em>。</em></strong></li>
-<li>所有函数（至少是理论上）都可以同时执行。这种执行方式被称为数据流式编程（dataflow programming）。</li>
-<li>PS：其实本书在第三章函数式编程部分的前两天中的内容，在我看来更多的是利用语言或者运行时本书的并发能力。后续会专门写个文章总结下C#中对应的并发功能。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/02/08/2018-2-8-七周七并发模型：函数式编程/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -732,7 +727,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        114
+                        115
                     </p>
                 </div>
             </div>
@@ -820,7 +815,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">24</span>
+                <span class="level-item tag">25</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -864,6 +859,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -917,19 +925,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -941,6 +936,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1302,7 +1308,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1410,6 +1416,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
                     <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
                     <p class="is-size-7 is-uppercase">
@@ -1458,19 +1477,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1482,6 +1488,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1843,7 +1860,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 

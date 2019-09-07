@@ -141,6 +141,58 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-03-08T07:34:13.000Z">2017-03-08</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/03/08/2017-3-8-SendMessage测试/">SendMessage测试</a>
+            
+        </h1>
+        <div class="content">
+            <ul>
+<li>5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.</li>
+<li>obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。</li>
+<li>如果Foo的参数不对，会提示<code>MissingMethodException: The best match for method Foo has some invalid parameter.</code></li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/03/08/2017-3-8-SendMessage测试/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-03-05T15:15:13.000Z">2017-03-05</time>
                 
                 <div class="level-item">
@@ -655,61 +707,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-11-12T09:18:16.000Z">2016-11-12</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/11/12/代码生成AnimatorController/">代码生成AnimatorController</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="0-出发点"><a href="#0-出发点" class="headerlink" title="0.出发点"></a>0.出发点</h3><ul>
-<li><p>现在的项目需要设置多套动画组合，全部是由策划在XML文件中设置完成，如果完全的手动在AnimatorController中去做不但工作量大而且如果将来有配置修改了还要一个个去找到对应的自状态机并且修改。因此就萌生了用代码去生成状态机的想法，而且在网上也有了很多的教程可以参考，只是每个项目都不同，且对于一些参数和属性的设置也不尽相同，因此还是把自己的代码进行一些修改后分享出来，基本上应该是包含了状态机常用的功能。</p>
-</li>
-<li><p>需要注意我的具体代码中是在一个已有的AnimatorController基础上创建的。如果完全是从0开始可以参考别的资料，其实道理是一样的都是代码创建对象。</p>
-</li>
-</ul>
-<h3 id="1-数据来源"><a href="#1-数据来源" class="headerlink" title="1.数据来源"></a>1.数据来源</h3><p>一个典型的XML文件</p>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span><br><span class="line">&lt;config&gt;</span><br><span class="line">	&lt;datas&gt;</span><br><span class="line">		&lt;data INDEX=&quot;1&quot; Clip1=&quot;jump&quot; Clip1Count=&quot;1&quot; Clip2=&quot;BackLeap&quot; Clip2Count=&quot;2&quot; Clip3=&quot;die&quot; Clip3Count=&quot;1&quot;&gt;&lt;/data&gt;</span><br><span class="line">		&lt;data INDEX=&quot;2&quot; Clip1=&quot;BackLeap&quot; Clip1Count=&quot;3&quot; Clip2=&quot;jump&quot; Clip2Count=&quot;0&quot; Clip3=&quot;jump&quot; Clip3Count=&quot;0&quot;&gt;&lt;/data&gt;</span><br><span class="line">		&lt;data INDEX=&quot;3&quot; Clip1=&quot;BackLeap&quot; Clip1Count=&quot;1&quot; Clip2=&quot;ForwardLeap&quot; Clip2Count=&quot;1&quot; Clip3=&quot;jump&quot; Clip3Count=&quot;1&quot;&gt;&lt;/data&gt;</span><br><span class="line">	&lt;/datas&gt;</span><br><span class="line">&lt;/config&gt;</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/11/12/代码生成AnimatorController/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -780,7 +777,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        114
+                        115
                     </p>
                 </div>
             </div>
@@ -868,7 +865,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">24</span>
+                <span class="level-item tag">25</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -912,6 +909,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -965,19 +975,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -989,6 +986,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1350,7 +1358,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1458,6 +1466,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
                     <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
                     <p class="is-size-7 is-uppercase">
@@ -1506,19 +1527,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1530,6 +1538,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1891,7 +1910,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 

@@ -141,6 +141,67 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-07-23T15:28:45.000Z">2017-07-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/07/23/2017-7-23-AssetBundle学习笔记：Resources文件夹/">AssetBundle学习笔记：Resources文件夹</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="Resources文件夹"><a href="#Resources文件夹" class="headerlink" title="Resources文件夹"></a>Resources文件夹</h2><ul>
+<li>这个章节内容不多，但是也很有用。我们可以从这个章节中学习如何更合理的使用它。</li>
+</ul>
+<h3 id="Resources系统的最佳实践"><a href="#Resources系统的最佳实践" class="headerlink" title="Resources系统的最佳实践"></a>Resources系统的最佳实践</h3><blockquote>
+<p><strong>不要使用它</strong></p>
+</blockquote>
+<ul>
+<li>是的，不要使用它。因为它有以下问题：<ul>
+<li>使用 Resources 文件夹会让内存颗粒度管理变得更困难</li>
+<li>不正确的使用 Resources 文件夹会增加应用启动时间（因为要创建上一章讲的映射图）和包的大小，随着在 Resources 文件中的文件增加，管理这些文件会变得很困难。</li>
+<li>Resources系统降低了项目自定义分发内容到具体平台的能力，消除了增量更新的可能。AssetBundle 变体是 Unity 用来在不同设备上调整内容的基础。</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/07/23/2017-7-23-AssetBundle学习笔记：Resources文件夹/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-07-15T16:13:52.000Z">2017-07-16</time>
                 
                 <div class="level-item">
@@ -617,58 +678,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-03-08T07:34:13.000Z">2017-03-08</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/03/08/2017-3-8-SendMessage测试/">SendMessage测试</a>
-            
-        </h1>
-        <div class="content">
-            <ul>
-<li>5.5.2中没有了以前那种参数是对象的SendMessage方法，WTF.</li>
-<li>obj.SendMessage(“Foo”, 1, SendMessageOptions.DontRequireReceiver);如果设置了DontRequireReceiver，那么找不到Foo方法不会报错，如果没有写这个参数默认是RequireReceiver，则报错。</li>
-<li>如果Foo的参数不对，会提示<code>MissingMethodException: The best match for method Foo has some invalid parameter.</code></li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/03/08/2017-3-8-SendMessage测试/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -741,7 +750,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        114
+                        115
                     </p>
                 </div>
             </div>
@@ -829,7 +838,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">24</span>
+                <span class="level-item tag">25</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -873,6 +882,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -926,19 +948,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -950,6 +959,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1311,7 +1331,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
@@ -1419,6 +1439,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-8-24-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
                     <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
                     <p class="is-size-7 is-uppercase">
@@ -1467,19 +1500,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T07:11:00.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/2019-6-6-JVM学习笔记6：反射/" class="has-link-black-ter is-size-6">JVM学习笔记6：反射</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1491,6 +1511,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/08/">
@@ -1852,7 +1883,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">10</span>
+                        <span class="tag is-grey">11</span>
                     </a>
                 </div>
                 
