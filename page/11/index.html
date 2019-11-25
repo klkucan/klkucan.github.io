@@ -141,6 +141,62 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-11-19T07:52:25.000Z">2016-11-19</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/11/19/由一个美术需求引发的Custom Inspector/">由一个美术需求引发的Custom Inspector</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ul>
+<li>Editor模式下，在运行或者非运行状态下，能够按照指定的变化率来自动改变material中属性数值。</li>
+</ul>
+<h3 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h3><ul>
+<li><p>如何在Editor模式下获得一个游戏对象及其组件，尤其是在非运行状态下？我们知道在Unity IDE运行起来后是很容易获得一个对象和组件的，在GameObject上挂一个脚本即可。但是在非运行状态下呢，<code>transform.GetComponent</code>这样的方法怎么执行？好在unity已经为我们考虑到了这个问题，提供了<code>[ExecuteInEditMode]</code>Attribute，通过指定这个attribute使得组件类中的方法可以在edit模式下执行，并且是在非运行状态下的。</p>
+</li>
+<li><p>如何在非运行状态下匀速改变数值呢？update方法中配合<code>Time.deltaTime</code>是一个完美的方案，但是即使设置了<code>[ExecuteInEditMode]</code>，update的表现在非运行和运行时也是完全不同的，查资料看到<a href="https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html" target="_blank" rel="noopener"> is only called when something in the scene changed. </a>这句话时也有种吐槽的冲动。好在unity又为大家考虑到了这个问题（话说unity editor确实功能强大，AssetAtore里面那些插件真是厉害）,Edit模式下提供了<code>EditorApplication.update</code>，这是一个事件，我们注册一个自己的方法就可以在非运行状态下实现update的功能。我个人比较推荐使用<a href="https://gist.github.com/benblo/10732554" target="_blank" rel="noopener">EditorCoroutine</a>，一个基于<code>EditorApplication.update</code>的协程实现。</p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/11/19/由一个美术需求引发的Custom Inspector/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2016-11-12T09:18:16.000Z">2016-11-12</time>
                 
                 <div class="level-item">
@@ -509,57 +565,6 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/05线程/">iOS学习笔记-05线程</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="5-线程"><a href="#5-线程" class="headerlink" title="5.线程"></a>5.线程</h2><h4 id="5-1-GCD"><a href="#5-1-GCD" class="headerlink" title="5.1 GCD"></a>5.1 GCD</h4><ul>
-<li>GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是<code>dispatch_async(queue, block);</code>参数中的queue可以通过<code>dispatch_queue_create</code>或者系统提供的标准dispatch queue。</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 生成一个serial dispatch queue</span><br><span class="line">dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);</span><br><span class="line">// 生成一个concurrent dispatch queue</span><br><span class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line">// 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量</span><br><span class="line">dispatch_release(serialQueue);</span><br><span class="line">dispatch_release(concurrentQueue);</span><br><span class="line"></span><br><span class="line">// 使用系统已经提供的方法来create queue</span><br><span class="line">dispatch_queue_t serialQueue2 = dispatch_get_main_queue();</span><br><span class="line">dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line"></span><br><span class="line">// 因此真正在代码中经常是这样写的</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in main thread&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in a concurrent thread&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/05线程/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
                 <a class="has-link-black-ter" href="/2016/09/16/03UI/">iOS学习笔记-03UI</a>
             
         </h1>
@@ -615,25 +620,26 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
+                <a class="has-link-black-ter" href="/2016/09/16/02集合/">iOS学习笔记-02集合</a>
             
         </h1>
         <div class="content">
-            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
-<li><p>创建plist文件及添加数值</p>
-<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
+            <h2 id="2-集合"><a href="#2-集合" class="headerlink" title="2.集合"></a>2.集合</h2><ul>
+<li><p>集合分为可变与不可变。</p>
 </li>
-<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
+<li><p>泛型，写法<code>NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];</code>和<code>NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</code>,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。</p>
+  <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</span><br><span class="line">[dic addEntriesFromDictionary:&lt;#(nonnull NSDictionary&lt;NSString *,NSNumber *&gt; *)#&gt;]</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
+<p><font color="red">目前来看类型只能是Objective-C object或者block。</font></p>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2016/09/16/02集合/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -719,7 +725,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        115
+                        116
                     </p>
                 </div>
             </div>
@@ -807,7 +813,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">25</span>
+                <span class="level-item tag">26</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -851,6 +857,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
+                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -904,19 +923,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
-                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -928,6 +934,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/09/">
@@ -1300,7 +1317,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">11</span>
+                        <span class="tag is-grey">12</span>
                     </a>
                 </div>
                 
@@ -1408,6 +1425,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
+                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
                     <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
                     <p class="is-size-7 is-uppercase">
@@ -1456,19 +1486,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time></div>
-                    <a href="/2019/06/19/2019-6-19-JVM学习笔记7：invokedynamic/" class="has-link-black-ter is-size-6">JVM学习笔记7：invokedynamic</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1480,6 +1497,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/09/">
@@ -1852,7 +1880,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">11</span>
+                        <span class="tag is-grey">12</span>
                     </a>
                 </div>
                 
