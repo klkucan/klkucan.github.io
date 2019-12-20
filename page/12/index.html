@@ -154,25 +154,25 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
+                <a class="has-link-black-ter" href="/2016/09/16/03UI/">iOS学习笔记-03UI</a>
             
         </h1>
         <div class="content">
-            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
-<li><p>创建plist文件及添加数值</p>
-<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
-</li>
-<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
-</li>
+            <h2 id="3-UI"><a href="#3-UI" class="headerlink" title="3.UI"></a>3.UI</h2><ul>
+<li>iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。</li>
 </ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
+<h4 id="3-1-手动编写UI"><a href="#3-1-手动编写UI" class="headerlink" title="3.1 手动编写UI"></a>3.1 手动编写UI</h4><ul>
+<li>个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。</li>
+<li>手动编写的核心在于创建UI对象，设置frame及各种属性。</li>
+<li>当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。</li>
+</ul>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2016/09/16/03UI/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -224,6 +224,62 @@
             <div class="level-start">
                 <div class="level-item">
                 <a class="button is-size-7 is-light" href="/2016/09/16/05线程/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/09/16/02集合/">iOS学习笔记-02集合</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="2-集合"><a href="#2-集合" class="headerlink" title="2.集合"></a>2.集合</h2><ul>
+<li><p>集合分为可变与不可变。</p>
+</li>
+<li><p>泛型，写法<code>NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];</code>和<code>NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</code>,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。</p>
+  <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</span><br><span class="line">[dic addEntriesFromDictionary:&lt;#(nonnull NSDictionary&lt;NSString *,NSNumber *&gt; *)#&gt;]</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><font color="red">目前来看类型只能是Objective-C object或者block。</font></p>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/02集合/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -510,7 +566,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        116
+                        117
                     </p>
                 </div>
             </div>
@@ -598,7 +654,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">26</span>
+                <span class="level-item tag">27</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -642,6 +698,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -695,19 +764,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
-                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -719,6 +775,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1102,7 +1169,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1210,6 +1277,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
                     <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1258,19 +1338,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
-                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1282,6 +1349,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1665,7 +1743,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 

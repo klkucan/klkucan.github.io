@@ -141,6 +141,60 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-11-18T17:04:30.000Z">2017-11-19</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/11/19/每天一点UWA：第十六周/">每天一点UWA：第十六周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="Texture"><a href="#Texture" class="headerlink" title="Texture"></a>Texture</h2><h4 id="如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？"><a href="#如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？" class="headerlink" title="如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？"></a>如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？</h4><ul>
+<li>使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；</li>
+<li>当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；</li>
+<li>在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资源，以保证内存峰值在可控范围内。</li>
+<li>果ETC压&gt; 缩效果不好的，会使用RGBA32并降一个尺寸规格来压缩，这样虽然图片会模糊点，但是过渡还是平滑的。</li>
+</ul>
+<h4 id="ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。"><a href="#ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。" class="headerlink" title="ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。"></a>ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。</h4>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/11/19/每天一点UWA：第十六周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-11-14T06:24:54.000Z">2017-11-14</time>
                 
                 <div class="level-item">
@@ -641,57 +695,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-10-16T01:47:00.000Z">2017-10-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/10/16/每天一点UWA：第十一周/">每天一点UWA：第十一周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h2><h3 id="优化字体资源"><a href="#优化字体资源" class="headerlink" title="优化字体资源"></a>优化字体资源</h3><h4 id="方向：内存和数量峰值"><a href="#方向：内存和数量峰值" class="headerlink" title="方向：内存和数量峰值"></a>方向：内存和数量峰值</h4><ul>
-<li>主要是因为在字体资源的使用过程中采用了不同的方式。比如一开始的UI没有考虑使用AssetBundle，从而直接从Resources或者其它文件夹加载了字体资源。而后面的UI又依赖了AssetBundle中的字体，虽然也没有主动load，但是因为unity在load asset的时候会自动加载（有待验证）所以导致字体资源又被加载一次。从而峰值数量会不止一个。</li>
-<li>内存:很多情况下我们对于一个字体库中的字体只是用了个别的，但是却加载了整个字体库。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/10/16/每天一点UWA：第十一周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -764,7 +767,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        116
+                        117
                     </p>
                 </div>
             </div>
@@ -852,7 +855,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">26</span>
+                <span class="level-item tag">27</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -896,6 +899,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -949,19 +965,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
-                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -973,6 +976,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1356,7 +1370,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
@@ -1464,6 +1478,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
                     <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1512,19 +1539,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time></div>
-                    <a href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/" class="has-link-black-ter is-size-6">JVM学习笔记8：Java对象的内存布局</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1536,6 +1550,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/11/">
@@ -1919,7 +1944,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Java/">
                         <span class="tag">Java</span>
-                        <span class="tag is-grey">12</span>
+                        <span class="tag is-grey">13</span>
                     </a>
                 </div>
                 
