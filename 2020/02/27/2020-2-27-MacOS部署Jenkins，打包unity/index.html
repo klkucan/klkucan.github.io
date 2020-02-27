@@ -16,7 +16,7 @@
 <meta property="og:description" content="准备Jenkins 终端输入brew install jenkins，用这个方式安装本质还是个war包，但是不用再安装Tomcat 安装好后直接在终端输入jenkins启动应用，浏览器输入localhost:8080可以打开。 网上有8080端口被占用的处理办法 brew安装失败大概率是因为githubusercontent被墙了，要么梯子，要么修改Mac上的hosts，方法如下： sudo vi">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://caihua.tech/images/og_image.png">
-<meta property="og:updated_time" content="2020-02-27T07:17:12.990Z">
+<meta property="og:updated_time" content="2020-02-27T07:29:17.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MacOS部署Jenkins，打包unity">
 <meta name="twitter:description" content="准备Jenkins 终端输入brew install jenkins，用这个方式安装本质还是个war包，但是不用再安装Tomcat 安装好后直接在终端输入jenkins启动应用，浏览器输入localhost:8080可以打开。 网上有8080端口被占用的处理办法 brew安装失败大概率是因为githubusercontent被墙了，要么梯子，要么修改Mac上的hosts，方法如下： sudo vi">
@@ -194,6 +194,11 @@
 <li>jenkins–系统管理—-脚本命令行</li>
 </ul>
 <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// NOTE: uncomment parameters below if not using Scriptler &gt;= 2.0, or if you&apos;re just pasting</span><br><span class="line">// the script in manually.</span><br><span class="line"></span><br><span class="line">// The name of the job.</span><br><span class="line">def jobName = &quot;Test&quot;</span><br><span class="line"></span><br><span class="line">// The range of build numbers to delete.</span><br><span class="line">def buildRange = &quot;1-30&quot;</span><br><span class="line"></span><br><span class="line">import jenkins.model.*;</span><br><span class="line">import hudson.model.Fingerprint.RangeSet;</span><br><span class="line">def j = jenkins.model.Jenkins.instance.getItem(jobName);</span><br><span class="line"></span><br><span class="line">def r = RangeSet.fromString(buildRange, true);</span><br><span class="line"></span><br><span class="line">j.getBuilds(r).each &#123; it.delete() &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="修改时区"><a href="#修改时区" class="headerlink" title="修改时区"></a>修改时区</h4><ul>
+<li>jenkins–系统管理—-脚本命令行</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.setProperty(&apos;org.apache.commons.jelly.tags.fmt.timeZone&apos;, &apos;Asia/Shanghai&apos;)</span><br></pre></td></tr></table></figure>
 
 
         </div>
