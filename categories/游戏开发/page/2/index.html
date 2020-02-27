@@ -152,6 +152,59 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-23T08:55:12.000Z">2017-12-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/23/每天一点UWA：第二十周/">每天一点UWA：第二十周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="小结-amp-新的开始"><a href="#小结-amp-新的开始" class="headerlink" title="小结&amp;新的开始"></a>小结&amp;新的开始</h2><ul>
+<li>从今年的7月29号发布第一周的笔记算起不知不觉已经二十周了，当时的想法也很简单就是下定决心读完当时算下来是168篇文章。5个月过去了，在写这篇的文章的时候基本上已经通读完了所有厚积薄发版块的关于unity的文章，真的感觉这是我这些年来做的最有毅力的一件事情。可以说在这二十周里面对于unity的理解尤其是图形学上学到了很多东西，而且也学会了很多优化的理论和别人实践的方法。</li>
+<li>理论已经学习完了，在后面的工作中就是一个实践的过程了。现在的项目会开始使用GOT工具进行优化的工作，真正的把优化这条路走下去。</li>
+<li>由于UWA出文章的速度不可能太快，而且自己的工作也很忙，所以每周的笔记可能会改成每月一篇了，继续加油。</li>
+<li>还有就是UWA都开始搞UE了，还有什么理由不开始学UE。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/23/每天一点UWA：第二十周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-12-22T08:49:12.000Z">2017-12-22</time>
                 
                 <div class="level-item">
@@ -620,57 +673,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-13T01:22:09.000Z">2017-11-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/13/每天一点UWA：第十五周/">每天一点UWA：第十五周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"><a href="#我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）" class="headerlink" title="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"></a>我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）</h4><ul>
-<li>一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。</li>
-<li>PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/13/每天一点UWA：第十五周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -739,7 +741,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        117
+                        118
                     </p>
                 </div>
             </div>
@@ -811,7 +813,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">66</span>
+                <span class="level-item tag">67</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -876,6 +878,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
                     <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
                     <p class="is-size-7 is-uppercase">
@@ -924,19 +939,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
-                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -948,6 +950,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1370,7 +1383,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">26</span>
+                        <span class="tag is-grey">27</span>
                     </a>
                 </div>
                 
@@ -1450,6 +1463,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
                     <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
                     <p class="is-size-7 is-uppercase">
@@ -1498,19 +1524,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
-                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1522,6 +1535,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1944,7 +1968,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">26</span>
+                        <span class="tag is-grey">27</span>
                     </a>
                 </div>
                 
@@ -2018,7 +2042,7 @@
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 蔡华&nbsp;
+                &copy; 2020 蔡华&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
                 </p>

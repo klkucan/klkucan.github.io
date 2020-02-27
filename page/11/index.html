@@ -141,6 +141,59 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-12-26T14:09:16.000Z">2016-12-26</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/12/26/游戏设计模式读书笔记：命令模式/">游戏设计模式读书笔记：命令模式</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="模式定义"><a href="#模式定义" class="headerlink" title="模式定义"></a>模式定义</h3><ul>
+<li><p><a href="https://en.wikipedia.org/wiki/Command_pattern" target="_blank" rel="noopener">定义</a>：将一个请求封装成一个对象，从而使你可用不同的请求对客户进行参数化；对请求排队或者记录请求日志，以及支持可撤销的操作。</p>
+</li>
+<li><p>看图（图片资源来自于百度，侵删）<br><img src="http://images.cnitblog.com/i/511616/201403/231247427711364.x-png" alt></p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/12/26/游戏设计模式读书笔记：命令模式/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2016-12-17T11:45:25.000Z">2016-12-17</time>
                 
                 <div class="level-item">
@@ -617,61 +670,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
-<li><p>创建plist文件及添加数值</p>
-<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
-</li>
-<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
-</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -740,7 +738,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        117
+                        118
                     </p>
                 </div>
             </div>
@@ -812,7 +810,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">66</span>
+                <span class="level-item tag">67</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -877,6 +875,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
                     <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
                     <p class="is-size-7 is-uppercase">
@@ -925,19 +936,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
-                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -949,6 +947,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1371,7 +1380,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">26</span>
+                        <span class="tag is-grey">27</span>
                     </a>
                 </div>
                 
@@ -1451,6 +1460,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
                     <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
                     <p class="is-size-7 is-uppercase">
@@ -1499,19 +1521,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time></div>
-                    <a href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/" class="has-link-black-ter is-size-6">JVM学习笔记9：垃圾回收</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1523,6 +1532,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2019/12/">
@@ -1945,7 +1965,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">26</span>
+                        <span class="tag is-grey">27</span>
                     </a>
                 </div>
                 
@@ -2019,7 +2039,7 @@
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2019 蔡华&nbsp;
+                &copy; 2020 蔡华&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
                 </p>
