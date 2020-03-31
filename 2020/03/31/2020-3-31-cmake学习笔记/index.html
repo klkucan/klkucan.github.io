@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>cmake学习笔记 - 蔡华的博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="看了B站一个cmake教程，部分笔记内容来自别人 CMake中的变量 变量和含义      常用变量 含义    PROJECT_NAME 工程名变量   PROJECT_SOURCE_DIR 顶层的项目目录   PROJECT_BINARY_DIR 使用cmake的路径   CMAKE_ROOT CMAKE安装的根目录   CMAKE_BUILD_TYPE 编译类型：empty，Debug，Re">
+<meta name="keywords" content="CPP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cmake学习笔记">
+<meta property="og:url" content="https://caihua.tech/2020/03/31/2020-3-31-cmake学习笔记/index.html">
+<meta property="og:site_name" content="蔡华的博客">
+<meta property="og:description" content="看了B站一个cmake教程，部分笔记内容来自别人 CMake中的变量 变量和含义      常用变量 含义    PROJECT_NAME 工程名变量   PROJECT_SOURCE_DIR 顶层的项目目录   PROJECT_BINARY_DIR 使用cmake的路径   CMAKE_ROOT CMAKE安装的根目录   CMAKE_BUILD_TYPE 编译类型：empty，Debug，Re">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://caihua.tech/images/og_image.png">
+<meta property="og:updated_time" content="2020-03-31T12:48:10.922Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cmake学习笔记">
+<meta name="twitter:description" content="看了B站一个cmake教程，部分笔记内容来自别人 CMake中的变量 变量和含义      常用变量 含义    PROJECT_NAME 工程名变量   PROJECT_SOURCE_DIR 顶层的项目目录   PROJECT_BINARY_DIR 使用cmake的路径   CMAKE_ROOT CMAKE安装的根目录   CMAKE_BUILD_TYPE 编译类型：empty，Debug，Re">
+<meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/log.png">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/idea.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86194707-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86194707-1');
+</script>
+
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="cmake学习笔记" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">主页</a>
+                
+                <a class="navbar-item" href="/archives">归档</a>
+                
+                <a class="navbar-item" href="/categories">分类</a>
+                
+                <a class="navbar-item" href="/tags">标签</a>
+                
+                <a class="navbar-item" href="/about">我</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                cmake学习笔记
+            
+        </h1>
+        <div class="content">
+            <p>看了B站一个cmake教程，部分笔记内容来自<a href="https://github.com/szza/LearningNote/blob/master/Tools/1.%20CMake.md" target="_blank" rel="noopener">别人</a></p>
+<h3 id="CMake中的变量"><a href="#CMake中的变量" class="headerlink" title="CMake中的变量"></a><code>CMake</code>中的变量</h3><ul>
+<li><p>变量和含义  </p>
+<table>
+<thead>
+<tr>
+<th align="center">常用变量</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong><em><code>PROJECT_NAME</code></em></strong></td>
+<td align="center">工程名变量</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>PROJECT_SOURCE_DIR</code></em></strong></td>
+<td align="center">顶层的项目目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>PROJECT_BINARY_DIR</code></em></strong></td>
+<td align="center">使用<code>cmake</code>的路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_ROOT</code></em></strong></td>
+<td align="center"><code>CMAKE</code>安装的根目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_BUILD_TYPE</code></em></strong></td>
+<td align="center">编译类型：<code>empty</code>，<code>Debug</code>，<code>Release</code>…</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_SOURCE_DIR</code></em></strong></td>
+<td align="center">顶层的<code>CMakeLists.txt</code>所在路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_BINARY_DIR</code></em></strong></td>
+<td align="center">顶层的<code>CMakeLists.txt</code>的<code>build</code>所在目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_&lt;LANG&gt;_COMPILER</code></em></strong></td>
+<td align="center">设定某个语言<code>LANG</code>的编译器，比如<code>g--</code></td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_INSTALL_PREFIX</code></em></strong></td>
+<td align="center">指令<code>install</code>的路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_CURRENT_SOURCE_DIR</code></em></strong></td>
+<td align="center">当前<code>CMakeLists.txt</code>所在路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_CURRENT_BINARY_DIR</code></em></strong></td>
+<td align="center">当前<code>CMakeLists.txt</code>的<code>build</code>所在目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>EXECUTABLE_OUTPUT_PATH</code></em></strong></td>
+<td align="center">可执行文件输出路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>LIBRARY_OUTPUT_PATH</code></em></strong></td>
+<td align="center">库输出路径</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<a id="more"></a>
+
+<ul>
+<li><p>个别变量解释<br><a href="./smuduo">源码</a>目录结构</p>
+  <figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">jmudou   </span><br><span class="line">├── build.sh</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">└── muduo</span><br><span class="line">   └── base</span><br><span class="line">       ├── Atomic.h</span><br><span class="line">       ├── CMakeLists.txt</span><br><span class="line">       ├── copyable.h</span><br><span class="line">       ├── tests</span><br><span class="line">       │   ├── Atomic_unittest.cc</span><br><span class="line">       │   ├── CMakeLists.txt</span><br><span class="line">       │   └── Timestamp_unittest.cc</span><br><span class="line">       ├── Timestamp.cc</span><br><span class="line">       ├── Timestamp.h</span><br><span class="line">       └── Types.h</span><br></pre></td></tr></table></figure>
+
+<p>  三个<code>CMakeLists.txt</code>输出</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">jmuduo/CMakeLists.txt: </span><br><span class="line">    PROJECT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo</span><br><span class="line">    PROJECT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug </span><br><span class="line">    CMAKE_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo            <span class="hljs-comment"># 指定顶层的CMakeLists.txt的，因此所有的都相同</span></span><br><span class="line">    CMAKE_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line">    <span class="hljs-comment"># 上面四项都是与整个项目相关，因此都是一致的。</span></span><br><span class="line">    CMAKE_CURRENT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo     <span class="hljs-comment"># 指定当前层的CMakeLists.txt的，因此与层相关</span></span><br><span class="line">    CMAKE_CURRENT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line"></span><br><span class="line">muduo/base/<span class="hljs-keyword">test</span>/CMakeLists.txt: </span><br><span class="line">    PROJECT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo</span><br><span class="line">    PROJECT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line">    CMAKE_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo</span><br><span class="line">    CMAKE_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line">    CMAKE_CURRENT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo/muduo/base/tests</span><br><span class="line">    CMAKE_CURRENT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug/muduo/base/tests</span><br><span class="line"></span><br><span class="line">muduo/base/CMakeLists.txt: </span><br><span class="line">    PROJECT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo</span><br><span class="line">    PROJECT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line">    CMAKE_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo</span><br><span class="line">    CMAKE_BINARY_DIR= <span class="hljs-number">11</span>/build/debug</span><br><span class="line">    CMAKE_CURRENT_SOURCE_DIR= <span class="hljs-number">11</span>/jmuduo/muduo/base</span><br><span class="line">    CMAKE_CURRENT_BINARY_DIR= <span class="hljs-number">11</span>/build/debug/muduo/base</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ul>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>所有的函数列表中，<code>&lt;&gt;</code>表示的参数必须要有，<code>[]</code>表示的参数为可选。  </p>
+<ul>
+<li><p><strong><em><code>set</code></em></strong><br>  可以设置三个类型的变量值：正常变量，<code>cache variable</code>、环境变量。    </p>
+<ul>
+<li><code>Normal Variable</code>:<em><code>set(&lt;variable&gt; &lt;value&gt;... [PARENT_SCOPE])</code></em>  </li>
+<li><code>cache</code>：<code>set(&lt;variable&gt; &lt;value&gt;... CACHE &lt;type&gt; &lt;docstring&gt; [FORCE])</code></li>
+<li><code>env</code>：<code>set(ENV{&lt;variable&gt;} [&lt;value&gt;])</code></li>
+</ul>
+</li>
+<li><p><strong><em><code>OPTION</code></em></strong>：提供用户可以选择的选项</p>
+<ul>
+<li>格式：<code>option(&lt;variable&gt; &quot;description&quot; [initial value])</code> </li>
+<li>比如：  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">option</span>(</span><br><span class="line">    USE_MYPATH</span><br><span class="line">    <span class="hljs-string">"user path"</span></span><br><span class="line">    <span class="hljs-keyword">ON</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong><em><code>aux_source_directory</code></em></strong></p>
+<ul>
+<li>语法：<code>aux_source_directory(&lt;dir&gt; &lt;variable&gt;)</code></li>
+<li>查找目录<code>dir</code>下的所有源文件(即.c, .cpp, .cc等文件)，并将名称保存到 <code>variable</code> 变量</li>
+</ul>
+</li>
+<li><p><strong><em><code>add_compile_options</code></em></strong></p>
+<ul>
+<li><code>add_compile_options(&lt;option&gt; ...)</code> </li>
+<li>向<code>COMPILE_OPTIONS</code>目录属性中添加选项，这些选项在编译当前目录及子目录的对象时被使用。</li>
+<li>e.g: <code>add_compile_options(-std=c++11)</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong><em><code>add_subdirectory</code></em></strong></p>
+<ul>
+<li><code>add_subdirectory(source_dir [binary_dir] [EXCLUDE_FROM_ALL])</code></li>
+<li>添加一个将被编译的子目录。指明<code>CMakeLists.txt</code>所在目录下包含了一个子目录<code>source_dir</code>。这样<code>source_dir</code>下的源文件和<code>CMakeLists.txt</code>等也会被处理。</li>
+</ul>
+</li>
+<li><p><strong><em><code>target_link_libraries</code></em></strong></p>
+<ul>
+<li><code>target_link_libraries(exec libs)</code></li>
+<li>表示可执行程序<code>exec</code>需要链接到一个名为<code>libs</code>的链接库。 </li>
+</ul>
+</li>
+<li><p><strong><em><code>add_library</code></em></strong></p>
+<ul>
+<li><p>`add_library(<name> [STATIC | SHARED | MODULE]</name></p>
+<pre><code>[EXCLUDE_FROM_ALL]
+[source1] [source2 ...])`</code></pre></li>
+<li><p>添加一个名为<name>的库文件，该库文件将会根据调用的命令里列出的源文件来创建。<name>对应于逻辑目标名称，而且在一个工程的全局域内必须是唯一的。待构建的库文件的实际文件名根据对应平台的命名约定来构造（比如lib<name>.a或者<name>.lib）。</name></name></name></name></p>
+</li>
+<li><p>指定STATIC，SHARED，或者MODULE参数用来指定要创建的库的类型。STATIC库是目标文件的归档文件，在链接其它目标的时候使用。SHARED库会被动态链接，在运行时被加载。MODULE库是不会被链接到其它目标中的插件，但是可能会在运行时使用dlopen-系列的函数动态链接。如果没有类型被显式指定，这个选项将会根据变量BUILD_SHARED_LIBS的当前值是否为真决定是STATIC还是SHARED。</p>
+</li>
+</ul>
+</li>
+<li><p><strong><em><code>configure_file</code></em></strong></p>
+<ul>
+<li><p>加入一个配置头文件，用于处理 CMake 对源码的设置</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">configure_file</span> (</span><br><span class="line">    <span class="hljs-string">"$&#123;PROJECT_SOURCE_DIR&#125;/config.h.in"</span> <span class="hljs-comment"># config.h.in文件目录</span></span><br><span class="line">    <span class="hljs-string">"$&#123;PROJECT_BINARY_DIR&#125;/config.h"</span>    <span class="hljs-comment"># config.h 生成的头文件目录</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>  在配置文件<code>config.h</code>中，配置相关项，比如<code>options</code>中的<code>USE_MYPATH</code>：</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#cmakedefine USE_MYMATH</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong><em><code>include</code></em></strong>  </p>
+<ul>
+<li><code>include(file [optional])</code>：读取<code>CMake</code>的相关文件。</li>
+<li><code>include(moudle [optional])</code><br>  the file with name <modulename>.cmake is searched in the <code>CMAKE_MODULE_PATH</code>。</modulename></li>
+</ul>
+</li>
+<li><p><strong><em><code>include_directories</code></em></strong></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">include_directories</span>([AFTER|BEFORE] [SYSTEM] dir1 [dir2 ...])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>将给定的路径添加到编译器搜索包含文件（.h文件）的路径列表中。缺省情况下，该路径会被附加在当前路径列表的后面。这种缺省行为可以通过设置CMAKE_include_directories_BEFORE变量为ON被改变。通过将该变量改变为BEFORE或AFTER，你可以在追加和附加在前端这两种方式中选择，而不用理会缺省设置。如果指定了SYSTEM选项，编译器将会认为该路径是某种平台上的系统包含路径。</li>
+</ul>
+</li>
+<li><p><strong><em><code>install</code></em></strong><br>  使用：<code>cmake</code>之后，<code>sudo make install</code>就可以执行相应的库和头文件的安装。</p>
+<ul>
+<li><p><code>TARGET</code>格式</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">install</span>(TARGETS targets...</span><br><span class="line">        [[ARCHIVE|LIBRARY|RUNTIME]</span><br><span class="line">        [DESTINATION &lt;dir&gt;]</span><br><span class="line">        [PERMISSIONS permissions...]</span><br><span class="line">        [CONFIGURATIONS [Debug|Release|...]]</span><br><span class="line">        [COMPONENT &lt;component&gt;]  </span><br><span class="line">        [OPTIONAL]</span><br><span class="line">        ] [...])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>targets</code>的类型<br>  可以安装的库有<code>[ARCHIVE|LIBRARY|RUNTIME]</code>三种：<br>  1) 可执行程序视为<code>runtime</code><br>  2) 静态库视为<code>archieve</code><br>  3) <code>Module Library</code>视为<code>library</code><br>  4) 共享库和平台有关</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<h4 id="另一种说法："><a href="#另一种说法：" class="headerlink" title="另一种说法："></a><strong>另一种说法</strong>：</h4><p>有5中可以被安装的目标文件：ARCHIVE，LIBRARY，RUNTIME，FRAMEWORK，和BUNDLE。</p>
+<p>除了被标记为MACOSX_BUNDLE属性的可执行文件被当做OS X上的BUNDLE目标外，其他的可执行文件都被当做RUNTIME目标。</p>
+<p>静态链接的库文件总是被当做ARCHIVE目标。</p>
+<p>模块库总是被当做LIBRARY目标。</p>
+<p>对于动态库不是DLL格式的平台来说，动态库会被当做LIBRARY目标来对待，</p>
+<p>被标记为FRAMEWORK的动态库是例外，它们被当做OS X上的FRAMEWORK目标。</p>
+<p>对于DLL平台而言，动态库的DLL部分被当做一个RUNTIME目标而对应的导出库被当做是一个ARCHIVE目标。</p>
+<p>所有基于Windows的系统，包括Cygwin，都是DLL平台。ARCHIVE，LIBRARYRUNTIME和FRAMEWORK参数改变了后续属性会加诸之上的目标的类型。如果只出了一种类型，那么只有那种类型的目标会被安装（这样通常只会安装一个LL或者一个导出库。）</p>
+</blockquote>
+<pre><code>- 参数
+    - `DESTINATION`：  
+    指定一个文件将要被安装的目录。如果给的是一个全路径，那么就直接使用；如果是相对路径，默认是相对`CMAKE_INSTALL_PREFIX`,其值默认是`/usr/local/`。  
+    1) 头文件:`inclide`    
+    2) 可执行文件:`bin`  
+    3) 库:`lib`  
+
+    - `PERMISSIONS`： 指定安装文件的权限：  
+        &amp;emsp;&amp;emsp;1) user&amp;emsp;: ` OWNER_READ, OWNER_WRITE, OWNER_EXECUTE`  
+        &amp;emsp;&amp;emsp;2) group：`GROUP_READ, GROUP_WRITE, GROUP_EXECUTE`  
+        &amp;emsp;&amp;emsp;3) other：`WORLD_READ, WORLD_WRITE, WORLD_EXECUTE`  
+        &amp;emsp;&amp;emsp;4) uid&amp;emsp;：` SETUID, and SETGID`。 
+
+    - `CONFIGURATIONS`：为安装规则建立一个配置文件列表。 </code></pre><ul>
+<li><p><strong><em><code>install</code></em></strong></p>
+<ul>
+<li><p><code>FILES</code>格式</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">INSTALL</span>(FILES files... </span><br><span class="line">        DESTINATION &lt;dir&gt;</span><br><span class="line">        [PERMISSIONS permissions...]</span><br><span class="line">        [CONFIGURATIONS [Debug|Release|...]]</span><br><span class="line">        [COMPONENT &lt;component&gt;]</span><br><span class="line">        [RENAME &lt;name&gt;] [OPTIONAL])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>files</code>：即文件名</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>测试</p>
+<ul>
+<li><p><strong><em><code>enanle_testing()</code></em></strong>：启动测试</p>
+</li>
+<li><p><strong><em><code>add_test(testname Exename arg1 arg2 ...)</code></em></strong>：  </p>
+<ul>
+<li>需要先运行测试程序<code>enanle_testing()</code>，这个指令才有效。  </li>
+<li><code>Exename</code>是可执行程序名，参数<code>arg1, arg2</code>。</li>
+</ul>
+</li>
+<li><p><strong><em><code>set_tests_properties(...)</code></em></strong></p>
+<ul>
+<li>括号内格式：<code>(Exename [Exename2...] PROPERTIES prop1 value1 prop2 value2)</code>，其中<code>PROPERTIES</code>是固定的单词不能改</li>
+<li>为<code>Exename</code>设置属性，如果没有这个属性，就报错，有如下属性：<br>  &emsp;&emsp;1) <code>WILL_FAIL</code>：如果设置为<code>true</code>，那么会反转测试结果的<code>pass/fail</code>标志。<br>  &emsp;&emsp;2) <code>PASS_REGULAR_EXPRESSION</code>： 匹配正则表达式，只少有一个匹配，则<code>pass</code><br>  &emsp;&emsp;2) <code>FAIL_REGULAR_EXPRESSION</code>： 匹配正则表达式，则<code>fail</code></li>
+</ul>
+</li>
+<li><p>宏测试  </p>
+  <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">macro(&lt;name&gt; [arg1 [arg2 [arg3 ...]]])</span><br><span class="line">    COMMAND1(ARGS ...)</span><br><span class="line">    COMMAND2(ARGS ...)</span><br><span class="line">    ...</span><br><span class="line">endmacro(&lt;name&gt;)</span><br></pre></td></tr></table></figure>
+
+<p>  就类似于写一个函数，用宏实现，调用：<code>name(arg1,arg2,...)</code>。</p>
+</li>
+</ul>
+</li>
+<li><p>设置项目的版本号</p>
+<ul>
+<li><p>在顶层的<code>CMakeLists.txt</code>中：    </p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># 加入版本号是 1.0</span></span><br><span class="line"><span class="hljs-keyword">set</span> (Project_VERSION_MAJOR <span class="hljs-number">1</span>) <span class="hljs-comment"># 主版本号</span></span><br><span class="line"><span class="hljs-keyword">set</span> (Project_VERSION_MINOR <span class="hljs-number">0</span>) <span class="hljs-comment"># 副版本号</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在配置文件<code>config.h.in</code>中设置：</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">#define Project_VERSION_MAJOR @Project_VERSION_MAJOR@</span></span><br><span class="line"><span class="hljs-comment">#define Project_VERSION_MINOR @Project_VERSION_MINOR@</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>main</code>函数中就可以直接使用这两个宏，代表版本号：</p>
+  <figure class="highlight c hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">printf</span>(<span class="hljs-string">"Version %d.%d\n"</span>,</span><br><span class="line">        Project_VERSION_MAJOR,</span><br><span class="line">        Project_VERSION_MINOR);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><em><code>target_compile_definitions</code></em></p>
+<ul>
+<li><p>格式</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">target_compile_definitions</span>(&lt;<span class="hljs-keyword">target</span>&gt;</span><br><span class="line">                          &lt;INTERFACE|PUBLIC|PRIVATE&gt; [items1...]</span><br><span class="line">                          [&lt;INTERFACE|PUBLIC|PRIVATE&gt; [items2...] ...])</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>作用：编译时定义的宏</p>
+</li>
+</ul>
+</li>
+<li><p><em><code>string</code></em></p>
+<ul>
+<li><p><code>REPLACE</code></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">string</span>(REPLACE </span><br><span class="line">      &lt;match_string&gt; &lt;replace_string&gt; </span><br><span class="line">      &lt;output_variable&gt; &lt;input&gt; [&lt;input&gt;...])</span><br></pre></td></tr></table></figure>
+
+<p>  将所有<code>input</code>中出现的<code>match_String</code>替换为<code>replace_string</code>，并且将结果存在<code>output_variable</code>。</p>
+</li>
+</ul>
+</li>
+<li><p><em><code>message</code></em></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">message</span>([&lt;mode&gt;] <span class="hljs-string">"message to display"</span> ...)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>显示信息给用户<br>  <code>mode</code>取决于信息的类型：</p>
+<ul>
+<li><p><code>STATUS</code>：以简洁的方式显示用户感兴趣的信息。</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">message</span>(STATUS </span><br><span class="line">        <span class="hljs-string">"CXX_FLAGS = "</span> </span><br><span class="line">        <span class="hljs-variable">$&#123;CMAKE_CXX_FLAGS&#125;</span> </span><br><span class="line">        <span class="hljs-string">" "</span> </span><br><span class="line">        <span class="hljs-variable">$&#123;CMAKE_CXX_FLAGS_$&#123;BUILD_TYPE&#125;</span>&#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+
+<p>  可以理解为<code>printf</code>，把后面的几个信息以空格相间，然后打印出来。显示结果为(和上面对应分成三段):</p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CXX_FLAGS = </span><br><span class="line"></span><br><span class="line">-g -D_FILE_OFFSET_BITS=<span class="hljs-number">64</span> -Wall -Wextra </span><br><span class="line">-Werror -Wconversion -Wno-unused-parameter </span><br><span class="line">-Wold-style-cast -Woverloaded-virtual </span><br><span class="line">-Wpointer-arith -Wshadow -Wwrite-strings </span><br><span class="line">-march=native -rdynamic </span><br><span class="line"></span><br><span class="line">-O0</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(无)           = 重要消息；</span><br><span class="line">STATUS         = 非重要消息；</span><br><span class="line">WARNING        = CMake 警告, 会继续执行；</span><br><span class="line">AUTHOR_WARNING = CMake 警告 (dev), 会继续执行；</span><br><span class="line">SEND_ERROR     = CMake 错误, 继续执行，但是会跳过生成的步骤；</span><br><span class="line">FATAL_ERROR    = CMake 错误, 终止所有处理过程；</span><br></pre></td></tr></table></figure></code></pre><ul>
+<li><p><em><code>find_package</code></em></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">find_package</span>(&lt;PackageName&gt; </span><br><span class="line">            [version] [EXACT] [QUIET] [MODULE]</span><br><span class="line">            [REQUIRED] [[COMPONENTS] [components...]]</span><br><span class="line">            [OPTIONAL_COMPONENTS components...]</span><br><span class="line">            [NO_POLICY_SCOPE])</span><br></pre></td></tr></table></figure>
+
+<p>  主要是寻找和加载外部项目。如果<code>PackageName</code>找到了，<code>PackageName-found</code>会显出，当没有找到时，默认显示<br>  <code>PackageName-not found</code>。通过模式的选择，可以处理在没有找到包时的解决方案。</p>
+<ul>
+<li><code>QUIET</code>：不显示有用信息，</li>
+<li><code>REQUIRED</code>：报错</li>
+</ul>
+</li>
+<li><p><em><code>find_path</code></em></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">find_path</span> (</span><br><span class="line">  &lt;VAR&gt;</span><br><span class="line">  name | NAMES name1 [name2 ...]</span><br><span class="line">  [HINTS path1 [path2 ... ENV var]]</span><br><span class="line">  [PATHS path1 [path2 ... ENV var]]</span><br><span class="line">  [PATH_SUFFIXES suffix1 [suffix2 ...]]</span><br><span class="line">  [DOC <span class="hljs-string">"cache documentation string"</span>]</span><br><span class="line">  [NO_DEFAULT_PATH]</span><br><span class="line">  [NO_PACKAGE_ROOT_PATH]</span><br><span class="line">  [NO_CMAKE_PATH]</span><br><span class="line">  [NO_CMAKE_ENVIRONMENT_PATH]</span><br><span class="line">  [NO_SYSTEM_ENVIRONMENT_PATH]</span><br><span class="line">  [NO_CMAKE_SYSTEM_PATH]</span><br><span class="line">  [CMAKE_FIND_ROOT_PATH_BOTH |</span><br><span class="line">   ONLY_CMAKE_FIND_ROOT_PATH |</span><br><span class="line">   NO_CMAKE_FIND_ROOT_PATH]</span><br><span class="line"> )</span><br></pre></td></tr></table></figure>
+
+<p>  用以寻找包含着<code>name1</code>等文件的目录，如果找到了结果存储在<code>VAR</code>，没有找到结果结果是<code>VAR-not found</code>。成功时，变量被清除<code>find_path</code>再次搜索，没有成功,<code>fin_path</code>再次以相同的变量被调用时搜索。</p>
+</li>
+<li><p><em><code>find_library</code></em><br>  同上<code>find_path</code></p>
+  <figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">find_library</span> (&lt;VAR&gt; name0|NAMES name1 [path1 path2 ...])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>OPTIONS<ul>
+<li><code>NAMES</code><br> 为<code>library</code>指定一个或多个可能的名字。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="生成库"><a href="#生成库" class="headerlink" title="生成库"></a>生成库</h3><ul>
+<li>用add_library命令</li>
+</ul>
+<h5 id="静态库与动态库的区别"><a href="#静态库与动态库的区别" class="headerlink" title="静态库与动态库的区别"></a>静态库与动态库的区别</h5><ul>
+<li><p>静态库：</p>
+<ul>
+<li>是在链接阶段，库中目标文件所含的所有将被程序使用的函数的机器码被拷贝到最终的可执行文件中。</li>
+<li>这个链接的过程是在编译期完成的，好处是程序运行时与函数库无关了，移植方便。运行效率快，以为所有的代码都变成机器码了。</li>
+<li>当然，编译结果对象体积会变大。而且如果多个程序公用一个库代码，其实每个程序运行起来都会在内存中包含一份库的代码，造成内存浪费。 </li>
+</ul>
+</li>
+<li><p>动态库：</p>
+<ul>
+<li>相反的，目标文件需要的库代码在编译时不会被连接到目标代码中，而是在运行时才被载入。</li>
+<li>可执行文件只包含了它需要的函数的引用表，而不是代码。</li>
+<li>只有执行时需要的函数代码才被拷贝到内存中。</li>
+<li>可以增量更新。</li>
+<li>缺点也明显，如果缺失了一些动态库程序会报错。</li>
+</ul>
+</li>
+</ul>
+<h3 id="生成库的使用"><a href="#生成库的使用" class="headerlink" title="生成库的使用"></a>生成库的使用</h3><ul>
+<li>cmake中链接内部库的依赖</li>
+</ul>
+<figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">cmake_minimum_required</span>(<span class="hljs-number">2.8</span>)</span><br><span class="line"><span class="hljs-keyword">project</span>(demo)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">add_compile_options</span>(-std=c++<span class="hljs-number">11</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">set</span>(LIBRARY_OUTPUT_DIRECTORY <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib)</span><br><span class="line"><span class="hljs-keyword">set</span>(LIBRARY_OUTPUT_NAME <span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 创建一个动态库，名字是libA</span></span><br><span class="line"><span class="hljs-keyword">add_library</span>(libA SHARED src/classa.cpp)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">add_executable</span>(<span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span> src/main.cpp)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 链接上面创建的动态库</span></span><br><span class="line"><span class="hljs-comment"># 也可以在add_executable中加入classa.cpp，但是如果后面还有用到这个库话抽象成一个lib可以复用。</span></span><br><span class="line"><span class="hljs-keyword">target_link_libraries</span>(<span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span> libA )</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>导入外部库文件 <ul>
+<li>绝对路径引用方式</li>
+<li>install方式</li>
+<li>find_package</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>定义FindlibB.cmake：这个文件本质是为了find_package服务器的，因为这个函数并没有查询自定义目录的能力。</li>
+</ul>
+<figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">find_path</span>(libB_INCLUDE_DIR</span><br><span class="line">        NAMES libB.h  </span><br><span class="line">        PATHS <span class="hljs-string">"C:/Users/admin/Desktop/CMAKE/src"</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">find_library</span>(libB_LIBRARY</span><br><span class="line">            NAMES libB</span><br><span class="line">            PATHS <span class="hljs-string">"C:/Users/admin/Desktop/CMAKE/src"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">if</span>(libB_INCLUDE_DIR <span class="hljs-keyword">AND</span> libB_LIBRARY)</span><br><span class="line">    <span class="hljs-keyword">set</span>(libB_FOUND <span class="hljs-keyword">TRUE</span>)</span><br><span class="line"><span class="hljs-keyword">endif</span>(libB_INCLUDE_DIR <span class="hljs-keyword">AND</span> libB_LIBRARY)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">if</span>(libB_FOUND)</span><br><span class="line">    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">NOT</span> libB_QUIETLY)</span><br><span class="line">        <span class="hljs-keyword">message</span>(STATUS <span class="hljs-string">"找到了libB $&#123;libB_LIBRARY&#125;"</span>)</span><br><span class="line">    <span class="hljs-keyword">endif</span>(<span class="hljs-keyword">NOT</span> libB_QUIETLY)</span><br><span class="line"><span class="hljs-keyword">else</span>(libB_FOUND)    </span><br><span class="line">    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">NOT</span> libB_REQUIRED)</span><br><span class="line">    <span class="hljs-keyword">message</span>(FATAL_ERROR <span class="hljs-string">"没找到了libB "</span>)</span><br><span class="line">    <span class="hljs-keyword">endif</span>(<span class="hljs-keyword">NOT</span> libB_REQUIRED)</span><br><span class="line"><span class="hljs-keyword">endif</span>(libB_FOUND)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用find_package的完整版</li>
+</ul>
+<figure class="highlight cmake hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.0</span>.<span class="hljs-number">0</span>)</span><br><span class="line"><span class="hljs-keyword">project</span>(demo)</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">add_compile_options</span>(-std=c++<span class="hljs-number">11</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 设置源码路径</span></span><br><span class="line"><span class="hljs-keyword">set</span>(src_path <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/src)</span><br><span class="line"><span class="hljs-keyword">set</span>(modules_path <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/modules/)</span><br><span class="line"><span class="hljs-keyword">set</span>(LIBRARY_OUTPUT_DIRECTORY <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib)</span><br><span class="line"><span class="hljs-keyword">set</span>(LIBRARY_OUTPUT_NAME <span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 创建一个动态库，名字是libB</span></span><br><span class="line"><span class="hljs-keyword">add_library</span>(libB STATIC <span class="hljs-variable">$&#123;src_path&#125;</span>/libB.cpp)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># add_executable($&#123;PROJECT_NAME&#125; src/main.cpp)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># # 链接上面创建的动态库</span></span><br><span class="line"><span class="hljs-comment"># # 也可以在add_executable中加入classa.cpp，但是如果后面还有用到这个库话抽象成一个lib可以复用。</span></span><br><span class="line"><span class="hljs-comment"># target_link_libraries($&#123;PROJECT_NAME&#125; libA )</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># # 使用第三方库</span></span><br><span class="line"><span class="hljs-comment"># # 使用绝对路径</span></span><br><span class="line"><span class="hljs-comment"># set(libB xxx/yyy/libB)</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 使用install</span></span><br><span class="line"><span class="hljs-comment"># 设置FindXXX.cmake文件路径路径，目前测试的结果是无法识别，路径全对。当把文件放到C:\Program Files\CMake\share\cmake-3.15\Modules后可以识别。</span></span><br><span class="line"><span class="hljs-comment"># set(CMAKE_MODULE_PATH "C:/Users/admin/Desktop/CMAKE/modules/")</span></span><br><span class="line"><span class="hljs-keyword">set</span>(CMAKE_MODULE_PATH <span class="hljs-variable">$&#123;modules_path&#125;</span>)</span><br><span class="line"><span class="hljs-keyword">message</span>(STATUS <span class="hljs-string">"CMAKE_MODULE_PATH   $&#123;CMAKE_MODULE_PATH&#125;"</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 需要指定头文件和库文件的安装路径</span></span><br><span class="line"><span class="hljs-comment"># 先指定安装的前缀CMAKE_INSTALL_PREFIX为 工程src目录下的install文件夹</span></span><br><span class="line"><span class="hljs-keyword">message</span>(STATUS <span class="hljs-string">"源码目录：$&#123;PROJECT_SOURCE_DIR&#125;"</span>)</span><br><span class="line"><span class="hljs-keyword">set</span>(CMAKE_INSTALL_PREFIX  <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/libB/<span class="hljs-keyword">install</span>)</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 安装camke文件到 $&#123;PROJECT_SOURCE_DIR&#125;/libB/install/cmake</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">install</span>(FILES FindlibB.cmake  DESTINATION cmake)</span><br><span class="line"><span class="hljs-comment"># 安装文件到</span></span><br><span class="line"><span class="hljs-keyword">install</span>(FILES <span class="hljs-variable">$&#123;src_path&#125;</span>/libB.h </span><br><span class="line">        <span class="hljs-comment"># 将文件安装到$&#123;PROJECTOURCE_DIR&#125;/libB/install/include 下</span></span><br><span class="line">        DESTINATION <span class="hljs-keyword">include</span></span><br><span class="line">        )</span><br><span class="line"><span class="hljs-comment"># 规定了安装工程中的目标（targets）的规则</span></span><br><span class="line"><span class="hljs-keyword">install</span>(TARGETS libB <span class="hljs-comment"># 安装的对象是libB</span></span><br><span class="line">        ARCHIVE </span><br><span class="line">        <span class="hljs-comment"># 将静态库安装到$&#123;PROJECT_SOURCE_DIR&#125;/libB/install/lib下</span></span><br><span class="line">        DESTINATION lib</span><br><span class="line">        )        </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># find_package查找</span></span><br><span class="line"><span class="hljs-keyword">set</span>(CMAKE_MODULE_PATH <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/libB/cmake/)</span><br><span class="line"><span class="hljs-comment"># 查找libB相关的内容：头文件、库文件。将结果放到libB_FOUND这个变量中，这个变量的名称是xxx_FOUND这样的固定格式</span></span><br><span class="line"><span class="hljs-keyword">find_package</span>(libB REQUIRED) </span><br><span class="line"><span class="hljs-comment"># libB_FOUND找到后</span></span><br><span class="line"><span class="hljs-keyword">if</span>(libB_FOUND)</span><br><span class="line">    <span class="hljs-comment"># 把libB/install/include路径设置到头文件的搜索路径中</span></span><br><span class="line">    <span class="hljs-keyword">include_directories</span>(<span class="hljs-variable">$&#123;libB_INCLUDE_DIR&#125;</span>)</span><br><span class="line">    <span class="hljs-comment"># 编译目标</span></span><br><span class="line">    <span class="hljs-keyword">add_executable</span>(<span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span> src/main.cpp)</span><br><span class="line">    <span class="hljs-comment"># 把libB/install/lib中的库文件链接到目标，PS:不确定libB_LIBRARY是个路径还是文件</span></span><br><span class="line">    <span class="hljs-keyword">target_link_libraries</span>(<span class="hljs-variable">$&#123;PROJECT_NAME&#125;</span>  <span class="hljs-variable">$&#123;libB_LIBRARY&#125;</span>)</span><br><span class="line"><span class="hljs-keyword">else</span>(libB_FOUND)</span><br><span class="line">    <span class="hljs-keyword">message</span>(ERROR)</span><br><span class="line"><span class="hljs-keyword">endif</span>(libB_FOUND)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>cmake中有大量的约定性的变量，比如FindlibB.cmake这个文件，Find就是标准写法。比如<code>libB_INCLUDE_DIR</code>、<code>libB_LIBRARY</code>、<code>libB_FOUND</code>这些都是固定下发，可以看下 <a href="https://cmake.org/cmake/help/v3.0/manual/cmake-developer.7.html#find-modules" target="_blank" rel="noopener">Find Modules</a> 这部分。</p>
+</li>
+<li><p>cmake语言本身很接近编程语言，因此也有一些类型判断的内容，可以参考 <a href="https://cmake.org/cmake/help/latest/command/if.html" target="_blank" rel="noopener">if</a> 的用法这块。</p>
+</li>
+<li><p>参考</p>
+<ul>
+<li><a href="https://cmake.org/cmake/help/latest/search.html?q=" target="_blank" rel="noopener">CMake API搜索</a></li>
+<li><a href="https://cmake.org/cmake/help/latest/guide/tutorial/index.html" target="_blank" rel="noopener">CMake tutorial</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/CPP/">CPP</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/">
+                <span class="level-item">MacOS部署Jenkins，打包unity</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/avatar.png" alt="蔡华">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        蔡华
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        游戏开发者
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Xi&#39;an China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        119
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        14
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/klkucan" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/klkucan">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/杂记/">
+            <span class="level-start">
+                <span class="level-item">杂记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/游戏开发/">
+            <span class="level-start">
+                <span class="level-item">游戏开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">67</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/移动开发/">
+            <span class="level-start">
+                <span class="level-item">移动开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/编程语言/">
+            <span class="level-start">
+                <span class="level-item">编程语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">28</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/计算机基础/">
+            <span class="level-start">
+                <span class="level-item">计算机基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件设计/">
+            <span class="level-start">
+                <span class="level-item">软件设计</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
+                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
+                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">27</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
+                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
+                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
+                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
+                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
+                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">27</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="cmake学习笔记" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 蔡华&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

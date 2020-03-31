@@ -152,6 +152,118 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/03/31/2020-3-31-cmake学习笔记/">cmake学习笔记</a>
+            
+        </h1>
+        <div class="content">
+            <p>看了B站一个cmake教程，部分笔记内容来自<a href="https://github.com/szza/LearningNote/blob/master/Tools/1.%20CMake.md" target="_blank" rel="noopener">别人</a></p>
+<h3 id="CMake中的变量"><a href="#CMake中的变量" class="headerlink" title="CMake中的变量"></a><code>CMake</code>中的变量</h3><ul>
+<li><p>变量和含义  </p>
+<table>
+<thead>
+<tr>
+<th align="center">常用变量</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong><em><code>PROJECT_NAME</code></em></strong></td>
+<td align="center">工程名变量</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>PROJECT_SOURCE_DIR</code></em></strong></td>
+<td align="center">顶层的项目目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>PROJECT_BINARY_DIR</code></em></strong></td>
+<td align="center">使用<code>cmake</code>的路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_ROOT</code></em></strong></td>
+<td align="center"><code>CMAKE</code>安装的根目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_BUILD_TYPE</code></em></strong></td>
+<td align="center">编译类型：<code>empty</code>，<code>Debug</code>，<code>Release</code>…</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_SOURCE_DIR</code></em></strong></td>
+<td align="center">顶层的<code>CMakeLists.txt</code>所在路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_BINARY_DIR</code></em></strong></td>
+<td align="center">顶层的<code>CMakeLists.txt</code>的<code>build</code>所在目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_&lt;LANG&gt;_COMPILER</code></em></strong></td>
+<td align="center">设定某个语言<code>LANG</code>的编译器，比如<code>g--</code></td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_INSTALL_PREFIX</code></em></strong></td>
+<td align="center">指令<code>install</code>的路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_CURRENT_SOURCE_DIR</code></em></strong></td>
+<td align="center">当前<code>CMakeLists.txt</code>所在路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>CMAKE_CURRENT_BINARY_DIR</code></em></strong></td>
+<td align="center">当前<code>CMakeLists.txt</code>的<code>build</code>所在目录</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>EXECUTABLE_OUTPUT_PATH</code></em></strong></td>
+<td align="center">可执行文件输出路径</td>
+</tr>
+<tr>
+<td align="center"><strong><em><code>LIBRARY_OUTPUT_PATH</code></em></strong></td>
+<td align="center">库输出路径</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2020/03/31/2020-3-31-cmake学习笔记/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time>
                 
                 <div class="level-item">
@@ -634,66 +746,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-04-27T08:48:00.000Z">2019-04-27</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/">JVM学习笔记4：方法调用</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写"></a>重载与重写</h2><ul>
-<li><p>重载的方法在编译阶段完成识别，调用是根据参数<strong>声明类型</strong>选择重载方法。选择分三个阶段：</p>
-<ul>
-<li>在不考虑对基本类型自动装拆箱（auto-boxing，auto-unboxing），以及可变长参数的情况下选取重载方法；</li>
-<li>如果在第 1 个阶段中没有找到适配的方法，那么在允许自动装拆箱，但不允许可变长参数的情况下选取重载方法；</li>
-<li>如果在第 2 个阶段中没有找到适配的方法，那么在允许自动装拆箱以及可变长参数的情况下选取重载方法。 </li>
-</ul>
-</li>
-<li><p>如果 Java 编译器在同一个阶段中找到了多个适配的方法，那么它会在其中选择一个最为贴切的，而决定贴切程度的一个关键就是形式参数类型的继承关系。</p>
-</li>
-<li><p>下面代码中第一次调用会是函数2，因为null可以匹配object和string，但是因为string是Object的子类，所以编译器认为string合适。</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -758,7 +810,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        118
+                        119
                     </p>
                 </div>
             </div>
@@ -846,7 +898,7 @@
                 <span class="level-item">编程语言</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">27</span>
+                <span class="level-item tag">28</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/计算机基础/">
@@ -876,7 +928,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 17px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 16px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -890,6 +942,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
+                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -943,19 +1008,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
-                    <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -967,6 +1019,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/02/">
@@ -1365,7 +1428,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
-                        <span class="tag is-grey">7</span>
+                        <span class="tag is-grey">8</span>
                     </a>
                 </div>
                 
@@ -1480,6 +1543,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
+                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
                     <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
                     <p class="is-size-7 is-uppercase">
@@ -1528,19 +1604,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time></div>
-                    <a href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/" class="has-link-black-ter is-size-6">JVM学习笔记10：内存模型</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1552,6 +1615,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/02/">
@@ -1950,7 +2024,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/CPP/">
                         <span class="tag">CPP</span>
-                        <span class="tag is-grey">7</span>
+                        <span class="tag is-grey">8</span>
                     </a>
                 </div>
                 
