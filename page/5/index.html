@@ -141,6 +141,275 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-01-16T16:01:05.000Z">2018-01-17</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/软件设计/">软件设计</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/01/17/2018-1-17-七周七并发模型：线程与锁/">七周七并发模型：线程与锁</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="为何使用多线程和锁"><a href="#为何使用多线程和锁" class="headerlink" title="为何使用多线程和锁"></a>为何使用多线程和锁</h2><ul>
+<li>为了能够并行的计算一些东西</li>
+<li>因为在多线程下，如果要修改同一个对象是值会出现竞态条件（即代码行为取决于各操作的时序）。它的表现可能是值的不对，甚至某些时候这个值的前半段是一个线程修改的，后半段是另一个线程修改的。因为这个对象可能不是原子的。</li>
+</ul>
+<h2 id="锁，或者说是并行控制的进化"><a href="#锁，或者说是并行控制的进化" class="headerlink" title="锁，或者说是并行控制的进化"></a>锁，或者说是并行控制的进化</h2><h3 id="第一阶段：锁与同步方法"><a href="#第一阶段：锁与同步方法" class="headerlink" title="第一阶段：锁与同步方法"></a>第一阶段：锁与同步方法</h3><h4 id="基础的锁"><a href="#基础的锁" class="headerlink" title="基础的锁"></a>基础的锁</h4><ul>
+<li>从代码层面看就是一个lock函数</li>
+</ul>
+<h4 id="同步方法"><a href="#同步方法" class="headerlink" title="同步方法"></a>同步方法</h4><ul>
+<li>在java或者C#中可以通过attribute来让方法同步执行，但是这个的效率是很低的。</li>
+<li>同时还引出了另外一个问题，当同时使用多个锁的时候不但效率会进一步降低，而且容易产生死锁。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/01/17/2018-1-17-七周七并发模型：线程与锁/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-01-16T15:49:53.000Z">2018-01-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/01/16/2018-1-16-侯捷C-学习笔记：对象的创建和销毁/">侯捷C++学习笔记：对象的创建和销毁</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>本文会记录CPP中对象的创建和销毁的过程中的细节</li>
+</ul>
+<h2 id="big-three函数"><a href="#big-three函数" class="headerlink" title="big three函数"></a>big three函数</h2><ul>
+<li>拷贝构造函数</li>
+<li>拷贝赋值函数</li>
+<li>析构函数</li>
+</ul>
+<h4 id="用途：这三个函数是在类中包含了指针的情况下使用的。"><a href="#用途：这三个函数是在类中包含了指针的情况下使用的。" class="headerlink" title="用途：这三个函数是在类中包含了指针的情况下使用的。"></a>用途：这三个函数是在类中包含了指针的情况下使用的。</h4><ul>
+<li>当有一个成员变量是一个指针时，就有了给这个变量赋值的问题。如果这个赋值需要深拷贝，那么就需要申请内存空间。这样在析构函数中就需要对指针进行delete。</li>
+<li>这个成员变量可以是在对象构造函数中被赋值的，比如是个拷贝构造函数。也可以是在拷贝赋值函数中被赋值的。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/01/16/2018-1-16-侯捷C-学习笔记：对象的创建和销毁/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-01-09T15:48:28.000Z">2018-01-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/01/09/2018-1-9-侯捷C-学习笔记：Object-Model/">侯捷C++学习笔记：Object Model</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="composition-amp-delegate-amp-inherit-的构造和析构顺序"><a href="#composition-amp-delegate-amp-inherit-的构造和析构顺序" class="headerlink" title="composition &amp; delegate &amp; inherit 的构造和析构顺序"></a>composition &amp; delegate &amp; inherit 的构造和析构顺序</h4>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/01/09/2018-1-9-侯捷C-学习笔记：Object-Model/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-01-07T15:45:30.000Z">2018-01-07</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/01/07/2018-1-7-侯捷C-学习笔记：Reference/">侯捷C++学习笔记：Reference</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="本质"><a href="#本质" class="headerlink" title="本质"></a>本质</h4><ul>
+<li>通过指针实现，所以本质就是指针</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/01/07/2018-1-7-侯捷C-学习笔记：Reference/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-01-02T15:45:30.000Z">2018-01-02</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/01/02/2018-1-2-侯捷C-学习笔记：偏特化/">侯捷C++学习笔记：偏特化</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="什么是偏特化"><a href="#什么是偏特化" class="headerlink" title="什么是偏特化"></a>什么是偏特化</h4><ul>
+<li>泛化（泛型）的反义</li>
+<li>分为个数的偏特化和范围的偏特化</li>
+</ul>
+<h4 id="数量偏特化"><a href="#数量偏特化" class="headerlink" title="数量偏特化"></a>数量偏特化</h4><ul>
+<li>举个例子，如果有如下class的定义，第一个class的就是泛型的，而第二个class，也是两个参数，但是第一个参数是个确定类型的，第二个是泛型的。这样就叫个人的偏特化。这固定类型的位置必须是从左至右的，不能跳着写。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/01/02/2018-1-2-侯捷C-学习笔记：偏特化/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2018-01-02T15:44:24.000Z">2018-01-02</time>
                 
                 <div class="level-item">
@@ -391,269 +660,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-12-09T14:35:34.000Z">2017-12-09</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/12/09/2017-12-9-Unity特效学习：动画/">Unity特效学习：动画</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="Unity动画创建"><a href="#Unity动画创建" class="headerlink" title="Unity动画创建"></a>Unity动画创建</h4><ul>
-<li>选中物体后按Ctrl+6可以开启动画编辑器。<br><img src="http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NDQ4M1Z2TlZ0TFU1b1VpaHZqb0dFR0F1TlNaeDhDSFRnPT0.jpg?imageView&thumbnail=1680x0&quality=96&stripmeta=0&type=jpg" alt="image"></li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/12/09/2017-12-9-Unity特效学习：动画/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-12-09T06:46:13.000Z">2017-12-09</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/12/09/2017-12-9-Unity特效学习：粒子/">Unity特效学习：粒子</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
-<li>只记录一些特别的参数</li>
-<li>Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。</li>
-<li>StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。</li>
-<li>Color：<ul>
-<li>Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。</li>
-<li>Random：粒子颜色从两个值随机取</li>
-<li>还有梯度随机</li>
-<li>纯粹随机：这个可以自定义N个颜色区间。</li>
-<li>梯度编辑器很强大。注意：点击颜色条上沿添加的节点是调整alpha的，下沿是调整颜色的。藏的好深啊。</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/12/09/2017-12-9-Unity特效学习：粒子/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-12-03T14:59:12.000Z">2017-12-03</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/12/03/2017-12-3-每天一点UWA：第十八周/">每天一点UWA：第十八周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always-include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5-3-4f1。"><a href="#最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always-include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5-3-4f1。" class="headerlink" title="最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。"></a>最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。</h4><ul>
-<li>首先，只要资源在工程里并且需要用到它，就会被打包进AssetBundle。</li>
-<li>然后Always include里built-in Shader不会被打包进AssetBundle，这是一个特例。这个特例仅限于没有放到工程里的部分，有些项目会自己下载built-in Shader放到工程里，这样的Shader和自己写的没有区别，也会被打包。</li>
-<li>最后，你遇到的问题是正常现象，需要你们通过资源管理的策略避免掉。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/12/03/2017-12-3-每天一点UWA：第十八周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-12-02T14:53:34.000Z">2017-12-02</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/12/02/2017-12-2-每天一点UWA：第十七周/">每天一点UWA：第十七周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。"><a href="#当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。" class="headerlink" title="当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。"></a>当一个Texture被一个material和sprite都引用的时候，将三者分别打包，出现texture内存重复问题。</h4><ul>
-<li><a href="https://blog.uwa4d.com/archives/TechSharing_66.html" target="_blank" rel="noopener">原文</a>较长，总结一下就是：如果一个贴图一方面被当成Sprite使用，另一方面被当成Texture使用(譬如RawImage或者Material)，就会断开引用产生多份。目前解决办法是保证用Sprite的Prefab及Material打包在一个AssetBundle。</li>
-<li>这是一个重要的问题，而且这个问题也是看unity版本的。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/12/02/2017-12-2-每天一点UWA：第十七周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-29T16:54:00.000Z">2017-11-30</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/30/Gamma校正与线性空间/">Gamma校正与线性空间</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><ul>
-<li>近期看了<a href="https://blog.uwa4d.com/archives/1882.html" target="_blank" rel="noopener">一篇文章</a>，主要讲了如何处理lightmap在Android平台下下偏暗的问题。引发了对gamma校正的好奇。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/30/Gamma校正与线性空间/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -678,7 +684,7 @@
             
             <li><span class="pagination-ellipsis has-text-black-ter">&hellip;</span></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/12/">12</a></li>
+            <li><a class="pagination-link has-text-black-ter" href="/page/13/">13</a></li>
             
         </ul>
     </nav>
@@ -726,7 +732,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        119
+                        124
                     </p>
                 </div>
             </div>
@@ -746,7 +752,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        14
+                        15
                     </p>
                 </div>
             </div>
@@ -844,7 +850,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -863,10 +869,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
-                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -876,10 +882,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
-                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
+                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        
                     </p>
                 </div>
             </div>
@@ -889,10 +895,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
-                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
+                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -902,10 +908,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-08T12:48:00.000Z">2020-09-08</time></div>
+                    <a href="/2020/09/08/2020-9-8-OpenGL学习笔记-第二周：模型的显示/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：模型的显示</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -915,10 +921,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
-                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
+                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -935,6 +941,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/03/">
@@ -1359,6 +1376,13 @@
                     <a class="tags has-addons" href="/tags/Lua/">
                         <span class="tag">Lua</span>
                         <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">5</span>
                     </a>
                 </div>
                 
@@ -1459,10 +1483,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
-                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1472,10 +1496,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
-                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
+                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1485,10 +1509,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
-                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
+                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1498,10 +1522,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-08T12:48:00.000Z">2020-09-08</time></div>
+                    <a href="/2020/09/08/2020-9-8-OpenGL学习笔记-第二周：模型的显示/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：模型的显示</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1511,10 +1535,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
-                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
+                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1531,6 +1555,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/03/">
@@ -1955,6 +1990,13 @@
                     <a class="tags has-addons" href="/tags/Lua/">
                         <span class="tag">Lua</span>
                         <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">5</span>
                     </a>
                 </div>
                 

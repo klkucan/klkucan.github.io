@@ -141,6 +141,264 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-11-12T06:15:50.000Z">2016-11-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/11/12/向量夹角计算/">向量夹角计算</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="向量夹角"><a href="#向量夹角" class="headerlink" title="向量夹角"></a>向量夹角</h4><figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 基于点积计算，</span><br><span class="line">// a.b = ||a|| * ||b|| * sin(θ) </span><br><span class="line">// =&gt; θ = arccos(a·b / (||a|| * ||b||))</span><br><span class="line">// =&gt; θ = arccos(a·b) //当a和b按照单位向量算时</span><br><span class="line">float angle = Mathf.Acos(Vector3.Dot(a.normalized, b.normalized)) * Mathf.Rad2Deg;</span><br><span class="line"></span><br><span class="line">// 基于叉积计算，</span><br><span class="line">// ||a × b|| = ||a|| ||b|| sinθ             </span><br><span class="line">// =&gt; θ = arcsin(||a × b|| / (||a|| * ||b||))</span><br><span class="line">// =&gt; θ = arcsin(||a × b||) //当a和b按照单位向量算时</span><br><span class="line">// 下面公式中有个Distance的计算是因为||a × b||是有长度的</span><br><span class="line">angle = Mathf.Asin(Vector3.Distance(Vector3.zero, Vector3.Cross(a.normalized, b.normalized))) * Mathf.Rad2Deg;</span><br><span class="line"></span><br><span class="line">// 最简单计算方式</span><br><span class="line">Vector3.Angle(a, b)</span><br></pre></td></tr></table></figure>
+
+
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-12T13:21:12.000Z">2016-10-12</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/12/Deepoon的相关设置以及如何玩steam游戏/">Deepoon的相关设置以及如何玩steam游戏</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><ul>
+<li>保证Deepoon助手、显卡驱动是最新的。</li>
+<li>安装Deepoon platform sdk。在platform sdk的安装过程中需要阅读其自带的文档，sdk path中不要带中文。</li>
+</ul>
+<h3 id="DpnnGetLastError的处理"><a href="#DpnnGetLastError的处理" class="headerlink" title="DpnnGetLastError的处理"></a>DpnnGetLastError的处理</h3><ul>
+<li>目前发现在安装了steamVR的情况下会出现DpnuGetLastError错误，在启动状态下出现错误后，退出steamVR。然后重启游戏。</li>
+<li>在setting→play中关闭VR support，这个东西在启动后会被steamVR开启（如果你的程序中用到了steamVR）。</li>
+<li>按照上述两部则应该不会出现DpnnGetLastError错误，并且只能通过头盔来看游戏内容。</li>
+</ul>
+<h3 id="玩steam"><a href="#玩steam" class="headerlink" title="玩steam"></a>玩steam</h3><ul>
+<li><p>在steam的安装目录下放置xxx\Steam\steamapps\common\SteamVR\drivers\deepoon。如果没有放置这个驱动可能导致steam下无法设置VR房间。设置完成后应该是<br><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161012092230578-1855749103.jpg" alt="image"></p>
+</li>
+<li><p>经过上面的设置就可以用大朋眼镜玩steam游戏了。</p>
+</li>
+</ul>
+<h3 id="开发相关"><a href="#开发相关" class="headerlink" title="开发相关"></a>开发相关</h3><ul>
+<li>目前发现如果用大朋眼镜可以玩steam，则在unity中是不需要使用DpnCameraRig的，而且也不需要开启大朋助手。</li>
+<li>从这些表现来看大朋应该用的是Oculus的底层。</li>
+</ul>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-09T15:47:35.000Z">2016-10-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/09/LOD初探/">LOD初探</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li>LOD全称是Level of Detail，也就是细节层级。</li>
+<li>为什么会产生这个技术？根据官方教程的解释是因为在一个很大的场景中，需要进一步考虑性能问题。LOD就是一个很好的解决性能问题的方案，它根据物体与摄像机的距离来展示这个物体不同的mesh，从而使得物体较远是使用面数比较少的mesh，而距离近的时候使用面数多的mesh。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/10/09/LOD初探/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-09T13:59:00.000Z">2016-10-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/09/VR开发环境搭建/">VR开发环境搭建</a>
+            
+        </h1>
+        <div class="content">
+            <ul>
+<li><p>unity3d的安装</p>
+</li>
+<li><p>目前使用的Deepoon<br>1.安装大朋助手。<br>2.如果提示require DpnPlatform_x64.dll，则在大朋官网下载platform的sdk，并找到对应的平台的文件夹安装，有个bat文件可以安装。</p>
+</li>
+<li><p>安装steam和steamVR。对于steamVR来说正常安装完会显示能识别头盔，但是可能提示未准备好，需要进行房间设置。</p>
+</li>
+</ul>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-10-03T05:18:23.000Z">2016-10-03</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/杂记/">杂记</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/10/03/github page爬坑指南/">Github Page爬坑指南</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="1-jekyll的使用"><a href="#1-jekyll的使用" class="headerlink" title="1.jekyll的使用"></a>1.jekyll的使用</h4><ul>
+<li><p>jekyll的核心命令就几个</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jekyll new blog // 选好文件夹位置</span><br><span class="line">jekyll build    // 在_site文件夹下生成网站内容</span><br><span class="line">jekyll serve    // 可以在本地生成一个服务查看生成网站的内容，IP:127.0.0.1:4000</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>模板，参考别人的模板进行了修改，<a href="https://github.com/Huxpro/huxpro.github.io" target="_blank" rel="noopener">地址</a>。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/10/03/github page爬坑指南/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2016-09-22T10:29:23.000Z">2016-09-22</time>
                 
                 <div class="level-item">
@@ -163,167 +421,6 @@
 
         </div>
         
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
-<li><p>创建plist文件及添加数值</p>
-<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
-</li>
-<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
-</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/03UI/">iOS学习笔记-03UI</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="3-UI"><a href="#3-UI" class="headerlink" title="3.UI"></a>3.UI</h2><ul>
-<li>iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。</li>
-</ul>
-<h4 id="3-1-手动编写UI"><a href="#3-1-手动编写UI" class="headerlink" title="3.1 手动编写UI"></a>3.1 手动编写UI</h4><ul>
-<li>个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。</li>
-<li>手动编写的核心在于创建UI对象，设置frame及各种属性。</li>
-<li>当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/03UI/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/05线程/">iOS学习笔记-05线程</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="5-线程"><a href="#5-线程" class="headerlink" title="5.线程"></a>5.线程</h2><h4 id="5-1-GCD"><a href="#5-1-GCD" class="headerlink" title="5.1 GCD"></a>5.1 GCD</h4><ul>
-<li>GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是<code>dispatch_async(queue, block);</code>参数中的queue可以通过<code>dispatch_queue_create</code>或者系统提供的标准dispatch queue。</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 生成一个serial dispatch queue</span><br><span class="line">dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);</span><br><span class="line">// 生成一个concurrent dispatch queue</span><br><span class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line">// 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量</span><br><span class="line">dispatch_release(serialQueue);</span><br><span class="line">dispatch_release(concurrentQueue);</span><br><span class="line"></span><br><span class="line">// 使用系统已经提供的方法来create queue</span><br><span class="line">dispatch_queue_t serialQueue2 = dispatch_get_main_queue();</span><br><span class="line">dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line"></span><br><span class="line">// 因此真正在代码中经常是这样写的</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in main thread&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in a concurrent thread&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/05线程/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
         
         
     </div>
@@ -413,158 +510,6 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/07必要知识/">iOS学习笔记-07必要知识</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="7-必要知识"><a href="#7-必要知识" class="headerlink" title="7.必要知识"></a>7.必要知识</h2><h4 id="7-1-APNS"><a href="#7-1-APNS" class="headerlink" title="7.1 APNS"></a>7.1 APNS</h4><ul>
-<li><p>目前在8.0以后的推送需要以下几个步骤：</p>
-<p>1.使用registerUserNotificationSettings: &amp; registerForRemoteNotifications方法</p>
- <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerForRemoteNotifications)]) &#123;</span><br><span class="line">     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil];</span><br><span class="line">     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings]; </span><br><span class="line">     [[UIApplication sharedApplication] registerForRemoteNotifications];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<p>  关于registerForRemoteNotifications方法有以下说明，它会需要实现两个delegate方法，并且方法能够被执行的条件是通过registerUserNotificationSettings:方法成功注册用户的notification，或者enabled for Background App Refresh。</p>
-<p>  // Calling this will result in either application:didRegisterForRemoteNotificationsWithDeviceToken: or application:didFailToRegisterForRemoteNotificationsWithError: to be called on the application delegate. Note: these callbacks will be made only if the application has successfully registered for user notifications with registerUserNotificationSettings:, or if it is enabled for Background App Refresh</p>
-<p> 2.实现delegate方法：每个APP都不同，就不写了。</p>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/07必要知识/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/08杂/">iOS学习笔记-08杂</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="8-杂"><a href="#8-杂" class="headerlink" title="8.杂"></a>8.杂</h2><h4 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h4><p>表达式，是由数字、算符、数字分组符号（括号）、自由变量和约束变量等以能求得数值的有意义排列方法所得的组合。如：算术表达式、逻辑表达式、关系表达式、赋值表达式、逗号表达式等等。</p>
-
-        </div>
-        
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2016/09/16/04内存管理/">iOS学习笔记-04内存管理</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="4-内存管理"><a href="#4-内存管理" class="headerlink" title="4.内存管理"></a>4.内存管理</h2><h4 id="4-1-手动管理"><a href="#4-1-手动管理" class="headerlink" title="4.1 手动管理"></a>4.1 手动管理</h4><ul>
-<li>自己生成的对象自己持有，可以调用<code>release</code>方法减少retain数量。</li>
-<li>非自己生成的对象也可以持有，通过调用<code>retain</code>方法可以持有对象，引用数+1。</li>
-<li>不再需要自己持有的对象要及时释放，注意类中的property要在<code>- (void)dealloc</code>方法中赋值nil，这样写相当于release了。</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)dealloc</span><br><span class="line">&#123;</span><br><span class="line">    self.arr = nil;</span><br><span class="line">    [super dealloc];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/04内存管理/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
                 <a class="has-link-black-ter" href="/2016/09/16/01基本语法/">iOS学习笔记-01基本语法</a>
             
         </h1>
@@ -597,6 +542,112 @@
 
 
 
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="6-数据处理"><a href="#6-数据处理" class="headerlink" title="6.数据处理"></a>6.数据处理</h2><h4 id="6-1-plsit"><a href="#6-1-plsit" class="headerlink" title="6.1 plsit"></a>6.1 plsit</h4><ul>
+<li><p>创建plist文件及添加数值</p>
+<p><img src="http://images2015.cnblogs.com/blog/23250/201610/23250-20161003182017364-1987540145.gif" alt></p>
+</li>
+<li><p>数据读取，注意因为plist创建的时候可以选择dictionary或者array，这个也决定了后面怎么去读取它。</p>
+</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">NSString* filePath = [[NSBundle mainBundle] pathForResource:@&quot;dict_data&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">if (!isEmpty(filePath)) &#123;</span><br><span class="line">    NSDictionary* dict = [NSDictionary dictionaryWithContentsOfFile:filePath];</span><br><span class="line">    NSLog(@&quot;%@&quot;, dict[@&quot;name&quot;]);</span><br><span class="line"></span><br><span class="line">    NSArray* arr = (NSArray*)dict[@&quot;favor&quot;];</span><br><span class="line">    [arr enumerateObjectsUsingBlock:^(id _Nonnull obj, NSUInteger idx, BOOL* _Nonnull stop) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, obj);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">NSString *filePath2 = [[NSBundle mainBundle] pathForResource:@&quot;arr_plist&quot; ofType:@&quot;plist&quot;];</span><br><span class="line">NSArray *arr2 = [NSArray arrayWithContentsOfFile:filePath2];</span><br><span class="line">NSLog(@&quot;%@&quot;, arr2);</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/06数据处理/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2016/09/16/05线程/">iOS学习笔记-05线程</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="5-线程"><a href="#5-线程" class="headerlink" title="5.线程"></a>5.线程</h2><h4 id="5-1-GCD"><a href="#5-1-GCD" class="headerlink" title="5.1 GCD"></a>5.1 GCD</h4><ul>
+<li>GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是<code>dispatch_async(queue, block);</code>参数中的queue可以通过<code>dispatch_queue_create</code>或者系统提供的标准dispatch queue。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 生成一个serial dispatch queue</span><br><span class="line">dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);</span><br><span class="line">// 生成一个concurrent dispatch queue</span><br><span class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line">// 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量</span><br><span class="line">dispatch_release(serialQueue);</span><br><span class="line">dispatch_release(concurrentQueue);</span><br><span class="line"></span><br><span class="line">// 使用系统已经提供的方法来create queue</span><br><span class="line">dispatch_queue_t serialQueue2 = dispatch_get_main_queue();</span><br><span class="line">dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line"></span><br><span class="line">// 因此真正在代码中经常是这样写的</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in main thread&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in a concurrent thread&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/05线程/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
 
     
 <div class="card card-transparent">
@@ -604,7 +655,7 @@
         <div class="pagination-previous">
             <a class="is-flex-grow has-text-black-ter" href="/page/11/">上一页</a>
         </div>
-        <div class="pagination-next is-invisible is-hidden-mobile">
+        <div class="pagination-next">
             <a class="is-flex-grow has-text-black-ter" href="/page/13/">下一页</a>
         </div>
         <ul class="pagination-list is-hidden-mobile">
@@ -616,6 +667,8 @@
             <li><a class="pagination-link has-text-black-ter" href="/page/11/">11</a></li>
             
             <li><a class="pagination-link is-current" href="/page/12/">12</a></li>
+            
+            <li><a class="pagination-link has-text-black-ter" href="/page/13/">13</a></li>
             
         </ul>
     </nav>
@@ -663,7 +716,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        119
+                        124
                     </p>
                 </div>
             </div>
@@ -683,7 +736,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        14
+                        15
                     </p>
                 </div>
             </div>
@@ -781,7 +834,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -800,10 +853,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
-                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -813,10 +866,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
-                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
+                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        
                     </p>
                 </div>
             </div>
@@ -826,10 +879,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
-                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
+                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -839,10 +892,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-08T12:48:00.000Z">2020-09-08</time></div>
+                    <a href="/2020/09/08/2020-9-8-OpenGL学习笔记-第二周：模型的显示/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：模型的显示</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -852,10 +905,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
-                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
+                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -872,6 +925,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/03/">
@@ -1296,6 +1360,13 @@
                     <a class="tags has-addons" href="/tags/Lua/">
                         <span class="tag">Lua</span>
                         <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">5</span>
                     </a>
                 </div>
                 
@@ -1396,10 +1467,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-03-31T12:43:00.000Z">2020-03-31</time></div>
-                    <a href="/2020/03/31/2020-3-31-cmake学习笔记/" class="has-link-black-ter is-size-6">cmake学习笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1409,10 +1480,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-02-27T07:13:00.000Z">2020-02-27</time></div>
-                    <a href="/2020/02/27/2020-2-27-MacOS部署Jenkins，打包unity/" class="has-link-black-ter is-size-6">MacOS部署Jenkins，打包unity</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
+                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1422,10 +1493,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-12-20T06:42:00.000Z">2019-12-20</time></div>
-                    <a href="/2019/12/20/maven私服的搭建与使用/" class="has-link-black-ter is-size-6">maven私服的搭建与使用</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
+                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1435,10 +1506,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-11-25T12:00:00.000Z">2019-11-25</time></div>
-                    <a href="/2019/11/25/Maven笔记/" class="has-link-black-ter is-size-6">Maven笔记</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-08T12:48:00.000Z">2020-09-08</time></div>
+                    <a href="/2020/09/08/2020-9-8-OpenGL学习笔记-第二周：模型的显示/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：模型的显示</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1448,10 +1519,10 @@
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time></div>
-                    <a href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/" class="has-link-black-ter is-size-6">JVM学习笔记11：synchronized的实现</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
+                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                        
                     </p>
                 </div>
             </div>
@@ -1468,6 +1539,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/03/">
@@ -1892,6 +1974,13 @@
                     <a class="tags has-addons" href="/tags/Lua/">
                         <span class="tag">Lua</span>
                         <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">5</span>
                     </a>
                 </div>
                 
