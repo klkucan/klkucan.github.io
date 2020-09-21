@@ -2,24 +2,24 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-<title>JVM学习笔记11：synchronized的实现 - 蔡华的博客</title>
+<title>OpenGL学习笔记 第三周：shader的使用 - 蔡华的博客</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="synchronized作用于代码块与函数 当声明 synchronized 代码块时，编译而成的字节码将包含 monitorenter 和 monitorexit 指令。这两种指令均会消耗操作数栈上的一个引用类型的元素（也就是 synchronized 关键字括号里的引用），作为所要加锁解锁的锁对象。  1234567891011121314151617181920212223242526272">
-<meta name="keywords" content="Java">
+    <meta name="description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
+<meta name="keywords" content="OpenGL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM学习笔记11：synchronized的实现">
-<meta property="og:url" content="https://caihua.tech/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/index.html">
+<meta property="og:title" content="OpenGL学习笔记 第三周：shader的使用">
+<meta property="og:url" content="https://caihua.tech/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/index.html">
 <meta property="og:site_name" content="蔡华的博客">
-<meta property="og:description" content="synchronized作用于代码块与函数 当声明 synchronized 代码块时，编译而成的字节码将包含 monitorenter 和 monitorexit 指令。这两种指令均会消耗操作数栈上的一个引用类型的元素（也就是 synchronized 关键字括号里的引用），作为所要加锁解锁的锁对象。  1234567891011121314151617181920212223242526272">
+<meta property="og:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://caihua.tech/images/og_image.png">
-<meta property="og:updated_time" content="2019-09-07T09:35:46.814Z">
+<meta property="og:updated_time" content="2020-09-21T09:25:31.308Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM学习笔记11：synchronized的实现">
-<meta name="twitter:description" content="synchronized作用于代码块与函数 当声明 synchronized 代码块时，编译而成的字节码将包含 monitorenter 和 monitorexit 指令。这两种指令均会消耗操作数栈上的一个引用类型的元素（也就是 synchronized 关键字括号里的引用），作为所要加锁解锁的锁对象。  1234567891011121314151617181920212223242526272">
+<meta name="twitter:title" content="OpenGL学习笔记 第三周：shader的使用">
+<meta name="twitter:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
 <meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
 
 
@@ -103,7 +103,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.png" alt="JVM学习笔记11：synchronized的实现" height="28">
+                <img src="/images/logo.png" alt="OpenGL学习笔记 第三周：shader的使用" height="28">
             
             </a>
         </div>
@@ -145,11 +145,7 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                </div>
+                <time class="level-item has-text-grey" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time>
                 
                 
                 
@@ -158,113 +154,102 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                JVM学习笔记11：synchronized的实现
+                OpenGL学习笔记 第三周：shader的使用
             
         </h1>
         <div class="content">
-            <h4 id="synchronized作用于代码块与函数"><a href="#synchronized作用于代码块与函数" class="headerlink" title="synchronized作用于代码块与函数"></a>synchronized作用于代码块与函数</h4><ul>
-<li>当声明 synchronized 代码块时，编译而成的字节码将包含 monitorenter 和 monitorexit 指令。这两种指令均会消耗操作数栈上的一个引用类型的元素（也就是 synchronized 关键字括号里的引用），作为所要加锁解锁的锁对象。</li>
+            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><ul>
+<li>一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。</li>
+<li>之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。</li>
+<li>学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。</li>
 </ul>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(Object lock)</span> </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">     lock.hashCode();</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="hljs-comment">// 上面的 Java 代码将编译为下面的字节码</span></span><br><span class="line"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(java.lang.Object)</span></span>;</span><br><span class="line">   Code:</span><br><span class="line">      <span class="hljs-number">0</span>: aload_1</span><br><span class="line">      <span class="hljs-number">1</span>: dup</span><br><span class="line">      <span class="hljs-number">2</span>: astore_2</span><br><span class="line">      <span class="hljs-number">3</span>: monitorenter</span><br><span class="line">      <span class="hljs-number">4</span>: aload_1</span><br><span class="line">      <span class="hljs-number">5</span>: invokevirtual java/lang/Object.hashCode:()I</span><br><span class="line">      <span class="hljs-number">8</span>: pop</span><br><span class="line">      <span class="hljs-number">9</span>: aload_2</span><br><span class="line">     <span class="hljs-number">10</span>: monitorexit</span><br><span class="line">     <span class="hljs-number">11</span>: goto          <span class="hljs-number">19</span></span><br><span class="line">     <span class="hljs-number">14</span>: astore_3</span><br><span class="line">     <span class="hljs-number">15</span>: aload_2</span><br><span class="line">     <span class="hljs-number">16</span>: monitorexit</span><br><span class="line">     <span class="hljs-number">17</span>: aload_3</span><br><span class="line">     <span class="hljs-number">18</span>: athrow</span><br><span class="line">     <span class="hljs-number">19</span>: <span class="hljs-keyword">return</span></span><br><span class="line">   Exception table:</span><br><span class="line">      from    to  target type</span><br><span class="line">          <span class="hljs-number">4</span>    <span class="hljs-number">11</span>    <span class="hljs-number">14</span>   any</span><br><span class="line">         <span class="hljs-number">14</span>    <span class="hljs-number">17</span>    <span class="hljs-number">14</span>   any</span><br></pre></td></tr></table></figure>
+<h4 id="编写shader"><a href="#编写shader" class="headerlink" title="编写shader"></a>编写shader</h4><ul>
+<li>这两个shader更符合在“GPU运行的程序”的含义。Unity shader的写法隐藏了很多的细节，但是功能更加强大。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">attribute vec4 position;</span><br><span class="line">attribute vec4 color;</span><br><span class="line">attribute vec2 texcoord;</span><br><span class="line">attribute vec4 normal;</span><br><span class="line"></span><br><span class="line">uniform mat4 ModelMatrix;</span><br><span class="line">uniform mat4 ViewMatrix;</span><br><span class="line">uniform mat4 ProjectionMatrix;</span><br><span class="line">uniform mat4 IT_ModelMatrix; // 模型空间到世界空间的转置矩阵，等同于Unity中的UnityObjectToWorldNormal</span><br><span class="line"></span><br><span class="line">varying vec4 V_Color;</span><br><span class="line">varying vec2 V_Texcoord;</span><br><span class="line">varying vec4 V_Normal;</span><br><span class="line">varying vec4 V_WorldPos;</span><br><span class="line"></span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	V_Normal = IT_ModelMatrix*normal;</span><br><span class="line">	V_Texcoord = texcoord;</span><br><span class="line">	V_WorldPos = ModelMatrix*position;</span><br><span class="line">	V_Color = color;</span><br><span class="line">	gl_Position=ProjectionMatrix*ViewMatrix*ModelMatrix*position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<a id="more"></a>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">#ifdef GL_ES</span><br><span class="line">precision mediump float; //opengl es中需要定义浮点精度，否则可能运行不了</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">uniform sampler2D U_Texture;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightPos;        // 光源位置，W=0时就是平行光</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightAmbient;    // 光的环境光分量</span><br><span class="line">uniform vec4 U_AmbientMaterial; // 物体材质对环境光的反射系数</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightDiffuse;</span><br><span class="line">uniform vec4 U_DiffuseMaterial;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightSpecular;</span><br><span class="line">uniform vec4 U_SpecularMaterial;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_CameraPos;</span><br><span class="line">uniform vec4 U_LightOpt;</span><br><span class="line"></span><br><span class="line">varying vec4 V_Color;</span><br><span class="line">varying vec2 V_Texcoord;</span><br><span class="line">varying vec4 V_Normal;</span><br><span class="line">varying vec4 V_WorldPos;</span><br><span class="line"></span><br><span class="line">vec4 GetPointLight()</span><br><span class="line">&#123;</span><br><span class="line">	float distance=0.0;</span><br><span class="line">	float constantFactor=1.0;</span><br><span class="line">	float linearFactor=0.0;</span><br><span class="line">	float quadricFactor=0.0;</span><br><span class="line">	vec4 ambientColor=vec4(1.0,1.0,1.0,1.0)*vec4(0.1,0.1,0.1,1.0);</span><br><span class="line">	vec3 L=vec3(0.0,1.0,0.0)-V_WorldPos.xyz;</span><br><span class="line">	distance=length(L);</span><br><span class="line">	float attenuation=1.0/(constantFactor+linearFactor*distance+quadricFactor*quadricFactor*distance);</span><br><span class="line">	L=normalize(L);</span><br><span class="line">	vec3 n=normalize(V_Normal.xyz);</span><br><span class="line">	float diffuseIntensity=max(0.0,dot(L,n));</span><br><span class="line">	vec4 diffuseColor=vec4(1.0,1.0,1.0,1.0)*vec4(0.1,0.4,0.6,1.0)*diffuseIntensity*attenuation;</span><br><span class="line">	return ambientColor+diffuseColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 接受的是vertex shader中生成的三角面，然后计算三角面上的像素的值。</span><br><span class="line">// GPU中并行计算，并行的是计算像素这个事情</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	/*  unity shader的写法</span><br><span class="line">	fixed4 frag(v2f i) : SV_Target &#123;</span><br><span class="line">	// Get ambient term</span><br><span class="line">	fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line">	fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">	fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"></span><br><span class="line">	// Compute diffuse term</span><br><span class="line">	fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));</span><br><span class="line"></span><br><span class="line">	// Get the reflect direction in world space</span><br><span class="line">	fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));</span><br><span class="line">	// Get the view direction in world space</span><br><span class="line">	fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);</span><br><span class="line">	// Compute specular term</span><br><span class="line">	fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);</span><br><span class="line"></span><br><span class="line">	return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line">	&#125;*/</span><br><span class="line"></span><br><span class="line">	vec4 ambientColor = U_LightAmbient * U_AmbientMaterial;</span><br><span class="line">	</span><br><span class="line">	vec3 lightPos = U_LightPos.xyz;</span><br><span class="line">	vec3 L = lightPos;</span><br><span class="line">	// 这里直接对U_LightPos.xyz对了归一化</span><br><span class="line">	L = normalize(L);</span><br><span class="line"></span><br><span class="line">	vec3 n = normalize(V_Normal.xyz);</span><br><span class="line"></span><br><span class="line">	float diffuseIntensity = max(0.0, dot(L,n));</span><br><span class="line">	vec4 diffuseColor = U_LightDiffuse*U_DiffuseMaterial*diffuseIntensity;</span><br><span class="line"></span><br><span class="line">	vec4 specularColor = vec4(0.0,0.0,0.0,0.0);</span><br><span class="line">	if(diffuseIntensity!=0)</span><br><span class="line">	&#123;</span><br><span class="line">		vec3 reflectDir = normalize(reflect(-L,n));</span><br><span class="line">		vec3 viewDir = normalize(U_CameraPos.xyz - V_WorldPos.xyz);</span><br><span class="line">		specularColor = U_LightSpecular*U_SpecularMaterial*pow(max(0.0, dot(viewDir, reflectDir)), U_LightOpt.x);</span><br><span class="line">	&#125;</span><br><span class="line">	if(U_LightOpt.y==1.0)&#123;</span><br><span class="line">		gl_FragColor=(ambientColor+diffuseColor)*texture2D(U_Texture,V_Texcoord.xy)+specularColor;</span><br><span class="line">	&#125;else if(U_LightOpt.z==1.0)&#123;</span><br><span class="line">		gl_FragColor=(ambientColor+diffuseColor+GetPointLight())*texture2D(U_Texture,V_Texcoord.xy);</span><br><span class="line">	&#125;else if(U_LightOpt.w==1.0)&#123;</span><br><span class="line">		gl_FragColor=ambientColor+diffuseColor+specularColor;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>当用 synchronized 标记方法时，会看到字节码中方法的访问标记包括 ACC_SYNCHRONIZED。该标记表示在进入该方法时，Java 虚拟机需要进行 monitorenter 操作。而在退出该方法时，不管是正常返回，还是向调用者抛异常，Java 虚拟机均需要进行 monitorexit 操作。</li>
+<li>公式的几何意义</li>
 </ul>
-<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(Object lock)</span> </span>&#123;</span><br><span class="line">    lock.hashCode();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-comment">// 上面的 Java 代码将编译为下面的字节码</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">synchronized</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(java.lang.Object)</span></span>;</span><br><span class="line">    descriptor: (Ljava/lang/Object;)V</span><br><span class="line">    flags: (<span class="hljs-number">0x0021</span>) ACC_PUBLIC, ACC_SYNCHRONIZED</span><br><span class="line">    Code:</span><br><span class="line">      stack=<span class="hljs-number">1</span>, locals=<span class="hljs-number">2</span>, args_size=<span class="hljs-number">2</span></span><br><span class="line">         <span class="hljs-number">0</span>: aload_1</span><br><span class="line">         <span class="hljs-number">1</span>: invokevirtual java/lang/Object.hashCode:()I</span><br><span class="line">         <span class="hljs-number">4</span>: pop</span><br><span class="line">         <span class="hljs-number">5</span>: <span class="hljs-keyword">return</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://note.youdao.com/yws/res/32764/0F542835D53C46C484FE376B0705F6A2" alt="image"></p>
+<h5 id="uniform"><a href="#uniform" class="headerlink" title="uniform"></a>uniform</h5><ul>
+<li><p>uniform变量在vertex和fragment两者之间声明方式完全一样，则它可以在vertex和fragment共享使用。（相当于一个被vertex和fragment shader共享的全局变量）</p>
+</li>
+<li><p>uniform变量一般用来表示：变换矩阵，材质，光照参数和颜色等信息。以下是例子：</p>
+</li>
+</ul>
+<h5 id="attribute"><a href="#attribute" class="headerlink" title="attribute"></a>attribute</h5><ul>
+<li><p>attribute变量是只能在vertex shader中使用的变量。（它不能在fragment shader中声明attribute变量，也不能被fragment shader中使用）</p>
+</li>
+<li><p>一般用attribute变量来表示一些顶点的数据，如：顶点坐标，法线，纹理坐标，顶点颜色等。</p>
+</li>
+<li><p>程序中，一般用函数glBindAttribLocation（）来绑定每个attribute变量的位置，然后用函数glVertexAttribPointer（）为每个attribute变量赋值。</p>
+</li>
+</ul>
+<h5 id="varying变量"><a href="#varying变量" class="headerlink" title="varying变量"></a>varying变量</h5><ul>
+<li>varying变量是vertex和fragment shader之间做数据传递用的。一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值。因此varying变量在vertex和fragment </li>
+<li>shader二者之间的声明必须是一致的。application不能使用此变量。</li>
+</ul>
+<h4 id="使用OpenGL编译shader"><a href="#使用OpenGL编译shader" class="headerlink" title="使用OpenGL编译shader"></a>使用OpenGL编译shader</h4><ul>
+<li>创建shader对象</li>
+<li>将shader代码赋值给shader对象</li>
+<li>编译</li>
+<li>错误处理</li>
+</ul>
+<figure class="highlight cpp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function">GLuint <span class="hljs-title">CompileShader</span><span class="hljs-params">(GLenum shaderType, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* shaderCode)</span></span></span><br><span class="line"><span class="hljs-function"></span>&#123;</span><br><span class="line">	GLuint shader = glCreateShader(shaderType);</span><br><span class="line">	<span class="hljs-comment">// GLuint shader, GLsizei count, const GLchar *const* string, const GLint* length</span></span><br><span class="line">	<span class="hljs-comment">// shader ，      有几句代码，    代码段，                       代码段长度，如果是多久代码的话，这里是一个长度数组</span></span><br><span class="line">	glShaderSource(shader, <span class="hljs-number">1</span>, &amp;shaderCode, <span class="hljs-literal">nullptr</span>);</span><br><span class="line">	<span class="hljs-comment">// 编译</span></span><br><span class="line">	glCompileShader(shader);</span><br><span class="line">	<span class="hljs-comment">// 检查编译结果</span></span><br><span class="line">	GLint compileResult = GL_TRUE;</span><br><span class="line">	<span class="hljs-comment">// 获取编译结果</span></span><br><span class="line">	glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;compileResult);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> (compileResult == GL_FALSE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="hljs-keyword">char</span> szLog[<span class="hljs-number">1024</span>] = &#123; <span class="hljs-number">0</span> &#125;;</span><br><span class="line">		GLsizei logLen = <span class="hljs-number">0</span>;</span><br><span class="line">		<span class="hljs-comment">// 第二个是错误日志的缓冲区有多大，第三个参数实际写的log的长度</span></span><br><span class="line">		glGetShaderInfoLog(shader, <span class="hljs-number">1024</span>, &amp;logLen, szLog);</span><br><span class="line">		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"Compile shader error : %s \n, shader code : \n%s\n"</span>, szLog, shaderCode);</span><br><span class="line">		glDeleteShader(shader);</span><br><span class="line">		shader = <span class="hljs-number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-keyword">return</span> shader;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="monitorenter-和-monitorexit"><a href="#monitorenter-和-monitorexit" class="headerlink" title="monitorenter 和 monitorexit"></a>monitorenter 和 monitorexit</h4><ul>
-<li>这里 monitorenter 和 monitorexit 操作所对应的锁对象是隐式的。对于实例方法来说，这两个操作对应的锁对象是 this；对于静态方法来说，这两个操作对应的锁对象则是所在类的 Class 实例。</li>
-<li><strong>关于 monitorenter 和 monitorexit 的作用，我们可以抽象地理解为每个锁对象拥有一个锁计数器和一个指向持有该锁的线程的指针。</strong></li>
-</ul>
-<blockquote>
-<p>关于 monitorenter 和 monitorexit 的作用，我们可以抽象地理解为每个锁对象拥有一个锁计数器和一个指向持有该锁的线程的指针。</p>
-</blockquote>
-<blockquote>
-<p>当执行 monitorenter 时，如果目标锁对象的计数器为 0，那么说明它没有被其他线程所持有。在这个情况下，Java 虚拟机会将该锁对象的持有线程设置为当前线程，并且将其计数器加 1。</p>
-</blockquote>
-<blockquote>
-<p>在目标锁对象的计数器不为 0 的情况下，如果锁对象的持有线程是当前线程，那么 Java 虚拟机可以将其计数器加 1，否则需要等待，直至持有线程释放该锁。</p>
-</blockquote>
-<blockquote>
-<p>当执行 monitorexit 时，Java 虚拟机则需将锁对象的计数器减 1。当计数器减为 0 时，那便代表该锁已经被释放掉了。</p>
-</blockquote>
-<blockquote>
-<p>之所以采用这种计数器的方式，是为了允许同一个线程重复获取同一把锁。举个例子，如果一个 Java 类中拥有多个 synchronized 方法，那么这些方法之间的相互调用，不管是直接的还是间接的，都会涉及对同一把锁的重复加锁操作。因此，我们需要设计这么一个可重入的特性，来避免编程里的隐式约束。</p>
-</blockquote>
-<h2 id="HotSpot-虚拟机中具体的锁实现"><a href="#HotSpot-虚拟机中具体的锁实现" class="headerlink" title="HotSpot 虚拟机中具体的锁实现"></a>HotSpot 虚拟机中具体的锁实现</h2><h4 id="重量级锁"><a href="#重量级锁" class="headerlink" title="重量级锁"></a>重量级锁</h4><ul>
-<li>重量级锁是 Java 虚拟机中最为基础的锁实现。在这种状态下，Java 虚拟机会阻塞加锁失败的线程，并且在目标锁被释放的时候，唤醒这些线程。</li>
-<li>Java 线程的阻塞以及唤醒，都是依靠操作系统来完成的。</li>
-<li>为了尽量避免昂贵的线程阻塞、唤醒操作，Java 虚拟机会在线程进入阻塞状态之前，以及被唤醒后竞争不到锁的情况下，进入自旋状态，在处理器上空跑并且轮询锁是否被释放。如果此时锁恰好被释放了，那么当前线程便无须进入阻塞状态，而是直接获得这把锁。</li>
-<li>与线程阻塞相比，自旋状态可能会浪费大量的处理器资源。这是因为当前线程仍处于运行状况，只不过跑的是无用指令。它期望在运行无用指令的过程中，锁能够被释放出来。</li>
-<li>自旋状态还带来另外一个副作用，那便是不公平的锁机制。处于阻塞状态的线程，并没有办法立刻竞争被释放的锁。然而，处于自旋状态的线程，则很有可能优先获得这把锁。</li>
-</ul>
-<h4 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h4><ul>
-<li><p>多个线程在不同的时间段请求同一把锁，也就是说没有锁竞争。针对这种情形，Java 虚拟机采用了轻量级锁，来避免重量级锁的阻塞以及唤醒。</p>
-</li>
-<li><p><a href="https://wiki.openjdk.java.net/display/HotSpot/Synchronization" target="_blank" rel="noopener">下图</a>是openjdk wiki中的图，右边是不支持偏向锁的对象的加锁过程，左边是偏向锁的加锁过程。</p>
-</li>
-</ul>
-<p><img src="https://wiki.openjdk.java.net/download/attachments/11829266/Synchronization.gif?version=4&modificationDate=1208918680000&api=v2" alt="image"></p>
-<h5 id="轻量锁的执行过程"><a href="#轻量锁的执行过程" class="headerlink" title="轻量锁的执行过程"></a>轻量锁的执行过程</h5><ul>
-<li><p>第一行：</p>
 <ul>
-<li>对象头中的标记字段（mark word），它的最后两位便被用来表示该对象的锁状态。其中，00 代表轻量级锁，01 代表无锁（或偏向锁），10 代表重量级锁，11 则跟垃圾回收算法的标记有关。</li>
+<li>shader的编译是驱动提供的功能，上面的代码中是最基本的用法。</li>
+<li>除此之外在使用FeedBack技术的时候，也可以只传递vertex shader。</li>
 </ul>
-</li>
-<li><p>第二行：</p>
+<h4 id="创建Program"><a href="#创建Program" class="headerlink" title="创建Program"></a>创建Program</h4><ul>
+<li>创建Program对象</li>
+<li>attach shader</li>
+<li>link</li>
+<li>错误检查</li>
+</ul>
+<figure class="highlight cpp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function">GLuint <span class="hljs-title">CreateProgram</span><span class="hljs-params">(GLuint vsShader, GLuint fsShader)</span></span></span><br><span class="line"><span class="hljs-function"></span>&#123;</span><br><span class="line">	GLuint program= glCreateProgram();</span><br><span class="line">	glAttachShader(program, vsShader);</span><br><span class="line">	glAttachShader(program, fsShader);</span><br><span class="line">	glLinkProgram(program);</span><br><span class="line">	glDeleteShader(vsShader);</span><br><span class="line">	glDeleteShader(fsShader);</span><br><span class="line">	</span><br><span class="line">	GLint nResult;</span><br><span class="line">	glGetProgramiv(program, GL_LINK_STATUS, &amp;nResult);</span><br><span class="line">	<span class="hljs-keyword">if</span> (nResult == GL_FALSE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="hljs-keyword">char</span> <span class="hljs-built_in">log</span>[<span class="hljs-number">1024</span>] = &#123; <span class="hljs-number">0</span> &#125;;</span><br><span class="line">		GLsizei writed = <span class="hljs-number">0</span>;</span><br><span class="line">		<span class="hljs-comment">// 第二个是错误日志的缓冲区有多大，第三个参数实际写的log的长度</span></span><br><span class="line">		glGetProgramInfoLog(program, <span class="hljs-number">1024</span>, &amp;writed, <span class="hljs-built_in">log</span>);</span><br><span class="line">		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"create gpu program fail , link error : %s \n"</span>, <span class="hljs-built_in">log</span>);</span><br><span class="line">		glDeleteProgram(program);</span><br><span class="line">		program = <span class="hljs-number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="hljs-keyword">return</span> program;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li>进行加锁操作时，Java 虚拟机会判断是否已经是重量级锁。如果不是，它会在当前线程的当前栈桢中划出一块空间，作为该锁的锁记录，并且将锁对象的标记字段（和锁对象的指针）复制到该锁记录中。PS：图中的record就是这个锁对象</li>
-<li>然后，Java 虚拟机会尝试用 CAS（compare-and-swap）操作替换锁对象的标记字段。这里解释一下，CAS 是一个原子操作，它会比较目标地址的值是否和期望值相等，如果相等，则替换为一个新的值。</li>
-<li>假设当前锁对象的标记字段为 X…XYZ（X…X其实就是前面的那些位数，这里只关注最后两位），Java 虚拟机会比较该字段是否为 X…X01。如果是，则替换为刚才分配的锁记录的地址。由于内存对齐的缘故，它的最后两位为 00。此时，该线程已成功获得这把锁，可以继续执行了。</li>
-<li>至此完成了轻量锁的占用。</li>
-<li>如果不是 X…X01，那么有两种可能。第一，该线程重复获取同一把锁。此时，Java 虚拟机会将锁记录清零（也就是用0替代原来存的标记字段和指针），以代表该锁被重复获取。PS：图中的recursive lock</li>
-<li><strong>PS:重复获取同一把锁的话，不是简单地清零，而应该是把0作为一条新的锁记录压入锁记录的栈顶。</strong></li>
+<li>后续的参数获取和数据赋值都是围绕program来做的。</li>
+</ul>
+<h4 id="使用Shader"><a href="#使用Shader" class="headerlink" title="使用Shader"></a>使用Shader</h4><ul>
+<li>shader的使用可以分成两个步骤。第一，获取参数的location。第二是在每次渲染的时候给与shader中的参数赋值。</li>
+<li>这些参数我个人理解分成三大类：<ul>
+<li>VBO中提取的数据：position、texcoord、color、normal这些</li>
+<li>管线中变换矩阵，也就是MVP三个矩阵。</li>
+<li>其它主要用于fragment的参数：纹理、光源信息、物体材质信息，其它用于逻辑的参数。</li>
 </ul>
 </li>
-<li><p>第三行：</p>
+</ul>
+<h5 id="VBO"><a href="#VBO" class="headerlink" title="VBO"></a>VBO</h5><ul>
+<li>模型的顶点数据，常见的数据有vertex的position、texcoord、normal、color</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   glGenBuffers(1, &amp;vbo); // 显存中申请一块内容，地址为vbo</span><br><span class="line">float data[] = &#123;</span><br><span class="line">	-0.2f, -0.2f, -0.6f, 1.0f, /* color: */ 1.0f, 1.0f, 1.0f, 1.0f, /* texcoord: */ 0.0f, 0.0f,</span><br><span class="line">	0.2f, -0.2f, -0.6f, 1.0f,  /* color: */ 0.0f, 1.0f, 0.0f, 1.0f, /* texcoord: */ 1.0f, 0.0f,</span><br><span class="line">	0.0f, 0.2f, -0.6f, 1.0f,   /* color: */ 1.0f, 0.0f, 0.0f, 1.0f, /* texcoord: */ 0.5f, 1.0f</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 操作当前的vbo，类比glBindTexture</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbo);</span><br><span class="line">// GL_STATIC_DRAW指的是放到GPU后不再动的数据</span><br><span class="line">// 函数完成后数据从内存赋值到了显存，此时这个数据已经可以删除了</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 30, data, GL_STATIC_DRAW);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, 0);</span><br></pre></td></tr></table></figure>
+
+<h5 id="参数赋值"><a href="#参数赋值" class="headerlink" title="参数赋值"></a>参数赋值</h5><ul>
+<li>获得shader中参数的location，这一步得到的位置是某个program中的，因此执行一次就可以了。</li>
+<li>给uniform、attribute变量赋值。这种赋值的操作都是针对某个program，可能在一次渲染中针对多个program赋值。因此按照套路，都是先bind一个对象。</li>
+<li>glUseProgram(program)后，在赋值默认都是给这个program的。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">   GLuint vbo;</span><br><span class="line">   GLuint program;</span><br><span class="line">   GLint positionLocation;</span><br><span class="line">   GLint modelMatrixLocation;</span><br><span class="line">   GLint viewMatrixLocation;</span><br><span class="line">   GLint projectionMatrixLocation;</span><br><span class="line">   GLint colorLocation;</span><br><span class="line">   GLint texcoordLocation;</span><br><span class="line">   GLint textureLocation;</span><br><span class="line">   glm::mat4 modelMatrix, viewMatrix, projectionMatrix;</span><br><span class="line">   GLuint texture;</span><br><span class="line">   </span><br><span class="line">   ...</span><br><span class="line">   </span><br><span class="line">   // 位置不是按照shader代码里写的变量的顺序确定的</span><br><span class="line">   positionLocation = glGetAttribLocation(program, &quot;position&quot;);</span><br><span class="line">colorLocation = glGetAttribLocation(program, &quot;color&quot;);</span><br><span class="line">texcoordLocation = glGetAttribLocation(program, &quot;texcoord&quot;);</span><br><span class="line"></span><br><span class="line">modelMatrixLocation = glGetUniformLocation(program, &quot;ModelMatrix&quot;);</span><br><span class="line">viewMatrixLocation = glGetUniformLocation(program, &quot;ViewMatrix&quot;);</span><br><span class="line">projectionMatrixLocation = glGetUniformLocation(program, &quot;ProjectionMatrix&quot;);</span><br><span class="line">textureLocation = glGetUniformLocation(program, &quot;U_Texture&quot;);</span><br><span class="line"></span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">glUseProgram(program);</span><br><span class="line">// 参数含义：插槽位置，几个矩阵（单插槽可以多矩阵），CPU传到GPU时是否需要转置，矩阵地址(从定义看是第一个数据的位置)</span><br><span class="line">glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));</span><br><span class="line">glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));</span><br><span class="line">glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));</span><br><span class="line"></span><br><span class="line">// 使用纹理</span><br><span class="line">glBindTexture(GL_TEXTURE_2D, texture);</span><br><span class="line">glUniform1i(textureLocation, 0);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbo);</span><br><span class="line">// attribute插槽中某一个位置生效</span><br><span class="line">glEnableVertexAttribArray(positionLocation);</span><br><span class="line"></span><br><span class="line">// GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer</span><br><span class="line">// 插槽位置 ， 插槽中数据有几个分量（现在的位置是4个，xyzw），分量类型，</span><br><span class="line">// 是否归一化（传入的如果不是float会变成float，e.g. 255,255,255,255→ 1.0,1.0,1.0,1.0)</span><br><span class="line">// 紧挨着的两个点起始地址相距多远，这个位置信息从vbo的什么地址开始取值（从0号位置开始取值）</span><br><span class="line">glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 10, 0);</span><br><span class="line"></span><br><span class="line">// 给color变量赋值</span><br><span class="line">glEnableVertexAttribArray(colorLocation);</span><br><span class="line">glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 4));</span><br><span class="line"></span><br><span class="line">// 给texcoord赋值</span><br><span class="line">glEnableVertexAttribArray(texcoordLocation);</span><br><span class="line">glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));</span><br><span class="line"></span><br><span class="line">// 绘制什么，从第几个点开始绘制，绘制几个三角形。</span><br><span class="line">glDrawArrays(GL_TRIANGLES, 0, 3);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, 0);</span><br><span class="line"></span><br><span class="line">glBindTexture(GL_TEXTURE_2D, 0);</span><br><span class="line"></span><br><span class="line">glUseProgram(0);</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li>第二，其他线程持有该锁。此时，Java 虚拟机会将这把锁膨胀为重量级锁，并且阻塞当前线程。</li>
+<li>glVertexAttribPointer的作用是告诉GPU如何读取VBO的数据</li>
+<li>glDrawArrays的作用是告知GPU如何把VBO中的数据分发到不同的shader去执行</li>
 </ul>
-</li>
-<li><p>解锁：</p>
-<ul>
-<li>当进行解锁操作时，如果当前锁记录（你可以将一个线程的所有锁记录想象成一个栈结构，每次加锁压入一条锁记录，解锁弹出一条锁记录，当前锁记录指的便是栈顶的锁记录）的值为 0，则代表重复进入同一把锁，直接返回即可。PS：对应recursive lock</li>
-<li>否则，Java 虚拟机会尝试用 CAS 操作，比较锁对象的标记字段的值是否为当前锁记录的地址。如果是，则替换为锁记录中的值，也就是锁对象原本的标记字段。此时，该线程已经成功释放这把锁。PS：对应正常的轻量锁</li>
-<li>如果不是，则意味着这把锁已经被膨胀为重量级锁。此时，Java 虚拟机会进入重量级锁的释放过程，唤醒因竞争该锁而被阻塞了的线程。</li>
+<h4 id="面向对象的设计"><a href="#面向对象的设计" class="headerlink" title="面向对象的设计"></a>面向对象的设计</h4><ul>
+<li>遵照数据（VBO）与逻辑分离（shader）分离的思想，有了VertexBuffer和Shader 两个类。</li>
+<li>又按照渲染前准备的数据（location、一些空对象的创建）和渲染中需要的数据（每个shader中参数的赋值），在每个类中有两个核心的参数。</li>
+<li>实际上两个维度就将OpenGL shader的使用整得明明白白的。</li>
 </ul>
-</li>
+<h2 id="已经忘记的差不多的知识"><a href="#已经忘记的差不多的知识" class="headerlink" title="已经忘记的差不多的知识"></a>已经忘记的差不多的知识</h2><h4 id="点积几何意义"><a href="#点积几何意义" class="headerlink" title="点积几何意义"></a>点积几何意义</h4><ul>
+<li>设二维空间内有两个向量 和 ， 和 表示向量a和b的大小，它们的夹角为 ，则内积定义为以下实数：</li>
 </ul>
-<h4 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h4><ul>
-<li>如果说轻量级锁针对的情况很乐观，那么接下来的偏向锁针对的情况则更加乐观：从始至终只有一个线程请求某一把锁。</li>
-</ul>
-<h5 id="epoch值"><a href="#epoch值" class="headerlink" title="epoch值"></a>epoch值</h5><ul>
-<li>JVM的每个类（类类型）中维护一个 epoch 值，可以理解为第几代偏向锁。当设置偏向锁时，Java 虚拟机需要将该 epoch 值复制到锁对象的标记字段中。</li>
-</ul>
-<h5 id="加锁过程"><a href="#加锁过程" class="headerlink" title="加锁过程"></a>加锁过程</h5><ul>
-<li><p>在线程进行加锁时，如果该锁对象支持偏向锁，那么 Java 虚拟机会通过 CAS 操作，将当前线程的地址记录在锁对象的标记字段之中，并且将标记字段的最后三位设置为 101。也就是图中右边的操作。</p>
-</li>
-<li><p>在接下来的运行过程中，每当有线程请求这把锁，Java 虚拟机只需判断锁对象标记字段中：最后三位是否为 101，是否包含当前线程的地址，以及锁对象类类型中的epoch 值是否和锁对象的类的 epoch 值相同。如果都满足，那么当前线程持有该偏向锁，可以直接返回。</p>
-</li>
-<li><p>当请求加锁的线程和锁对象标记字段保持的线程地址不匹配时（而且 epoch 值相等，如若不等，那么当前线程可以将该锁重偏向至自己），Java 虚拟机需要<strong>撤销</strong>该偏向锁。这个撤销过程非常麻烦，它要求持有偏向锁的线程到达安全点，再将偏向锁替换成轻量级锁。也就是图中revoke bias的过程。</p>
-</li>
-<li><p>如果某一类锁对象的<strong>总撤销</strong>数超过了一个阈值（对应 Java 虚拟机参数 -XX:BiasedLockingBulkRebiasThreshold，默认为 20），那么 Java 虚拟机会宣布这个类的偏向锁<strong>失效</strong>。</p>
-</li>
-<li><p>在宣布某个类的偏向锁<strong>失效</strong>时，Java 虚拟机实则将该类的 epoch 值加 1，表示之前那一代的偏向锁已经失效。而新设置的偏向锁则需要复制新的 epoch 值。</p>
-</li>
-<li><p>为了保证当前持有偏向锁并且已加锁的线程不至于因此丢锁，Java 虚拟机需要遍历所有线程的 Java 栈，找出该类已加锁的实例，并且将它们标记字段中的 epoch 值加 1。该操作需要所有线程处于安全点状态。</p>
-</li>
-<li><p>如果<strong>总撤销数</strong>超过另一个阈值（对应 Java 虚拟机参数 -XX:BiasedLockingBulkRevokeThreshold，默认值为 40），那么 Java 虚拟机会认为这个类已经不再适合偏向锁。此时，Java 虚拟机会<strong>撤销</strong>该类实例的偏向锁，并且在之后的加锁过程中直接为该类实例设置轻量级锁。</p>
-</li>
-<li><p>总结来说就是偏向锁遇到需要撤销的情况，就先从偏向锁转成轻量级锁。撤销20次后当前的类的偏向锁失效，epoch+1。撤销40次后，被取消作为偏向锁的资格，在用这个对象作为锁对象时直接使用轻量级锁。</p>
-</li>
-</ul>
-<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><ul>
-<li>jvm处理synchronized的时候是先将它当轻量级锁处理，然后在一段时间（延缓毫秒数-XX:BiasedLockingStartupDelay）后变成偏向锁，再慢慢膨胀为重量级锁的。但是在Java 9还是10默认值改为0了，也就是说后面是先按照偏向锁处理，在轻量级、重量级。</li>
-<li>对于轻量级锁，markword本质是一个32位的bit，无锁情况下，末尾是01<br>加锁过程只是通过CAS把这32位的bit替换为lockrecord的地址，由于lockrecord地址只有30位，所以末尾补齐32后，末尾是00。</li>
-<li>轻量级锁通过cas替换锁的标记字段，和标记字段复制到栈中对应的锁记录中这两个操作的先后顺序无所谓。应该是有保护的机制。</li>
-</ul>
+<p><img src="https://note.youdao.com/yws/res/32760/6FD6E25DEAAB4022B3B3E06FFC8C0DEB" alt="image"></p>
+<p><img src="https://note.youdao.com/yws/res/32762/C4DC95E76DC24F1A8B576CB98EB113B7" alt="image"></p>
 
         </div>
         
@@ -272,7 +257,7 @@
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/Java/">Java</a>
+                    <a class="has-link-grey -link" href="/tags/OpenGL/">OpenGL</a>
                 </div>
             </div>
         </div>
@@ -291,17 +276,10 @@
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/11/25/Maven笔记/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Maven笔记</span>
-            </a>
-        </div>
-        
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/">
-                <span class="level-item">JVM学习笔记10：内存模型</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/">
+                <span class="level-item">OpenGL学习笔记 第二周：2D</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -1708,7 +1686,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.png" alt="JVM学习笔记11：synchronized的实现" height="28">
+                    <img src="/images/logo.png" alt="OpenGL学习笔记 第三周：shader的使用" height="28">
                 
                 </a>
                 <p class="is-size-7">

@@ -151,6 +151,134 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/">OpenGL学习笔记 第三周：shader的使用</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><ul>
+<li>一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。</li>
+<li>之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。</li>
+<li>学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。</li>
+</ul>
+<h4 id="编写shader"><a href="#编写shader" class="headerlink" title="编写shader"></a>编写shader</h4><ul>
+<li>这两个shader更符合在“GPU运行的程序”的含义。Unity shader的写法隐藏了很多的细节，但是功能更加强大。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">attribute vec4 position;</span><br><span class="line">attribute vec4 color;</span><br><span class="line">attribute vec2 texcoord;</span><br><span class="line">attribute vec4 normal;</span><br><span class="line"></span><br><span class="line">uniform mat4 ModelMatrix;</span><br><span class="line">uniform mat4 ViewMatrix;</span><br><span class="line">uniform mat4 ProjectionMatrix;</span><br><span class="line">uniform mat4 IT_ModelMatrix; // 模型空间到世界空间的转置矩阵，等同于Unity中的UnityObjectToWorldNormal</span><br><span class="line"></span><br><span class="line">varying vec4 V_Color;</span><br><span class="line">varying vec2 V_Texcoord;</span><br><span class="line">varying vec4 V_Normal;</span><br><span class="line">varying vec4 V_WorldPos;</span><br><span class="line"></span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	V_Normal = IT_ModelMatrix*normal;</span><br><span class="line">	V_Texcoord = texcoord;</span><br><span class="line">	V_WorldPos = ModelMatrix*position;</span><br><span class="line">	V_Color = color;</span><br><span class="line">	gl_Position=ProjectionMatrix*ViewMatrix*ModelMatrix*position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">#ifdef GL_ES</span><br><span class="line">precision mediump float; //opengl es中需要定义浮点精度，否则可能运行不了</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">uniform sampler2D U_Texture;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightPos;        // 光源位置，W=0时就是平行光</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightAmbient;    // 光的环境光分量</span><br><span class="line">uniform vec4 U_AmbientMaterial; // 物体材质对环境光的反射系数</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightDiffuse;</span><br><span class="line">uniform vec4 U_DiffuseMaterial;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_LightSpecular;</span><br><span class="line">uniform vec4 U_SpecularMaterial;</span><br><span class="line"></span><br><span class="line">uniform vec4 U_CameraPos;</span><br><span class="line">uniform vec4 U_LightOpt;</span><br><span class="line"></span><br><span class="line">varying vec4 V_Color;</span><br><span class="line">varying vec2 V_Texcoord;</span><br><span class="line">varying vec4 V_Normal;</span><br><span class="line">varying vec4 V_WorldPos;</span><br><span class="line"></span><br><span class="line">vec4 GetPointLight()</span><br><span class="line">&#123;</span><br><span class="line">	float distance=0.0;</span><br><span class="line">	float constantFactor=1.0;</span><br><span class="line">	float linearFactor=0.0;</span><br><span class="line">	float quadricFactor=0.0;</span><br><span class="line">	vec4 ambientColor=vec4(1.0,1.0,1.0,1.0)*vec4(0.1,0.1,0.1,1.0);</span><br><span class="line">	vec3 L=vec3(0.0,1.0,0.0)-V_WorldPos.xyz;</span><br><span class="line">	distance=length(L);</span><br><span class="line">	float attenuation=1.0/(constantFactor+linearFactor*distance+quadricFactor*quadricFactor*distance);</span><br><span class="line">	L=normalize(L);</span><br><span class="line">	vec3 n=normalize(V_Normal.xyz);</span><br><span class="line">	float diffuseIntensity=max(0.0,dot(L,n));</span><br><span class="line">	vec4 diffuseColor=vec4(1.0,1.0,1.0,1.0)*vec4(0.1,0.4,0.6,1.0)*diffuseIntensity*attenuation;</span><br><span class="line">	return ambientColor+diffuseColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 接受的是vertex shader中生成的三角面，然后计算三角面上的像素的值。</span><br><span class="line">// GPU中并行计算，并行的是计算像素这个事情</span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">	/*  unity shader的写法</span><br><span class="line">	fixed4 frag(v2f i) : SV_Target &#123;</span><br><span class="line">	// Get ambient term</span><br><span class="line">	fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line">	fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">	fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"></span><br><span class="line">	// Compute diffuse term</span><br><span class="line">	fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));</span><br><span class="line"></span><br><span class="line">	// Get the reflect direction in world space</span><br><span class="line">	fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));</span><br><span class="line">	// Get the view direction in world space</span><br><span class="line">	fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);</span><br><span class="line">	// Compute specular term</span><br><span class="line">	fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)), _Gloss);</span><br><span class="line"></span><br><span class="line">	return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line">	&#125;*/</span><br><span class="line"></span><br><span class="line">	vec4 ambientColor = U_LightAmbient * U_AmbientMaterial;</span><br><span class="line">	</span><br><span class="line">	vec3 lightPos = U_LightPos.xyz;</span><br><span class="line">	vec3 L = lightPos;</span><br><span class="line">	// 这里直接对U_LightPos.xyz对了归一化</span><br><span class="line">	L = normalize(L);</span><br><span class="line"></span><br><span class="line">	vec3 n = normalize(V_Normal.xyz);</span><br><span class="line"></span><br><span class="line">	float diffuseIntensity = max(0.0, dot(L,n));</span><br><span class="line">	vec4 diffuseColor = U_LightDiffuse*U_DiffuseMaterial*diffuseIntensity;</span><br><span class="line"></span><br><span class="line">	vec4 specularColor = vec4(0.0,0.0,0.0,0.0);</span><br><span class="line">	if(diffuseIntensity!=0)</span><br><span class="line">	&#123;</span><br><span class="line">		vec3 reflectDir = normalize(reflect(-L,n));</span><br><span class="line">		vec3 viewDir = normalize(U_CameraPos.xyz - V_WorldPos.xyz);</span><br><span class="line">		specularColor = U_LightSpecular*U_SpecularMaterial*pow(max(0.0, dot(viewDir, reflectDir)), U_LightOpt.x);</span><br><span class="line">	&#125;</span><br><span class="line">	if(U_LightOpt.y==1.0)&#123;</span><br><span class="line">		gl_FragColor=(ambientColor+diffuseColor)*texture2D(U_Texture,V_Texcoord.xy)+specularColor;</span><br><span class="line">	&#125;else if(U_LightOpt.z==1.0)&#123;</span><br><span class="line">		gl_FragColor=(ambientColor+diffuseColor+GetPointLight())*texture2D(U_Texture,V_Texcoord.xy);</span><br><span class="line">	&#125;else if(U_LightOpt.w==1.0)&#123;</span><br><span class="line">		gl_FragColor=ambientColor+diffuseColor+specularColor;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>公式的几何意义</li>
+</ul>
+<p><img src="https://note.youdao.com/yws/res/32764/0F542835D53C46C484FE376B0705F6A2" alt="image"></p>
+<h5 id="uniform"><a href="#uniform" class="headerlink" title="uniform"></a>uniform</h5><ul>
+<li><p>uniform变量在vertex和fragment两者之间声明方式完全一样，则它可以在vertex和fragment共享使用。（相当于一个被vertex和fragment shader共享的全局变量）</p>
+</li>
+<li><p>uniform变量一般用来表示：变换矩阵，材质，光照参数和颜色等信息。以下是例子：</p>
+</li>
+</ul>
+<h5 id="attribute"><a href="#attribute" class="headerlink" title="attribute"></a>attribute</h5><ul>
+<li><p>attribute变量是只能在vertex shader中使用的变量。（它不能在fragment shader中声明attribute变量，也不能被fragment shader中使用）</p>
+</li>
+<li><p>一般用attribute变量来表示一些顶点的数据，如：顶点坐标，法线，纹理坐标，顶点颜色等。</p>
+</li>
+<li><p>程序中，一般用函数glBindAttribLocation（）来绑定每个attribute变量的位置，然后用函数glVertexAttribPointer（）为每个attribute变量赋值。</p>
+</li>
+</ul>
+<h5 id="varying变量"><a href="#varying变量" class="headerlink" title="varying变量"></a>varying变量</h5><ul>
+<li>varying变量是vertex和fragment shader之间做数据传递用的。一般vertex shader修改varying变量的值，然后fragment shader使用该varying变量的值。因此varying变量在vertex和fragment </li>
+<li>shader二者之间的声明必须是一致的。application不能使用此变量。</li>
+</ul>
+<h4 id="使用OpenGL编译shader"><a href="#使用OpenGL编译shader" class="headerlink" title="使用OpenGL编译shader"></a>使用OpenGL编译shader</h4><ul>
+<li>创建shader对象</li>
+<li>将shader代码赋值给shader对象</li>
+<li>编译</li>
+<li>错误处理</li>
+</ul>
+<figure class="highlight cpp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function">GLuint <span class="hljs-title">CompileShader</span><span class="hljs-params">(GLenum shaderType, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* shaderCode)</span></span></span><br><span class="line"><span class="hljs-function"></span>&#123;</span><br><span class="line">	GLuint shader = glCreateShader(shaderType);</span><br><span class="line">	<span class="hljs-comment">// GLuint shader, GLsizei count, const GLchar *const* string, const GLint* length</span></span><br><span class="line">	<span class="hljs-comment">// shader ，      有几句代码，    代码段，                       代码段长度，如果是多久代码的话，这里是一个长度数组</span></span><br><span class="line">	glShaderSource(shader, <span class="hljs-number">1</span>, &amp;shaderCode, <span class="hljs-literal">nullptr</span>);</span><br><span class="line">	<span class="hljs-comment">// 编译</span></span><br><span class="line">	glCompileShader(shader);</span><br><span class="line">	<span class="hljs-comment">// 检查编译结果</span></span><br><span class="line">	GLint compileResult = GL_TRUE;</span><br><span class="line">	<span class="hljs-comment">// 获取编译结果</span></span><br><span class="line">	glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;compileResult);</span><br><span class="line"></span><br><span class="line">	<span class="hljs-keyword">if</span> (compileResult == GL_FALSE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="hljs-keyword">char</span> szLog[<span class="hljs-number">1024</span>] = &#123; <span class="hljs-number">0</span> &#125;;</span><br><span class="line">		GLsizei logLen = <span class="hljs-number">0</span>;</span><br><span class="line">		<span class="hljs-comment">// 第二个是错误日志的缓冲区有多大，第三个参数实际写的log的长度</span></span><br><span class="line">		glGetShaderInfoLog(shader, <span class="hljs-number">1024</span>, &amp;logLen, szLog);</span><br><span class="line">		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"Compile shader error : %s \n, shader code : \n%s\n"</span>, szLog, shaderCode);</span><br><span class="line">		glDeleteShader(shader);</span><br><span class="line">		shader = <span class="hljs-number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="hljs-keyword">return</span> shader;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>shader的编译是驱动提供的功能，上面的代码中是最基本的用法。</li>
+<li>除此之外在使用FeedBack技术的时候，也可以只传递vertex shader。</li>
+</ul>
+<h4 id="创建Program"><a href="#创建Program" class="headerlink" title="创建Program"></a>创建Program</h4><ul>
+<li>创建Program对象</li>
+<li>attach shader</li>
+<li>link</li>
+<li>错误检查</li>
+</ul>
+<figure class="highlight cpp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function">GLuint <span class="hljs-title">CreateProgram</span><span class="hljs-params">(GLuint vsShader, GLuint fsShader)</span></span></span><br><span class="line"><span class="hljs-function"></span>&#123;</span><br><span class="line">	GLuint program= glCreateProgram();</span><br><span class="line">	glAttachShader(program, vsShader);</span><br><span class="line">	glAttachShader(program, fsShader);</span><br><span class="line">	glLinkProgram(program);</span><br><span class="line">	glDeleteShader(vsShader);</span><br><span class="line">	glDeleteShader(fsShader);</span><br><span class="line">	</span><br><span class="line">	GLint nResult;</span><br><span class="line">	glGetProgramiv(program, GL_LINK_STATUS, &amp;nResult);</span><br><span class="line">	<span class="hljs-keyword">if</span> (nResult == GL_FALSE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="hljs-keyword">char</span> <span class="hljs-built_in">log</span>[<span class="hljs-number">1024</span>] = &#123; <span class="hljs-number">0</span> &#125;;</span><br><span class="line">		GLsizei writed = <span class="hljs-number">0</span>;</span><br><span class="line">		<span class="hljs-comment">// 第二个是错误日志的缓冲区有多大，第三个参数实际写的log的长度</span></span><br><span class="line">		glGetProgramInfoLog(program, <span class="hljs-number">1024</span>, &amp;writed, <span class="hljs-built_in">log</span>);</span><br><span class="line">		<span class="hljs-built_in">printf</span>(<span class="hljs-string">"create gpu program fail , link error : %s \n"</span>, <span class="hljs-built_in">log</span>);</span><br><span class="line">		glDeleteProgram(program);</span><br><span class="line">		program = <span class="hljs-number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="hljs-keyword">return</span> program;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>后续的参数获取和数据赋值都是围绕program来做的。</li>
+</ul>
+<h4 id="使用Shader"><a href="#使用Shader" class="headerlink" title="使用Shader"></a>使用Shader</h4><ul>
+<li>shader的使用可以分成两个步骤。第一，获取参数的location。第二是在每次渲染的时候给与shader中的参数赋值。</li>
+<li>这些参数我个人理解分成三大类：<ul>
+<li>VBO中提取的数据：position、texcoord、color、normal这些</li>
+<li>管线中变换矩阵，也就是MVP三个矩阵。</li>
+<li>其它主要用于fragment的参数：纹理、光源信息、物体材质信息，其它用于逻辑的参数。</li>
+</ul>
+</li>
+</ul>
+<h5 id="VBO"><a href="#VBO" class="headerlink" title="VBO"></a>VBO</h5><ul>
+<li>模型的顶点数据，常见的数据有vertex的position、texcoord、normal、color</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">   glGenBuffers(1, &amp;vbo); // 显存中申请一块内容，地址为vbo</span><br><span class="line">float data[] = &#123;</span><br><span class="line">	-0.2f, -0.2f, -0.6f, 1.0f, /* color: */ 1.0f, 1.0f, 1.0f, 1.0f, /* texcoord: */ 0.0f, 0.0f,</span><br><span class="line">	0.2f, -0.2f, -0.6f, 1.0f,  /* color: */ 0.0f, 1.0f, 0.0f, 1.0f, /* texcoord: */ 1.0f, 0.0f,</span><br><span class="line">	0.0f, 0.2f, -0.6f, 1.0f,   /* color: */ 1.0f, 0.0f, 0.0f, 1.0f, /* texcoord: */ 0.5f, 1.0f</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 操作当前的vbo，类比glBindTexture</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbo);</span><br><span class="line">// GL_STATIC_DRAW指的是放到GPU后不再动的数据</span><br><span class="line">// 函数完成后数据从内存赋值到了显存，此时这个数据已经可以删除了</span><br><span class="line">glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 30, data, GL_STATIC_DRAW);</span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, 0);</span><br></pre></td></tr></table></figure>
+
+<h5 id="参数赋值"><a href="#参数赋值" class="headerlink" title="参数赋值"></a>参数赋值</h5><ul>
+<li>获得shader中参数的location，这一步得到的位置是某个program中的，因此执行一次就可以了。</li>
+<li>给uniform、attribute变量赋值。这种赋值的操作都是针对某个program，可能在一次渲染中针对多个program赋值。因此按照套路，都是先bind一个对象。</li>
+<li>glUseProgram(program)后，在赋值默认都是给这个program的。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">   GLuint vbo;</span><br><span class="line">   GLuint program;</span><br><span class="line">   GLint positionLocation;</span><br><span class="line">   GLint modelMatrixLocation;</span><br><span class="line">   GLint viewMatrixLocation;</span><br><span class="line">   GLint projectionMatrixLocation;</span><br><span class="line">   GLint colorLocation;</span><br><span class="line">   GLint texcoordLocation;</span><br><span class="line">   GLint textureLocation;</span><br><span class="line">   glm::mat4 modelMatrix, viewMatrix, projectionMatrix;</span><br><span class="line">   GLuint texture;</span><br><span class="line">   </span><br><span class="line">   ...</span><br><span class="line">   </span><br><span class="line">   // 位置不是按照shader代码里写的变量的顺序确定的</span><br><span class="line">   positionLocation = glGetAttribLocation(program, &quot;position&quot;);</span><br><span class="line">colorLocation = glGetAttribLocation(program, &quot;color&quot;);</span><br><span class="line">texcoordLocation = glGetAttribLocation(program, &quot;texcoord&quot;);</span><br><span class="line"></span><br><span class="line">modelMatrixLocation = glGetUniformLocation(program, &quot;ModelMatrix&quot;);</span><br><span class="line">viewMatrixLocation = glGetUniformLocation(program, &quot;ViewMatrix&quot;);</span><br><span class="line">projectionMatrixLocation = glGetUniformLocation(program, &quot;ProjectionMatrix&quot;);</span><br><span class="line">textureLocation = glGetUniformLocation(program, &quot;U_Texture&quot;);</span><br><span class="line"></span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">glUseProgram(program);</span><br><span class="line">// 参数含义：插槽位置，几个矩阵（单插槽可以多矩阵），CPU传到GPU时是否需要转置，矩阵地址(从定义看是第一个数据的位置)</span><br><span class="line">glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));</span><br><span class="line">glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(viewMatrix));</span><br><span class="line">glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(projectionMatrix));</span><br><span class="line"></span><br><span class="line">// 使用纹理</span><br><span class="line">glBindTexture(GL_TEXTURE_2D, texture);</span><br><span class="line">glUniform1i(textureLocation, 0);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, vbo);</span><br><span class="line">// attribute插槽中某一个位置生效</span><br><span class="line">glEnableVertexAttribArray(positionLocation);</span><br><span class="line"></span><br><span class="line">// GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* pointer</span><br><span class="line">// 插槽位置 ， 插槽中数据有几个分量（现在的位置是4个，xyzw），分量类型，</span><br><span class="line">// 是否归一化（传入的如果不是float会变成float，e.g. 255,255,255,255→ 1.0,1.0,1.0,1.0)</span><br><span class="line">// 紧挨着的两个点起始地址相距多远，这个位置信息从vbo的什么地址开始取值（从0号位置开始取值）</span><br><span class="line">glVertexAttribPointer(positionLocation, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 10, 0);</span><br><span class="line"></span><br><span class="line">// 给color变量赋值</span><br><span class="line">glEnableVertexAttribArray(colorLocation);</span><br><span class="line">glVertexAttribPointer(colorLocation, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 4));</span><br><span class="line"></span><br><span class="line">// 给texcoord赋值</span><br><span class="line">glEnableVertexAttribArray(texcoordLocation);</span><br><span class="line">glVertexAttribPointer(texcoordLocation, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 10, (void*)(sizeof(float) * 8));</span><br><span class="line"></span><br><span class="line">// 绘制什么，从第几个点开始绘制，绘制几个三角形。</span><br><span class="line">glDrawArrays(GL_TRIANGLES, 0, 3);</span><br><span class="line"></span><br><span class="line">glBindBuffer(GL_ARRAY_BUFFER, 0);</span><br><span class="line"></span><br><span class="line">glBindTexture(GL_TEXTURE_2D, 0);</span><br><span class="line"></span><br><span class="line">glUseProgram(0);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>glVertexAttribPointer的作用是告诉GPU如何读取VBO的数据</li>
+<li>glDrawArrays的作用是告知GPU如何把VBO中的数据分发到不同的shader去执行</li>
+</ul>
+<h4 id="面向对象的设计"><a href="#面向对象的设计" class="headerlink" title="面向对象的设计"></a>面向对象的设计</h4><ul>
+<li>遵照数据（VBO）与逻辑分离（shader）分离的思想，有了VertexBuffer和Shader 两个类。</li>
+<li>又按照渲染前准备的数据（location、一些空对象的创建）和渲染中需要的数据（每个shader中参数的赋值），在每个类中有两个核心的参数。</li>
+<li>实际上两个维度就将OpenGL shader的使用整得明明白白的。</li>
+</ul>
+<h2 id="已经忘记的差不多的知识"><a href="#已经忘记的差不多的知识" class="headerlink" title="已经忘记的差不多的知识"></a>已经忘记的差不多的知识</h2><h4 id="点积几何意义"><a href="#点积几何意义" class="headerlink" title="点积几何意义"></a>点积几何意义</h4><ul>
+<li>设二维空间内有两个向量 和 ， 和 表示向量a和b的大小，它们的夹角为 ，则内积定义为以下实数：</li>
+</ul>
+<p><img src="https://note.youdao.com/yws/res/32760/6FD6E25DEAAB4022B3B3E06FFC8C0DEB" alt="image"></p>
+<p><img src="https://note.youdao.com/yws/res/32762/C4DC95E76DC24F1A8B576CB98EB113B7" alt="image"></p>
+
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time>
                 
                 
@@ -448,7 +576,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        124
+                        125
                     </p>
                 </div>
             </div>
@@ -566,7 +694,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 13.33px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -580,6 +708,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
+                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -633,19 +774,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -664,7 +792,7 @@
                     <span class="level-item">九月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -1098,7 +1226,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">5</span>
+                        <span class="tag is-grey">6</span>
                     </a>
                 </div>
                 
@@ -1199,6 +1327,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
+                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
                     <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
@@ -1247,19 +1388,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T12:48:00.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/2020-9-6-OpenGL学习笔记-第一周：环境构建、OpenGL基础/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第一周：环境构建、OpenGL基础</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1278,7 +1406,7 @@
                     <span class="level-item">九月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">5</span>
+                    <span class="level-item tag">6</span>
                 </span>
             </a>
         </li>
@@ -1712,7 +1840,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">5</span>
+                        <span class="tag is-grey">6</span>
                     </a>
                 </div>
                 
