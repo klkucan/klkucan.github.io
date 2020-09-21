@@ -7,19 +7,19 @@
 
 
 
-    <meta name="description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
+    <meta name="description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。">
 <meta name="keywords" content="OpenGL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OpenGL学习笔记 第三周：shader的使用">
 <meta property="og:url" content="https://caihua.tech/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/index.html">
 <meta property="og:site_name" content="蔡华的博客">
-<meta property="og:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
+<meta property="og:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://caihua.tech/images/og_image.png">
-<meta property="og:updated_time" content="2020-09-21T09:25:31.308Z">
+<meta property="og:updated_time" content="2020-09-21T09:27:07.435Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OpenGL学习笔记 第三周：shader的使用">
-<meta name="twitter:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。  编写shader 这两个shader更符合在“GPU运">
+<meta name="twitter:description" content="前言 一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。 之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。 学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。">
 <meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
 
 
@@ -163,6 +163,8 @@
 <li>之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。</li>
 <li>学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。</li>
 </ul>
+<a id="more"></a>
+
 <h4 id="编写shader"><a href="#编写shader" class="headerlink" title="编写shader"></a>编写shader</h4><ul>
 <li>这两个shader更符合在“GPU运行的程序”的含义。Unity shader的写法隐藏了很多的细节，但是功能更加强大。</li>
 </ul>
