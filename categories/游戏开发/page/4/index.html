@@ -152,6 +152,59 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-09-25T02:58:00.000Z">2017-09-25</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/09/25/2017-9-25-每天一点UWA：第九周/">每天一点UWA：第九周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="关于AssetBundle依赖的问题"><a href="#关于AssetBundle依赖的问题" class="headerlink" title="关于AssetBundle依赖的问题"></a>关于AssetBundle依赖的问题</h4><ul>
+<li>如果Panel A和Panel B，它们均依赖一个共享Atlas C。如果在加载完AtlasC后卸载它所在的AssetBundle，再创建A和B，此时会失败。因为他们的依赖关系在AssetBundle上。</li>
+</ul>
+<h4 id="请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？"><a href="#请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？" class="headerlink" title="请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？"></a>请教一下，SerializedFile的卸载规则是什么呢？会跟随这AssetBundle一起卸载么？</h4><ul>
+<li>绝大部分的SerializedFile均由AssetBundle产生，当AssetBundle被卸载时，与其对应的SerializedFile也将销毁。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/09/25/2017-9-25-每天一点UWA：第九周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-09-25T02:54:00.000Z">2017-09-25</time>
                 
                 <div class="level-item">
@@ -622,56 +675,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-08-14T14:54:29.000Z">2017-08-14</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/08/14/2017-8-14-每天一点UWA：第三周/">每天一点UWA：第三周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><h4 id="资源复用"><a href="#资源复用" class="headerlink" title="资源复用"></a>资源复用</h4><ul>
-<li>如果一个prefab被简单的多复制几次，里面的mesh、Texture、AnimationClip、Material这些都是被复用的，在profile中可以看到。但是如果prefab从AssetBundle中获取，并且多次的加载、实例化、卸载可能造成内存泄漏，因为unload(false)并没有真正卸载内存中的已经实例化的prefab，再次load时PersistentManager会认为是一个新的对象。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/08/14/2017-8-14-每天一点UWA：第三周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -744,7 +747,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        126
+                        127
                     </p>
                 </div>
             </div>
@@ -816,7 +819,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">67</span>
+                <span class="level-item tag">68</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -881,6 +884,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
                     <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -929,19 +945,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
-                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -953,6 +956,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/11/">
@@ -1426,7 +1440,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">27</span>
+                        <span class="tag is-grey">28</span>
                     </a>
                 </div>
                 
@@ -1513,6 +1527,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
                     <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1561,19 +1588,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
-                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1585,6 +1599,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/11/">
@@ -2058,7 +2083,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">27</span>
+                        <span class="tag is-grey">28</span>
                     </a>
                 </div>
                 

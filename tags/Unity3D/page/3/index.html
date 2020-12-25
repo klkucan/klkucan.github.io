@@ -151,6 +151,63 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-03-20T10:00:00.000Z">2017-03-20</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/03/20/2017-3-14-AssetBundle学习笔记：2、压缩/">AssetBundle学习笔记：2、压缩</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h4><ul>
+<li><p>谈压缩就要谈到格式，unity目前在制作AssetBundle时默认就是压缩的，当然也可以设置为不压缩，但是显然不科学尤其是在移动端的开发上。</p>
+</li>
+<li><p>LZMA：这个是一个序列化数据文件流，也是AssetBundle的默认压缩格式。LZMA提供最佳的压缩比，但是在使用的时候需要完全解压后才能使用，因此加载时需要的事件比较多。</p>
+</li>
+<li><p>LZ4：5.3以后才加入的一种压缩格式，被unity自己大量使用。这是一种基于块的压缩方式，当一个对象从LZ4压缩的AssetBundle中加载时，会按照需要解压部分的块。这样的好处在于快速的加载对象，后面会提到一个最佳实践。当然，按照这个原理，你也可以想象如果一个LZ4AssetBundle中只包含了一个GameObject，那么也不存在什么按需加载了。当使用AssetBundle.LoadFromFile加载LZ4格式的文件时，其实不会将问价加载到内容，而是加载AssetBundle的Header。</p>
+</li>
+<li><p>AssetBundle也可以选择不压缩，这样体积最大但是加载最快。</p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/03/20/2017-3-14-AssetBundle学习笔记：2、压缩/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-03-16T07:20:05.000Z">2017-03-16</time>
                 
                 <div class="level-item">
@@ -582,7 +639,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        126
+                        127
                     </p>
                 </div>
             </div>
@@ -654,7 +711,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">67</span>
+                <span class="level-item tag">68</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -719,6 +776,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
                     <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -767,19 +837,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
-                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -791,6 +848,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/11/">
@@ -1264,7 +1332,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">27</span>
+                        <span class="tag is-grey">28</span>
                     </a>
                 </div>
                 
@@ -1351,6 +1419,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
                     <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1399,19 +1480,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time></div>
-                    <a href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：光</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1423,6 +1491,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/11/">
@@ -1896,7 +1975,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">27</span>
+                        <span class="tag is-grey">28</span>
                     </a>
                 </div>
                 
