@@ -2,24 +2,19 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-<title>Unity人工智能游戏开发笔记 - 蔡华的博客</title>
+<title>标签: CPU - 蔡华的博客</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="前言 本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。 但是本书关于模糊逻辑部分非常坑，令人发指。">
-<meta name="keywords" content="Unity3D">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Unity人工智能游戏开发笔记">
-<meta property="og:url" content="https://caihua.tech/2018/08/29/2018-8-29-Unity人工智能游戏开发读书笔记/index.html">
+    <meta property="og:type" content="website">
+<meta property="og:title" content="蔡华的博客">
+<meta property="og:url" content="https://caihua.tech/tags/CPU/index.html">
 <meta property="og:site_name" content="蔡华的博客">
-<meta property="og:description" content="前言 本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。 但是本书关于模糊逻辑部分非常坑，令人发指。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://caihua.tech/images/og_image.png">
-<meta property="og:updated_time" content="2019-07-13T08:04:04.281Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Unity人工智能游戏开发笔记">
-<meta name="twitter:description" content="前言 本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。 但是本书关于模糊逻辑部分非常坑，令人发指。">
+<meta name="twitter:title" content="蔡华的博客">
 <meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
 
 
@@ -103,7 +98,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.png" alt="Unity人工智能游戏开发笔记" height="28">
+                <img src="/images/logo.png" alt="蔡华的博客" height="28">
             
             </a>
         </div>
@@ -140,15 +135,26 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    <div class="card-content">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/tags">标签</a></li>
+            <li class="is-active"><a href="#" aria-current="page">CPU</a></li>
+        </ul>
+        </nav>
+    </div>
+</div>
+
+    <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-08-29T13:07:00.000Z">2018-08-29</time>
+                <time class="level-item has-text-grey" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
                 </div>
                 
                 
@@ -158,110 +164,28 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Unity人工智能游戏开发笔记
+                <a class="has-link-black-ter" href="/2020/11/11/CPU运行笔记/">CPU运行笔记</a>
             
         </h1>
         <div class="content">
-            <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
-<li>本着学习一下游戏AI开发的目的看了书，总体来说本书涉及的技术比较浅显，但是胜在面面俱到，很适合没有做过AI开发的同学。</li>
-<li>但是本书关于模糊逻辑部分非常坑，令人发指。</li>
+            <h2 id="CPU缓存"><a href="#CPU缓存" class="headerlink" title="CPU缓存"></a>CPU缓存</h2><h4 id="CPU-cache-line"><a href="#CPU-cache-line" class="headerlink" title="CPU cache line"></a>CPU cache line</h4><ul>
+<li>多核CPU中L1 L2 cache是独立的，L3是共享的</li>
+<li>L1 Cache 通常会分为「数据缓存」和「指令缓存」</li>
+<li>CPU 访问 L1 Cache 只需要 2<del>4 个时钟周期，访问 L2 Cache 大约 10</del>20 个时钟周期，访问 L3 Cache 大约 20<del>60 个时钟周期，而访问内存速度大概在 200</del>300 个 时钟周期之间。</li>
+<li>cache line是数据读写的基本单元</li>
+<li>cache line由tag和data block组成</li>
+<li>一个内存的访问地址，包括组标记、CPU Line 索引、偏移量这三种信息，于是 CPU 就能通过这些信息，在 CPU Cache 中找到缓存的数据。而对于 CPU Cache 里的数据结构，则是由索引 + 有效位 + 组标记 + 数据块组成。</li>
 </ul>
-<a id="more"></a>
-
-<h3 id="概要内容"><a href="#概要内容" class="headerlink" title="概要内容"></a>概要内容</h3><h5 id="FSM"><a href="#FSM" class="headerlink" title="FSM"></a>FSM</h5><ul>
-<li><p>有限状态机算是最简单的一种AI的实现，它的核心是状态，逻辑运算的结果表现为状态的变化。主要包含三个要点：</p>
-<ul>
-<li>转换：状态间的关系</li>
-<li>规则：触发某一状态转换</li>
-<li>事件：触发规则检查</li>
-</ul>
-</li>
-<li><p>关于FSM我之前有写过，包括网上也有很多教程。</p>
-</li>
-</ul>
-<h5 id="感知系统"><a href="#感知系统" class="headerlink" title="感知系统"></a>感知系统</h5><ul>
-<li><p>重要概念：</p>
-<ul>
-<li>Entity：包含玩家主体对象和环境对象</li>
-<li>Aspect：标记卡。这个用于让AI判断检测到的物体是不是搜索的目标。</li>
-<li>Sense</li>
-</ul>
-</li>
-<li><p>Sense：字面翻译过来就是个感知，它包含了视觉、听觉、触觉、嗅觉和超自然的感知（忽悠人的^_^）。</p>
-</li>
-<li><p>实现：以下罗列出unity引擎中的实现</p>
-<ul>
-<li>视觉：通常用于表达AI是否看到，unity用可以使用多条射线来制作。在视觉中也有FOV的概念，这个在制作射线的时候可以作为因素考虑进去。</li>
-<li>听觉、触觉、嗅觉：球体实现。触觉用碰撞体其实是比较好理解，听觉和嗅觉有点抽象，但是本质还是不同的碰撞体检测不同的layer。</li>
-<li>超自然的感知：直接通过获取系统数据来实现感知，作弊的行为。</li>
-</ul>
-</li>
-</ul>
-<h5 id="寻路"><a href="#寻路" class="headerlink" title="寻路"></a>寻路</h5><ul>
-<li>寻路是游戏中很重要的AI行为，书中提到了A star，也用到了unity的NavMesh组件，在这里就不具体说了。</li>
-</ul>
-<h5 id="集群行为"><a href="#集群行为" class="headerlink" title="集群行为"></a>集群行为</h5><ul>
-<li><p>三个基本的概念：</p>
-<ul>
-<li>分离性：个体之间保持固定距离</li>
-<li>排列的整齐性：整体间相同的方向和速度</li>
-<li>内聚性：个体与集群中心位置进保持最小距离</li>
-</ul>
-</li>
-<li><p>书中实现了多个不同的算法，也利用unity引擎的一些内置功能俩实现。</p>
-</li>
-</ul>
-<h5 id="行为树"><a href="#行为树" class="headerlink" title="行为树"></a>行为树</h5><ul>
-<li><p>行为树体现为任务节点。在行为树中有很多功能不同的节点，有完成基础任务的叶子节点，也有用于逻辑的复合节点和修饰节点。</p>
-</li>
-<li><p>节点的状态一般分为三种：成功、失败、运行状态（等待）</p>
-</li>
-</ul>
-<h5 id="复合节点"><a href="#复合节点" class="headerlink" title="复合节点"></a>复合节点</h5><ul>
-<li>序列（Sequence）：逐个执行node，当出现失败时返回失败；否则一直执行完。node之间是and关系。</li>
-<li>选择器（Selector）：只要一个node成功就返回成功，如果运行完了都没有成功的则为false。node之间是or关系。</li>
-<li>注意，节点之间的and、or的关系是可以自己控制的。</li>
-</ul>
-<h5 id="修饰节点"><a href="#修饰节点" class="headerlink" title="修饰节点"></a>修饰节点</h5><ul>
-<li><p>定义：</p>
-<ul>
-<li>修饰节点只包含一个子节点，接受子节点返回的状态。</li>
-<li>可以自由组合使用</li>
-<li>根据自身的参数估算子节点结果，可以根据设置重新得到一个子节点结果（反相器）或者设置子节点频率（重复器、限制器）。</li>
-</ul>
-</li>
-<li><p>反相器：NOT标识符，接受与其子节点返回状态相反的结果。</p>
-</li>
-<li><p>重复器：重复估算子节点特定的次数，直至满足修饰节点定义的条件。</p>
-</li>
-<li><p>限制器：限制子节点估算次数。</p>
-</li>
-</ul>
-<h5 id="模糊逻辑"><a href="#模糊逻辑" class="headerlink" title="模糊逻辑"></a>模糊逻辑</h5><ul>
-<li><p>在以往的二元逻辑中，基本只有true和false。但是在模糊逻辑中，数值是<code>[0,1]</code>，在这个区间内的值代表着一种模糊的状态。</p>
-</li>
-<li><p>三个步骤</p>
-<ul>
-<li>模糊化：根据隶属度函数从具体的输入得到对模糊集隶属度的过程。</li>
-<li>推理方法：从模糊规则和输入对相关模糊集的隶属度得到模糊结论的方法。</li>
-<li>去模糊化：将模糊结论转化为具体的、精确的输出的过程。</li>
-</ul>
-</li>
-<li><p>这部分的内容请移步<a href="https://blog.csdn.net/Jurbo/article/details/75949360" target="_blank" rel="noopener">游戏开发中的人工智能（十）：模糊逻辑</a> 。 本书模糊逻辑部分根本就是不完整的，内容质量非常的差。</p>
-</li>
-</ul>
-
         </div>
         
-        <div class="level is-size-7 is-uppercase">
+        
+        <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/Unity3D/">Unity3D</a>
+                <a class="button is-size-7 is-light" href="/2020/11/11/CPU运行笔记/#more">阅读更多</a>
                 </div>
             </div>
         </div>
-        
         
         
     </div>
@@ -273,26 +197,7 @@
 
 
 
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/09/19/2018-9-19-计算机组成原理：1、组成原理到底研究的什么/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">计算机组成原理：1、组成原理到底研究的什么</span>
-            </a>
-        </div>
-        
-        
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2018/07/20/2018-7-20-开发ECS-style项目的思考/">
-                <span class="level-item">开发ECS style项目的思考</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
+
 
 
 </div>
@@ -1773,7 +1678,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.png" alt="Unity人工智能游戏开发笔记" height="28">
+                    <img src="/images/logo.png" alt="蔡华的博客" height="28">
                 
                 </a>
                 <p class="is-size-7">
