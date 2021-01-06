@@ -152,6 +152,56 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-03-23T08:07:00.000Z">2018-03-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/03/23/2018-3-23-Unity-ECS：C-Job-System/">Unity ECS：C# Job System</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="Job-system"><a href="#Job-system" class="headerlink" title="Job system"></a>Job system</h3><h4 id="Job-system解决了什么问题"><a href="#Job-system解决了什么问题" class="headerlink" title="Job system解决了什么问题"></a>Job system解决了什么问题</h4><ul>
+<li>unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/03/23/2018-3-23-Unity-ECS：C-Job-System/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2018-03-21T17:07:00.000Z">2018-03-22</time>
                 
                 <div class="level-item">
@@ -617,60 +667,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-18T17:04:30.000Z">2017-11-19</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/19/每天一点UWA：第十六周/">每天一点UWA：第十六周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="Texture"><a href="#Texture" class="headerlink" title="Texture"></a>Texture</h2><h4 id="如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？"><a href="#如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？" class="headerlink" title="如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？"></a>如何处理ETC压缩完图片质量模糊和ARGB32内存占用太大这种关系？</h4><ul>
-<li>使用ETC压缩的图片尽量减少过渡，这是美术制作时需要注意的，很多情况下并不需要明显的过渡，只是需要半透明而已；</li>
-<li>当然，有部分过渡色是必须的，这时候就要把相关小图整合到一张RGBA32的图片上；</li>
-<li>在资源管理上入手。一般情况下，我们是允许部分资源使用RGBA32，但是要注意，及时卸载掉不使用的资源，以保证内存峰值在可控范围内。</li>
-<li>果ETC压&gt; 缩效果不好的，会使用RGBA32并降一个尺寸规格来压缩，这样虽然图片会模糊点，但是过渡还是平滑的。</li>
-</ul>
-<h4 id="ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。"><a href="#ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。" class="headerlink" title="ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。"></a>ASTC格式并不是所有机型都支持，在Android端只有配有高端Mali芯片的机器才支持，对于不支持的，引擎会将其解压成RGBA32进行处理，所以图片中的内存值过大，很可能是项目在不支持ASTC格式的设备上所看到的结果。</h4>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/19/每天一点UWA：第十六周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -739,7 +735,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        127
+                        128
                     </p>
                 </div>
             </div>
@@ -811,7 +807,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">68</span>
+                <span class="level-item tag">69</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -876,6 +872,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
                     <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -924,19 +933,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
-                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -948,6 +944,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/12/">
@@ -1432,7 +1439,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">28</span>
+                        <span class="tag is-grey">29</span>
                     </a>
                 </div>
                 
@@ -1519,6 +1526,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
                     <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1567,19 +1587,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
-                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1591,6 +1598,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/12/">
@@ -2075,7 +2093,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">28</span>
+                        <span class="tag is-grey">29</span>
                     </a>
                 </div>
                 
@@ -2156,7 +2174,7 @@
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2020 蔡华&nbsp;
+                &copy; 2021 蔡华&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
                 </p>

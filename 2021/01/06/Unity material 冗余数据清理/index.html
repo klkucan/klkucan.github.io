@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+<title>Unity material 冗余数据清理 - 蔡华的博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="问题 做如下操作： 创建一个material文件，设置shader和texture。获得此时mat文件的内容。 对这个material换几个不同的shader，并且分别在不同的shader中选中了一些texture后，最终还原为初次的shader和texture。获取此时mat文件的内容。   可以看到，文件中保存了一些过程中用到的shader的变量。例子中就是多了一些纹理和颜色的数据。 为什么原">
+<meta name="keywords" content="Unity3D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity material 冗余数据清理">
+<meta property="og:url" content="https://caihua.tech/2021/01/06/Unity material 冗余数据清理/index.html">
+<meta property="og:site_name" content="蔡华的博客">
+<meta property="og:description" content="问题 做如下操作： 创建一个material文件，设置shader和texture。获得此时mat文件的内容。 对这个material换几个不同的shader，并且分别在不同的shader中选中了一些texture后，最终还原为初次的shader和texture。获取此时mat文件的内容。   可以看到，文件中保存了一些过程中用到的shader的变量。例子中就是多了一些纹理和颜色的数据。 为什么原">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://caihua.tech/images/og_image.png">
+<meta property="og:updated_time" content="2021-01-06T10:22:29.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity material 冗余数据清理">
+<meta name="twitter:description" content="问题 做如下操作： 创建一个material文件，设置shader和texture。获得此时mat文件的内容。 对这个material换几个不同的shader，并且分别在不同的shader中选中了一些texture后，最终还原为初次的shader和texture。获取此时mat文件的内容。   可以看到，文件中保存了一些过程中用到的shader的变量。例子中就是多了一些纹理和颜色的数据。 为什么原">
+<meta name="twitter:image" content="https://caihua.tech/images/og_image.png">
+
+
+
+
+
+
+
+<link rel="icon" href="/images/log.png">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/idea.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-86194707-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-86194707-1');
+</script>
+
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Unity material 冗余数据清理" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">主页</a>
+                
+                <a class="navbar-item" href="/archives">归档</a>
+                
+                <a class="navbar-item" href="/categories">分类</a>
+                
+                <a class="navbar-item" href="/tags">标签</a>
+                
+                <a class="navbar-item" href="/about">我</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Unity material 冗余数据清理
+            
+        </h1>
+        <div class="content">
+            <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li>做如下操作：<ul>
+<li>创建一个material文件，设置shader和texture。获得此时mat文件的内容。</li>
+<li>对这个material换几个不同的shader，并且分别在不同的shader中选中了一些texture后，最终还原为初次的shader和texture。获取此时mat文件的内容。</li>
+</ul>
+</li>
+<li>可以看到，文件中保存了一些过程中用到的shader的变量。例子中就是多了一些纹理和颜色的数据。</li>
+<li>为什么原始的mat会多出这么多当前shader中没有的变量呢？这是因为一个material创建之初，默认给了standard这个shader，所以就保留了这个shader中的变量。</li>
+<li>PS：下面的YAML文件中，第一个是原始的mat文件，第二个是修改后再还原的。</li>
+</ul>
+<a id="more"></a>
+
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">%YAML</span> <span class="hljs-number">1.1</span></span><br><span class="line"><span class="hljs-string">%TAG</span> <span class="hljs-type">!u</span><span class="hljs-string">!</span> <span class="hljs-attr">tag:unity3d.com,2011:</span></span><br><span class="line"><span class="hljs-bullet">-</span><span class="hljs-bullet">--</span> <span class="hljs-type">!u</span><span class="hljs-string">!21</span> <span class="hljs-string">&amp;2100000</span></span><br><span class="line"><span class="hljs-attr">Material:</span></span><br><span class="line"><span class="hljs-attr">  serializedVersion:</span> <span class="hljs-number">6</span></span><br><span class="line"><span class="hljs-attr">  m_ObjectHideFlags:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CorrespondingSourceObject:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabInstance:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabAsset:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_Name:</span> <span class="hljs-string">demo</span></span><br><span class="line"><span class="hljs-attr">  m_Shader:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">4800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">9</span><span class="hljs-string">d51725fb9bb3084e93cab0ba3655a49,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_ShaderKeywords:</span> <span class="hljs-string">_WIGGLE_ON</span> <span class="hljs-string">_WIND_ON</span></span><br><span class="line"><span class="hljs-attr">  m_LightmapFlags:</span> <span class="hljs-number">4</span></span><br><span class="line"><span class="hljs-attr">  m_EnableInstancingVariants:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_DoubleSidedGI:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CustomRenderQueue:</span> <span class="hljs-bullet">-1</span></span><br><span class="line"><span class="hljs-attr">  stringTagMap:</span> <span class="hljs-string">&#123;&#125;</span></span><br><span class="line"><span class="hljs-attr">  disabledShaderPasses:</span> <span class="hljs-string">[]</span></span><br><span class="line"><span class="hljs-attr">  m_SavedProperties:</span></span><br><span class="line"><span class="hljs-attr">    serializedVersion:</span> <span class="hljs-number">3</span></span><br><span class="line"><span class="hljs-attr">    m_TexEnvs:</span></span><br><span class="line"><span class="hljs-attr">    - _BumpMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailAlbedoMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailMask:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailNormalMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _EmissionMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _MainTex:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">41</span><span class="hljs-string">bc79d092683d14da52878e3ee35663,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _MetallicGlossMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _OcclusionMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _ParallaxMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _ToonRamp:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">23</span><span class="hljs-string">a1485968bc8b246b3c0db15cae6a71,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _texcoord:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    m_Floats:</span></span><br><span class="line"><span class="hljs-attr">    - _BumpScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Cutoff:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _DetailNormalMapScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _DstBlend:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _Float2:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _GlossMapScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Glossiness:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _GlossyReflections:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Metallic:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _Mode:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _OcclusionStrength:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Parallax:</span> <span class="hljs-number">0.02</span></span><br><span class="line"><span class="hljs-attr">    - _RimOffset:</span> <span class="hljs-number">0.24</span></span><br><span class="line"><span class="hljs-attr">    - _RimPower:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _SmoothnessTextureChannel:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _SpecularHighlights:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _SrcBlend:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _UVSec:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _Wiggle:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WiggleStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _Wind:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WindStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _ZWrite:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - __dirty:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    m_Colors:</span></span><br><span class="line"><span class="hljs-attr">    - _Color:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _EmissionColor:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _RimColor:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0.8758622</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">%YAML</span> <span class="hljs-number">1.1</span></span><br><span class="line"><span class="hljs-string">%TAG</span> <span class="hljs-type">!u</span><span class="hljs-string">!</span> <span class="hljs-attr">tag:unity3d.com,2011:</span></span><br><span class="line"><span class="hljs-bullet">-</span><span class="hljs-bullet">--</span> <span class="hljs-type">!u</span><span class="hljs-string">!21</span> <span class="hljs-string">&amp;2100000</span></span><br><span class="line"><span class="hljs-attr">Material:</span></span><br><span class="line"><span class="hljs-attr">  serializedVersion:</span> <span class="hljs-number">6</span></span><br><span class="line"><span class="hljs-attr">  m_ObjectHideFlags:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CorrespondingSourceObject:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabInstance:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabAsset:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_Name:</span> <span class="hljs-string">demo</span></span><br><span class="line"><span class="hljs-attr">  m_Shader:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">4800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">9</span><span class="hljs-string">d51725fb9bb3084e93cab0ba3655a49,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_ShaderKeywords:</span> <span class="hljs-string">YG_ON</span> <span class="hljs-string">_WIGGLE_ON</span> <span class="hljs-string">_WIND_ON</span></span><br><span class="line"><span class="hljs-attr">  m_LightmapFlags:</span> <span class="hljs-number">4</span></span><br><span class="line"><span class="hljs-attr">  m_EnableInstancingVariants:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_DoubleSidedGI:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CustomRenderQueue:</span> <span class="hljs-bullet">-1</span></span><br><span class="line"><span class="hljs-attr">  stringTagMap:</span> <span class="hljs-string">&#123;&#125;</span></span><br><span class="line"><span class="hljs-attr">  disabledShaderPasses:</span> <span class="hljs-string">[]</span></span><br><span class="line"><span class="hljs-attr">  m_SavedProperties:</span></span><br><span class="line"><span class="hljs-attr">    serializedVersion:</span> <span class="hljs-number">3</span></span><br><span class="line"><span class="hljs-attr">    m_TexEnvs:</span></span><br><span class="line"><span class="hljs-attr">    - _BumpMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailAlbedoMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailMask:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _DetailNormalMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _EmissionMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _MainTex:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">41</span><span class="hljs-string">bc79d092683d14da52878e3ee35663,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _MainTex2:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">328688e6713</span><span class="hljs-string">a72148920f5b60c4a0a94,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _MetallicGlossMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _OcclusionMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _ParallaxMap:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _TextureSample3:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">6935</span><span class="hljs-string">b77838fc2bb46abd6cc5b1f8edc7,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _ToonRamp:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">23</span><span class="hljs-string">a1485968bc8b246b3c0db15cae6a71,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _texcoord:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    m_Floats:</span></span><br><span class="line"><span class="hljs-attr">    - _BumpScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Cutoff:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _DetailNormalMapScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _DstBlend:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _EndDitheringFade:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Float2:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _GlossMapScale:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Glossiness:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _GlossyReflections:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Metallic:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _Mode:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _OcclusionStrength:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _Parallax:</span> <span class="hljs-number">0.02</span></span><br><span class="line"><span class="hljs-attr">    - _RimOffset:</span> <span class="hljs-number">0.24</span></span><br><span class="line"><span class="hljs-attr">    - _RimPower:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _SmoothnessTextureChannel:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _SpecularHighlights:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _SrcBlend:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _StartDitheringFade:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _UVSec:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">    - _Wiggle:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WiggleStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _Wind:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WindStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _ZWrite:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - __dirty:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - yg:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    m_Colors:</span></span><br><span class="line"><span class="hljs-attr">    - _Color:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _Color2:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _Color9:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0.17</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">0.17</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0.17</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _EmissionColor:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _RimColor:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0.8758622</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="这个问题带来什么结果"><a href="#这个问题带来什么结果" class="headerlink" title="这个问题带来什么结果"></a>这个问题带来什么结果</h2><ul>
+<li>这一现象导致的问题是打包时会把已经不需要的资源进行打包。</li>
+<li>通过unity的AssetBundleBrowser工具可以明确看到在打包时，出现了不需要的texture文件。</li>
+</ul>
+<h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><ul>
+<li>参考了网上的一些代码，修改后测试可以。</li>
+<li>目前看到的mat文件有两种格式，下面的代码通用。</li>
+</ul>
+<figure class="highlight csharp hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">using</span> UnityEditor;</span><br><span class="line"><span class="hljs-keyword">using</span> UnityEngine;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MatTools</span> : <span class="hljs-title">Editor</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="hljs-meta">MenuItem(<span class="hljs-meta-string">"Tools/ClearMatProperties"</span>)</span>]</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ClearMatProperties</span>(<span class="hljs-params"></span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        UnityEngine.Object[] objs = Selection.GetFiltered(<span class="hljs-keyword">typeof</span>(Material), SelectionMode.DeepAssets);</span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; objs.Length; ++i)</span><br><span class="line">        &#123;</span><br><span class="line">            Material mat = objs[i] <span class="hljs-keyword">as</span> Material;</span><br><span class="line"></span><br><span class="line">            <span class="hljs-keyword">if</span> (mat)</span><br><span class="line">            &#123;</span><br><span class="line">                SerializedObject psSource = <span class="hljs-keyword">new</span> SerializedObject(mat);</span><br><span class="line">                SerializedProperty emissionProperty = psSource.FindProperty(<span class="hljs-string">"m_SavedProperties"</span>);</span><br><span class="line">                SerializedProperty texEnvs = emissionProperty.FindPropertyRelative(<span class="hljs-string">"m_TexEnvs"</span>);</span><br><span class="line">                SerializedProperty floats = emissionProperty.FindPropertyRelative(<span class="hljs-string">"m_Floats"</span>);</span><br><span class="line">                SerializedProperty colos = emissionProperty.FindPropertyRelative(<span class="hljs-string">"m_Colors"</span>);</span><br><span class="line"></span><br><span class="line">                CleanMaterialSerializedProperty(texEnvs, mat);</span><br><span class="line">                CleanMaterialSerializedProperty(floats, mat);</span><br><span class="line">                CleanMaterialSerializedProperty(colos, mat);</span><br><span class="line"></span><br><span class="line">                psSource.ApplyModifiedProperties();</span><br><span class="line">                EditorUtility.SetDirty(mat);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        AssetDatabase.SaveAssets();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;summary&gt;</span></span></span><br><span class="line">    <span class="hljs-comment"><span class="hljs-doctag">///</span> true: has useless propeties</span></span><br><span class="line">    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;/summary&gt;</span></span></span><br><span class="line">    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="property"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="hljs-comment"><span class="hljs-doctag">///</span> <span class="hljs-doctag">&lt;param name="mat"&gt;</span><span class="hljs-doctag">&lt;/param&gt;</span></span></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CleanMaterialSerializedProperty</span>(<span class="hljs-params">SerializedProperty property, Material mat</span>)</span></span><br><span class="line"><span class="hljs-function"></span>    &#123;</span><br><span class="line">        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = property.arraySize - <span class="hljs-number">1</span>; j &gt;= <span class="hljs-number">0</span>; j--)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="hljs-keyword">string</span> propertyName = property.GetArrayElementAtIndex(j).displayName;</span><br><span class="line">            <span class="hljs-comment">//string propertyName = property.GetArrayElementAtIndex(j).FindPropertyRelative("first").FindPropertyRelative("name").stringValue;</span></span><br><span class="line">            Debug.Log(<span class="hljs-string">"Find property in serialized object : "</span> + propertyName);</span><br><span class="line">            <span class="hljs-keyword">if</span> (!mat.HasProperty(propertyName))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="hljs-keyword">if</span> (propertyName.Equals(<span class="hljs-string">"_MainTex"</span>))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="hljs-comment">//_MainTex是内建属性，是置空不删除，否则UITexture等控件在获取mat.maintexture的时候会报错</span></span><br><span class="line">                    <span class="hljs-keyword">if</span> (property.GetArrayElementAtIndex(j).FindPropertyRelative(<span class="hljs-string">"second"</span>).FindPropertyRelative(<span class="hljs-string">"m_Texture"</span>).objectReferenceValue != <span class="hljs-literal">null</span>)</span><br><span class="line">                    &#123;</span><br><span class="line">                        property.GetArrayElementAtIndex(j).FindPropertyRelative(<span class="hljs-string">"second"</span>).FindPropertyRelative(<span class="hljs-string">"m_Texture"</span>).objectReferenceValue = <span class="hljs-literal">null</span>;</span><br><span class="line">                        Debug.Log(<span class="hljs-string">"Set _MainTex is null"</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="hljs-keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                    property.DeleteArrayElementAtIndex(j);</span><br><span class="line">                    Debug.Log(<span class="hljs-string">"Delete property in serialized object : "</span> + propertyName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>工具执行完后的mat文件，对照shader文件可以发现清理了所有的不必要的变量。</li>
+</ul>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-string">%YAML</span> <span class="hljs-number">1.1</span></span><br><span class="line"><span class="hljs-string">%TAG</span> <span class="hljs-type">!u</span><span class="hljs-string">!</span> <span class="hljs-attr">tag:unity3d.com,2011:</span></span><br><span class="line"><span class="hljs-bullet">-</span><span class="hljs-bullet">--</span> <span class="hljs-type">!u</span><span class="hljs-string">!21</span> <span class="hljs-string">&amp;2100000</span></span><br><span class="line"><span class="hljs-attr">Material:</span></span><br><span class="line"><span class="hljs-attr">  serializedVersion:</span> <span class="hljs-number">6</span></span><br><span class="line"><span class="hljs-attr">  m_ObjectHideFlags:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CorrespondingSourceObject:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabInstance:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_PrefabAsset:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_Name:</span> <span class="hljs-string">demo</span></span><br><span class="line"><span class="hljs-attr">  m_Shader:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">4800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">9</span><span class="hljs-string">d51725fb9bb3084e93cab0ba3655a49,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">  m_ShaderKeywords:</span> <span class="hljs-string">YG_ON</span> <span class="hljs-string">_WIGGLE_ON</span> <span class="hljs-string">_WIND_ON</span></span><br><span class="line"><span class="hljs-attr">  m_LightmapFlags:</span> <span class="hljs-number">4</span></span><br><span class="line"><span class="hljs-attr">  m_EnableInstancingVariants:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_DoubleSidedGI:</span> <span class="hljs-number">0</span></span><br><span class="line"><span class="hljs-attr">  m_CustomRenderQueue:</span> <span class="hljs-bullet">-1</span></span><br><span class="line"><span class="hljs-attr">  stringTagMap:</span> <span class="hljs-string">&#123;&#125;</span></span><br><span class="line"><span class="hljs-attr">  disabledShaderPasses:</span> <span class="hljs-string">[]</span></span><br><span class="line"><span class="hljs-attr">  m_SavedProperties:</span></span><br><span class="line"><span class="hljs-attr">    serializedVersion:</span> <span class="hljs-number">3</span></span><br><span class="line"><span class="hljs-attr">    m_TexEnvs:</span></span><br><span class="line"><span class="hljs-attr">    - _MainTex:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">41</span><span class="hljs-string">bc79d092683d14da52878e3ee35663,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _ToonRamp:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">2800000</span><span class="hljs-string">,</span> <span class="hljs-attr">guid:</span> <span class="hljs-number">23</span><span class="hljs-string">a1485968bc8b246b3c0db15cae6a71,</span> <span class="hljs-attr">type:</span> <span class="hljs-number">3</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _texcoord:</span></span><br><span class="line"><span class="hljs-attr">        m_Texture:</span> <span class="hljs-string">&#123;fileID:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Scale:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">        m_Offset:</span> <span class="hljs-string">&#123;x:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">y:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    m_Floats:</span></span><br><span class="line"><span class="hljs-attr">    - _Cutoff:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _Float2:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _RimOffset:</span> <span class="hljs-number">0.24</span></span><br><span class="line"><span class="hljs-attr">    - _RimPower:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _Wiggle:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WiggleStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - _Wind:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    - _WindStrenght:</span> <span class="hljs-number">0.5</span></span><br><span class="line"><span class="hljs-attr">    - __dirty:</span> <span class="hljs-number">1</span></span><br><span class="line"><span class="hljs-attr">    m_Colors:</span></span><br><span class="line"><span class="hljs-attr">    - _Color:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">1</span><span class="hljs-string">&#125;</span></span><br><span class="line"><span class="hljs-attr">    - _RimColor:</span> <span class="hljs-string">&#123;r:</span> <span class="hljs-number">0</span><span class="hljs-string">,</span> <span class="hljs-attr">g:</span> <span class="hljs-number">1</span><span class="hljs-string">,</span> <span class="hljs-attr">b:</span> <span class="hljs-number">0.8758622</span><span class="hljs-string">,</span> <span class="hljs-attr">a:</span> <span class="hljs-number">0</span><span class="hljs-string">&#125;</span></span><br></pre></td></tr></table></figure>
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Unity3D/">Unity3D</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/12/25/SRP笔记/">
+                <span class="level-item">SRP学习笔记</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered" style="flex-shrink: 1">
+                <div>
+                    
+                        <img class="image is-128x128 has-mb-6" src="/images/avatar.png" alt="蔡华">
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        蔡华
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        游戏开发者
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Xi&#39;an China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        128
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        16
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/klkucan" target="_blank">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/klkucan">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+    
+        
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/杂记/">
+            <span class="level-start">
+                <span class="level-item">杂记</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">4</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/游戏开发/">
+            <span class="level-start">
+                <span class="level-item">游戏开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">69</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/移动开发/">
+            <span class="level-start">
+                <span class="level-item">移动开发</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">9</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/编程语言/">
+            <span class="level-start">
+                <span class="level-item">编程语言</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">28</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/计算机基础/">
+            <span class="level-start">
+                <span class="level-item">计算机基础</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/软件设计/">
+            <span class="level-start">
+                <span class="level-item">软件设计</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a> <a href="/tags/计算机基础/" style="font-size: 10px;">计算机基础</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
+                    <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
+                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/计算机基础/">
+                        <span class="tag">计算机基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
+                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
+                    <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
+                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
+                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
+                    <p class="is-size-7 is-uppercase">
+                        
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2018/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2018</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">8</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">7</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/08/">
+                <span class="level-start">
+                    <span class="level-item">八月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">10</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/07/">
+                <span class="level-start">
+                    <span class="level-item">七月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/04/">
+                <span class="level-start">
+                    <span class="level-item">四月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/03/">
+                <span class="level-start">
+                    <span class="level-item">三月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2017/02/">
+                <span class="level-start">
+                    <span class="level-item">二月 2017</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">5</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/12/">
+                <span class="level-start">
+                    <span class="level-item">十二月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">3</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2016/09/">
+                <span class="level-start">
+                    <span class="level-item">九月 2016</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">9</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/3D数学/">
+                        <span class="tag">3D数学</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/CPP/">
+                        <span class="tag">CPP</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Java/">
+                        <span class="tag">Java</span>
+                        <span class="tag is-grey">13</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Lua/">
+                        <span class="tag">Lua</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OpenGL/">
+                        <span class="tag">OpenGL</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/PHP/">
+                        <span class="tag">PHP</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/UWA/">
+                        <span class="tag">UWA</span>
+                        <span class="tag is-grey">25</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity3D/">
+                        <span class="tag">Unity3D</span>
+                        <span class="tag is-grey">29</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Unity預計算即時GI/">
+                        <span class="tag">Unity預計算即時GI</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/VR-AR/">
+                        <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/iOS学习笔记/">
+                        <span class="tag">iOS学习笔记</span>
+                        <span class="tag is-grey">9</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/并发模型/">
+                        <span class="tag">并发模型</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/杂记/">
+                        <span class="tag">杂记</span>
+                        <span class="tag is-grey">4</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/游戏设计模式/">
+                        <span class="tag">游戏设计模式</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/组成原理/">
+                        <span class="tag">组成原理</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/计算机基础/">
+                        <span class="tag">计算机基础</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Unity material 冗余数据清理" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2021 蔡华&nbsp;
+                Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

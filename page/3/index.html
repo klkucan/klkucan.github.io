@@ -141,6 +141,66 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-04-27T08:48:00.000Z">2019-04-27</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/">JVM学习笔记4：方法调用</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="重载与重写"><a href="#重载与重写" class="headerlink" title="重载与重写"></a>重载与重写</h2><ul>
+<li><p>重载的方法在编译阶段完成识别，调用是根据参数<strong>声明类型</strong>选择重载方法。选择分三个阶段：</p>
+<ul>
+<li>在不考虑对基本类型自动装拆箱（auto-boxing，auto-unboxing），以及可变长参数的情况下选取重载方法；</li>
+<li>如果在第 1 个阶段中没有找到适配的方法，那么在允许自动装拆箱，但不允许可变长参数的情况下选取重载方法；</li>
+<li>如果在第 2 个阶段中没有找到适配的方法，那么在允许自动装拆箱以及可变长参数的情况下选取重载方法。 </li>
+</ul>
+</li>
+<li><p>如果 Java 编译器在同一个阶段中找到了多个适配的方法，那么它会在其中选择一个最为贴切的，而决定贴切程度的一个关键就是形式参数类型的继承关系。</p>
+</li>
+<li><p>下面代码中第一次调用会是函数2，因为null可以匹配object和string，但是因为string是Object的子类，所以编译器认为string合适。</p>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/04/27/2019-4-27-JVM学习笔记4：方法调用/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-04-16T02:38:00.000Z">2019-04-16</time>
                 
                 <div class="level-item">
@@ -662,82 +722,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-19T12:47:00.000Z">2018-09-19</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/19/2018-9-19-计算机组成原理：2、基本组成/">计算机组成原理：2、基本组成</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="冯·诺依曼计算机基本概念"><a href="#冯·诺依曼计算机基本概念" class="headerlink" title="冯·诺依曼计算机基本概念"></a>冯·诺依曼计算机基本概念</h3><blockquote>
-<p>本文中的内存结构只是课程中用到的一个特定的机器的设计，并非所有的计算机都是这样的。</p>
-</blockquote>
-<ul>
-<li><p>现在的计算机都是程序存储计算机，也就是冯诺依曼计算机。</p>
-</li>
-<li><p>特点：</p>
-<ul>
-<li>计算机有五大部件组成：输入、输出、控制器（CU）、运算器(ALU)、存储器(主存、辅存)</li>
-<li>指令和数据以同等地位存于存储器中，按地址寻访。</li>
-<li>指令和数据按照二进制保存</li>
-<li>指令由操作码和地址码组成（e.g 0001 00001000，0001代表读取，00001000代表要读取 数据在内存（寄存器）中的位置）。</li>
-<li>存储程序，存储在存储器中。</li>
-<li>以运算器为中心。</li>
-</ul>
-</li>
-<li><p>现代计算机：</p>
-<ul>
-<li>ALU + CU = CPU</li>
-<li>CPU + 主存（RAM\ROM\Cache（inter上cache有L1\L2\L3）） = 主机</li>
-<li>输入 + 输出 + 辅存 = IO设备</li>
-<li>主机 + IO = 计算机系统硬件</li>
-</ul>
-</li>
-<li><p>CU控制数据的读取+写入，操作的是存储器，还可以控制指令的执行顺序操作的是运算器。</p>
-</li>
-<li><p>如果以运算器为中心进行硬件设计会是的运算器成为系统的瓶颈（overhead）。所以改进成以存储器为中心，这样可以是的IO设备直接和存储器关联。</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/19/2018-9-19-计算机组成原理：2、基本组成/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -808,7 +792,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        127
+                        128
                     </p>
                 </div>
             </div>
@@ -880,7 +864,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">68</span>
+                <span class="level-item tag">69</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -945,6 +929,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
                     <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -993,19 +990,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
-                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1017,6 +1001,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/12/">
@@ -1501,7 +1496,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">28</span>
+                        <span class="tag is-grey">29</span>
                     </a>
                 </div>
                 
@@ -1588,6 +1583,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
+                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
                     <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1636,19 +1644,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time></div>
-                    <a href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：摄像机操作</a>
-                    <p class="is-size-7 is-uppercase">
-                        
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1660,6 +1655,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/01/">
+                <span class="level-start">
+                    <span class="level-item">一月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2020/12/">
@@ -2144,7 +2150,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Unity3D/">
                         <span class="tag">Unity3D</span>
-                        <span class="tag is-grey">28</span>
+                        <span class="tag is-grey">29</span>
                     </a>
                 </div>
                 
@@ -2225,7 +2231,7 @@
                 
                 </a>
                 <p class="is-size-7">
-                &copy; 2020 蔡华&nbsp;
+                &copy; 2021 蔡华&nbsp;
                 Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
                 
                 </p>
