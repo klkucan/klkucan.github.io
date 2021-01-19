@@ -142,6 +142,201 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-09-26T02:32:00.000Z">2018-09-26</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/">Unity ECS：C# Job System文档总结</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="背景、初衷、目标"><a href="#背景、初衷、目标" class="headerlink" title="背景、初衷、目标"></a>背景、初衷、目标</h3><ul>
+<li>出现的背景、初衷就是：天下苦无多线程久已</li>
+<li>当然这个说法要进一步的约束，首先unity中可以编写多线程代码，但是最大的问题是多线程中无法使用unity API，当然也无法修改component中的数据了。</li>
+<li>目前来看似乎这个技术就是为了能够让开发者使用multithread来操作unity API和component 数据。</li>
+</ul>
+<h3 id="优势和劣势"><a href="#优势和劣势" class="headerlink" title="优势和劣势"></a>优势和劣势</h3><ul>
+<li>多线程就是优势</li>
+<li>可操作的数据类型限制比较大，目前只能是blittable data type</li>
+<li>这个多线程是和unity引擎共享work thread，所以变相的侵占了引擎层的性能。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/09/26/2018-9-26-Unity-ECS：C-Job-System文档总结/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-09-21T12:48:00.000Z">2018-09-21</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/">计算机组成原理：4、存储器概述</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h4><ul>
+<li><p>按照介质</p>
+</li>
+<li><p>按照存取方式</p>
+<ul>
+<li>存取时间与物理地址无关（随机访问）<ul>
+<li>随机存储器（RAM）: 在程序执行过程中可以读写</li>
+<li>制度存储器（ROM）：在程序执行过程中只能读</li>
+</ul>
+</li>
+<li>存取时间与物理地址有关（串行访问）<ul>
+<li>顺序存取存储器：磁带</li>
+<li>直接存取存储器：磁盘</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>按照作用</p>
+<ul>
+<li>主存储器<ul>
+<li>RAM<ul>
+<li>静态RAM（cache）</li>
+<li>动态RAM（内存芯片）</li>
+</ul>
+</li>
+<li>ROM（只读，但是不同的）（BIOS ROM）<ul>
+<li>MROM：Mask Read-Only Memory，中文全称“掩模式只读存储器”。掩模式只读存储器的内容是由半导体制造厂按用户提出的要求在芯片的生产过程中直接写入的，写入之后任何人都无法改变其内容。</li>
+<li>PROM：可编程ROM</li>
+<li>EPROM：可擦除可编程ROM，是一种断电后仍能保留数据的计算机储存芯片。一旦编程完成后，EPROM只能用强紫外线照射来擦除。</li>
+<li>EEPROM：EEPROM（带电可擦写可编程读写存储器）是用户可更改的只读存储器<br>（ROM），其可通过高于普通电压的作用来擦除和重编程（重写）。不像EPROM芯片，EEPROM不需从计算机中取出即可修改。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Flash Memory → SSD</li>
+<li>高速缓存存储器（Cache）</li>
+<li>辅助存储器</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/09/21/2018-9-21-计算机组成原理：4、存储器概述/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2018-09-20T12:48:00.000Z">2018-09-20</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2018/09/20/2018-9-20-计算机组成原理：3、总线/">计算机组成原理：3、总线</a>
+            
+        </h1>
+        <div class="content">
+            <h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><ul>
+<li>总线（bus）：是连接各个部件的信息传输线，是各个部件共享的传输介质。</li>
+<li>一条总线是总是主模块向从模块发出地址和命令，但是在分离式通信时是没有从模块的。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2018/09/20/2018-9-20-计算机组成原理：3、总线/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2018-09-19T12:47:00.000Z">2018-09-19</time>
                 
                 <div class="level-item">
@@ -528,162 +723,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-04-02T08:33:43.000Z">2018-04-02</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/软件设计/">软件设计</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/04/02/2018-4-2-七周七并发模型：通信顺序进程/">七周七并发模式：通信顺序进程（CSP）</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><h4 id="CSP"><a href="#CSP" class="headerlink" title="CSP"></a>CSP</h4><blockquote>
-<p>与actor模型类似，通信顺序进程（Communicating Sequential Processe，CSP）模型也是由独立的、并发执行的实体所组成，实体之间也是通过发送消息进行通信。但两种模型的重要差别是：CSP模型不关注发送消息的实体，而是关注发送消息时使用的channel（通道）。channel是第一类对象，它不像进程那样与信箱是紧耦合的，而是可以单独创建和读写，并在进程之间传递。</p>
-</blockquote>
-<ul>
-<li>从这段话可以看出CSP本质上也是独立运行的执行单元，但是它没有mailbox，那么它执行的数据来自哪里呢？来自于channel。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/04/02/2018-4-2-七周七并发模型：通信顺序进程/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-03-27T12:07:00.000Z">2018-03-27</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/03/27/2018-3-27-Unity-ECS：基本组件和功能/">Unity ECS：基本组件和功能</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="ECS的组成"><a href="#ECS的组成" class="headerlink" title="ECS的组成"></a>ECS的组成</h3><h4 id="Entity："><a href="#Entity：" class="headerlink" title="Entity："></a>Entity：</h4><ul>
-<li>近似一个轻量级的GameObject对象。</li>
-<li>内部没有什么东西，这个和GameObject还不一样，毕竟在GameObject的继承链中具有很多成员和函数。</li>
-<li>可以添加和移除组件</li>
-<li>具有一个ID，这个是唯一稳定的。这个ID是entity在被保存时的唯一引用。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/03/27/2018-3-27-Unity-ECS：基本组件和功能/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-03-23T08:07:00.000Z">2018-03-23</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/03/23/2018-3-23-Unity-ECS：C-Job-System/">Unity ECS：C# Job System</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="Job-system"><a href="#Job-system" class="headerlink" title="Job system"></a>Job system</h3><h4 id="Job-system解决了什么问题"><a href="#Job-system解决了什么问题" class="headerlink" title="Job system解决了什么问题"></a>Job system解决了什么问题</h4><ul>
-<li>unity是支持多线程的，虽然有些缺陷。但是我们在代码里面编写大量的线程，即使使用thread pool也无法避免上下文切换的问题。而Job System本质上还是线程(wrok thread)，只不过它的工作线程的数量和CPU逻辑上的核数量一致，这样就避免了上下文切换。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/03/23/2018-3-23-Unity-ECS：C-Job-System/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -708,7 +747,7 @@
             
             <li><span class="pagination-ellipsis has-text-black-ter">&hellip;</span></li>
             
-            <li><a class="pagination-link has-text-black-ter" href="/page/13/">13</a></li>
+            <li><a class="pagination-link has-text-black-ter" href="/page/14/">14</a></li>
             
         </ul>
     </nav>
@@ -756,7 +795,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        128
+                        131
                     </p>
                 </div>
             </div>
@@ -776,7 +815,7 @@
                         标签
                     </p>
                     <p class="title has-text-weight-normal">
-                        16
+                        17
                     </p>
                 </div>
             </div>
@@ -828,7 +867,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">75</span>
+                <span class="level-item tag">78</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -874,7 +913,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11.11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
     </div>
 </div>
 
@@ -888,6 +927,45 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:25:44.883Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:17:56.040Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:04:38.152Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -915,45 +993,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
-                    <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
-                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
-                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -972,7 +1011,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">4</span>
                 </span>
             </a>
         </li>
@@ -1481,6 +1520,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/VR-AR/">
                         <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vulkan/">
+                        <span class="tag">Vulkan</span>
                         <span class="tag is-grey">3</span>
                     </a>
                 </div>
@@ -1547,6 +1593,45 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:25:44.883Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:17:56.040Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-19T07:04:38.152Z">2021-01-19</time></div>
+                    <a href="/2021/01/19/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
                     <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
                     <p class="is-size-7 is-uppercase">
@@ -1562,45 +1647,6 @@
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
                     <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-11T11:18:00.000Z">2020-11-11</time></div>
-                    <a href="/2020/11/11/CPU运行笔记/" class="has-link-black-ter is-size-6">CPU运行笔记</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time></div>
-                    <a href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第三周：shader的使用</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time></div>
-                    <a href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/" class="has-link-black-ter is-size-6">OpenGL学习笔记 第二周：2D</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -1626,7 +1672,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">4</span>
                 </span>
             </a>
         </li>
@@ -2135,6 +2181,13 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/VR-AR/">
                         <span class="tag">VR/AR</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Vulkan/">
+                        <span class="tag">Vulkan</span>
                         <span class="tag is-grey">3</span>
                     </a>
                 </div>
