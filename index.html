@@ -142,6 +142,222 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/">OpenGL学习笔记：Compute Shader</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>区别于vs 、fs，compute shader虽然从名字上有个shader，但是在用途上是与shader区别开的。</li>
+<li>shader从词义上是着色器的意思，因此它的核心用途是参与渲染。而compute shader可以看做是跑在GPU上的program，它可以完全是不参与渲染，而仅仅是运行一些我们想要的计算。</li>
+</ul>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><ul>
+<li>下面是一个用compute shader反转图片的例子</li>
+</ul>
+<h3 id="shader上的变化"><a href="#shader上的变化" class="headerlink" title="shader上的变化"></a>shader上的变化</h3><ul>
+<li>gl_GlobalInvocationID是一个全局的变量，标记当前是在绘制哪个顶点，依靠这个变量来进行采样，compute shader专用。</li>
+<li>In the compute language, gl_GlobalInvocationID is a derived input variable containing the n-dimensional index of the work invocation within the global work group that the current shader is executing on. The value of gl_GlobalInvocationID is equal to gl_WorkGroupID * gl_WorkGroupSize + gl_LocalInvocationID.</li>
+<li>image2D：a handle for accessing a 2D texture</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/">OpenGL学习笔记：Subroutine</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>Subroutine赋予了代码动态调用shader中函数的能力</li>
+<li>写法比较固定，直接上代码</li>
+</ul>
+<figure class="highlight glsl hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#version 400 core</span></span><br><span class="line">subroutine <span class="hljs-type">vec4</span> SurfaceColor();</span><br><span class="line"><span class="hljs-keyword">uniform</span> <span class="hljs-type">sampler2D</span> U_MainTexture;</span><br><span class="line">subroutine <span class="hljs-keyword">uniform</span> SurfaceColor U_SurfaceColor;</span><br><span class="line"><span class="hljs-keyword">varying</span> <span class="hljs-type">vec3</span> V_Normal;</span><br><span class="line"><span class="hljs-keyword">varying</span> <span class="hljs-type">vec4</span> V_WorldPos;</span><br><span class="line"><span class="hljs-keyword">varying</span> <span class="hljs-type">vec2</span> V_Texcoord;</span><br><span class="line"></span><br><span class="line">subroutine (SurfaceColor) <span class="hljs-type">vec4</span> Ambient()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> <span class="hljs-built_in">texture2D</span>(U_MainTexture,V_Texcoord)*ambientColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subroutine (SurfaceColor) <span class="hljs-type">vec4</span> Diffuse()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> ambientColor+<span class="hljs-built_in">texture2D</span>(U_MainTexture,V_Texcoord)*diffuseColor;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subroutine (SurfaceColor) <span class="hljs-type">vec4</span> Specular()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="hljs-keyword">return</span> ambientColor+<span class="hljs-built_in">texture2D</span>(U_MainTexture,V_Texcoord)*diffuseColor+specularColor+<span class="hljs-type">vec4</span>(<span class="hljs-number">1</span>f, <span class="hljs-number">0.7</span>f, <span class="hljs-number">0.72</span>f,<span class="hljs-number">1.0</span>f);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-type">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="hljs-built_in">gl_FragColor</span>=U_SurfaceColor();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/">OpenGL学习笔记：Instance</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><ul>
+<li>定义多个实例之间不同的数据（posOffsets），类似unity中的constantbuffer数据。</li>
+<li>shader中定义一个变量，代表这这些变化的数据。例子代码中用了位置的偏移量。</li>
+<li>在draw的时候给这个变量赋值，这个和position、normal那些变量的赋值方式是一样的。</li>
+<li>使用glVertexAttribDivisor说明posOffsets的使用频率</li>
+<li>使用glDrawArraysInstanced函数，替换glDrawArrays</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/">OpenGL学习笔记：截图生成图片</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="获得窗口数据"><a href="#获得窗口数据" class="headerlink" title="获得窗口数据"></a>获得窗口数据</h2><ul>
+<li>利用glReadPixels得到屏幕的像素值</li>
+<li>然后利用glTexImage2D获得GPU中的纹理</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time>
                 
                 <div class="level-item">
@@ -465,224 +681,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-09-14T12:56:00.000Z">2020-09-14</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/">OpenGL学习笔记 第三周：shader的使用</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><ul>
-<li>一周时间学会了一件事，怎么把前两周的纯OpenGL绘制改成shader绘制。</li>
-<li>之前对unityshader比较熟悉，因此编写shader本身没啥新收获。但是对于C++代码层面如何的包装shader和调用上收获颇丰。</li>
-<li>学完后更加深入的体会到，shader作为在GPU上执行的函数的意义。同时对于渲染一个物体都需要哪些数据有了更深刻的认知。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2020/09/14/2020-9-18-OpenGL学习笔记-第三周：shader的使用/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-09-11T12:48:00.000Z">2020-09-11</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/">OpenGL学习笔记 第二周：2D</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h4><ul>
-<li><p>glutInitWindowPosition(int x, int y) // 定义窗口位置</p>
-</li>
-<li><p>glViewport(GLint x, GLint y, GLsizei width, GLsizei height) // 定义视口大小</p>
-</li>
-<li><p>glutInitWindowSize(int width, int height) // 定义窗口大小</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2020/09/11/2020-9-11-OpenGL学习笔记-第二周：2D/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-09-10T12:48:00.000Z">2020-09-10</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/">OpenGL学习笔记 第二周：摄像机操作</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="OpenGL中如何设置摄像机"><a href="#OpenGL中如何设置摄像机" class="headerlink" title="OpenGL中如何设置摄像机"></a>OpenGL中如何设置摄像机</h4><ul>
-<li>在OpenGL中设置camera只需要下面的API即可<ul>
-<li>前三个是camera的position，可以理解为眼睛的位置，变量命名很贴切。</li>
-<li>中间三个是视点的位置，可以理解为你看着那里</li>
-<li>后面三个是摄像机的Y轴向量</li>
-<li>实际上center-pos产生的向量是作用于x、z两个轴，因此这9个变量就决定了摄像机的位置和朝向。</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2020/09/10/2020-9-10-OpenGL学习笔记-第二周：摄像机操作/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-09-09T12:48:00.000Z">2020-09-09</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/">OpenGL学习笔记 第二周：光</a>
-            
-        </h1>
-        <div class="content">
-            <h4 id="光源基础"><a href="#光源基础" class="headerlink" title="光源基础"></a>光源基础</h4><ul>
-<li><code>glEnable(GL_LIGHTING)</code> 开启光的使用</li>
-<li><code>glEnable(GL_LIGHT0)</code> 使用第一个光，在OpenGL中默认有8个light可以使用</li>
-</ul>
-<h4 id="DirectionLight"><a href="#DirectionLight" class="headerlink" title="DirectionLight"></a>DirectionLight</h4><ul>
-<li>平行光最重要的属性是位置。可以通过下面的代码设置：</li>
-</ul>
-<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">   float LightPos[] = &#123; 0.0f,1.0f,0.0f,0.0 &#125;;</span><br><span class="line">glLightfv(GL_LIGHT0, GL_POSITION, LightPos);</span><br></pre></td></tr></table></figure>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2020/09/09/2020-9-9-OpenGL学习笔记-第二周：光/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -749,7 +747,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        131
+                        135
                     </p>
                 </div>
             </div>
@@ -821,7 +819,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">78</span>
+                <span class="level-item tag">82</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -867,7 +865,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11.11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 17px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14px;">组成原理</a>
     </div>
 </div>
 
@@ -886,60 +884,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -965,7 +963,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -1439,7 +1437,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -1547,60 +1545,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -1626,7 +1624,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -2100,7 +2098,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 

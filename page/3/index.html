@@ -142,6 +142,224 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-09-07T05:57:00.000Z">2019-09-07</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/">JVM学习笔记11：synchronized的实现</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="synchronized作用于代码块与函数"><a href="#synchronized作用于代码块与函数" class="headerlink" title="synchronized作用于代码块与函数"></a>synchronized作用于代码块与函数</h4><ul>
+<li>当声明 synchronized 代码块时，编译而成的字节码将包含 monitorenter 和 monitorexit 指令。这两种指令均会消耗操作数栈上的一个引用类型的元素（也就是 synchronized 关键字括号里的引用），作为所要加锁解锁的锁对象。</li>
+</ul>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(Object lock)</span> </span>&#123;</span><br><span class="line">   <span class="hljs-keyword">synchronized</span> (lock) &#123;</span><br><span class="line">     lock.hashCode();</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="hljs-comment">// 上面的 Java 代码将编译为下面的字节码</span></span><br><span class="line"> <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(java.lang.Object)</span></span>;</span><br><span class="line">   Code:</span><br><span class="line">      <span class="hljs-number">0</span>: aload_1</span><br><span class="line">      <span class="hljs-number">1</span>: dup</span><br><span class="line">      <span class="hljs-number">2</span>: astore_2</span><br><span class="line">      <span class="hljs-number">3</span>: monitorenter</span><br><span class="line">      <span class="hljs-number">4</span>: aload_1</span><br><span class="line">      <span class="hljs-number">5</span>: invokevirtual java/lang/Object.hashCode:()I</span><br><span class="line">      <span class="hljs-number">8</span>: pop</span><br><span class="line">      <span class="hljs-number">9</span>: aload_2</span><br><span class="line">     <span class="hljs-number">10</span>: monitorexit</span><br><span class="line">     <span class="hljs-number">11</span>: goto          <span class="hljs-number">19</span></span><br><span class="line">     <span class="hljs-number">14</span>: astore_3</span><br><span class="line">     <span class="hljs-number">15</span>: aload_2</span><br><span class="line">     <span class="hljs-number">16</span>: monitorexit</span><br><span class="line">     <span class="hljs-number">17</span>: aload_3</span><br><span class="line">     <span class="hljs-number">18</span>: athrow</span><br><span class="line">     <span class="hljs-number">19</span>: <span class="hljs-keyword">return</span></span><br><span class="line">   Exception table:</span><br><span class="line">      from    to  target type</span><br><span class="line">          <span class="hljs-number">4</span>    <span class="hljs-number">11</span>    <span class="hljs-number">14</span>   any</span><br><span class="line">         <span class="hljs-number">14</span>    <span class="hljs-number">17</span>    <span class="hljs-number">14</span>   any</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/09/07/2019-9-7-JVM学习笔记11：synchronized的实现/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-08-23T05:04:00.000Z">2019-08-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/">JVM学习笔记10：内存模型</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><ul>
+<li>个人感觉这个内存模型的名称很让人迷惑，开始理解的模型是一个数据结构，但是明显这里的内存模型是一个套解决内存可见性和代码乱序执行的技术方案。</li>
+<li>PS：《深入理解java虚拟机：jvm高级特性与最佳实践》中提到的：Java内存模型的主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/08/23/2019-8-24-JVM学习笔记10：内存模型/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-16T11:04:00.000Z">2019-07-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/">JVM学习笔记9：垃圾回收</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="引用计数法与可达性分析"><a href="#引用计数法与可达性分析" class="headerlink" title="引用计数法与可达性分析"></a>引用计数法与可达性分析</h2><ul>
+<li><p>引用计数没啥可说的，就是对堆中的对象记录有多少对象来持有它。在我的理解中最多的应该还是变量来引用，还有如果是与native的代码交互，可能还有指针来持有。</p>
+</li>
+<li><p>可达性是用来解决互相引用问题的，这个算法的实质在于将一系列 GC Roots 作为初始的存活对象合集（live set），然后从该合集出发，探索所有能够被该集合引用到的对象，并将其加入到该集合中，这个过程我们也称之为标记（mark）。最终，未被探索到的对象便是死亡的，是可以回收的。</p>
+</li>
+<li><p>那么什么是 GC Roots 呢？我们可以暂时理解为由堆外指向堆内的引用，一般而言，GC Roots 包括（但不限于）如下几种：</p>
+<ul>
+<li>Java 方法栈桢中的局部变量；</li>
+<li>已加载类的静态变量；</li>
+<li>JNI handles；</li>
+<li>已启动且未停止的 Java 线程。</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/07/16/2019-7-16-JVM学习笔记9：垃圾回收/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-07-09T08:44:00.000Z">2019-07-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/">JVM学习笔记8：Java对象的内存布局</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="对象创建方式"><a href="#对象创建方式" class="headerlink" title="对象创建方式"></a>对象创建方式</h4><ul>
+<li>6种方法创建对象，但是不同的方法对于实例字段的初始化是不同的:<ul>
+<li>直接复制已有的数据到实例化字段：Object.clone 方法和反序列化</li>
+<li>没有初始化实例字段：Unsafe.allocateInstance</li>
+<li>通过调用构造器来初始化实例字段： new 语句和反射机制</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2019/07/09/2019-7-9-JVM学习笔记8：Java对象的内存布局/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2019-06-19T12:59:00.000Z">2019-06-19</time>
                 
                 <div class="level-item">
@@ -456,231 +674,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-03-13T08:55:00.000Z">2019-03-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/编程语言/">编程语言</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/03/13/2019-3-13-JVM学习笔记1：概述/">JVM学习笔记1：概述</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="JVM解决什么问题"><a href="#JVM解决什么问题" class="headerlink" title="JVM解决什么问题"></a>JVM解决什么问题</h2><ul>
-<li>JVM在我的理解与CLR是一回事，本身还是为了解决java代码无法直接编译为机器码。</li>
-<li>对标C#，类型的动态推导等功能是在运行时做的，因此无法做到AOT。就需要虚拟机来做这个事情了。</li>
-<li>如虚函数实现多态这样的情况，JVM中可以简单的获得当前应该调用哪个实现函数，从而优化代码的执行。</li>
-<li>最后，使用虚拟机可以做到代码不考虑具体在哪个平台运行的问题，实现跨平台使用。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/03/13/2019-3-13-JVM学习笔记1：概述/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-02-13T12:51:00.000Z">2019-02-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/">How I build games with Entitas 摘要</a>
-            
-        </h1>
-        <div class="content">
-            <ul>
-<li><a href="https://github.com/sschmid/Entitas-CSharp/wiki/How-I-build-games-with-Entitas-%28FNGGames%29" target="_blank" rel="noopener">这篇文章</a>并不会讲解entitas的功能，作者在文章中主要谈了谈他如何利用entitas开发清晰、稳定和灵活的代码结构。这篇文章可以说是对于ECS的一种实践的总结，同时也是对于Entitas的使用总结。</li>
-<li>文章会介绍如下的话题：<ul>
-<li>定义：数据、逻辑和视图层</li>
-<li>维护它们彼此的独立</li>
-<li>通过接口进行抽象</li>
-<li>IOC</li>
-<li>视图层抽象（视图和视图控制器）</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/02/13/2019-2-13-How-I-build-games-with-Entitas-摘要/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-10-03T10:33:00.000Z">2018-10-03</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/">计算机组成原理：6、高速缓冲存储器</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h4 id="为何使用Cache"><a href="#为何使用Cache" class="headerlink" title="为何使用Cache"></a>为何使用Cache</h4><ul>
-<li>CPU速度太快了</li>
-<li>解决CPU空等问题，但是需要保证的是大多数的数据和指令都在cache中。</li>
-</ul>
-<h5 id="程序访问局部性原理"><a href="#程序访问局部性原理" class="headerlink" title="程序访问局部性原理"></a>程序访问局部性原理</h5><ul>
-<li>时间局部性：当前正在使用的指令和数据，在不久的将来还会被使用。那么这些数据和指令需要放到cache。</li>
-<li>空间局部性：当前正在使用的指令或者数据的相邻的指令或者数据在不久的将来会被使用，那么把当前使用的和相邻的数据和指令放到cache。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/10/03/2018-10-3-计算机组成原理：6、高速缓冲存储器/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-09-30T05:59:00.000Z">2018-09-30</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/计算机基础/">计算机基础</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/">计算机组成原理：5、主存储器</a>
-            
-        </h1>
-        <div class="content">
-            <h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><h4 id="1、基本构成"><a href="#1、基本构成" class="headerlink" title="1、基本构成"></a>1、基本构成</h4><p><img src="https://github.com/klkucan/ImgLib/blob/master/%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E5%AD%98%E5%82%A8%E5%99%A8/%E4%B8%BB%E5%AD%98%E7%BB%93%E6%9E%84.png?raw=true" alt="主存构成"></p>
-<ul>
-<li>结合上图总结一下之前的数据读取的操作<ul>
-<li>CPU在第一个时钟周期时通过地址总线发出要取数据的地址，这个地址是指的存储单元的地址。</li>
-<li>MAR收到后，经过译码器得到指定的存储单元。</li>
-<li>CPU在第二个时钟周期时通过控制总线讲读指令发送到主存储器</li>
-<li>控制电路根据信令来操作读写电路</li>
-<li>将之前得到主存储器地址中的数据写入MDR</li>
-<li>通过数据总线讲MDR中的数据送入到IR或者ACC</li>
-</ul>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2018/09/30/2018-9-30-计算机组成原理：5、主存储器/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -751,7 +744,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        131
+                        135
                     </p>
                 </div>
             </div>
@@ -823,7 +816,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">78</span>
+                <span class="level-item tag">82</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -869,7 +862,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11.11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 17px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14px;">组成原理</a>
     </div>
 </div>
 
@@ -888,60 +881,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -967,7 +960,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -1441,7 +1434,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -1549,60 +1542,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -1628,7 +1621,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -2102,7 +2095,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 

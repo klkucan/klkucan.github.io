@@ -142,6 +142,219 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-22T08:49:12.000Z">2017-12-22</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/22/每天一点UWA：第十九周/">每天一点UWA：第十九周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize-Mesh-Data，对网格文件使用范围比较多的资源有较好的优化效果。-然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize-Mesh-Data这一选项后，打出来包中Mesh上的顶点色会丢失。-请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？"><a href="#在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize-Mesh-Data，对网格文件使用范围比较多的资源有较好的优化效果。-然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize-Mesh-Data这一选项后，打出来包中Mesh上的顶点色会丢失。-请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？" class="headerlink" title="在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？"></a>在移动平台上打AssetBundle时，为了控制包体大小，会开启PlayerSettings中的Optimize Mesh Data，对网格文件使用范围比较多的资源有较好的优化效果。 然而这带来了一个问题，就是在部分使用网格的特效中，美术会对模型上一些顶点做特殊处理，以达到一种网格遮罩的效果，而这个设置需要用到网格的顶点色。然而在开启Optimize Mesh Data这一选项后，打出来包中Mesh上的顶点色会丢失。 请问有什么比较好的解决方法，既能使用此方法优化网格，又能保留网格的顶点色效果？</h4><ul>
+<li>一般来说，开启“Optimize Mesh Data”选项，引擎会在发布时遍历所有的网格数据，去除其多余数据，从而降低其数据量大小。需要注意的是，这里的“多余”数据是指Mesh数据中包含了渲染时Shader中所不需要的数据，即如果Mesh数据中含有Position、UV、Normal、Color、Tangent等顶点数据，但其渲染所用的Shader中仅需要Position、UV和Normal，则Mesh数据中的Color和Tangent则为“多余”数据，引擎在发布游戏时，会将这些数据自动去除。</li>
+<li>开启这个选项是一把双刃剑。对于在Runtime情况下有更换Shader需求的Mesh，建议研发团队对其特别注意。如果Runtime时需要为某一个GameObject更换更为复杂、需要访问更多顶点属性的Shader，则建议先将这些Shader挂载在相应的Prefab上再进行发布，以免引擎去除Runtime时会使用到的网格数据。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/22/每天一点UWA：第十九周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-09T14:35:34.000Z">2017-12-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/09/2017-12-9-Unity特效学习：动画/">Unity特效学习：动画</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="Unity动画创建"><a href="#Unity动画创建" class="headerlink" title="Unity动画创建"></a>Unity动画创建</h4><ul>
+<li>选中物体后按Ctrl+6可以开启动画编辑器。<br><img src="http://imglf5.nosdn.127.net/img/Nld0N0tacnNuUGx5S01XL01RMGE2NDQ4M1Z2TlZ0TFU1b1VpaHZqb0dFR0F1TlNaeDhDSFRnPT0.jpg?imageView&thumbnail=1680x0&quality=96&stripmeta=0&type=jpg" alt="image"></li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/09/2017-12-9-Unity特效学习：动画/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-09T06:46:13.000Z">2017-12-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/09/2017-12-9-Unity特效学习：粒子/">Unity特效学习：粒子</a>
+            
+        </h1>
+        <div class="content">
+            <h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><ul>
+<li>只记录一些特别的参数</li>
+<li>Prewarm: 预热，效果是直接播一个周期后的效果。也就是呈现一个周期的最终效果。目前来看应该是用到一些一开始就呈现效果的场合。</li>
+<li>StartSpeed：这个是很常规的参数，但是当为负数时粒子方向会相反。值得留意。</li>
+<li>Color：<ul>
+<li>Gradient：梯度，更像是设定一个颜色的变化范围。但是某个粒子从创建之后颜色不会变化。</li>
+<li>Random：粒子颜色从两个值随机取</li>
+<li>还有梯度随机</li>
+<li>纯粹随机：这个可以自定义N个颜色区间。</li>
+<li>梯度编辑器很强大。注意：点击颜色条上沿添加的节点是调整alpha的，下沿是调整颜色的。藏的好深啊。</li>
+</ul>
+</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/09/2017-12-9-Unity特效学习：粒子/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2017-12-03T14:59:12.000Z">2017-12-03</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                <a class="has-link-black-ter" href="/2017/12/03/2017-12-3-每天一点UWA：第十八周/">每天一点UWA：第十八周</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always-include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5-3-4f1。"><a href="#最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always-include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5-3-4f1。" class="headerlink" title="最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。"></a>最近的项目使用了AssetBundle的资源管理方案，对于Shader的部分全部放到了Always include里面（这里不仅是系统内置的Shader，还包括自定义的Shader），然后打Bundle资源的目录里是不包含任何Shader的。但是现在发现，Shader还是被作为依赖关系打进了最终的Bundle里，而且造成了冗余，问问大家有没有遇到这个情况呢？我的Unity版本是5.3.4f1。</h4><ul>
+<li>首先，只要资源在工程里并且需要用到它，就会被打包进AssetBundle。</li>
+<li>然后Always include里built-in Shader不会被打包进AssetBundle，这是一个特例。这个特例仅限于没有放到工程里的部分，有些项目会自己下载built-in Shader放到工程里，这样的Shader和自己写的没有区别，也会被打包。</li>
+<li>最后，你遇到的问题是正常现象，需要你们通过资源管理的策略避免掉。</li>
+</ul>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2017/12/03/2017-12-3-每天一点UWA：第十八周/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
                 <time class="level-item has-text-grey" datetime="2017-12-02T14:53:34.000Z">2017-12-02</time>
                 
                 <div class="level-item">
@@ -451,257 +664,6 @@
 
 
 
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-13T01:22:09.000Z">2017-11-13</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/13/每天一点UWA：第十五周/">每天一点UWA：第十五周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"><a href="#我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）" class="headerlink" title="我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）"></a>我们想请教一个Unity的普适性的资源管理问题。举个例子，我们现在的一个特效Prefab包含的贴图打成AssetBundle时没有单独拆分出来，就会存在一个问题，这个特效AssetBundle会存在重复加载的问题进而导致重复的特效贴图在内存中。（针对“重复加载”说明下：我们首先通过AssetBundle出来一个Object，这个Object会缓存一段时间，在这段缓存时间过后这个Object会被Destroy掉，而需要释放的特效是通过Instantiate这个Object出来的。当这个Object过了缓存时间被destroy掉后，下次需要释放相同的特效还是通过load同样的AssetBundle进行再实例化出来，这样内存中存在两份贴图了。）</h4><ul>
-<li>一般是团队中自行做一些资源的引用计数来进行管理。频繁调用UnloadUnusedAssets是不可取的（该函数的主要作用是查找并卸载不再使用的资源。游戏场景越复杂、资源越多，该函数的开销越大，一般在300~2000 ms范围内），但可以调用UnloadAsset来释放资源。</li>
-<li>PS:典型的释放prefab后没有释放对于的资源。确实应该用UnloadAsset，或者一开始这个图片资源就应该做成单独的AssetBundle。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/13/每天一点UWA：第十五周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-08T01:51:58.000Z">2017-11-08</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/08/2017-11-8-每天一点UWA：动画重定向笔记/">每天一点UWA：动画重定向笔记</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><ul>
-<li><p>动画重定向技术主要是针对骨骼动画的方案，由骨骼来描述动作信息，用蒙皮来表示模型网格与骨骼之间的关系，从而得到模型最终的样子。<br><img src="http://uwa-ducument-img.oss-cn-beijing.aliyuncs.com/Blog%2FAnimationRetargeting%2F2.png" alt="image"></p>
-</li>
-<li><p>PS：这张图很形象</p>
-</li>
-<li><p>动画就是每一帧为模型制作一个Pose（姿势），在每帧之间的姿势可以通过差值获得。</p>
-</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/08/2017-11-8-每天一点UWA：动画重定向笔记/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-05T02:07:00.000Z">2017-11-05</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/05/2017-11-5-每天一点UWA：第十四周/">每天一点UWA：第十四周</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="AssetBundle"><a href="#AssetBundle" class="headerlink" title="AssetBundle"></a>AssetBundle</h2><h4 id="AssetBundle划分过细的问题，比如每个资源都是AssetBundle。"><a href="#AssetBundle划分过细的问题，比如每个资源都是AssetBundle。" class="headerlink" title="AssetBundle划分过细的问题，比如每个资源都是AssetBundle。"></a>AssetBundle划分过细的问题，比如每个资源都是AssetBundle。</h4><ul>
-<li>加载IO次数过多，从而增大了硬件设备耗能和发热的压力；</li>
-<li>Unity 5.3 ~ 5.5 版本中，Android平台上在不Unload的情况下，每个AssetBundle的加载，其每个文件的SerializedFile内存占用均为512KB（远高于其他平台），所以当内存中贮存了大量AssetBundle时，其SerializedFile的内存占用将会非常巨大。</li>
-</ul>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/05/2017-11-5-每天一点UWA：第十四周/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2017-11-02T11:59:13.000Z">2017-11-02</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                </div>
-                
-                
-                
-            </div>
-        </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2017/11/02/2017-11-2-浅析Timeline结构/">浅析Timeline结构</a>
-            
-        </h1>
-        <div class="content">
-            <h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><table>
-   <tr>
-      <td>PlayableDirector</td>
-      <td colspan="6" align="center">Timeline</td>
-   </tr>
-   <tr>
-      <td>PlayableGraph</td>
-      <td colspan="6" align="center">Graph</td>
-   </tr>
-   <tr>
-      <td>…</td>
-      <td colspan="4" align="center">TrackGroup</td>
-      <td>TrackGroup</td>
-   </tr>
-   <tr>
-      <td>TrackAsset</td>
-      <td>AnimationTrack</td>
-      <td>PlayableTrack</td>
-      <td>CinemachineTrack</td>
-      <td>CustomTrack</td>
-      <td>…</td>
-   </tr>
-   <tr>
-      <td>…</td>
-      <td>TimelineClips</td>
-      <td>TimelineClips</td>
-      <td>TimelineClips</td>
-      <td>TimelineClips</td>
-      <td>…</td>
-   </tr>
-   <tr>
-      <td>PlayableAsset</td>
-      <td>AnimationClip (Motion)</td>
-      <td>CustomPlayableAsset</td>
-      <td>CinemachineShot</td>
-      <td>CustomClip</td>
-      <td>…</td>
-   </tr>
-   <tr>
-      <td>PlayableBehaviour</td>
-      <td>PlayableBehaviour</td>
-      <td>PlayableBehaviour</td>
-      <td>CinemachineShotPlayable</td>
-      <td>PlayableBehaviour</td>
-      <td>…</td>
-   </tr>
-</table>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2017/11/02/2017-11-2-浅析Timeline结构/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
-        
-    </div>
-    
-</div>
-
-
-
-
-
-
-
-
-
 
     
 <div class="card card-transparent">
@@ -774,7 +736,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        131
+                        135
                     </p>
                 </div>
             </div>
@@ -846,7 +808,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">78</span>
+                <span class="level-item tag">82</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -892,7 +854,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.56px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 17.78px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.44px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 14.44px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 18.89px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11.11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.67px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.33px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.22px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.56px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.44px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 17px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14px;">组成原理</a>
     </div>
 </div>
 
@@ -911,60 +873,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -990,7 +952,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -1464,7 +1426,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
@@ -1572,60 +1534,60 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-30T08:34:36.000Z">2021-01-30</time></div>
+                    <a href="/2021/01/30/2021-1-30-OpenGL学习笔记：Compute-Shader/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Compute Shader</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-29T11:55:09.000Z">2021-01-29</time></div>
+                    <a href="/2021/01/29/2021-1-29-OpenGL学习笔记：Subroutine/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Subroutine</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-27T11:55:09.000Z">2021-01-27</time></div>
+                    <a href="/2021/01/27/2021-1-27-OpenGL学习笔记：Instance/" class="has-link-black-ter is-size-6">OpenGL学习笔记：Instance</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
+                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-18T13:18:13.000Z">2021-01-18</time></div>
                     <a href="/2021/01/18/2021-1-18-Vulkan学习笔记：CommandBuffer/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CommandBuffer</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-12T13:18:13.000Z">2021-01-12</time></div>
-                    <a href="/2021/01/12/2021-1-12-Vulkan学习笔记：CPU数据写入GPU/" class="has-link-black-ter is-size-6">Vulkan学习笔记：CPU数据写入GPU</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-11T11:19:00.000Z">2021-01-11</time></div>
-                    <a href="/2021/01/11/2021-1-11-Vulkan学习笔记：基础概念/" class="has-link-black-ter is-size-6">Vulkan学习笔记：基础概念</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-06T10:18:59.462Z">2021-01-06</time></div>
-                    <a href="/2021/01/06/Unity material 冗余数据清理/" class="has-link-black-ter is-size-6">Unity material 冗余数据清理</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-12-25T04:03:19.000Z">2020-12-25</time></div>
-                    <a href="/2020/12/25/SRP笔记/" class="has-link-black-ter is-size-6">SRP学习笔记</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
                     </p>
@@ -1651,7 +1613,7 @@
                     <span class="level-item">一月 2021</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">4</span>
+                    <span class="level-item tag">8</span>
                 </span>
             </a>
         </li>
@@ -2125,7 +2087,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/OpenGL/">
                         <span class="tag">OpenGL</span>
-                        <span class="tag is-grey">6</span>
+                        <span class="tag is-grey">10</span>
                     </a>
                 </div>
                 
