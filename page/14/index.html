@@ -155,6 +155,57 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
+                <a class="has-link-black-ter" href="/2016/09/16/05线程/">iOS学习笔记-05线程</a>
+            
+        </h1>
+        <div class="content">
+            <h2 id="5-线程"><a href="#5-线程" class="headerlink" title="5.线程"></a>5.线程</h2><h4 id="5-1-GCD"><a href="#5-1-GCD" class="headerlink" title="5.1 GCD"></a>5.1 GCD</h4><ul>
+<li>GCD是一套多线程库，可以有效的替换NSThread或者NSOperation。它的基本结构是<code>dispatch_async(queue, block);</code>参数中的queue可以通过<code>dispatch_queue_create</code>或者系统提供的标准dispatch queue。</li>
+</ul>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// 生成一个serial dispatch queue</span><br><span class="line">dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, NULL);</span><br><span class="line">// 生成一个concurrent dispatch queue</span><br><span class="line">dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.demo.sai&quot;, DISPATCH_QUEUE_CONCURRENT);</span><br><span class="line"></span><br><span class="line">// 生成的dispatch queue需要手动release，注意ARC不会释放dispatch_queue_t类型的变量</span><br><span class="line">dispatch_release(serialQueue);</span><br><span class="line">dispatch_release(concurrentQueue);</span><br><span class="line"></span><br><span class="line">// 使用系统已经提供的方法来create queue</span><br><span class="line">dispatch_queue_t serialQueue2 = dispatch_get_main_queue();</span><br><span class="line">dispatch_queue_t concurrentQueue2 = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);</span><br><span class="line"></span><br><span class="line">// 因此真正在代码中经常是这样写的</span><br><span class="line">dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in main thread&quot;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^&#123;</span><br><span class="line">    NSLog(@&quot;execute in a concurrent thread&quot;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            <div class="level-start">
+                <div class="level-item">
+                <a class="button is-size-7 is-light" href="/2016/09/16/05线程/#more">阅读更多</a>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+
+
+    <div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2016-09-15T19:32:23.000Z">2016-09-16</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/移动开发/">移动开发</a>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
                 <a class="has-link-black-ter" href="/2016/09/16/06数据处理/">iOS学习笔记-06数据处理</a>
             
         </h1>
@@ -210,26 +261,25 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2016/09/16/02集合/">iOS学习笔记-02集合</a>
+                <a class="has-link-black-ter" href="/2016/09/16/03UI/">iOS学习笔记-03UI</a>
             
         </h1>
         <div class="content">
-            <h2 id="2-集合"><a href="#2-集合" class="headerlink" title="2.集合"></a>2.集合</h2><ul>
-<li><p>集合分为可变与不可变。</p>
-</li>
-<li><p>泛型，写法<code>NSMutableArray&lt;NSNumber*&gt;* mutablearr = [NSMutableArray array];</code>和<code>NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</code>,目前会有warning提示如果类型不对。多参数泛型如下，第二行为Xcode的提示性代码。</p>
-  <figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSMutableDictionary&lt;NSString*, NSNumber*&gt;* dic = [[NSMutableDictionary alloc] init];</span><br><span class="line">[dic addEntriesFromDictionary:&lt;#(nonnull NSDictionary&lt;NSString *,NSNumber *&gt; *)#&gt;]</span><br></pre></td></tr></table></figure>
-
-</li>
+            <h2 id="3-UI"><a href="#3-UI" class="headerlink" title="3.UI"></a>3.UI</h2><ul>
+<li>iOS的UI开发说起来复杂也不复杂，复杂在于控件很多，属性很多，各种delegate,但是众多的控件也遵循着相同的模式，让人学起来会觉得可以举一反三。同时在UI这个大的标题下还有Draw、layer、transforms、animation、touch这些技术点。想要做出一些非常规UI效果往往不是依靠简单的使用SDK提供的控件可以做到的。</li>
 </ul>
-<p><font color="red">目前来看类型只能是Objective-C object或者block。</font></p>
+<h4 id="3-1-手动编写UI"><a href="#3-1-手动编写UI" class="headerlink" title="3.1 手动编写UI"></a>3.1 手动编写UI</h4><ul>
+<li>个人认知：手动编写UI在iOS不需要考虑手机屏幕尺寸的时代是很好用的，但是随着多种尺寸屏幕的出现，在自适应上手动编写UI代码就有了一些局限性。</li>
+<li>手动编写的核心在于创建UI对象，设置frame及各种属性。</li>
+<li>当然也可以使用xib来拖动UI，然后让UI与代码关联进而编写相关功能。</li>
+</ul>
         </div>
         
         
         <div class="level is-mobile">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2016/09/16/02集合/#more">阅读更多</a>
+                <a class="button is-size-7 is-light" href="/2016/09/16/03UI/#more">阅读更多</a>
                 </div>
             </div>
         </div>
@@ -516,7 +566,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        136
+                        137
                     </p>
                 </div>
             </div>
@@ -588,7 +638,7 @@
                 <span class="level-item">游戏开发</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">83</span>
+                <span class="level-item tag">84</span>
             </span>
         </a></li><li>
         <a class="level is-marginless" href="/categories/移动开发/">
@@ -634,7 +684,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Engine/" style="font-size: 10px;">Engine</a> <a href="/tags/Java/" style="font-size: 18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 17px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14px;">组成原理</a>
+        <a href="/tags/3D数学/" style="font-size: 10px;">3D数学</a> <a href="/tags/CPP/" style="font-size: 15.45px;">CPP</a> <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Engine/" style="font-size: 10.91px;">Engine</a> <a href="/tags/Java/" style="font-size: 18.18px;">Java</a> <a href="/tags/Lua/" style="font-size: 14.55px;">Lua</a> <a href="/tags/OpenGL/" style="font-size: 17.27px;">OpenGL</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/UWA/" style="font-size: 19.09px;">UWA</a> <a href="/tags/Unity3D/" style="font-size: 20px;">Unity3D</a> <a href="/tags/Unity預計算即時GI/" style="font-size: 11.82px;">Unity預計算即時GI</a> <a href="/tags/VR-AR/" style="font-size: 11.82px;">VR/AR</a> <a href="/tags/Vulkan/" style="font-size: 11.82px;">Vulkan</a> <a href="/tags/iOS学习笔记/" style="font-size: 16.36px;">iOS学习笔记</a> <a href="/tags/并发模型/" style="font-size: 13.64px;">并发模型</a> <a href="/tags/杂记/" style="font-size: 12.73px;">杂记</a> <a href="/tags/游戏设计模式/" style="font-size: 15.45px;">游戏设计模式</a> <a href="/tags/组成原理/" style="font-size: 14.55px;">组成原理</a>
     </div>
 </div>
 
@@ -648,6 +698,19 @@
         <h3 class="menu-label">
             最新文章
         </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-05-07T06:24:35.000Z">2021-05-07</time></div>
+                    <a href="/2021/05/07/2021-5-7-TLSF-代码实现分析：1、创建内存池/" class="has-link-black-ter is-size-6">TLSF 代码实现分析：1、创建内存池</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
         
         <article class="media">
             
@@ -701,19 +764,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
-                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -725,6 +775,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2021/04/">
@@ -1203,7 +1264,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Engine/">
                         <span class="tag">Engine</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1332,6 +1393,19 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-05-07T06:24:35.000Z">2021-05-07</time></div>
+                    <a href="/2021/05/07/2021-5-7-TLSF-代码实现分析：1、创建内存池/" class="has-link-black-ter is-size-6">TLSF 代码实现分析：1、创建内存池</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-04-24T06:41:05.000Z">2021-04-24</time></div>
                     <a href="/2021/04/24/2021-4-24-TLSF笔记/" class="has-link-black-ter is-size-6">TLSF笔记</a>
                     <p class="is-size-7 is-uppercase">
@@ -1380,19 +1454,6 @@
             </div>
         </article>
         
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2021-01-23T02:51:55.000Z">2021-01-23</time></div>
-                    <a href="/2021/01/23/2021-1-23-OpenGL学习笔记：截图生成图片/" class="has-link-black-ter is-size-6">OpenGL学习笔记：截图生成图片</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/游戏开发/">游戏开发</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
     </div>
 </div>
 
@@ -1404,6 +1465,17 @@
             归档
         </h3>
         <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2021/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2021</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
         
         <li>
             <a class="level is-marginless" href="/archives/2021/04/">
@@ -1882,7 +1954,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Engine/">
                         <span class="tag">Engine</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
